@@ -38,8 +38,9 @@ class ViewController: UIViewController {
     override func viewDidLoad() {
         willEnterForegroundObserver = NotificationCenter.default.addObserver(forName: UIApplication.willEnterForegroundNotification, object: nil, queue: nil) { _ in
             if !self.foregroundLoaded {
+                Timer.scheduledTimer(withTimeInterval: 2, repeats: false) { _ in
                 // Due to a bug in iModelJS, loadFrontend must be executed after the initial willEnterForegroundNotification.
-                CFRunLoopPerformBlock(CFRunLoopGetMain(), CFRunLoopMode.commonModes.rawValue) {
+//                CFRunLoopPerformBlock(CFRunLoopGetMain(), CFRunLoopMode.commonModes.rawValue) {
                     self.ma.loadFrontend();
                 }
                 self.foregroundLoaded = true
