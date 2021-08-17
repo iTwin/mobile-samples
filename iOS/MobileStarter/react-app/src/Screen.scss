@@ -1,0 +1,46 @@
+:root {
+  --background-color: white;
+  --background-color-2: #d0d0d0;
+  --color: black;
+  --inactive-color: rgb(77, 87, 95);
+  --muic-background-tab-bar: var(--background-color-2);
+  --muic-foreground-inactive: var(--inactive-color);
+  --muic-active-contrast: var(--background-color);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background-color: #282c34;
+    --background-color-2: #484c54;
+    --color: white;
+    --inactive-color: rgb(178, 168, 160);
+  }
+
+  .mui-bottom-panel-shadow {
+    box-shadow: 0px -2px 4px rgba(255,255,255,0.12);
+  }
+
+  .mui-drag-handle {
+    background-color: rgba(255,255,255,0.2);
+  }
+}
+
+.mui-bottom-panel-body {
+  background-color: var(--background-color);
+}
+
+.mui-panel-header-title {
+  color: var(--color);
+}
+
+.screen {
+  background-color: var(--background-color);
+  color: var(--color);
+  width: 100vw;
+  height: 100vh;
+}
+
+// Disable selection in all elements except text input fields by default.
+*:not(input[type=text]) {
+  user-select: none;
+}

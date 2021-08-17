@@ -1,0 +1,31 @@
+.mobile-ui-content {
+  background-color: var(--background-color);
+  color: var(--color);
+}
+
+.model-message {
+  width: 100vw;
+  height: 100vh;
+  background-color: transparent;
+  position: absolute;
+  left: 0px;
+  top: 0px;
+  pointer-events: none;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  div:first-child {
+    font-size: calc(10px + 2vmin);
+  }
+}
+
+#main-viewport {
+  pointer-events: auto;
+  position: absolute;
+  left: 0px;
+  top: 0px;
+  width: 100vw;
+  height: 100vh;
+}

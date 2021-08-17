@@ -1,0 +1,444 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 54;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		1FC11154261FC44900835E6E /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1FC11153261FC44900835E6E /* AppDelegate.swift */; };
+		1FC11156261FC44900835E6E /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1FC11155261FC44900835E6E /* SceneDelegate.swift */; };
+		1FC11158261FC44900835E6E /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1FC11157261FC44900835E6E /* ViewController.swift */; };
+		1FC1115B261FC44900835E6E /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 1FC11159261FC44900835E6E /* Main.storyboard */; };
+		1FC1115D261FC44B00835E6E /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 1FC1115C261FC44B00835E6E /* Assets.xcassets */; };
+		1FC11160261FC44B00835E6E /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 1FC1115E261FC44B00835E6E /* LaunchScreen.storyboard */; };
+		1FF1B9AC26BDCC35006D6385 /* ITwinMobile in Frameworks */ = {isa = PBXBuildFile; productRef = 1FF1B9AB26BDCC35006D6385 /* ITwinMobile */; };
+		1FF1B9AE26C32AD7006D6385 /* ModelApplication.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1FF1B9AD26C32AD7006D6385 /* ModelApplication.swift */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		1FC11150261FC44900835E6E /* iTwin Starter.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "iTwin Starter.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		1FC11153261FC44900835E6E /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
+		1FC11155261FC44900835E6E /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
+		1FC11157261FC44900835E6E /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
+		1FC1115A261FC44900835E6E /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
+		1FC1115C261FC44B00835E6E /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		1FC1115F261FC44B00835E6E /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
+		1FC11161261FC44B00835E6E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		1FF1B9AD26C32AD7006D6385 /* ModelApplication.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModelApplication.swift; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		1FC1114D261FC44900835E6E /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				1FF1B9AC26BDCC35006D6385 /* ITwinMobile in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		1FC11147261FC44900835E6E = {
+			isa = PBXGroup;
+			children = (
+				1FC11152261FC44900835E6E /* MobileStarter */,
+				1FC11151261FC44900835E6E /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		1FC11151261FC44900835E6E /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				1FC11150261FC44900835E6E /* iTwin Starter.app */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		1FC11152261FC44900835E6E /* MobileStarter */ = {
+			isa = PBXGroup;
+			children = (
+				1FC11153261FC44900835E6E /* AppDelegate.swift */,
+				1FF1B9AD26C32AD7006D6385 /* ModelApplication.swift */,
+				1FC11155261FC44900835E6E /* SceneDelegate.swift */,
+				1FC11157261FC44900835E6E /* ViewController.swift */,
+				1FC11159261FC44900835E6E /* Main.storyboard */,
+				1FC1115C261FC44B00835E6E /* Assets.xcassets */,
+				1FC1115E261FC44B00835E6E /* LaunchScreen.storyboard */,
+				1FC11161261FC44B00835E6E /* Info.plist */,
+			);
+			path = MobileStarter;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		1FC1114F261FC44900835E6E /* MobileStarter */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 1FC11164261FC44B00835E6E /* Build configuration list for PBXNativeTarget "MobileStarter" */;
+			buildPhases = (
+				1FC1114C261FC44900835E6E /* Sources */,
+				1FC1114D261FC44900835E6E /* Frameworks */,
+				1FC1114E261FC44900835E6E /* Resources */,
+				1F967D1A2620F62E00839493 /* Install Node Modules */,
+				1FCA800A2620CB6B002F1F76 /* Build WebApp */,
+				1FCA80062620B9CF002F1F76 /* Copy web app assets */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = MobileStarter;
+			packageProductDependencies = (
+				1FF1B9AB26BDCC35006D6385 /* ITwinMobile */,
+			);
+			productName = MobileStarter;
+			productReference = 1FC11150261FC44900835E6E /* iTwin Starter.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		1FC11148261FC44900835E6E /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastSwiftUpdateCheck = 1240;
+				LastUpgradeCheck = 1240;
+				TargetAttributes = {
+					1FC1114F261FC44900835E6E = {
+						CreatedOnToolsVersion = 12.4;
+					};
+				};
+			};
+			buildConfigurationList = 1FC1114B261FC44900835E6E /* Build configuration list for PBXProject "MobileStarter" */;
+			compatibilityVersion = "Xcode 9.3";
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = 1FC11147261FC44900835E6E;
+			packageReferences = (
+				1FF1B9AA26BDCC35006D6385 /* XCRemoteSwiftPackageReference "itwin-mobile-sdk" */,
+			);
+			productRefGroup = 1FC11151261FC44900835E6E /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				1FC1114F261FC44900835E6E /* MobileStarter */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		1FC1114E261FC44900835E6E /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				1FC11160261FC44B00835E6E /* LaunchScreen.storyboard in Resources */,
+				1FC1115D261FC44B00835E6E /* Assets.xcassets in Resources */,
+				1FC1115B261FC44900835E6E /* Main.storyboard in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		1F967D1A2620F62E00839493 /* Install Node Modules */ = {
+			isa = PBXShellScriptBuildPhase;
+			alwaysOutOfDate = 1;
+			buildActionMask = 8;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			name = "Install Node Modules";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 1;
+			shellPath = /bin/sh;
+			shellScript = "cd \"${PROJECT_DIR}/react-app\"\n[ -d node_modules ] || npm install\n";
+			showEnvVarsInLog = 0;
+		};
+		1FCA80062620B9CF002F1F76 /* Copy web app assets */ = {
+			isa = PBXShellScriptBuildPhase;
+			alwaysOutOfDate = 1;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			name = "Copy web app assets";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "set -e\nAppBundleRoot=\"$BUILT_PRODUCTS_DIR/$FULL_PRODUCT_NAME\"\n\n[ -d \"$AppBundleRoot/ITMApplication/react-app\" ] || mkdir -p \"$AppBundleRoot/ITMApplication/react-app\"\n[ -d \"$AppBundleRoot/ITMApplication/backend\" ] || mkdir -p \"$AppBundleRoot/ITMApplication/backend\"\nrsync -aL --delete \"${PROJECT_DIR}/react-app/lib/webpack/\" \"$AppBundleRoot/ITMApplication/backend/\"\n#rsync -aL --delete \"${PROJECT_DIR}/react-app/assets/\" \"$AppBundleRoot/ITMApplication/backend/assets/\"\n[ -d \"$AppBundleRoot/ITMApplication/backend/assets\" ] || mkdir -p \"$AppBundleRoot/ITMApplication/backend/assets\"\nrsync -aL --delete \"${PROJECT_DIR}/react-app/node_modules/@bentley/presentation-common/lib/assets/locales/\" \"$AppBundleRoot/ITMApplication/backend/assets/locales/\"\nrsync -aL --delete \"${PROJECT_DIR}/react-app/node_modules/@bentley/presentation-backend/lib/assets/supplemental-presentation-rules/\" \"$AppBundleRoot/ITMApplication/backend/assets/supplemental_presentation_rules/\"\nif [ -f \"${PROJECT_DIR}/react-app/ITMAppConfig.json\" ]; then\n    rsync -aL \"${PROJECT_DIR}/react-app/ITMAppConfig.json\" \"$AppBundleRoot/ITMApplication/\"\n    rm -rf \"$AppBundleRoot/ITMApplication/react-app\"\nelse\n    rsync -aL --delete \"${PROJECT_DIR}/react-app/build/\" \"$AppBundleRoot/ITMApplication/react-app/\"\n    rm -f \"$AppBundleRoot/ITMApplication/ModelAppConfig.json\"\nfi\n";
+		};
+		1FCA800A2620CB6B002F1F76 /* Build WebApp */ = {
+			isa = PBXShellScriptBuildPhase;
+			alwaysOutOfDate = 1;
+			buildActionMask = 8;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			name = "Build WebApp";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 1;
+			shellPath = /bin/sh;
+			shellScript = "cd \"${PROJECT_DIR}/react-app\"\nnpm run build\n";
+			showEnvVarsInLog = 0;
+		};
+/* End PBXShellScriptBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		1FC1114C261FC44900835E6E /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				1FC11158261FC44900835E6E /* ViewController.swift in Sources */,
+				1FC11154261FC44900835E6E /* AppDelegate.swift in Sources */,
+				1FF1B9AE26C32AD7006D6385 /* ModelApplication.swift in Sources */,
+				1FC11156261FC44900835E6E /* SceneDelegate.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXVariantGroup section */
+		1FC11159261FC44900835E6E /* Main.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				1FC1115A261FC44900835E6E /* Base */,
+			);
+			name = Main.storyboard;
+			sourceTree = "<group>";
+		};
+		1FC1115E261FC44B00835E6E /* LaunchScreen.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				1FC1115F261FC44B00835E6E /* Base */,
+			);
+			name = LaunchScreen.storyboard;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
+
+/* Begin XCBuildConfiguration section */
+		1FC11162261FC44B00835E6E /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 14.4;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = iphoneos;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+			};
+			name = Debug;
+		};
+		1FC11163261FC44B00835E6E /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 14.4;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				SDKROOT = iphoneos;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		1FC11165261FC44B00835E6E /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = WLDT6Q3PUY;
+				ENABLE_BITCODE = NO;
+				INFOPLIST_FILE = MobileStarter/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.bentley.MobileStarter;
+				PRODUCT_NAME = "iTwin Starter";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		1FC11166261FC44B00835E6E /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = WLDT6Q3PUY;
+				ENABLE_BITCODE = NO;
+				INFOPLIST_FILE = MobileStarter/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.bentley.MobileStarter;
+				PRODUCT_NAME = "iTwin Starter";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		1FC1114B261FC44900835E6E /* Build configuration list for PBXProject "MobileStarter" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				1FC11162261FC44B00835E6E /* Debug */,
+				1FC11163261FC44B00835E6E /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		1FC11164261FC44B00835E6E /* Build configuration list for PBXNativeTarget "MobileStarter" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				1FC11165261FC44B00835E6E /* Debug */,
+				1FC11166261FC44B00835E6E /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		1FF1B9AA26BDCC35006D6385 /* XCRemoteSwiftPackageReference "itwin-mobile-sdk" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/iTwin/itwin-mobile-sdk.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 0.0.8;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		1FF1B9AB26BDCC35006D6385 /* ITwinMobile */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 1FF1B9AA26BDCC35006D6385 /* XCRemoteSwiftPackageReference "itwin-mobile-sdk" */;
+			productName = ITwinMobile;
+		};
+/* End XCSwiftPackageProductDependency section */
+	};
+	rootObject = 1FC11148261FC44900835E6E /* Project object */;
+}
