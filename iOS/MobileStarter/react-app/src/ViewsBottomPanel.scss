@@ -1,4 +1,13 @@
 .views-bottom-panel {
+  .header {
+    font-weight: bold;
+    position: relative;
+    left: 10px;
+    top: -28px;
+    pointer-events: none;
+    height: 0px;
+    font-size: 24px;
+  }
   div {
     box-sizing: border-box;
     padding-top: 4px;
@@ -15,10 +24,35 @@
     min-height: 200px;
     overflow-y: auto;
     -webkit-overflow-scrolling: touch;
-    padding: 0px;
-    display: flex;
-    flex-direction: column;
-    align-items: stretch;
+    padding: 0px 5px;
+    .list-items {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      .list-item {
+        width: 200px;
+        max-width: calc(50% - 10px);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        border-radius: 5px;
+        padding: 10px;
+        background-color: var(--background-color-2);
+        color: var(--color);
+        text-align: center;
+        margin: 5px;
+        img {
+          width: 100%;
+        }
+      }
+      .dummy-item {
+        width: 200px;
+        max-width: calc(50% - 10px);
+        padding: 0px;
+        margin: 0px 5px;
+        height: 0px;
+      }
+    }
   }
   .mui-panel-header-title {
     padding-top: 0px;
