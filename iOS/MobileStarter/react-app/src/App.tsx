@@ -3,7 +3,7 @@ import { IOSApp, IOSAppOpts } from "@bentley/mobile-manager/lib/MobileFrontend";
 import { IModelApp, IModelConnection } from "@bentley/imodeljs-frontend";
 import { Presentation } from "@bentley/presentation-frontend";
 import { Messenger, MobileUi } from "@itwin/mobileui-react";
-import { ActiveScreen, BimDocumentsScreen, HomeScreen, HubScreen, LoadingScreen, ModelScreen } from "./Exports";
+import { ActiveScreen, SnapshotsScreen, HomeScreen, HubScreen, LoadingScreen, ModelScreen } from "./Exports";
 import { getSupportedRpcs } from "./common/rpcs";
 import "./App.scss";
 
@@ -79,8 +79,8 @@ function App() {
   switch (activeScreen) {
     case ActiveScreen.Home:
       return <HomeScreen onSelect={handleHomeSelect} />;
-    case ActiveScreen.BimDocuments:
-      return <BimDocumentsScreen onOpen={handleOpen} onBack={handleBack} />;
+    case ActiveScreen.Snapshots:
+      return <SnapshotsScreen onOpen={handleOpen} onBack={handleBack} />;
     case ActiveScreen.Hub:
       return <HubScreen onOpen={handleOpen} onBack={handleBack} />;
     case ActiveScreen.Model:

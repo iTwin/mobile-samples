@@ -4,7 +4,7 @@ import "./HomeScreen.scss";
 export enum ActiveScreen {
   Loading,
   Home,
-  BimDocuments,
+  Snapshots,
   Hub,
   Model,
 };
@@ -21,7 +21,7 @@ export function HomeScreen(props: HomeScreenProps) {
         <div className="title">Home</div>
         <div className="list">
           <div className="list-items">
-            <Button title="Snapshot iModels" onClick={() => onSelect(ActiveScreen.BimDocuments)}/>
+            <Button title="Snapshot iModels" onClick={() => onSelect(ActiveScreen.Snapshots)}/>
             <Button title="Hub iModels" onClick={() => onSelect(ActiveScreen.Hub)}/>
           </div>
         </div>
