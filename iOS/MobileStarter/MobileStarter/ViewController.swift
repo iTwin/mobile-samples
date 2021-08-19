@@ -15,7 +15,7 @@ class ViewController: UIViewController {
     private var jsBusy = false
     private let ma = ModelApplication()
     private var iTwinMobile: ITwinMobile?
-    private var foregroundLoaded = false
+    private var loadedOnce = false
     private var willEnterForegroundObserver: Any? = nil
 
     deinit {
@@ -37,28 +37,17 @@ class ViewController: UIViewController {
 
     override func viewDidLoad() {
         willEnterForegroundObserver = NotificationCenter.default.addObserver(forName: UIApplication.willEnterForegroundNotification, object: nil, queue: nil) { _ in
-            if !self.foregroundLoaded {
-                Timer.scheduledTimer(withTimeInterval: 2, repeats: false) { _ in
+            if !self.loadedOnce {
+                self.ma.loadBackend(true)
                 // Due to a bug in iModelJS, loadFrontend must be executed after the initial willEnterForegroundNotification.
-//                CFRunLoopPerformBlock(CFRunLoopGetMain(), CFRunLoopMode.commonModes.rawValue) {
+                Timer.scheduledTimer(withTimeInterval: 2, repeats: false) { _ in
                     self.ma.loadFrontend();
                 }
-                self.foregroundLoaded = true
+                self.loadedOnce = true
             }
         }
         super.viewDidLoad()
-        if #available(iOS 13.0, *) {
-            if self.traitCollection.userInterfaceStyle == .dark {
-                UIApplication.shared.setAlternateIconName("iTwinLogo-dark") {
-                    guard let error = $0 else { return }
-                    print("Error setting alternative icon: \(error.localizedDescription)")
-                }
-            } else {
-                UIApplication.shared.setAlternateIconName(nil)
-            }
-        }
         let webView = ma.webView
         view = webView
-        ma.loadBackend(true)
     }
 }

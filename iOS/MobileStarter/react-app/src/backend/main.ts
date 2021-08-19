@@ -4,12 +4,17 @@
 import * as path from "path";
 import { Presentation, PresentationManagerMode } from "@bentley/presentation-backend";
 import { GetMetaDataFunction, LogFunction, Logger, LogLevel } from "@bentley/bentleyjs-core";
-import { IOSHost } from "@bentley/mobile-manager/lib/MobileBackend";
+import { IOSHost, MobileHostOpts } from "@bentley/mobile-manager/lib/MobileBackend";
 import { RpcInterfaceDefinition } from "@bentley/imodeljs-common";
 import { getSupportedRpcs } from "../common/rpcs";
 import setupEnv from "../common/configuration";
 import { IpcHost } from "@bentley/imodeljs-backend";
 import { AppFilesHandler } from "./AppFilesHandler";
+
+export const qaIssuerUrl = "https://qa-ims.bentley.com/";
+// export const qaIssuerUrl = "https://qa-imsoidc.bentley.com/";
+export const prodIssuerUrl = "https://ims.bentley.com/";
+// export const prodIssuerUrl = "https://imsoidc.bentley.com/";
 
 // tslint:disable-next-line:no-floating-promises
 (async () => {
@@ -21,7 +26,13 @@ import { AppFilesHandler } from "./AppFilesHandler";
   Logger.setLevelDefault(LogLevel.Warning);
 
   // initialize imodeljs-backend
-  await IOSHost.startup();
+  const options: MobileHostOpts = {
+    mobileHost: {
+      noInitializeAuthClient: true,
+      authConfig: { issuerUrl: prodIssuerUrl, clientId: "<Client ID goes here>", redirectUri: "imodeljs://app/signin-callback", scope: "email openid profile organization itwinjs" },
+      },
+    };
+  await IOSHost.startup(options);
 
   const backendRoot = process.env.FIELDMODEL_BACKEND_ROOT;
   const assetsRoot = backendRoot ? path.join(backendRoot, "assets") : "assets";

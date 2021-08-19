@@ -1,14 +1,16 @@
 import React from "react";
-import { Messenger } from "@itwin/mobileui-react";
+import { Messenger, VisibleBackButton } from "@itwin/mobileui-react";
 import { Button, Screen } from "./Exports";
-import "./BimDocumentsScreen.scss";
 import { IModelConnection, SnapshotConnection } from "@bentley/imodeljs-frontend";
+import "./BimDocumentsScreen.scss";
 
 export interface BimDocumentsScreenProps {
   onOpen: (filename: string, iModel: IModelConnection) => void;
+  onBack: () => void;
 }
 
 export function BimDocumentsScreen(props: BimDocumentsScreenProps) {
+  const {onOpen, onBack} = props;
   const [bimDocuments, setBimDocuments] = React.useState<string[]>([]);
 
   React.useEffect(() =>
@@ -26,7 +28,7 @@ export function BimDocumentsScreen(props: BimDocumentsScreenProps) {
       key={index}
       onClick={async () => {
         const iModel = await SnapshotConnection.openFile(document);
-        props.onOpen(document, iModel);
+        onOpen(document, iModel);
       }}
       title={documentName} />
   });
@@ -34,7 +36,10 @@ export function BimDocumentsScreen(props: BimDocumentsScreenProps) {
   return (
     <Screen>
       <div className="bim-documents-screen">
-        <div className="title">Select an iModel.</div>
+        <div className="title">
+          <VisibleBackButton onClick={onBack} />
+          Select an iModel.
+        </div>
         <div className="list">
           <div className="list-items">{bimButtons}</div>
         </div>
