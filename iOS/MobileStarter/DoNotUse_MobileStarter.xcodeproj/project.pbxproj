@@ -186,7 +186,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "set -e\nAppBundleRoot=\"$BUILT_PRODUCTS_DIR/$FULL_PRODUCT_NAME\"\n\n[ -d \"$AppBundleRoot/ITMApplication/react-app\" ] || mkdir -p \"$AppBundleRoot/ITMApplication/react-app\"\n[ -d \"$AppBundleRoot/ITMApplication/backend\" ] || mkdir -p \"$AppBundleRoot/ITMApplication/backend\"\nrsync -aL --delete \"${PROJECT_DIR}/react-app/lib/webpack/\" \"$AppBundleRoot/ITMApplication/backend/\"\n#rsync -aL --delete \"${PROJECT_DIR}/react-app/assets/\" \"$AppBundleRoot/ITMApplication/backend/assets/\"\n[ -d \"$AppBundleRoot/ITMApplication/backend/assets\" ] || mkdir -p \"$AppBundleRoot/ITMApplication/backend/assets\"\nrsync -aL --delete \"${PROJECT_DIR}/react-app/node_modules/@bentley/presentation-common/lib/assets/locales/\" \"$AppBundleRoot/ITMApplication/backend/assets/locales/\"\nrsync -aL --delete \"${PROJECT_DIR}/react-app/node_modules/@bentley/presentation-backend/lib/assets/supplemental-presentation-rules/\" \"$AppBundleRoot/ITMApplication/backend/assets/supplemental_presentation_rules/\"\nif [ -f \"${PROJECT_DIR}/react-app/ITMAppConfig.json\" ]; then\n    rsync -aL \"${PROJECT_DIR}/react-app/ITMAppConfig.json\" \"$AppBundleRoot/ITMApplication/\"\n    rm -rf \"$AppBundleRoot/ITMApplication/react-app\"\nelse\n    rsync -aL --delete \"${PROJECT_DIR}/react-app/build/\" \"$AppBundleRoot/ITMApplication/react-app/\"\n    rm -f \"$AppBundleRoot/ITMApplication/ModelAppConfig.json\"\nfi\n";
+			shellScript = "\"${PROJECT_DIR}/../CopyWebAppAssets.sh\"\n";
 		};
 		1FCA800A2620CB6B002F1F76 /* Build WebApp */ = {
 			isa = PBXShellScriptBuildPhase;
