@@ -24,7 +24,14 @@ export function ViewsBottomPanel(props: ViewsBottomPanelProps) {
     const loadThumbnails = async (viewSpecsParam: IModelConnection.ViewSpec[]) => {
       const localThumbnails: (string | undefined)[] = [];
       for (const viewSpec of viewSpecsParam) {
-        const thumbnail = await iModel.views.getThumbnail(viewSpec.id);
+        const getThumbnail = async () => {
+          try {
+            return await iModel.views.getThumbnail(viewSpec.id);
+          } catch (ex) {
+            return undefined;
+          }
+        }
+        const thumbnail = await getThumbnail();
         if (thumbnail) {
           localThumbnails.push(getThumbnailUrl(thumbnail));
         } else {
@@ -65,6 +72,7 @@ export function ViewsBottomPanel(props: ViewsBottomPanelProps) {
       return (
         <div className="list-item" key={index} onClick={() => {handleChangeView(viewSpec);}}>
           <div>{viewSpec.name}</div>
+          <IconImage iconSpec="icon-saved-view" size="100px"/>
         </div>
       );
     }
