@@ -1,8 +1,8 @@
 import React from "react";
 import * as base64 from "base64-js";
 import { IModelApp, IModelConnection } from "@bentley/imodeljs-frontend";
-import { IconImage, ResizableBottomPanel, ResizableBottomPanelProps } from "@itwin/mobileui-react";
 import { ThumbnailProps } from "@bentley/imodeljs-common";
+import { DraggableComponent, IconImage, ResizableBottomPanel, ResizableBottomPanelProps } from "@itwin/mobileui-react";
 
 import "./ViewsBottomPanel.scss";
 
@@ -37,7 +37,7 @@ export function ViewsBottomPanel(props: ViewsBottomPanelProps) {
     const loadViewSpecs = async () => {
       const query = { wantPrivate: false };
       const result = await iModel.views.getViewList(query);
-      const sortedResult = result.sort((a, b) => {return a.name.localeCompare(b.name, undefined, {sensitivity: "base"});});
+      const sortedResult = result.sort((a, b) => a.name.localeCompare(b.name, undefined, {sensitivity: "base"}));
       setViewSpecs(sortedResult);
       loadThumbnails(sortedResult);
     };
@@ -57,8 +57,8 @@ export function ViewsBottomPanel(props: ViewsBottomPanelProps) {
     if (thumbnails.length > index && thumbnails[index]) {
       return (
         <div className="list-item" key={index} onClick={() => {handleChangeView(viewSpec);}}>
-          <img src={thumbnails[index]} alt="View Thumbnail"/>
           <div>{viewSpec.name}</div>
+          <img src={thumbnails[index]} alt="View Thumbnail"/>
         </div>
       );
     } else {
@@ -80,7 +80,12 @@ export function ViewsBottomPanel(props: ViewsBottomPanelProps) {
     <ResizableBottomPanel
       {...otherProps}
       className="views-bottom-panel"
-      header={<div className="header"><IconImage style={{display: "inline-block", marginRight: 5}} iconSpec="icon-saved-view"/>Views</div>}
+      header={<DraggableComponent className="header">
+        <div className="title">
+          <IconImage style={{display: "inline-block", marginRight: 5}} iconSpec="icon-saved-view"/>
+          Views
+        </div>
+      </DraggableComponent>}
     >
       <div className="list">
         <div className="list-items">
