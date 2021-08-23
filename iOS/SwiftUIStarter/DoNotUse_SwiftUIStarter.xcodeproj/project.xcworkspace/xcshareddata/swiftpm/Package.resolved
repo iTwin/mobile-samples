@@ -29,15 +29,6 @@
         }
       },
       {
-        "package": "itwin-mobile-sdk",
-        "repositoryURL": "https://github.com/iTwin/itwin-mobile-sdk.git",
-        "state": {
-          "branch": null,
-          "revision": "83833c40dcccd6390befade7ad91f4a7281bfb3a",
-          "version": "0.0.15"
-        }
-      },
-      {
         "package": "PromiseKit",
         "repositoryURL": "https://github.com/mxcl/PromiseKit",
         "state": {
