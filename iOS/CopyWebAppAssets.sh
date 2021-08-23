@@ -7,7 +7,11 @@ else
     WebAppDir=$1
 fi
 
-[ -d "$AppBundleRoot/$WebAppDir/react-app" ] || mkdir -p "$AppBundleRoot/$WebAppDir/react-app"
+cd "${PROJECT_DIR}/react-app"
+./GenITMAppConfig.sh
+cd -
+
+[ -d "$AppBundleRoot/$WebAppDir/frontend" ] || mkdir -p "$AppBundleRoot/$WebAppDir/frontend"
 [ -d "$AppBundleRoot/$WebAppDir/backend" ] || mkdir -p "$AppBundleRoot/$WebAppDir/backend"
 rsync -aL --delete "${PROJECT_DIR}/react-app/lib/webpack/" "$AppBundleRoot/$WebAppDir/backend/"
 
@@ -19,10 +23,10 @@ rsync -aL --delete "${PROJECT_DIR}/react-app/lib/webpack/" "$AppBundleRoot/$WebA
 rsync -aL --delete "${PROJECT_DIR}/react-app/node_modules/@bentley/presentation-common/lib/assets/locales/" "$AppBundleRoot/$WebAppDir/backend/assets/locales/"
 rsync -aL --delete "${PROJECT_DIR}/react-app/node_modules/@bentley/presentation-backend/lib/assets/supplemental-presentation-rules/" "$AppBundleRoot/$WebAppDir/backend/assets/supplemental_presentation_rules/"
 
-if [ -f "${PROJECT_DIR}/react-app/ITMAppConfig.json" ]; then
-    rsync -aL "${PROJECT_DIR}/react-app/ITMAppConfig.json" "$AppBundleRoot/$WebAppDir/"
-    rm -rf "$AppBundleRoot/$WebAppDir/react-app"
+rsync -aL "${PROJECT_DIR}/react-app/ITMAppConfig.json" "$AppBundleRoot/$WebAppDir/"
+# if [ -f "${PROJECT_DIR}/react-app/ITMAppConfig.json" ]; then
+if [ grep -q baseUrl "${PROJECT_DIR}/react-app/ITMAppConfig.json" ]; then
+    rm -rf "$AppBundleRoot/$WebAppDir/frontend"
 else
-    rsync -aL --delete "${PROJECT_DIR}/react-app/build/" "$AppBundleRoot/$WebAppDir/react-app/"
-    rm -f "$AppBundleRoot/$WebAppDir/ITMAppConfig.json"
+    rsync -aL --delete "${PROJECT_DIR}/react-app/build/" "$AppBundleRoot/$WebAppDir/frontend/"
 fi

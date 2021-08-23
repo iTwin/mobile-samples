@@ -15,6 +15,8 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		1F8215E526D463E600C27387 /* iOSSamples.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; name = iOSSamples.xcconfig; path = ../iOSSamples.xcconfig; sourceTree = "<group>"; };
+		1F8215E626D463E600C27387 /* ITMApplication.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; name = ITMApplication.xcconfig; path = ../ITMApplication.xcconfig; sourceTree = "<group>"; };
 		5FB2050C26D0436400C4DBE1 /* itwin-mobile-sdk */ = {isa = PBXFileReference; lastKnownFileType = folder; name = "itwin-mobile-sdk"; path = "../../../itwin-mobile-sdk"; sourceTree = "<group>"; };
 		5FB2050F26D43BB000C4DBE1 /* ModelApplication.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ModelApplication.swift; sourceTree = "<group>"; };
 		5FDD749226CDA9520007FBC6 /* SwiftUIStarter.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SwiftUIStarter.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -39,6 +41,8 @@
 		5FDD748926CDA9520007FBC6 = {
 			isa = PBXGroup;
 			children = (
+				1F8215E526D463E600C27387 /* iOSSamples.xcconfig */,
+				1F8215E626D463E600C27387 /* ITMApplication.xcconfig */,
 				5FB2050C26D0436400C4DBE1 /* itwin-mobile-sdk */,
 				5FDD749426CDA9520007FBC6 /* SwiftUIStarter */,
 				5FDD749326CDA9520007FBC6 /* Products */,
@@ -111,7 +115,7 @@
 					};
 				};
 			};
-			buildConfigurationList = 5FDD748D26CDA9520007FBC6 /* Build configuration list for PBXProject "SwiftUIStarter" */;
+			buildConfigurationList = 5FDD748D26CDA9520007FBC6 /* Build configuration list for PBXProject "DoNotUse_SwiftUIStarter" */;
 			compatibilityVersion = "Xcode 9.3";
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
@@ -181,6 +185,7 @@
 /* Begin XCBuildConfiguration section */
 		5FDD749F26CDA9530007FBC6 /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 1F8215E526D463E600C27387 /* iOSSamples.xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				CLANG_ANALYZER_NONNULL = YES;
@@ -243,6 +248,7 @@
 		};
 		5FDD74A026CDA9530007FBC6 /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 1F8215E526D463E600C27387 /* iOSSamples.xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				CLANG_ANALYZER_NONNULL = YES;
@@ -344,7 +350,7 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		5FDD748D26CDA9520007FBC6 /* Build configuration list for PBXProject "SwiftUIStarter" */ = {
+		5FDD748D26CDA9520007FBC6 /* Build configuration list for PBXProject "DoNotUse_SwiftUIStarter" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				5FDD749F26CDA9530007FBC6 /* Debug */,

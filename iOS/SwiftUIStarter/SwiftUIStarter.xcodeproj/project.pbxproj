@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		1F56529826D4651B002C7260 /* iOSSamples.xcconfig in Resources */ = {isa = PBXBuildFile; fileRef = 1F56529626D4651B002C7260 /* iOSSamples.xcconfig */; };
+		1F56529926D4651B002C7260 /* ITMApplication.xcconfig in Resources */ = {isa = PBXBuildFile; fileRef = 1F56529726D4651B002C7260 /* ITMApplication.xcconfig */; };
 		5FB2050826D03B2600C4DBE1 /* ITwinMobile in Frameworks */ = {isa = PBXBuildFile; productRef = 5FB2050726D03B2600C4DBE1 /* ITwinMobile */; };
 		5FB2051026D43BB000C4DBE1 /* ModelApplication.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5FB2050F26D43BB000C4DBE1 /* ModelApplication.swift */; };
 		5FDD749626CDA9520007FBC6 /* SwiftUIStarterApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5FDD749526CDA9520007FBC6 /* SwiftUIStarterApp.swift */; };
@@ -15,6 +17,8 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		1F56529626D4651B002C7260 /* iOSSamples.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; name = iOSSamples.xcconfig; path = ../iOSSamples.xcconfig; sourceTree = "<group>"; };
+		1F56529726D4651B002C7260 /* ITMApplication.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; name = ITMApplication.xcconfig; path = ../ITMApplication.xcconfig; sourceTree = "<group>"; };
 		5FB2050F26D43BB000C4DBE1 /* ModelApplication.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ModelApplication.swift; sourceTree = "<group>"; };
 		5FDD749226CDA9520007FBC6 /* SwiftUIStarter.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SwiftUIStarter.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		5FDD749526CDA9520007FBC6 /* SwiftUIStarterApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwiftUIStarterApp.swift; sourceTree = "<group>"; };
@@ -38,6 +42,8 @@
 		5FDD748926CDA9520007FBC6 = {
 			isa = PBXGroup;
 			children = (
+				1F56529626D4651B002C7260 /* iOSSamples.xcconfig */,
+				1F56529726D4651B002C7260 /* ITMApplication.xcconfig */,
 				5FDD749426CDA9520007FBC6 /* SwiftUIStarter */,
 				5FDD749326CDA9520007FBC6 /* Products */,
 			);
@@ -135,8 +141,10 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				1F56529926D4651B002C7260 /* ITMApplication.xcconfig in Resources */,
 				5FDD749D26CDA9530007FBC6 /* Preview Assets.xcassets in Resources */,
 				5FDD749A26CDA9530007FBC6 /* Assets.xcassets in Resources */,
+				1F56529826D4651B002C7260 /* iOSSamples.xcconfig in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -179,6 +187,7 @@
 /* Begin XCBuildConfiguration section */
 		5FDD749F26CDA9530007FBC6 /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 1F56529626D4651B002C7260 /* iOSSamples.xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				CLANG_ANALYZER_NONNULL = YES;
@@ -241,6 +250,7 @@
 		};
 		5FDD74A026CDA9530007FBC6 /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 1F56529626D4651B002C7260 /* iOSSamples.xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				CLANG_ANALYZER_NONNULL = YES;

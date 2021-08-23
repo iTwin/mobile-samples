@@ -10,29 +10,6 @@ import WebKit
 import ITwinMobile
 import PromiseKit
 
-// MARK: - JSON convenience
-public typealias JSON = [String: Any]
-
-// extension for JSON-like-Dictionaries
-extension JSON {
-    //! Deserializes passed String and returns Dictionary representing the JSON object encoded in the string
-    //! @param jsonString: string to parse and convert to Dictionary
-    //! @param encoding: encoding of the source jsonString. Defaults to UTF8.
-    //! @return Dictionary representation of the JSON string
-    static func fromString(_ jsonString: String?, _ encoding: String.Encoding = String.Encoding.utf8) -> JSON? {
-        if jsonString == nil {
-            return nil
-        }
-        let stringData = jsonString!.data(using: encoding)
-        do {
-            return try JSONSerialization.jsonObject(with: stringData!, options: []) as? JSON
-        } catch {
-            print(error.localizedDescription)
-        }
-        return nil
-    }
-}
-
 class ModelApplication: ITMApplication {
     required init() {
         super.init()
@@ -78,18 +55,5 @@ class ModelApplication: ITMApplication {
             return bimDocuments
         }
         return []
-    }
-
-    override func getBaseUrl() -> String {
-        let urlString: String?
-        if let configUrl = Bundle.main.url(forResource: "ITMAppConfig", withExtension: "json", subdirectory: "ITMApplication"),
-            let configString = try? String(contentsOf: configUrl),
-            let configData = JSON.fromString(configString),
-            let baseUrlString = configData["baseUrl"] as? String {
-            urlString = baseUrlString
-        } else {
-            urlString = Bundle.main.url(forResource: "index", withExtension: "html", subdirectory: "ITMApplication/react-app")?.absoluteString
-        }
-        return urlString!
     }
 }

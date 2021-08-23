@@ -1,0 +1,11 @@
+#include "ITMApplication.xcconfig"
+// If you get the error "could not find included file 'clientID.xconfig' in search paths",
+// you need to create the clientID.xcconfig file, and populate it with the proper value for the
+// ITMAPPLICATION_CLIENT_ID environment variable. It will look like this (without the comment prefix):
+// ITMAPPLICATION_CLIENT_ID = YOUR-CLIENT-ID-GOES-HERE
+// NOTE: You may have to restart Xcode after creating ITMApplication.xcconfig.
+// Other supported ITMApplication settings:
+// ITMAPPLICATION_NO_DEBUG_SERVER = YES
+// ITMAPPLICATION_SCOPE
+// ITMAPPLICATION_ISSUER_URL
+// ITMAPPLICATION_REDIRECT_URI

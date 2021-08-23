@@ -25,11 +25,15 @@ export const prodIssuerUrl = "https://ims.bentley.com/";
   redirectLoggingToFrontend();
   Logger.setLevelDefault(LogLevel.Warning);
 
+  const issuerUrl = process.env.ITMAPPLICATION_ISSUER_URL ?? prodIssuerUrl;
+  const clientId = process.env.ITMAPPLICATION_CLIENT_ID ?? "<Error>";
+  const redirectUri = process.env.ITMAPPLICATION_REDIRECT_URI ?? "imodeljs://app/signin-callback";
+  const scope = process.env.ITMAPPLICATION_SCOPE ?? "email openid profile organization itwinjs";
   // initialize imodeljs-backend
   const options: MobileHostOpts = {
     mobileHost: {
       noInitializeAuthClient: true,
-      authConfig: { issuerUrl: prodIssuerUrl, clientId: "<Client ID goes here>", redirectUri: "imodeljs://app/signin-callback", scope: "email openid profile organization itwinjs" },
+      authConfig: { issuerUrl, clientId, redirectUri, scope },
       },
     };
   await IOSHost.startup(options);
