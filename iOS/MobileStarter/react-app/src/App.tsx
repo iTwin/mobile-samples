@@ -17,6 +17,7 @@ function App() {
   const [modelFilename, setModelFilename] = React.useState("");
   const [iModel, setIModel] = React.useState<IModelConnection>();
   const [activeStack, setActiveStack] = React.useState<ActiveInfo[]>([{activeScreen: ActiveScreen.Loading}]);
+  const [initialized, setInitialized] = React.useState(false);
 
   const pushActiveInfo = React.useCallback((screen: ActiveScreen, cleanup?: () => void) => {
     setActiveStack((old) => {
@@ -45,8 +46,11 @@ function App() {
         console.log("Exception during initialization: " + ex);
       }
     };
-    initialize();
-  }, [pushActiveInfo]);
+    if (!initialized) {
+      setInitialized(true);
+      initialize();
+    }
+  }, [pushActiveInfo, initialized]);
 
   const handleOpen = React.useCallback((filename: string, newIModel: IModelConnection) => {
     setModelFilename(filename);

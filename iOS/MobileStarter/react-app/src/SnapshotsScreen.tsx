@@ -11,17 +11,18 @@ export interface SnapshotsScreenProps {
 
 export function SnapshotsScreen(props: SnapshotsScreenProps) {
   const {onOpen, onBack} = props;
-  const [bimDocuments, setBimDocuments] = React.useState<string[]>([]);
+  const [snapshots, setSnapshots] = React.useState<string[]>([]);
 
   React.useEffect(() =>
   {
     const updateBimDocuments = async () => {
-      setBimDocuments(await Messenger.query("getBimDocuments"));
+      const bimDocuments: string[] = await Messenger.query("getBimDocuments");
+      setSnapshots(bimDocuments.sort((a, b) => a.localeCompare(b, undefined, {sensitivity: "base"})));
     }
     updateBimDocuments();
   }, []);
 
-  const bimButtons = bimDocuments.map((document: string, index: number) => {
+  const bimButtons = snapshots.map((document: string, index: number) => {
     const lastSlash = document.lastIndexOf("/");
     const documentName = lastSlash === -1 ? document : document.substring(lastSlash + 1);
     return <Button
