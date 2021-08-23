@@ -7,111 +7,109 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		1FC11154261FC44900835E6E /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1FC11153261FC44900835E6E /* AppDelegate.swift */; };
-		1FC11156261FC44900835E6E /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1FC11155261FC44900835E6E /* SceneDelegate.swift */; };
-		1FC1115B261FC44900835E6E /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 1FC11159261FC44900835E6E /* Main.storyboard */; };
-		1FC1115D261FC44B00835E6E /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 1FC1115C261FC44B00835E6E /* Assets.xcassets */; };
-		1FC11160261FC44B00835E6E /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 1FC1115E261FC44B00835E6E /* LaunchScreen.storyboard */; };
-		1FF1B9AC26BDCC35006D6385 /* ITwinMobile in Frameworks */ = {isa = PBXBuildFile; productRef = 1FF1B9AB26BDCC35006D6385 /* ITwinMobile */; };
-		1FF1B9AE26C32AD7006D6385 /* ModelApplication.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1FF1B9AD26C32AD7006D6385 /* ModelApplication.swift */; };
+		5FB2050826D03B2600C4DBE1 /* ITwinMobile in Frameworks */ = {isa = PBXBuildFile; productRef = 5FB2050726D03B2600C4DBE1 /* ITwinMobile */; };
+		5FB2051026D43BB000C4DBE1 /* ModelApplication.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5FB2050F26D43BB000C4DBE1 /* ModelApplication.swift */; };
+		5FDD749626CDA9520007FBC6 /* SwiftUIStarterApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5FDD749526CDA9520007FBC6 /* SwiftUIStarterApp.swift */; };
+		5FDD749A26CDA9530007FBC6 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 5FDD749926CDA9530007FBC6 /* Assets.xcassets */; };
+		5FDD749D26CDA9530007FBC6 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 5FDD749C26CDA9530007FBC6 /* Preview Assets.xcassets */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		1FC11150261FC44900835E6E /* iTwin Starter.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "iTwin Starter.app"; sourceTree = BUILT_PRODUCTS_DIR; };
-		1FC11153261FC44900835E6E /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
-		1FC11155261FC44900835E6E /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
-		1FC1115A261FC44900835E6E /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
-		1FC1115C261FC44B00835E6E /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
-		1FC1115F261FC44B00835E6E /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
-		1FC11161261FC44B00835E6E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		1FF1B9AD26C32AD7006D6385 /* ModelApplication.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModelApplication.swift; sourceTree = "<group>"; };
-		5FB2050426CF29A500C4DBE1 /* itwin-mobile-sdk */ = {isa = PBXFileReference; lastKnownFileType = folder; name = "itwin-mobile-sdk"; path = "../../../itwin-mobile-sdk"; sourceTree = "<group>"; };
+		5FB2050F26D43BB000C4DBE1 /* ModelApplication.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ModelApplication.swift; sourceTree = "<group>"; };
+		5FDD749226CDA9520007FBC6 /* SwiftUIStarter.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SwiftUIStarter.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		5FDD749526CDA9520007FBC6 /* SwiftUIStarterApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwiftUIStarterApp.swift; sourceTree = "<group>"; };
+		5FDD749926CDA9530007FBC6 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		5FDD749C26CDA9530007FBC6 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
+		5FDD749E26CDA9530007FBC6 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
-		1FC1114D261FC44900835E6E /* Frameworks */ = {
+		5FDD748F26CDA9520007FBC6 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				1FF1B9AC26BDCC35006D6385 /* ITwinMobile in Frameworks */,
+				5FB2050826D03B2600C4DBE1 /* ITwinMobile in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		1FC11147261FC44900835E6E = {
+		5FDD748926CDA9520007FBC6 = {
 			isa = PBXGroup;
 			children = (
-				5FB2050426CF29A500C4DBE1 /* itwin-mobile-sdk */,
-				1FC11152261FC44900835E6E /* MobileStarter */,
-				1FC11151261FC44900835E6E /* Products */,
+				5FDD749426CDA9520007FBC6 /* SwiftUIStarter */,
+				5FDD749326CDA9520007FBC6 /* Products */,
 			);
 			sourceTree = "<group>";
 		};
-		1FC11151261FC44900835E6E /* Products */ = {
+		5FDD749326CDA9520007FBC6 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				1FC11150261FC44900835E6E /* iTwin Starter.app */,
+				5FDD749226CDA9520007FBC6 /* SwiftUIStarter.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
 		};
-		1FC11152261FC44900835E6E /* MobileStarter */ = {
+		5FDD749426CDA9520007FBC6 /* SwiftUIStarter */ = {
 			isa = PBXGroup;
 			children = (
-				1FC11153261FC44900835E6E /* AppDelegate.swift */,
-				1FF1B9AD26C32AD7006D6385 /* ModelApplication.swift */,
-				1FC11155261FC44900835E6E /* SceneDelegate.swift */,
-				1FC11159261FC44900835E6E /* Main.storyboard */,
-				1FC1115C261FC44B00835E6E /* Assets.xcassets */,
-				1FC1115E261FC44B00835E6E /* LaunchScreen.storyboard */,
-				1FC11161261FC44B00835E6E /* Info.plist */,
+				5FB2050F26D43BB000C4DBE1 /* ModelApplication.swift */,
+				5FDD749526CDA9520007FBC6 /* SwiftUIStarterApp.swift */,
+				5FDD749926CDA9530007FBC6 /* Assets.xcassets */,
+				5FDD749E26CDA9530007FBC6 /* Info.plist */,
+				5FDD749B26CDA9530007FBC6 /* Preview Content */,
 			);
-			path = MobileStarter;
+			path = SwiftUIStarter;
+			sourceTree = "<group>";
+		};
+		5FDD749B26CDA9530007FBC6 /* Preview Content */ = {
+			isa = PBXGroup;
+			children = (
+				5FDD749C26CDA9530007FBC6 /* Preview Assets.xcassets */,
+			);
+			path = "Preview Content";
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		1FC1114F261FC44900835E6E /* MobileStarter */ = {
+		5FDD749126CDA9520007FBC6 /* SwiftUIStarter */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 1FC11164261FC44B00835E6E /* Build configuration list for PBXNativeTarget "MobileStarter" */;
+			buildConfigurationList = 5FDD74A126CDA9530007FBC6 /* Build configuration list for PBXNativeTarget "SwiftUIStarter" */;
 			buildPhases = (
-				1FC1114C261FC44900835E6E /* Sources */,
-				1FC1114D261FC44900835E6E /* Frameworks */,
-				1FC1114E261FC44900835E6E /* Resources */,
-				1F967D1A2620F62E00839493 /* Install Node Modules */,
-				1FCA800A2620CB6B002F1F76 /* Build WebApp */,
-				1FCA80062620B9CF002F1F76 /* Copy web app assets */,
+				5FDD748E26CDA9520007FBC6 /* Sources */,
+				5FDD748F26CDA9520007FBC6 /* Frameworks */,
+				5FDD749026CDA9520007FBC6 /* Resources */,
+				5FB2050526D03A5D00C4DBE1 /* Copy web app assets */,
 			);
 			buildRules = (
 			);
 			dependencies = (
 			);
-			name = MobileStarter;
+			name = SwiftUIStarter;
 			packageProductDependencies = (
-				1FF1B9AB26BDCC35006D6385 /* ITwinMobile */,
+				5FB2050726D03B2600C4DBE1 /* ITwinMobile */,
 			);
-			productName = MobileStarter;
-			productReference = 1FC11150261FC44900835E6E /* iTwin Starter.app */;
+			productName = SwiftUIStarter;
+			productReference = 5FDD749226CDA9520007FBC6 /* SwiftUIStarter.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
-		1FC11148261FC44900835E6E /* Project object */ = {
+		5FDD748A26CDA9520007FBC6 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastSwiftUpdateCheck = 1240;
-				LastUpgradeCheck = 1240;
+				LastSwiftUpdateCheck = 1250;
+				LastUpgradeCheck = 1250;
 				TargetAttributes = {
-					1FC1114F261FC44900835E6E = {
-						CreatedOnToolsVersion = 12.4;
+					5FDD749126CDA9520007FBC6 = {
+						CreatedOnToolsVersion = 12.5.1;
 					};
 				};
 			};
-			buildConfigurationList = 1FC1114B261FC44900835E6E /* Build configuration list for PBXProject "DoNotUse_MobileStarter" */;
+			buildConfigurationList = 5FDD748D26CDA9520007FBC6 /* Build configuration list for PBXProject "SwiftUIStarter" */;
 			compatibilityVersion = "Xcode 9.3";
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
@@ -119,54 +117,33 @@
 				en,
 				Base,
 			);
-			mainGroup = 1FC11147261FC44900835E6E;
+			mainGroup = 5FDD748926CDA9520007FBC6;
 			packageReferences = (
-				1FF1B9AA26BDCC35006D6385 /* XCRemoteSwiftPackageReference "itwin-mobile-sdk" */,
+				5FB2050626D03B2600C4DBE1 /* XCRemoteSwiftPackageReference "itwin-mobile-sdk" */,
 			);
-			productRefGroup = 1FC11151261FC44900835E6E /* Products */;
+			productRefGroup = 5FDD749326CDA9520007FBC6 /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				1FC1114F261FC44900835E6E /* MobileStarter */,
+				5FDD749126CDA9520007FBC6 /* SwiftUIStarter */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
-		1FC1114E261FC44900835E6E /* Resources */ = {
+		5FDD749026CDA9520007FBC6 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				1FC11160261FC44B00835E6E /* LaunchScreen.storyboard in Resources */,
-				1FC1115D261FC44B00835E6E /* Assets.xcassets in Resources */,
-				1FC1115B261FC44900835E6E /* Main.storyboard in Resources */,
+				5FDD749D26CDA9530007FBC6 /* Preview Assets.xcassets in Resources */,
+				5FDD749A26CDA9530007FBC6 /* Assets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
-		1F967D1A2620F62E00839493 /* Install Node Modules */ = {
-			isa = PBXShellScriptBuildPhase;
-			alwaysOutOfDate = 1;
-			buildActionMask = 8;
-			files = (
-			);
-			inputFileListPaths = (
-			);
-			inputPaths = (
-			);
-			name = "Install Node Modules";
-			outputFileListPaths = (
-			);
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 1;
-			shellPath = /bin/sh;
-			shellScript = "cd \"${PROJECT_DIR}/react-app\"\n[ -d node_modules ] || npm install\n";
-			showEnvVarsInLog = 0;
-		};
-		1FCA80062620B9CF002F1F76 /* Copy web app assets */ = {
+		5FB2050526D03A5D00C4DBE1 /* Copy web app assets */ = {
 			isa = PBXShellScriptBuildPhase;
 			alwaysOutOfDate = 1;
 			buildActionMask = 2147483647;
@@ -185,62 +162,22 @@
 			shellPath = /bin/sh;
 			shellScript = "\"${PROJECT_DIR}/../CopyWebAppAssets.sh\"\n";
 		};
-		1FCA800A2620CB6B002F1F76 /* Build WebApp */ = {
-			isa = PBXShellScriptBuildPhase;
-			alwaysOutOfDate = 1;
-			buildActionMask = 8;
-			files = (
-			);
-			inputFileListPaths = (
-			);
-			inputPaths = (
-			);
-			name = "Build WebApp";
-			outputFileListPaths = (
-			);
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 1;
-			shellPath = /bin/sh;
-			shellScript = "cd \"${PROJECT_DIR}/react-app\"\nnpm run build\n";
-			showEnvVarsInLog = 0;
-		};
 /* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
-		1FC1114C261FC44900835E6E /* Sources */ = {
+		5FDD748E26CDA9520007FBC6 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				1FC11154261FC44900835E6E /* AppDelegate.swift in Sources */,
-				1FF1B9AE26C32AD7006D6385 /* ModelApplication.swift in Sources */,
-				1FC11156261FC44900835E6E /* SceneDelegate.swift in Sources */,
+				5FB2051026D43BB000C4DBE1 /* ModelApplication.swift in Sources */,
+				5FDD749626CDA9520007FBC6 /* SwiftUIStarterApp.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
 
-/* Begin PBXVariantGroup section */
-		1FC11159261FC44900835E6E /* Main.storyboard */ = {
-			isa = PBXVariantGroup;
-			children = (
-				1FC1115A261FC44900835E6E /* Base */,
-			);
-			name = Main.storyboard;
-			sourceTree = "<group>";
-		};
-		1FC1115E261FC44B00835E6E /* LaunchScreen.storyboard */ = {
-			isa = PBXVariantGroup;
-			children = (
-				1FC1115F261FC44B00835E6E /* Base */,
-			);
-			name = LaunchScreen.storyboard;
-			sourceTree = "<group>";
-		};
-/* End PBXVariantGroup section */
-
 /* Begin XCBuildConfiguration section */
-		1FC11162261FC44B00835E6E /* Debug */ = {
+		5FDD749F26CDA9530007FBC6 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
@@ -275,6 +212,7 @@
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				COPY_PHASE_STRIP = NO;
 				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_BITCODE = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_TESTABILITY = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu11;
@@ -291,7 +229,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 14.4;
+				IPHONEOS_DEPLOYMENT_TARGET = 14.5;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
 				ONLY_ACTIVE_ARCH = YES;
@@ -301,7 +239,7 @@
 			};
 			name = Debug;
 		};
-		1FC11163261FC44B00835E6E /* Release */ = {
+		5FDD74A026CDA9530007FBC6 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
@@ -336,6 +274,7 @@
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				COPY_PHASE_STRIP = NO;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_BITCODE = NO;
 				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu11;
@@ -346,7 +285,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 14.4;
+				IPHONEOS_DEPLOYMENT_TARGET = 14.5;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
 				SDKROOT = iphoneos;
@@ -356,41 +295,45 @@
 			};
 			name = Release;
 		};
-		1FC11165261FC44B00835E6E /* Debug */ = {
+		5FDD74A226CDA9530007FBC6 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_ASSET_PATHS = "\"SwiftUIStarter/Preview Content\"";
 				DEVELOPMENT_TEAM = WLDT6Q3PUY;
-				ENABLE_BITCODE = NO;
-				INFOPLIST_FILE = MobileStarter/Info.plist;
+				ENABLE_PREVIEWS = YES;
+				INFOPLIST_FILE = SwiftUIStarter/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.bentley.MobileStarter;
-				PRODUCT_NAME = "iTwin Starter";
+				PRODUCT_BUNDLE_IDENTIFIER = com.bentley.SwiftUIStarter;
+				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Debug;
 		};
-		1FC11166261FC44B00835E6E /* Release */ = {
+		5FDD74A326CDA9530007FBC6 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_ASSET_PATHS = "\"SwiftUIStarter/Preview Content\"";
 				DEVELOPMENT_TEAM = WLDT6Q3PUY;
-				ENABLE_BITCODE = NO;
-				INFOPLIST_FILE = MobileStarter/Info.plist;
+				ENABLE_PREVIEWS = YES;
+				INFOPLIST_FILE = SwiftUIStarter/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.bentley.MobileStarter;
-				PRODUCT_NAME = "iTwin Starter";
+				PRODUCT_BUNDLE_IDENTIFIER = com.bentley.SwiftUIStarter;
+				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
@@ -399,20 +342,20 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		1FC1114B261FC44900835E6E /* Build configuration list for PBXProject "DoNotUse_MobileStarter" */ = {
+		5FDD748D26CDA9520007FBC6 /* Build configuration list for PBXProject "SwiftUIStarter" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				1FC11162261FC44B00835E6E /* Debug */,
-				1FC11163261FC44B00835E6E /* Release */,
+				5FDD749F26CDA9530007FBC6 /* Debug */,
+				5FDD74A026CDA9530007FBC6 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		1FC11164261FC44B00835E6E /* Build configuration list for PBXNativeTarget "MobileStarter" */ = {
+		5FDD74A126CDA9530007FBC6 /* Build configuration list for PBXNativeTarget "SwiftUIStarter" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				1FC11165261FC44B00835E6E /* Debug */,
-				1FC11166261FC44B00835E6E /* Release */,
+				5FDD74A226CDA9530007FBC6 /* Debug */,
+				5FDD74A326CDA9530007FBC6 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
@@ -420,23 +363,23 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
-		1FF1B9AA26BDCC35006D6385 /* XCRemoteSwiftPackageReference "itwin-mobile-sdk" */ = {
+		5FB2050626D03B2600C4DBE1 /* XCRemoteSwiftPackageReference "itwin-mobile-sdk" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/iTwin/itwin-mobile-sdk.git";
 			requirement = {
 				kind = upToNextMajorVersion;
-				minimumVersion = 0.0.8;
+				minimumVersion = 0.0.15;
 			};
 		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
-		1FF1B9AB26BDCC35006D6385 /* ITwinMobile */ = {
+		5FB2050726D03B2600C4DBE1 /* ITwinMobile */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = 1FF1B9AA26BDCC35006D6385 /* XCRemoteSwiftPackageReference "itwin-mobile-sdk" */;
+			package = 5FB2050626D03B2600C4DBE1 /* XCRemoteSwiftPackageReference "itwin-mobile-sdk" */;
 			productName = ITwinMobile;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};
-	rootObject = 1FC11148261FC44900835E6E /* Project object */;
+	rootObject = 5FDD748A26CDA9520007FBC6 /* Project object */;
 }
