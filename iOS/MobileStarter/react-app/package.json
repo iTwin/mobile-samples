@@ -3,6 +3,14 @@
   "version": "0.1.0",
   "private": true,
   "homepage": "./",
+  "scripts": {
+    "start": "USE_FAST_SASS=true BROWSER=none react-scripts start",
+    "copy:assets": "cpx \"./node_modules/@itwin/mobile-core/lib/public/locales/**\" ./build/locales && cpx \"./node_modules/@itwin/mobileui-react/lib/public/locales/**\" ./build/locales",
+    "build:frontend": "NODE_OPTIONS=--max_old_space_size=4096 USE_FAST_SASS=true react-scripts build && npm run copy:assets",
+    "build:backend": "tsc -p tsconfig.backend.json && webpack --config ./webpack.config.js --env.outdir=./lib/webpack --env.entry=./lib/backend/main.js --env.bundlename=main",
+    "build": "npm run build:frontend && npm run build:backend",
+    "eject": "react-scripts eject"
+  },
   "dependencies": {
     "@babel/core": "^7.15.0",
     "@bentley/backend-itwin-client": "^2.19.6",
@@ -59,14 +67,6 @@
     "web-vitals": "^1.0.1",
     "webpack": "4.44.2",
     "webpack-cli": "^3.3.11"
-  },
-  "scripts": {
-    "start": "USE_FAST_SASS=true BROWSER=none react-scripts start",
-    "copy:assets": "cpx \"./node_modules/@itwin/mobile-core/lib/public/locales/**\" ./build/locales && cpx \"./node_modules/@itwin/mobileui-react/lib/public/locales/**\" ./build/locales",
-    "build:frontend": "NODE_OPTIONS=--max_old_space_size=4096 USE_FAST_SASS=true react-scripts build && npm run copy:assets",
-    "build:backend": "tsc -p tsconfig.backend.json && webpack --config ./webpack.config.js --env.outdir=./lib/webpack --env.entry=./lib/backend/main.js --env.bundlename=main",
-    "build": "npm run build:frontend && npm run build:backend",
-    "eject": "react-scripts eject"
   },
   "eslintConfig": {
     "extends": [
