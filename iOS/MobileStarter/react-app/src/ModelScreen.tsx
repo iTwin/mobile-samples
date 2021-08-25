@@ -1,10 +1,9 @@
 import React from "react";
 import { IModelConnection, ScreenViewport, ViewState } from "@bentley/imodeljs-frontend";
 import { ViewportComponent } from "@bentley/ui-components";
+import { ActionSheetActions } from "@itwin/mobile-core";
 import {
-  ActionSheetActions,
   ActionSheetButton,
-  ActionStyle,
   MobileUiContent,
   NavigationPanel,
   TabOrPanelDef,
@@ -31,12 +30,6 @@ export function ModelScreen(props: ModelScreenProps) {
       name: "one",
       title: "One",
       onSelected: () => {console.log("One")},
-    },
-    {
-      name: "cancel",
-      title: "Cancel",
-      style: ActionStyle.Cancel,
-      onSelected: () => {},
     },
   ];
   const moreButton=<ActionSheetButton actions={moreActions} />

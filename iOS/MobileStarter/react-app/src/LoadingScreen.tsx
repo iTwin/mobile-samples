@@ -1,4 +1,4 @@
-import { Messenger } from "@itwin/mobileui-react";
+import { Messenger } from "@itwin/mobile-core";
 import { Button } from "./Button";
 import { Screen } from "./Exports";
 import "./LoadingScreen.scss";

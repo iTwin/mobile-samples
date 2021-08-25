@@ -37,6 +37,7 @@
     "@bentley/ui-framework": "^2.19.6",
     "@bentley/ui-ninezone": "^2.19.6",
     "@bentley/webgl-compatibility": "^2.19.6",
+    "@itwin/mobile-core": "file:../../../../itwin-mobile-core",
     "@itwin/mobileui-react": "file:../../../../itwin-mobileui-react",
     "@types/jest": "^26.0.15",
     "@types/node": "^12.0.0",
@@ -44,6 +45,7 @@
     "@types/react-dom": "^17.0.0",
     "base64-js": "^1.5.1",
     "classnames": "^2.2.6",
+    "cpx": "^1.5.0",
     "fibers": "^5.0.0",
     "node-sass": "^6.0.1",
     "null-loader": "^0.1.1",
@@ -60,7 +62,8 @@
   },
   "scripts": {
     "start": "USE_FAST_SASS=true BROWSER=none react-scripts start",
-    "build:frontend": "NODE_OPTIONS=--max_old_space_size=4096 USE_FAST_SASS=true react-scripts build",
+    "copy:assets": "cpx \"./node_modules/@itwin/mobile-core/lib/public/locales/**\" ./build/locales && cpx \"./node_modules/@itwin/mobileui-react/lib/public/locales/**\" ./build/locales",
+    "build:frontend": "NODE_OPTIONS=--max_old_space_size=4096 USE_FAST_SASS=true react-scripts build && npm run copy:assets",
     "build:backend": "tsc -p tsconfig.backend.json && webpack --config ./webpack.config.js --env.outdir=./lib/webpack --env.entry=./lib/backend/main.js --env.bundlename=main",
     "build": "npm run build:frontend && npm run build:backend",
     "eject": "react-scripts eject"

@@ -1,5 +1,6 @@
 import React from "react";
-import { Messenger, VisibleBackButton } from "@itwin/mobileui-react";
+import { Messenger } from "@itwin/mobile-core";
+import { VisibleBackButton } from "@itwin/mobileui-react";
 import { Button, Screen } from "./Exports";
 import { IModelConnection, SnapshotConnection } from "@bentley/imodeljs-frontend";
 import "./SnapshotsScreen.scss";
