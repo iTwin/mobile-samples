@@ -36,14 +36,28 @@ if [ "${ReleaseMode}" != "YES" ]; then
     if [ "$REACT_SERVER_PORT" = "" ]; then
         # Look for a node process listening on TCP for incoming traffic from
         # anywhere on a specific port. If that is found, use that port number.
-        port=`lsof -c node -a -i TCP | grep -o "TCP \*:[0-9]*" | cut -d: -f2`
+        port=$(lsof -c node -a -i TCP | grep -o "TCP \*:[0-9]*" | cut -d: -f2)
         if [ "$port" = "" ]; then
             REACT_SERVER_PORT=3000
         else
             REACT_SERVER_PORT=$port
         fi
     fi
-    appHost="$(hostname)"
+    if [ "$ITMAPPLICATION_USE_IP" = "YES" ]; then
+        if [ "$ITMAPPLICATION_SERVER_DEVICE" = "" ]; then
+            ITMAPPLICATION_SERVER_DEVICE=en0
+        fi
+        appHost="$(ipconfig getifaddr ${ITMAPPLICATION_SERVER_DEVICE})"
+        if [ "$appHost" = "" ]; then
+            echo "ERROR: Device ${ITMAPPLICATION_SERVER_DEVICE} is not configured."
+            echo "Please set the ITMAPPLICATION_SERVER_DEVICE environment variable to the name of your"
+            echo "configured device. You can run \'networksetup -listallhardwareports\' to get a"
+            echo "list of all devices."
+            exit 1
+        fi
+    else
+        appHost="$(hostname)"
+    fi
     if [ "$appHost" = "" ]; then
         echo "ERROR: hostname is blank."
         exit 1
