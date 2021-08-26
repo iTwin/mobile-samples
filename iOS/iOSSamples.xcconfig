@@ -6,7 +6,19 @@
 // ITMAPPLICATION_CLIENT_ID = YOUR-CLIENT-ID-GOES-HERE
 // ITMAPPLICATION_SCOPE = YOUR-SCOPE-GOES-HERE
 // NOTE: You may have to restart Xcode after creating ITMApplication.xcconfig.
-// Other supported ITMApplication settings:
+//
+// Set the following setting if you want to connect based on your Mac's IP address instead of
+// your Mac's hostname.
+// ITMAPPLICATION_USE_IP = YES
+//
+// If you set it to use your IP address, and want it to use the IP from a device other than
+// en0, set the following to the name of the device to use.
+// ITMAPPLICATION_SERVER_DEVICE
+//
+// If you want to run the built app locally on the device instead of using the React debug
+// server, set the following:
 // ITMAPPLICATION_NO_DEBUG_SERVER = YES
+//
+// Other supported ITMApplication settings:
 // ITMAPPLICATION_ISSUER_URL
 // ITMAPPLICATION_REDIRECT_URI
