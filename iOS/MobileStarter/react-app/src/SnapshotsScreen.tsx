@@ -35,6 +35,20 @@ export function SnapshotsScreen(props: SnapshotsScreenProps) {
       title={documentName} />
   });
 
+  bimButtons.unshift(
+    <Button
+      key={bimButtons.length}
+      onClick={async () => {
+        const document: string = await Messenger.query("chooseDocument");
+        if (document.length) {
+          const iModel = await SnapshotConnection.openFile(document);
+          onOpen(document, iModel);
+        }
+      }}
+      title={"Choose File..."} 
+    />
+  );
+
   return (
     <Screen>
       <div className="snapshots-screen">

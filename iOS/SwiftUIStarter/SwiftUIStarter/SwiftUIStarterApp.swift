@@ -47,7 +47,7 @@ extension Binding {
 }
 
 struct DocumentPicker: UIViewControllerRepresentable {
-    @Binding var url: URL
+    @Binding var documentPath: String
     
     class DocumentPickerCoordinator: NSObject, UIDocumentPickerDelegate, UINavigationControllerDelegate {
         var parent: DocumentPicker
@@ -56,15 +56,15 @@ struct DocumentPicker: UIViewControllerRepresentable {
             parent = documentPicker
         }
         
-        func clearURL() {
-            parent.url = URL(fileURLWithPath: "")
+        func clearDocumentPath() {
+            parent.documentPath = ""
         }
         
         func documentPicker(_ controller: UIDocumentPickerViewController, didPickDocumentsAt urls: [URL]) {
             // Copy file to documents folder and return that new url
             let documentsDirs = NSSearchPathForDirectoriesInDomains(.documentDirectory, .userDomainMask, true)
             if documentsDirs.count < 1 {
-                clearURL()
+                clearDocumentPath()
                 return
             }
             let fm = FileManager.default
@@ -74,11 +74,11 @@ struct DocumentPicker: UIViewControllerRepresentable {
                 let secure = srcUrl.startAccessingSecurityScopedResource()
                 do {
                     try fm.copyItem(at: srcUrl, to: destUrl)
-                    self.parent.url = destUrl
+                    self.parent.documentPath = destUrl.path
                 } catch let error {
                     print("Error copying file: \(error).")
                     ITMApplication.promptUser(title: "Error", message: error.localizedDescription)
-                    self.clearURL()
+                    self.clearDocumentPath()
                 }
                 if secure {
                     srcUrl.stopAccessingSecurityScopedResource()
@@ -87,9 +87,9 @@ struct DocumentPicker: UIViewControllerRepresentable {
             
             if fm.fileExists(atPath: destUrl.path) {
                 ITMApplication.promptUser(
-                    title: "Warning", message: "The document already exists: \(srcUrl.lastPathComponent). Do you want to replace it?",
+                    title: "Warning", message: "\(srcUrl.lastPathComponent) already exists in the application's documents. Do you want to replace it?",
                     cancelPressed: {
-                        self.clearURL()
+                        self.clearDocumentPath()
                     },
                     okPressed: {
                         do {
@@ -98,7 +98,7 @@ struct DocumentPicker: UIViewControllerRepresentable {
                         } catch let error {
                             print("Error deleting file: \(error).")
                             ITMApplication.promptUser(title: "Error", message: error.localizedDescription)
-                            self.clearURL()
+                            self.clearDocumentPath()
                         }
                     })
             } else {
@@ -107,7 +107,7 @@ struct DocumentPicker: UIViewControllerRepresentable {
         }
         
         func documentPickerWasCancelled(_ controller: UIDocumentPickerViewController) {
-            clearURL()
+            clearDocumentPath()
         }
     }
     
@@ -135,7 +135,7 @@ struct DocumentPicker: UIViewControllerRepresentable {
 @main
 struct SwiftUIStarterApp: App {
     @State private var showDocumentPicker = false
-    @State private var url = URL(fileURLWithPath: "")
+    @State private var documentPath = ""
     @State private var resolver: Resolver<String>?
     private var application = ModelApplication()
     
@@ -147,11 +147,8 @@ struct SwiftUIStarterApp: App {
         return WindowGroup {
             let view = ITMSwiftUIContentView(application: application).edgesIgnoringSafeArea(.all)
             let docPickerContent = {
-                DocumentPicker(url: $url.onUpdate {
-                    print("Hit here: \(url)")
-                    if let resolver = self.resolver {
-                        resolver.fulfill(url.path)
-                    }
+                DocumentPicker(documentPath: $documentPath.onUpdate {
+                    resolver?.fulfill(documentPath)
                 })
             }
             if #available(iOS 14, *) {
