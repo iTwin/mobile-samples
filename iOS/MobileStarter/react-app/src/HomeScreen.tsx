@@ -1,3 +1,4 @@
+import { Messenger } from "@itwin/mobileui-react";
 import { Button, Screen } from "./Exports";
 import "./HomeScreen.scss";
 
@@ -23,6 +24,7 @@ export function HomeScreen(props: HomeScreenProps) {
           <div className="list-items">
             <Button title="Snapshot iModels" onClick={() => onSelect(ActiveScreen.Snapshots)}/>
             <Button title="Hub iModels" onClick={() => onSelect(ActiveScreen.Hub)}/>
+            <Button title="Select Document..." onClick={() => Messenger.sendMessage("chooseDocument")}/>
           </div>
         </div>
       </div>

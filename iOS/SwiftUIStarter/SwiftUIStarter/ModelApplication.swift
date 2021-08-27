@@ -11,23 +11,30 @@ import ITwinMobile
 import PromiseKit
 
 class ModelApplication: ITMApplication {
+    public var onChooseDocument: ((Resolver<String>) -> ())?
+
     required init() {
         super.init()
-        registerQueryHandler("didFinishLaunching", { () -> Promise<()> in
+        registerQueryHandler("didFinishLaunching") { () -> Promise<()> in
             self.itmMessenger.frontendLaunchSuceeded()
             return Promise.value(())
-        })
-        registerQueryHandler("loading", { () -> Promise<()> in
+        }
+        registerQueryHandler("loading") { () -> Promise<()> in
             self.webView.isHidden = false
             return Promise.value(())
-        })
-        registerQueryHandler("reload", { () -> Promise<()> in
+        }
+        registerQueryHandler("reload") { () -> Promise<()> in
             self.webView.reload()
             return Promise.value(())
-        })
-        registerQueryHandler("getBimDocuments", { () -> Promise<[String]> in
+        }
+        registerQueryHandler("getBimDocuments") { () -> Promise<[String]> in
             return Promise.value(self.getBimDocuments())
-        })
+        }
+        registerQueryHandler("chooseDocument") { () -> Promise<String> in
+            let (promise, resolver) = Promise<String>.pending()
+            self.onChooseDocument?(resolver)
+            return promise
+        }
     }
 
     func getBimDocuments() -> [String] {
