@@ -30,8 +30,15 @@ class ModelApplication: ITMApplication {
         }
         registerQueryHandler("chooseDocument") { () -> Promise<String> in
             // TODO: implement this
+            ModelApplication.showAlert(message: "Not yet implemented!")
             return Promise.value("")
         }
+    }
+
+    static func showAlert(_ title: String? = nil, message: String) {
+        let alert = UIAlertController(title: title, message: message, preferredStyle: UIAlertController.Style.alert)
+        alert.addAction(UIAlertAction(title: "OK", style: .default))
+        ITMApplication.topViewController?.present(alert, animated: true, completion: nil)
     }
 
     func getBimDocuments() -> [String] {

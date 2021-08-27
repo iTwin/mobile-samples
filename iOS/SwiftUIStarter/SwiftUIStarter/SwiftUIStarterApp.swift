@@ -20,7 +20,7 @@ extension ITMApplication {
         var handler: (() -> Void)?
     }
 
-    static func showAlert(title: String, message: String, cancelButton: AlertButtonParams? = nil, okButton: AlertButtonParams? = nil) {
+    static func showAlert(title: String? = nil, message: String, cancelButton: AlertButtonParams? = nil, okButton: AlertButtonParams? = nil) {
         let alert = UIAlertController(title: title, message: message, preferredStyle: UIAlertController.Style.alert)
         
         alert.addAction(UIAlertAction(title: okButton?.label ?? "OK", style: .default, handler: { (action: UIAlertAction!) in
