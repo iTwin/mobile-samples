@@ -13,21 +13,25 @@ import PromiseKit
 class ModelApplication: ITMApplication {
     required init() {
         super.init()
-        registerQueryHandler("didFinishLaunching", { () -> Promise<()> in
+        registerQueryHandler("didFinishLaunching") { () -> Promise<()> in
             self.itmMessenger.frontendLaunchSuceeded()
             return Promise.value(())
-        })
-        registerQueryHandler("loading", { () -> Promise<()> in
+        }
+        registerQueryHandler("loading") { () -> Promise<()> in
             self.webView.isHidden = false
             return Promise.value(())
-        })
-        registerQueryHandler("reload", { () -> Promise<()> in
+        }
+        registerQueryHandler("reload") { () -> Promise<()> in
             self.webView.reload()
             return Promise.value(())
-        })
-        registerQueryHandler("getBimDocuments", { () -> Promise<[String]> in
+        }
+        registerQueryHandler("getBimDocuments") { () -> Promise<[String]> in
             return Promise.value(self.getBimDocuments())
-        })
+        }
+        registerQueryHandler("chooseDocument") { () -> Promise<String> in
+            // TODO: implement this
+            return Promise.value("")
+        }
     }
 
     func getBimDocuments() -> [String] {

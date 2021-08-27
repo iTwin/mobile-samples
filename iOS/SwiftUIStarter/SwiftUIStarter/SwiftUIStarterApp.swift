@@ -15,20 +15,25 @@ extension UTType {
 }
 
 extension ITMApplication {
-    static func promptUser(title: String, message: String, cancelPressed: (() -> Void)? = nil, okPressed: (() -> Void)? = nil) {
-        let refreshAlert = UIAlertController(title: title, message: message, preferredStyle: UIAlertController.Style.alert)
+    struct AlertButtonParams {
+        var label: String?
+        var handler: (() -> Void)?
+    }
+
+    static func showAlert(title: String, message: String, cancelButton: AlertButtonParams? = nil, okButton: AlertButtonParams? = nil) {
+        let alert = UIAlertController(title: title, message: message, preferredStyle: UIAlertController.Style.alert)
         
-        refreshAlert.addAction(UIAlertAction(title: "OK", style: .default, handler: { (action: UIAlertAction!) in
-            okPressed?()
+        alert.addAction(UIAlertAction(title: okButton?.label ?? "OK", style: .default, handler: { (action: UIAlertAction!) in
+            okButton?.handler?()
         }))
         
-        if let cancelPressed = cancelPressed {
-            refreshAlert.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: { (action: UIAlertAction!) in
-                cancelPressed()
+        if let cancelButton = cancelButton {
+            alert.addAction(UIAlertAction(title: cancelButton.label ?? "Cancel", style: .cancel, handler: { (action: UIAlertAction!) in
+                cancelButton.handler?()
             }))
         }
         
-        ITMApplication.topViewController?.present(refreshAlert, animated: true, completion: nil)
+        ITMApplication.topViewController?.present(alert, animated: true, completion: nil)
     }
 }
 
@@ -77,7 +82,7 @@ struct DocumentPicker: UIViewControllerRepresentable {
                     self.parent.documentPath = destUrl.path
                 } catch let error {
                     print("Error copying file: \(error).")
-                    ITMApplication.promptUser(title: "Error", message: error.localizedDescription)
+                    ITMApplication.showAlert(title: "Error", message: error.localizedDescription)
                     self.clearDocumentPath()
                 }
                 if secure {
@@ -86,18 +91,18 @@ struct DocumentPicker: UIViewControllerRepresentable {
             }
             
             if fm.fileExists(atPath: destUrl.path) {
-                ITMApplication.promptUser(
+                ITMApplication.showAlert(
                     title: "Warning", message: "\(srcUrl.lastPathComponent) already exists in the application's documents. Do you want to replace it?",
-                    cancelPressed: {
+                    cancelButton: ITMApplication.AlertButtonParams() {
                         self.clearDocumentPath()
                     },
-                    okPressed: {
+                    okButton: ITMApplication.AlertButtonParams() {
                         do {
                             try fm.removeItem(at: destUrl)
                             copyFile()
                         } catch let error {
                             print("Error deleting file: \(error).")
-                            ITMApplication.promptUser(title: "Error", message: error.localizedDescription)
+                            ITMApplication.showAlert(title: "Error", message: error.localizedDescription)
                             self.clearDocumentPath()
                         }
                     })
