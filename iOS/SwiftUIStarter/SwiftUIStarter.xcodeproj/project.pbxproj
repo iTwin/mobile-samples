@@ -10,7 +10,8 @@
 		1F56529826D4651B002C7260 /* iOSSamples.xcconfig in Resources */ = {isa = PBXBuildFile; fileRef = 1F56529626D4651B002C7260 /* iOSSamples.xcconfig */; };
 		1F56529926D4651B002C7260 /* ITMApplication.xcconfig in Resources */ = {isa = PBXBuildFile; fileRef = 1F56529726D4651B002C7260 /* ITMApplication.xcconfig */; };
 		5FB2050826D03B2600C4DBE1 /* ITwinMobile in Frameworks */ = {isa = PBXBuildFile; productRef = 5FB2050726D03B2600C4DBE1 /* ITwinMobile */; };
-		5FB2051026D43BB000C4DBE1 /* ModelApplication.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5FB2050F26D43BB000C4DBE1 /* ModelApplication.swift */; };
+		5FD7518326DD9D4C00DC3060 /* DocumentPicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5FD7518126DD9D4C00DC3060 /* DocumentPicker.swift */; };
+		5FD7518426DD9D4C00DC3060 /* ModelApplication.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5FD7518226DD9D4C00DC3060 /* ModelApplication.swift */; };
 		5FDD749626CDA9520007FBC6 /* SwiftUIStarterApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5FDD749526CDA9520007FBC6 /* SwiftUIStarterApp.swift */; };
 		5FDD749A26CDA9530007FBC6 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 5FDD749926CDA9530007FBC6 /* Assets.xcassets */; };
 		5FDD749D26CDA9530007FBC6 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 5FDD749C26CDA9530007FBC6 /* Preview Assets.xcassets */; };
@@ -19,7 +20,8 @@
 /* Begin PBXFileReference section */
 		1F56529626D4651B002C7260 /* iOSSamples.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; name = iOSSamples.xcconfig; path = ../iOSSamples.xcconfig; sourceTree = "<group>"; };
 		1F56529726D4651B002C7260 /* ITMApplication.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; name = ITMApplication.xcconfig; path = ../ITMApplication.xcconfig; sourceTree = "<group>"; };
-		5FB2050F26D43BB000C4DBE1 /* ModelApplication.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ModelApplication.swift; sourceTree = "<group>"; };
+		5FD7518126DD9D4C00DC3060 /* DocumentPicker.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DocumentPicker.swift; sourceTree = "<group>"; };
+		5FD7518226DD9D4C00DC3060 /* ModelApplication.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ModelApplication.swift; sourceTree = "<group>"; };
 		5FDD749226CDA9520007FBC6 /* SwiftUIStarter.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SwiftUIStarter.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		5FDD749526CDA9520007FBC6 /* SwiftUIStarterApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwiftUIStarterApp.swift; sourceTree = "<group>"; };
 		5FDD749926CDA9530007FBC6 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -39,6 +41,16 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		5FD7518026DD9D4C00DC3060 /* Shared */ = {
+			isa = PBXGroup;
+			children = (
+				5FD7518126DD9D4C00DC3060 /* DocumentPicker.swift */,
+				5FD7518226DD9D4C00DC3060 /* ModelApplication.swift */,
+			);
+			name = Shared;
+			path = ../../Shared;
+			sourceTree = "<group>";
+		};
 		5FDD748926CDA9520007FBC6 = {
 			isa = PBXGroup;
 			children = (
@@ -60,7 +72,7 @@
 		5FDD749426CDA9520007FBC6 /* SwiftUIStarter */ = {
 			isa = PBXGroup;
 			children = (
-				5FB2050F26D43BB000C4DBE1 /* ModelApplication.swift */,
+				5FD7518026DD9D4C00DC3060 /* Shared */,
 				5FDD749526CDA9520007FBC6 /* SwiftUIStarterApp.swift */,
 				5FDD749926CDA9530007FBC6 /* Assets.xcassets */,
 				5FDD749E26CDA9530007FBC6 /* Info.plist */,
@@ -177,7 +189,8 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				5FB2051026D43BB000C4DBE1 /* ModelApplication.swift in Sources */,
+				5FD7518426DD9D4C00DC3060 /* ModelApplication.swift in Sources */,
+				5FD7518326DD9D4C00DC3060 /* DocumentPicker.swift in Sources */,
 				5FDD749626CDA9520007FBC6 /* SwiftUIStarterApp.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
