@@ -11,9 +11,14 @@ import ITwinMobile
 @main
 class AppDelegate: UIResponder, UIApplicationDelegate {
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
-        // Override point for customization after application launch.
+        // Customize the ITMViewController used by the sample app. Note that since this sample
+        // puts all of the UI inside a full-screen WKWebView, it has no customization to the
+        // view controller, and simply uses the ITMViewController in its storyboard.
+        
+        // Use our ModelApplication (a subclass of ITMApplication) as the application object.
         ITMViewController.application = ModelApplication()
-        ITMViewController.autoLoadWebApplication = true
+        // Delay the automatic loading of the frontend and backend to account for problem when
+        // that happens before the application's first willEnterForeground.
         ITMViewController.delayedAutoLoad = true
         return true
     }

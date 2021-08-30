@@ -10,14 +10,20 @@ import WebKit
 import ITwinMobile
 import PromiseKit
 
+/// Custom subclass of `ITMApplication` used by the sample app to show some basic functionality.
 class ModelApplication: ITMApplication {
     required init() {
         super.init()
+        // Messaging from native to JavaScript needs to wait for the JavaScript side to finish
+        // its own initialization.
         registerQueryHandler("didFinishLaunching") { () -> Promise<()> in
+            // Let our itmMessenger know that it is ok to send messages to JavaScript.
             self.itmMessenger.frontendLaunchSuceeded()
             return Promise.value(())
         }
         registerQueryHandler("loading") { () -> Promise<()> in
+            // Once the iTwin Mobile app's web page has loaded far enough to start the process of
+            // initializing, show the WKWebView.
             self.webView.isHidden = false
             return Promise.value(())
         }
@@ -25,6 +31,8 @@ class ModelApplication: ITMApplication {
             self.webView.reload()
             return Promise.value(())
         }
+        // Get a list of all *.bim files in the application's main Documents folder and return the
+        // full path to each of these files to the frontend.
         registerQueryHandler("getBimDocuments") { () -> Promise<[String]> in
             return Promise.value(self.getBimDocuments())
         }
