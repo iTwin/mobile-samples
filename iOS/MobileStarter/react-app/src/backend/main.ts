@@ -1,27 +1,27 @@
 /*---------------------------------------------------------------------------------------------
-* Copyright (c) 2019 Bentley Systems, Incorporated. All rights reserved.
+* Copyright (c) 2021 Bentley Systems, Incorporated. All rights reserved.
 *--------------------------------------------------------------------------------------------*/
 import * as path from "path";
 import { Presentation, PresentationManagerMode } from "@bentley/presentation-backend";
 import { GetMetaDataFunction, LogFunction, Logger, LogLevel } from "@bentley/bentleyjs-core";
 import { IOSHost, MobileHostOpts } from "@bentley/mobile-manager/lib/MobileBackend";
-import { RpcInterfaceDefinition } from "@bentley/imodeljs-common";
 import { getSupportedRpcs } from "../common/rpcs";
 import setupEnv from "../common/configuration";
 import { IpcHost } from "@bentley/imodeljs-backend";
-import { AppFilesHandler } from "./AppFilesHandler";
+
+// This is the file that generates main.js, which is loaded by the backend into a Google V8 JavaScript
+// engine instance that is running for node.js. This code runs when the iTwin Mobile backend is
+// initialized from the native code.
 
 export const qaIssuerUrl = "https://qa-ims.bentley.com/";
-// export const qaIssuerUrl = "https://qa-imsoidc.bentley.com/";
 export const prodIssuerUrl = "https://ims.bentley.com/";
-// export const prodIssuerUrl = "https://imsoidc.bentley.com/";
 
 // tslint:disable-next-line:no-floating-promises
 (async () => {
-  // setup environment
+  // Setup environment
   setupEnv();
 
-  // initialize logging
+  // Initialize logging
   redirectLoggingToFrontend();
   Logger.setLevelDefault(LogLevel.Warning);
 
@@ -29,7 +29,7 @@ export const prodIssuerUrl = "https://ims.bentley.com/";
   const clientId = process.env.ITMAPPLICATION_CLIENT_ID ?? "<Error>";
   const redirectUri = process.env.ITMAPPLICATION_REDIRECT_URI ?? "imodeljs://app/signin-callback";
   const scope = process.env.ITMAPPLICATION_SCOPE ?? "email openid profile organization itwinjs";
-  // initialize imodeljs-backend
+  // Initialize imodeljs-backend
   const options: MobileHostOpts = {
     mobileHost: {
       noInitializeAuthClient: true,
@@ -40,7 +40,7 @@ export const prodIssuerUrl = "https://ims.bentley.com/";
 
   const backendRoot = process.env.FIELDMODEL_BACKEND_ROOT;
   const assetsRoot = backendRoot ? path.join(backendRoot, "assets") : "assets";
-  // initialize presentation-backend
+  // Initialize presentation-backend
   Presentation.initialize({
     // Specify location of where application's presentation rule sets are located.
     // May be omitted if application doesn't have any presentation rules.
@@ -49,22 +49,12 @@ export const prodIssuerUrl = "https://ims.bentley.com/";
     supplementalRulesetDirectories: [path.join(assetsRoot, "supplemental_presentation_rules")],
     mode: PresentationManagerMode.ReadOnly,
   });
-  // invoke platform-specific initialization
-  // get platform-specific initialization function
-  let init: (rpcs: RpcInterfaceDefinition[]) => void;
-  // if (electron) {
-  //   init = (await import("./electron/main")).default;
-  // } else if (MobileRpcConfiguration.isMobileBackend) {
-  init = (await import("./mobile/main")).default;
-  // } else {
-  //   init = (await import("./web/BackendServer")).default;
-  // }
-  // get RPCs supported by this backend
+  // Invoke platform-specific initialization
+  const init = (await import("./mobile/main")).default;
+  // Get RPCs supported by this backend
   const rpcs = getSupportedRpcs();
-  // do initialize
+  // Do initialize
   init(rpcs);
-
-  AppFilesHandler.register();
 })();
 
 function redirectLoggingToFrontend(this: any): void {
