@@ -1,9 +1,10 @@
+//---------------------------------------------------------------------------------------
 //
-//  SwiftUIStarterApp.swift
-//  SwiftUIStarter
+//     $Source: $
 //
-//  Created by Todd Southen on 2021-08-18.
+//  $Copyright: (c) 2021 Bentley Systems, Incorporated. All rights reserved. $
 //
+//---------------------------------------------------------------------------------------
 
 import SwiftUI
 import ITwinMobile
