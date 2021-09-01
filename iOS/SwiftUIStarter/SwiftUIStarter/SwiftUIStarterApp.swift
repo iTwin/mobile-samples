@@ -16,6 +16,9 @@ struct SwiftUIStarterApp: App {
         return WindowGroup {
             ITMSwiftUIContentView(application: application)
                 .edgesIgnoringSafeArea(.all)
+                .onOpenURL() { url in
+                    DocumentHelper.openInboxUrl(url)
+                }
         }
     }
 }

@@ -54,7 +54,7 @@ export function SnapshotsScreen(props: SnapshotsScreenProps) {
       <div className="snapshots-screen">
         <div className="title">
           <VisibleBackButton onClick={onBack} />
-          Select an iModel.
+          <div className="title-text">Select iModel</div>          
         </div>
         <div className="list">
           <div className="list-items">{bimButtons}</div>

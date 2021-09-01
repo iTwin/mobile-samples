@@ -1,6 +1,6 @@
 import React from "react";
 import { IOSApp, IOSAppOpts } from "@bentley/mobile-manager/lib/MobileFrontend";
-import { IModelApp, IModelConnection } from "@bentley/imodeljs-frontend";
+import { IModelApp, IModelConnection, SnapshotConnection } from "@bentley/imodeljs-frontend";
 import { Presentation } from "@bentley/presentation-frontend";
 import { Messenger } from "@itwin/mobile-core";
 import { MobileUi } from "@itwin/mobileui-react";
@@ -19,6 +19,7 @@ function App() {
   const [iModel, setIModel] = React.useState<IModelConnection>();
   const [activeStack, setActiveStack] = React.useState<ActiveInfo[]>([{activeScreen: ActiveScreen.Loading}]);
   const [initialized, setInitialized] = React.useState(false);
+  const [openUrlPath, setOpenUrlPath] = React.useState<string>();
 
   const pushActiveInfo = React.useCallback((screen: ActiveScreen, cleanup?: () => void) => {
     setActiveStack((old) => {
@@ -80,6 +81,30 @@ function App() {
   const handleHomeSelect = React.useCallback((screen: ActiveScreen) => {
     pushActiveInfo(screen);
   }, [pushActiveInfo]);
+
+  React.useEffect(() => {
+    if (initialized) {
+      return Messenger.onQuery("openModel").setHandler(async (modelPath: string) => {
+        if (activeScreen === ActiveScreen.Model) {
+          handleBack();
+          setOpenUrlPath(modelPath);
+        } else {
+          handleOpen(modelPath, await SnapshotConnection.openFile(modelPath));  
+        }
+      });
+    }
+  }, [handleOpen, initialized, handleBack, activeScreen]);
+
+  React.useEffect(() => {
+    if (iModel === undefined && openUrlPath) {
+      const modelPath = "" + openUrlPath;
+      setOpenUrlPath(undefined);
+      const openFunc = async () => {
+        handleOpen(modelPath, await SnapshotConnection.openFile(modelPath));
+      }
+      openFunc();
+    }
+  }, [iModel, openUrlPath, handleOpen]);
 
   switch (activeScreen) {
     case ActiveScreen.Home:

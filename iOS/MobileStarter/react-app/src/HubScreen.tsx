@@ -54,7 +54,7 @@ export function HubScreen(props: HubScreenProps) {
       <div className="hub-screen">
         <div className="title">
           <VisibleBackButton onClick={onBack} />
-          Select an iModel.
+          <div className="title-text">Select iModel</div>          
         </div>
         <div className="list">
           <div className="list-items">{iModelButtons}</div>
