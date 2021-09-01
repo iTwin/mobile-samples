@@ -1,5 +1,5 @@
 /*---------------------------------------------------------------------------------------------
-* Copyright (c) 2019 Bentley Systems, Incorporated. All rights reserved.
+* Copyright (c) 2021 Bentley Systems, Incorporated. All rights reserved.
 *--------------------------------------------------------------------------------------------*/
 import { PresentationRpcInterface } from "@bentley/presentation-common";
 import {
@@ -10,7 +10,8 @@ import {
 } from "@bentley/imodeljs-common";
 
 /**
- * Returns a list of RPCs supported by this application
+ * Returns a list of RPCs supported by this application. This particular list is probably a minimum
+ * for a graphical app that supports opening local snapshot files.
  */
 export function getSupportedRpcs(): RpcInterfaceDefinition[] {
   return [

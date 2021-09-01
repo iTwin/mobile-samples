@@ -1,5 +1,5 @@
 /*---------------------------------------------------------------------------------------------
-* Copyright (c) 2019 Bentley Systems, Incorporated. All rights reserved.
+* Copyright (c) 2021 Bentley Systems, Incorporated. All rights reserved.
 *--------------------------------------------------------------------------------------------*/
 import { RpcInterfaceDefinition } from "@bentley/imodeljs-common";
 import { MobileRpcManager } from "@bentley/mobile-manager/lib/MobileBackend";

@@ -1,3 +1,6 @@
+/*---------------------------------------------------------------------------------------------
+* Copyright (c) 2021 Bentley Systems, Incorporated. All rights reserved.
+*--------------------------------------------------------------------------------------------*/
 import React from "react";
 import { VisibleBackButton } from "@itwin/mobileui-react";
 import { ProjectScope } from "@bentley/ui-framework";
@@ -7,8 +10,11 @@ import { AuthorizedFrontendRequestContext, IModelConnection, SnapshotConnection 
 import { Button, Screen } from "./Exports";
 import "./HubScreen.scss";
 
+/// Properties for the [[HubScreen]] React component.
 export interface HubScreenProps {
+  /// Callback called when an iModel is opened.
   onOpen: (filename: string, iModel: IModelConnection) => void;
+  /// Callback called when the back button is pressed to go to the previous screen.
   onBack: () => void;
 }
 
@@ -17,6 +23,7 @@ async function getProjects() {
   return projectServices.getProjects(ProjectScope.MostRecentlyUsed, 40, 0);
 }
 
+/// React component to allow downloading and opening models from the iModel Hub.
 export function HubScreen(props: HubScreenProps) {
   const {onOpen, onBack} = props;
   const [hubIModels, setHubIModels] = React.useState<string[]>([]);

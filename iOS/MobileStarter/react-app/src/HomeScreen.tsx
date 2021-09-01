@@ -1,3 +1,6 @@
+/*---------------------------------------------------------------------------------------------
+* Copyright (c) 2021 Bentley Systems, Incorporated. All rights reserved.
+*--------------------------------------------------------------------------------------------*/
 import { Button, Screen } from "./Exports";
 import "./HomeScreen.scss";
 
@@ -9,10 +12,13 @@ export enum ActiveScreen {
   Model,
 };
 
+/// Properties for [[HomeScreen]] React component.
 export interface HomeScreenProps {
+  /// Calback to select another screen.
   onSelect: (screen: ActiveScreen) => void;
 }
 
+/// React component for Home screen (shown after loading has completed).
 export function HomeScreen(props: HomeScreenProps) {
   const {onSelect} = props;
   return (

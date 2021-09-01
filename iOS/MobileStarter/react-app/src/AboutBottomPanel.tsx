@@ -1,7 +1,11 @@
+/*---------------------------------------------------------------------------------------------
+* Copyright (c) 2021 Bentley Systems, Incorporated. All rights reserved.
+*--------------------------------------------------------------------------------------------*/
 import { BottomPanel, BottomPanelProps } from "@itwin/mobileui-react";
 
 import "./AboutBottomPanel.scss";
 
+// [[BottomPanel]] React Component with fixed content, here simply as an example.
 export function AboutBottomPanel(props: BottomPanelProps) {
   return (
     <BottomPanel {...props} className="about-bottom-panel">
