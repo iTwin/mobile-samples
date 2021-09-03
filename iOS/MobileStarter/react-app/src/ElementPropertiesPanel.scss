@@ -1,0 +1,14 @@
+/*---------------------------------------------------------------------------------------------
+* Copyright (c) 2021 Bentley Systems, Incorporated. All rights reserved.
+*--------------------------------------------------------------------------------------------*/
+.properties-panel {
+  background-color: var(--background-color);
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;  
+}
+
+.property-grid-parent {
+  height: 100%;
+  padding-left: 7px;
+  padding-right: 7px;
+}

@@ -4,6 +4,7 @@
 import React from "react";
 import { IModelConnection, ViewState } from "@bentley/imodeljs-frontend";
 import { ViewportComponent } from "@bentley/ui-components";
+import { viewWithUnifiedSelection } from "@bentley/presentation-components";
 import { ActionSheetActions } from "@itwin/mobile-core";
 import {
   ActionSheetButton,
@@ -13,8 +14,11 @@ import {
   useTabsAndStandAlonePanels,
   VisibleBackButton,
 } from "@itwin/mobileui-react";
-import { AboutBottomPanel, InfoBottomPanel, ViewsBottomPanel } from "./Exports";
+import { AboutBottomPanel, ElementPropertiesPanel, InfoBottomPanel, ViewsBottomPanel } from "./Exports";
 import "./ModelScreen.scss";
+
+// tslint:disable-next-line: variable-name
+const UnifiedSelectionViewportComponent = viewWithUnifiedSelection(ViewportComponent);
 
 /// Properties for the [[ModelScreen]] React component.
 export interface ModelScreenProps {
@@ -69,6 +73,14 @@ export function ModelScreen(props: ModelScreenProps) {
         onViewSelected={() => {tabsAndPanelsAPI.closeSelectedPanel();}}
       />
     },
+    {
+      label: "Element Properties",
+      isTab: true,
+      popup: <ElementPropertiesPanel
+        key="properties"
+        iModel={iModel}
+      />
+    },
   ];
 
   tabsAndPanelsAPI.setPanels(panels);
@@ -97,7 +109,7 @@ export function ModelScreen(props: ModelScreenProps) {
     <MobileUiContent>
       {viewState &&
         <div id="main-viewport">
-          <ViewportComponent imodel={iModel} viewState={viewState}/>
+          <UnifiedSelectionViewportComponent imodel={iModel} viewState={viewState}/>
         </div>
       }
       <NavigationPanel

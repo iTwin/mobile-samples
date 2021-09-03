@@ -1,0 +1,35 @@
+{
+  "$schema": "../../node_modules/@bentley/presentation-common/Ruleset.schema.json",
+  "id": "Items",
+  "rules": [
+    {
+      "ruleType": "Content",
+      "specifications": [
+        {
+          "priority": 0,
+          "specType": "SelectedNodeInstances"
+        },
+        {
+          "priority": 1,
+          "specType": "SelectedNodeInstances",
+          "acceptableSchemaName": "Construction",
+          "propertiesDisplay": [
+            {
+              "propertyNames": [
+                "CodeValue",
+                "Model",
+                "UserLabel",
+                "Category",
+                "SlopedArea",
+                "StationRange",
+                "SurfaceArea",
+                "Volume"
+              ],
+              "isDisplayed": true
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

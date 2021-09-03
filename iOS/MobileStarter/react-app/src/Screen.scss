@@ -1,3 +1,6 @@
+/*---------------------------------------------------------------------------------------------
+* Copyright (c) 2021 Bentley Systems, Incorporated. All rights reserved.
+*--------------------------------------------------------------------------------------------*/
 :root {
   --background-color: white;
   --background-color-2: #d0d0d0;
@@ -22,6 +25,33 @@
 
   .mui-drag-handle {
     background-color: rgba(255,255,255,0.2);
+  }
+
+  .uicore-expandable-blocks-block {
+    background-color: var(--background-color);
+    border-color: var(--background-color-2);
+    color: var(--color);
+    .header {
+      background-color: var(--background-color);
+      .icon-container,.title {
+        color: var(--color);
+      }
+    }
+  }
+  .uicore-expandable-blocks-block:hover {
+    .header {
+      .icon-container,.title {
+        color: var(--color);
+      }
+    }
+  }
+  .uicore-expandable-blocks-block.is-expanded {
+    .content {
+      background-color: var(--background-color);
+    }
+    .components-property-record-label,.components-property-record-value {
+      color: var(--color);
+    }
   }
 }
 

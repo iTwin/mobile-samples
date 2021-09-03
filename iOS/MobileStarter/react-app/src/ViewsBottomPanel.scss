@@ -1,23 +1,26 @@
-.views-bottom-panel {
-  .header {
-    position: relative;
-    content: "";
-    width: 100vw;
-    min-height: 20px;
-    .title {
-      font-weight: bold;
-      position: absolute;
-      padding-top: 4px;
-      padding-left: 10px;
-      box-sizing: border-box;
-      left: 0px;
-      top: -18px;
-      height: 18px;
-      font-size: 24px;
-      pointer-events: none;
-      text-align: left;
-    }
+/*---------------------------------------------------------------------------------------------
+* Copyright (c) 2021 Bentley Systems, Incorporated. All rights reserved.
+*--------------------------------------------------------------------------------------------*/
+.resizable-panel-header {
+  position: relative;
+  content: "";
+  width: 100vw;
+  min-height: 20px;
+  .title {
+    font-weight: bold;
+    position: absolute;
+    padding-top: 4px;
+    padding-left: 10px;
+    box-sizing: border-box;
+    left: 0px;
+    top: -18px;
+    height: 18px;
+    font-size: 24px;
+    pointer-events: none;
+    text-align: left;
   }
+}
+.views-bottom-panel {
   div {
     box-sizing: border-box;
   }

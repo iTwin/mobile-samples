@@ -16,7 +16,7 @@ cd -
 rsync -aL --delete "${PROJECT_DIR}/react-app/lib/webpack/" "$AppBundleRoot/$WebAppDir/backend/"
 
 # Enable this if your react-app has any backend assets (e.g. custom element properties) 
-#rsync -aL --delete "${PROJECT_DIR}/react-app/assets/" "$AppBundleRoot/$WebAppDir/backend/assets/"
+rsync -aL --delete "${PROJECT_DIR}/react-app/assets/" "$AppBundleRoot/$WebAppDir/backend/assets/"
 
 # must be done after rsync above
 [ -d "$AppBundleRoot/$WebAppDir/backend/assets" ] || mkdir -p "$AppBundleRoot/$WebAppDir/backend/assets"

@@ -2,8 +2,10 @@
 * Copyright (c) 2021 Bentley Systems, Incorporated. All rights reserved.
 *--------------------------------------------------------------------------------------------*/
 import React from "react";
+import { combineReducers, createStore, Store } from "redux";
 import { IOSApp, IOSAppOpts } from "@bentley/mobile-manager/lib/MobileFrontend";
 import { IModelApp, IModelConnection, SnapshotConnection } from "@bentley/imodeljs-frontend";
+import { FrameworkReducer, FrameworkState, UiFramework } from "@bentley/ui-framework";
 import { Presentation } from "@bentley/presentation-frontend";
 import { Messenger } from "@itwin/mobile-core";
 import { MobileUi } from "@itwin/mobileui-react";
@@ -18,6 +20,16 @@ interface ActiveInfo {
   /// The optional cleanup function to call when switching to another screen.
   cleanup?: () => void;
 }
+
+export interface RootState {
+  frameworkState?: FrameworkState;
+}
+
+const rootReducer = combineReducers({
+  frameworkState: FrameworkReducer,
+});
+const anyWindow: any = window;
+const appReduxStore: Store<RootState> = createStore(rootReducer, anyWindow.__REDUX_DEVTOOLS_EXTENSION__ && anyWindow.__REDUX_DEVTOOLS_EXTENSION__());
 
 function App() {
   // Start out on the Loading screen.
@@ -57,6 +69,7 @@ function App() {
           },
         }
         await IOSApp.startup(opts);
+        await UiFramework.initialize(appReduxStore);
         await Presentation.initialize();
         await MobileUi.initialize(IModelApp.i18n);
         // The following message lets the native side know that it is safe to send app-specific
@@ -64,6 +77,7 @@ function App() {
         Messenger.sendMessage("didFinishLaunching");
         // Switch from the Loading screen to the Home screen.
         pushActiveInfo(ActiveScreen.Home);
+        console.log("...Done Initializing.");
       } catch (ex) {
         console.log("Exception during initialization: " + ex);
       }
@@ -80,6 +94,7 @@ function App() {
   const handleOpen = React.useCallback((filename: string, newIModel: IModelConnection) => {
     setModelFilename(filename);
     setIModel(newIModel);
+    UiFramework.setIModelConnection(newIModel);
     // The cleanup function used to close the iModel when the back button on the Model screen is pressed.
     const cleanup = async () => {
       const viewport = IModelApp.viewManager.getFirstOpenView();
@@ -88,6 +103,7 @@ function App() {
       }
       await iModel?.close();
       setIModel(undefined);
+      UiFramework.setIModelConnection(undefined);
       setModelFilename("");
     };
     pushActiveInfo(ActiveScreen.Model, cleanup);

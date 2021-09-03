@@ -124,7 +124,7 @@ export function ViewsBottomPanel(props: ViewsBottomPanelProps) {
     <ResizableBottomPanel
       {...otherProps}
       className="views-bottom-panel"
-      header={<DraggableComponent className="header">
+      header={<DraggableComponent className="resizable-panel-header">
         <div className="title">
           <IconImage style={{display: "inline-block", marginRight: 5}} iconSpec="icon-saved-view"/>
           Views

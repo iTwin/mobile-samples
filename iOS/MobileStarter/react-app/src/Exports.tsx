@@ -14,3 +14,4 @@ export * from "./ViewsBottomPanel";
 export * from "./HomeScreen";
 export * from "./HubScreen";
 export * from "./App";
+export * from "./ElementPropertiesPanel";
