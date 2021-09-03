@@ -20,6 +20,14 @@ Note: These are temporary build instructions for getting these samples running.
 1. Run `npm run start` to start the React debug server
 1. Open <span style="font-family: monospace">mobilesdk-samples/iOS/MobileStarter/MobileStarter.xcodeproj</span>.
 1. Wait for Xcode to download and install the dependent Swift Packages (which includes the arm64 iModelJS framework).
+1. Create <span style="font-family: monospace">mobilesdk-samples/iOS/ITMApplication.xcconfig</span>. It should look something like the following (with your own client ID replacing `<Your Client ID goes here.>`):
+
+    ```
+    ITMAPPLICATION_CLIENT_ID = <Your Client ID goes here.>
+    ITMAPPLICATION_SCOPE = email openid profile organization itwinjs
+    ITMAPPLICATION_USE_IP = YES
+    ```
+
 1. Cross Fingers.
 1. Run
 
