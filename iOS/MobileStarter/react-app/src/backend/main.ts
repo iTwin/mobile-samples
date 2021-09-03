@@ -32,7 +32,7 @@ export const prodIssuerUrl = "https://ims.bentley.com/";
   // Initialize imodeljs-backend
   const options: MobileHostOpts = {
     mobileHost: {
-      noInitializeAuthClient: true,
+      noInitializeAuthClient: false,
       authConfig: { issuerUrl, clientId, redirectUri, scope },
       },
     };
