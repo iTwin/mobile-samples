@@ -2,6 +2,8 @@
 
 Note: These are temporary build instructions for getting these samples running.
 
+## Initial checkout and build
+
 1. cd into <span style="font-family: monospace">mobilesdk-samples/iOS/MobileStarter/react-app</span>.
 1. Run `npm install`.
 1. Check out https://github.com/iTwin/mobile-core into <span style="font-family: monospace">itwin-mobile-core</span> alongside <span style="font-family: monospace">mobilesdk-samples</span>.
@@ -19,4 +21,24 @@ Note: These are temporary build instructions for getting these samples running.
 1. Open <span style="font-family: monospace">mobilesdk-samples/iOS/MobileStarter/MobileStarter.xcodeproj</span>.
 1. Wait for Xcode to download and install the dependent Swift Packages (which includes the arm64 iModelJS framework).
 1. Cross Fingers.
+1. Run
+
+## Updates
+
+1. Use `git pull` to update <span style="font-family: monospace">mobilesdk-samples</span>, <span style="font-family: monospace">itwin-mobile-core</span>, and <span style="font-family: monospace">itwin-mobileui-react</span>.
+1. cd into <span style="font-family: monospace">mobilesdk-samples/iOS/MobileStarter/react-app</span>.
+1. Run `npm install`.
+1. cd into <span style="font-family: monospace">itwin-mobileui-react</span>.
+1. Run `npm install`
+1. cd into <span style="font-family: monospace">itwin-mobile-core</span>.
+1. Run `npm install`.
+1. Run `npm run build:debug`.
+1. cd into <span style="font-family: monospace">itwin-mobileui-react</span>.
+1. Run `npm run build:debug`.
+1. cd into <span style="font-family: monospace">mobilesdk-samples/iOS/MobileStarter/react-app</span>.
+1. Run `npm run build`
+1. Run `npm run start` to start the React debug server
+1. Open <span style="font-family: monospace">mobilesdk-samples/iOS/MobileStarter/MobileStarter.xcodeproj</span>.
+1. File->Swift Packages->Update to Latest Package Versions
+1. Wait for Xcode to download and install any updates to the dependent Swift Packages.
 1. Run
