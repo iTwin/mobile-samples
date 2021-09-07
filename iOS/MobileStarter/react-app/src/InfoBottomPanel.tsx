@@ -2,6 +2,7 @@
 * Copyright (c) 2021 Bentley Systems, Incorporated. All rights reserved.
 *--------------------------------------------------------------------------------------------*/
 import { BottomPanel, BottomPanelProps } from "@itwin/mobileui-react";
+import { HeaderTitle } from "./Exports";
 
 import "./InfoBottomPanel.scss";
 
@@ -18,7 +19,7 @@ export function InfoBottomPanel(props: InfoBottomPanelProps) {
   const { name, filename } = props;
   return (
     <BottomPanel {...props} className="info-bottom-panel">
-      <div className="title">{name}</div>
+      <HeaderTitle label={name} iconSpec="icon-info-hollow" />
       <div>Path: {filename}</div>
     </BottomPanel>
   );

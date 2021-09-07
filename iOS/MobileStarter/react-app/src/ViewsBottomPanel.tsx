@@ -6,6 +6,7 @@ import * as base64 from "base64-js";
 import { IModelApp, IModelConnection } from "@bentley/imodeljs-frontend";
 import { ThumbnailProps } from "@bentley/imodeljs-common";
 import { DraggableComponent, IconImage, ResizableBottomPanel, ResizableBottomPanelProps } from "@itwin/mobileui-react";
+import { HeaderTitle } from "./Exports";
 
 import "./ViewsBottomPanel.scss";
 
@@ -75,10 +76,10 @@ export function ViewsBottomPanel(props: ViewsBottomPanelProps) {
         const view = await iModel.views.load(viewSpec.id);
         // If the view has a userLabel, it needs to be used instead of the ViewSpec name.
         // So copy all the fields from viewSpec, then override the name when appropriate.
-        localViewSpecs.push({...viewSpec, name: view.userLabel ?? viewSpec.name});
+        localViewSpecs.push({ ...viewSpec, name: view.userLabel ?? viewSpec.name });
       }
       // Sort the ViewSpecs by name using case-insensitive compare.
-      const sortedResult = localViewSpecs.sort((a, b) => a.name.localeCompare(b.name, undefined, {sensitivity: "base"}));
+      const sortedResult = localViewSpecs.sort((a, b) => a.name.localeCompare(b.name, undefined, { sensitivity: "base" }));
       // Display the loaded ViewSpecs with generic view icons.
       setViewSpecs(sortedResult);
       // Load the thumbnails asynchronously, then display them as they are loaded.
@@ -99,16 +100,16 @@ export function ViewsBottomPanel(props: ViewsBottomPanelProps) {
   const viewButtons = viewSpecs.map((viewSpec, index) => {
     if (thumbnails.length > index && thumbnails[index]) {
       return (
-        <div className="list-item" key={index} onClick={() => {handleChangeView(viewSpec);}}>
+        <div className="list-item" key={index} onClick={() => { handleChangeView(viewSpec); }}>
           <div>{viewSpec.name}</div>
-          <img src={thumbnails[index]} alt="View Thumbnail"/>
+          <img src={thumbnails[index]} alt="View Thumbnail" />
         </div>
       );
     } else {
       return (
-        <div className="list-item" key={index} onClick={() => {handleChangeView(viewSpec);}}>
+        <div className="list-item" key={index} onClick={() => { handleChangeView(viewSpec); }}>
           <div>{viewSpec.name}</div>
-          <IconImage iconSpec="icon-saved-view" size="100px"/>
+          <IconImage iconSpec="icon-saved-view" size="100px" />
         </div>
       );
     }
@@ -125,10 +126,7 @@ export function ViewsBottomPanel(props: ViewsBottomPanelProps) {
       {...otherProps}
       className="views-bottom-panel"
       header={<DraggableComponent className="resizable-panel-header">
-        <div className="title">
-          <IconImage style={{display: "inline-block", marginRight: 5}} iconSpec="icon-saved-view"/>
-          Views
-        </div>
+        <HeaderTitle label="Views" iconSpec="icon-saved-view" />
       </DraggableComponent>}
     >
       <div className="list">

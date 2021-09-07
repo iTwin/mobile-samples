@@ -18,6 +18,7 @@ import {
   ResizableBottomPanelProps,
   useBeEvent,
 } from "@itwin/mobileui-react";
+import { HeaderTitle } from "./Exports";
 
 import "./ElementPropertiesPanel.scss";
 
@@ -32,6 +33,7 @@ interface UnifiedSelectionPropertyGridProps {
 
 export interface ElementPropertiesPanelProps extends ResizableBottomPanelProps {
   iModel: IModelConnection;
+  onCloseClick: () => void;
 }
 
 function PropertiesPanel(props: PropertiesPanelProps) {
@@ -39,6 +41,7 @@ function PropertiesPanel(props: PropertiesPanelProps) {
   const openAndHaveSelection = isOpen && selectionCount > 0;
 
   return <ResizableBottomPanel
+    isStandAlone
     isOpen={openAndHaveSelection}
     {...otherProps}
     heightCanExceedContents
@@ -57,7 +60,7 @@ function UnifiedSelectionPropertyGrid(props: UnifiedSelectionPropertyGridProps) 
 }
 
 export function ElementPropertiesPanel(props: ElementPropertiesPanelProps) {
-  const {iModel} = props;
+  const { iModel, onCloseClick } = props;
   const [selectionCount, setSelectionCount] = React.useState(IModelApp.viewManager.getFirstOpenView()?.view.iModel.selectionSet.size ?? 0);
   const ppdpProps: PresentationPropertyDataProviderProps = {
     imodel: iModel,
@@ -74,9 +77,14 @@ export function ElementPropertiesPanel(props: ElementPropertiesPanelProps) {
       {...props}
       selectionCount={selectionCount}
       header={<DraggableComponent className="resizable-panel-header">
-        <div className="title">
-          <IconImage style={{display: "inline-block", marginRight: 5}} iconSpec="icon-saved-view"/>
-          Properties
+        <div className="header-row">
+          <HeaderTitle label="Properties" iconSpec="icon-details" />
+          <div className="title">
+            <div style={{ marginRight: 10, pointerEvents: "auto" }}
+              onClick={onCloseClick}>
+              <IconImage iconSpec="icon-close-2" />
+            </div>
+          </div>
         </div>
       </DraggableComponent>}
     >

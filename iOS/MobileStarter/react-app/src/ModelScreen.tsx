@@ -2,12 +2,14 @@
 * Copyright (c) 2021 Bentley Systems, Incorporated. All rights reserved.
 *--------------------------------------------------------------------------------------------*/
 import React from "react";
-import { IModelConnection, ViewState } from "@bentley/imodeljs-frontend";
+import { IModelApp, IModelConnection, ViewState } from "@bentley/imodeljs-frontend";
 import { ViewportComponent } from "@bentley/ui-components";
+import { IconSpec } from "@bentley/ui-core";
 import { viewWithUnifiedSelection } from "@bentley/presentation-components";
-import { ActionSheetActions } from "@itwin/mobile-core";
+import { ActionSheetAction, presentAlert } from "@itwin/mobile-core";
 import {
   ActionSheetButton,
+  IconImage,
   MobileUiContent,
   NavigationPanel,
   TabOrPanelDef,
@@ -37,17 +39,37 @@ export function ModelScreen(props: ModelScreenProps) {
   const lastSlash = filename.lastIndexOf("/");
   const documentName = lastSlash === -1 ? filename : filename.substring(lastSlash + 1);
   const [viewState, setViewState] = React.useState<ViewState>();
-  // TODO: Add element properties item as only more action.
-  const moreActions: ActionSheetActions = [
-    {
-      name: "one",
-      title: "One",
-      onSelected: () => {console.log("One")},
-    },
-  ];
-  const moreButton=<ActionSheetButton actions={moreActions} />
+  const elementPropertiesLabel = "Properties";
+  const moreActions = () => {
+    const actions: ActionSheetAction[] =
+      [
+        {
+          name: "sample",
+          title: "Sample alert...",
+          onSelected: () => {
+            presentAlert({
+              title: "Information",
+              message: "Sample alert clicked.",
+              actions: [{
+                name: "ok",
+                title: "OK",
+              }],
+            })
+          },
+        },
+      ];
 
-  // TODO: Create non-tab element properties panel.
+    if (IModelApp.viewManager.getFirstOpenView()?.view.iModel.selectionSet.isActive) {
+      actions.push(
+        {
+          name: elementPropertiesLabel,
+          title: elementPropertiesLabel,
+          onSelected: () => { tabsAndPanelsAPI.openPanel(elementPropertiesLabel) },
+        });
+    }
+    return actions;
+  };
+  const moreButton = <ActionSheetButton actions={moreActions} />
   const panels: TabOrPanelDef[] = [
     {
       label: "Info",
@@ -70,15 +92,20 @@ export function ModelScreen(props: ModelScreenProps) {
         key="views"
         iModel={iModel}
         // Close the Views bottom panel when a view is selected from it.
-        onViewSelected={() => {tabsAndPanelsAPI.closeSelectedPanel();}}
+        onViewSelected={() => { tabsAndPanelsAPI.closeSelectedPanel(); }}
       />
     },
     {
-      label: "Element Properties",
-      isTab: true,
+      label: elementPropertiesLabel,
+      isTab: false,
       popup: <ElementPropertiesPanel
-        key="properties"
+        key={elementPropertiesLabel}
         iModel={iModel}
+        onCloseClick={() => tabsAndPanelsAPI.closeSelectedPanel()}
+        onAutoClose={() => {
+          tabsAndPanelsAPI.closeSelectedPanel();
+          return tabsAndPanelsAPI.autoCloseHandler();
+        }}
       />
     },
   ];
@@ -109,7 +136,7 @@ export function ModelScreen(props: ModelScreenProps) {
     <MobileUiContent>
       {viewState &&
         <div id="main-viewport">
-          <UnifiedSelectionViewportComponent imodel={iModel} viewState={viewState}/>
+          <UnifiedSelectionViewportComponent imodel={iModel} viewState={viewState} />
         </div>
       }
       <NavigationPanel
@@ -125,6 +152,19 @@ export function ModelScreen(props: ModelScreenProps) {
         }
       />
       {tabsAndPanelsAPI.renderTabBarAndPanels()}
-    </MobileUiContent>
+    </MobileUiContent >
   );
+}
+
+export interface HeaderTitleProps {
+  iconSpec?: IconSpec;
+  label?: string;
+}
+
+export function HeaderTitle(props: HeaderTitleProps) {
+  const { iconSpec, label } = props;
+  return <div className="title">
+    {iconSpec && <IconImage style={{ display: "inline-block", marginRight: 10 }} iconSpec={iconSpec} />}
+    {label}
+  </div>;
 }
