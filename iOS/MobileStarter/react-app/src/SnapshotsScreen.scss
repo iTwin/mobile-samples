@@ -16,10 +16,21 @@
     padding-right: env(safe-area-inset-right);
     padding-bottom: 20px;
     display: flex;
-    align-items: center;
+    align-items: stretch;
+    justify-content: space-between;
+    .back-button {
+      margin-top: 10px;
+    }
     .title-text {
       margin-left: 10px;
-      margin-top: 8px;  
+      display: flex;
+      align-items: center;
+    }
+    .refresh {
+      flex-grow: 1;
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
     }
   }
 

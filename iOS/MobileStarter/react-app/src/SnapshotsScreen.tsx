@@ -3,7 +3,7 @@
 *--------------------------------------------------------------------------------------------*/
 import React from "react";
 import { Messenger } from "@itwin/mobile-core";
-import { VisibleBackButton } from "@itwin/mobileui-react";
+import { NavigationButton, VisibleBackButton } from "@itwin/mobileui-react";
 import { Button, Screen } from "./Exports";
 import { IModelConnection, SnapshotConnection } from "@bentley/imodeljs-frontend";
 import "./SnapshotsScreen.scss";
@@ -11,7 +11,7 @@ import "./SnapshotsScreen.scss";
 /// Properties for the [[SnapshotsScreen]] React component.
 export interface SnapshotsScreenProps {
   /// Callback called when the user selects a snapshot iModel.
-  onOpen: (filename: string, iModel: IModelConnection) => void;
+  onOpen: (filename: string, iModelPromise: Promise<IModelConnection>) => Promise<void>;
   /// Callback called to go back to the previous screen (Home).
   onBack: () => void;
 }
@@ -21,20 +21,19 @@ export function SnapshotsScreen(props: SnapshotsScreenProps) {
   const {onOpen, onBack} = props;
   const [snapshots, setSnapshots] = React.useState<string[]>([]);
 
+  // This function sends a message to the native code requesting an array containing the paths to all
+  // the *.bim files in the app's Documents folder. Note that fetching this list should be nearly
+  // instantaneous, so there is no loading spinner.
+  const updateBimDocuments = React.useCallback(async () => {
+    const bimDocuments: string[] = await Messenger.query("getBimDocuments");
+    setSnapshots(bimDocuments.sort((a, b) => a.localeCompare(b, undefined, {sensitivity: "base"})));
+  }, []);
+
   // React effect run during component initialization.
   React.useEffect(() =>
   {
-    // This function sends a message to the native code requesting an array containing the paths to all
-    // the *.bim files in the app's Documents folder. Note that fetching this list should be nearly
-    // instantaneous, so there is no loading spinner.
-    // React.useEffect callbacks cannot be async, since they have a meaningful return value that is
-    // not a Promise.
-    const updateBimDocuments = async () => {
-      const bimDocuments: string[] = await Messenger.query("getBimDocuments");
-      setSnapshots(bimDocuments.sort((a, b) => a.localeCompare(b, undefined, {sensitivity: "base"})));
-    }
     updateBimDocuments();
-  }, []);
+  }, [updateBimDocuments]);
 
   // Convert the array of paths into an array of [[Button]] components, where each button loads the
   // corresponding snapshot iModel.
@@ -45,8 +44,7 @@ export function SnapshotsScreen(props: SnapshotsScreenProps) {
       key={index}
       onClick={async () => {
         // Open the given snapshot iModel, and then pass it to the onOpen props callback.
-        const iModel = await SnapshotConnection.openFile(document);
-        onOpen(document, iModel);
+        onOpen(document, SnapshotConnection.openFile(document));
       }}
       title={documentName} />
   });
@@ -59,8 +57,7 @@ export function SnapshotsScreen(props: SnapshotsScreenProps) {
         const document: string = await Messenger.query("chooseDocument");
         if (document.length) {
           // Open the given snapshot iModel, and then pass it to the onOpen props callback.
-          const iModel = await SnapshotConnection.openFile(document);
-          onOpen(document, iModel);
+          onOpen(document, SnapshotConnection.openFile(document));
         }
       }}
       title={"Choose File..."} 
@@ -71,8 +68,18 @@ export function SnapshotsScreen(props: SnapshotsScreenProps) {
     <Screen>
       <div className="snapshots-screen">
         <div className="title">
-          <VisibleBackButton onClick={onBack} />
-          <div className="title-text">Select iModel</div>          
+          <div className="back-button">
+            <VisibleBackButton onClick={onBack} />
+          </div>
+          <div className="title-text">Select iModel</div>
+          <div className="refresh">
+            <NavigationButton
+              iconSpec="icon-refresh"
+              onClick={() => {
+                updateBimDocuments();
+              }}
+            />
+          </div>
         </div>
         <div className="list">
           <div className="list-items">{bimButtons}</div>
