@@ -6,14 +6,14 @@ import { VisibleBackButton } from "@itwin/mobileui-react";
 import { ProjectScope } from "@bentley/ui-framework";
 import { DefaultProjectServices } from "@bentley/ui-framework/lib/ui-framework/clientservices/DefaultProjectServices";
 // import { IModelHubClient } from "@bentley/imodelhub-client";
-import { AuthorizedFrontendRequestContext, IModelConnection, SnapshotConnection } from "@bentley/imodeljs-frontend";
+import { AuthorizedFrontendRequestContext, IModelApp, IModelConnection, SnapshotConnection } from "@bentley/imodeljs-frontend";
 import { Button, Screen } from "./Exports";
 import "./HubScreen.scss";
 
 /// Properties for the [[HubScreen]] React component.
 export interface HubScreenProps {
   /// Callback called when an iModel is opened.
-  onOpen: (filename: string, iModel: IModelConnection) => void;
+  onOpen: (filename: string, iModelPromise: Promise<IModelConnection>) => Promise<void>;
   /// Callback called when the back button is pressed to go to the previous screen.
   onBack: () => void;
 }
@@ -31,15 +31,21 @@ export function HubScreen(props: HubScreenProps) {
   React.useEffect(() =>
   {
     const updateHubIModels = async () => {
-      const requestContext = await AuthorizedFrontendRequestContext.create();
-      const projects = await getProjects();
-      const names = projects.map((project) => project.name);
-      setHubIModels(names);
-      // const hubClient = new IModelHubClient();
-      // /* get the iModel name */
-      // const imodels = await hubClient.iModels.get(requestContext, contextId, new IModelQuery().byId(iModelId));
-      // IModelApp.iModelClient.
-      // setHubIModels(await Messenger.query("getBimDocuments"));
+      try {
+        await IModelApp.authorizationClient?.signIn();
+        await AuthorizedFrontendRequestContext.create();
+        setHubIModels(["/Blah/blah/blah.bim"]);
+        const projects = await getProjects();
+        const names = projects.map((project) => project.name);
+        setHubIModels(names);
+        // const hubClient = new IModelHubClient();
+        // /* get the iModel name */
+        // const imodels = await hubClient.iModels.get(requestContext, contextId, new IModelQuery().byId(iModelId));
+        // IModelApp.iModelClient.
+        // setHubIModels(await Messenger.query("getBimDocuments"));
+      } catch (error) {
+        setHubIModels(["/Error/" + error]);
+      }
     }
     updateHubIModels();
   }, []);
@@ -50,8 +56,7 @@ export function HubScreen(props: HubScreenProps) {
     return <Button
       key={index}
       onClick={async () => {
-        const iModel = await SnapshotConnection.openFile(document);
-        onOpen(document, iModel);
+        onOpen(document, SnapshotConnection.openFile(document));
       }}
       title={documentName} />
   });

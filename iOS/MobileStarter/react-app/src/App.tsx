@@ -7,7 +7,7 @@ import { IOSApp, IOSAppOpts } from "@bentley/mobile-manager/lib/MobileFrontend";
 import { IModelApp, IModelConnection, SnapshotConnection } from "@bentley/imodeljs-frontend";
 import { FrameworkReducer, FrameworkState, UiFramework } from "@bentley/ui-framework";
 import { Presentation } from "@bentley/presentation-frontend";
-import { Messenger } from "@itwin/mobile-core";
+import { Messenger, presentAlert } from "@itwin/mobile-core";
 import { MobileUi } from "@itwin/mobileui-react";
 import { ActiveScreen, SnapshotsScreen, HomeScreen, HubScreen, LoadingScreen, ModelScreen } from "./Exports";
 import { getSupportedRpcs } from "./common/rpcs";
@@ -91,22 +91,34 @@ function App() {
   }, [pushActiveInfo, initialized]);
 
   // Callback called by screens after an iModel is loaded.
-  const handleOpen = React.useCallback((filename: string, newIModel: IModelConnection) => {
-    setModelFilename(filename);
-    setIModel(newIModel);
-    UiFramework.setIModelConnection(newIModel);
-    // The cleanup function used to close the iModel when the back button on the Model screen is pressed.
-    const cleanup = async () => {
-      const viewport = IModelApp.viewManager.getFirstOpenView();
-      if (viewport) {
-        IModelApp.viewManager.dropViewport(viewport);
-      }
-      await iModel?.close();
-      setIModel(undefined);
-      UiFramework.setIModelConnection(undefined);
-      setModelFilename("");
-    };
-    pushActiveInfo(ActiveScreen.Model, cleanup);
+  const handleOpen = React.useCallback(async (filename: string, newIModelPromise: Promise<IModelConnection>) => {
+    try {
+      const newIModel = await newIModelPromise;
+      setModelFilename(filename);
+      setIModel(newIModel);
+      UiFramework.setIModelConnection(newIModel);
+      // The cleanup function used to close the iModel when the back button on the Model screen is pressed.
+      const cleanup = async () => {
+        const viewport = IModelApp.viewManager.getFirstOpenView();
+        if (viewport) {
+          IModelApp.viewManager.dropViewport(viewport);
+        }
+        await iModel?.close();
+        setIModel(undefined);
+        UiFramework.setIModelConnection(undefined);
+        setModelFilename("");
+      };
+      pushActiveInfo(ActiveScreen.Model, cleanup);
+    } catch (error) {
+      presentAlert({
+        title: "Error",
+        message: "Error loading iModel:\n" + error,
+        actions: [{
+          name: "ok",
+          title: "OK",
+        }],
+      })
+    }
   }, [iModel, pushActiveInfo]);
 
   // Called when the back button is pressed on any screen.
@@ -148,7 +160,7 @@ function App() {
           // switched to undefined.
           setOpenUrlPath(modelPath);
         } else {
-          handleOpen(modelPath, await SnapshotConnection.openFile(modelPath));  
+          handleOpen(modelPath, SnapshotConnection.openFile(modelPath));  
         }
       });
     }
@@ -164,7 +176,7 @@ function App() {
       setOpenUrlPath(undefined);
       const openFunc = async () => {
         // Open the requested snapshot iModel.
-        handleOpen(modelPath, await SnapshotConnection.openFile(modelPath));
+        handleOpen(modelPath, SnapshotConnection.openFile(modelPath));
       }
       openFunc();
     }
