@@ -4,7 +4,7 @@
 import * as path from "path";
 import { Presentation, PresentationManagerMode } from "@bentley/presentation-backend";
 import { GetMetaDataFunction, LogFunction, Logger, LogLevel } from "@bentley/bentleyjs-core";
-import { IOSHost, MobileHostOpts } from "@bentley/mobile-manager/lib/MobileBackend";
+import { IOSHost, MobileHost, MobileHostOpts } from "@bentley/mobile-manager/lib/MobileBackend";
 import { getSupportedRpcs } from "../common/rpcs";
 import setupEnv from "../common/configuration";
 import { IpcHost } from "@bentley/imodeljs-backend";
@@ -13,8 +13,8 @@ import { IpcHost } from "@bentley/imodeljs-backend";
 // engine instance that is running for node.js. This code runs when the iTwin Mobile backend is
 // initialized from the native code.
 
-export const qaIssuerUrl = "https://qa-ims.bentley.com/";
-export const prodIssuerUrl = "https://ims.bentley.com/";
+export const qaIssuerUrl = "https://qa-imsoidc.bentley.com/";
+export const prodIssuerUrl = "https://imsoidc.bentley.com/";
 
 // tslint:disable-next-line:no-floating-promises
 (async () => {
@@ -32,11 +32,17 @@ export const prodIssuerUrl = "https://ims.bentley.com/";
   // Initialize imodeljs-backend
   const options: MobileHostOpts = {
     mobileHost: {
-      noInitializeAuthClient: false,
+      noInitializeAuthClient: true,
       authConfig: { issuerUrl, clientId, redirectUri, scope },
-      },
-    };
+    },
+  };
   await IOSHost.startup(options);
+  setTimeout(() => {
+    MobileHost.device.authInit({ issuerUrl, clientId, redirectUri, scope }, (err) => {
+      console.log(`AuthInit ${err}`);
+      // MobileHost.authorization.signIn();
+    });
+  }, 1000);
 
   const backendRoot = process.env.FIELDMODEL_BACKEND_ROOT;
   const assetsRoot = backendRoot ? path.join(backendRoot, "assets") : "assets";
