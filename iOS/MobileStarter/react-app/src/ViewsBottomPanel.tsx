@@ -5,7 +5,7 @@ import React from "react";
 import * as base64 from "base64-js";
 import { IModelApp, IModelConnection } from "@bentley/imodeljs-frontend";
 import { ThumbnailProps } from "@bentley/imodeljs-common";
-import { DraggableComponent, IconImage, ResizableBottomPanel, ResizableBottomPanelProps } from "@itwin/mobileui-react";
+import { DraggableComponent, IconImage, ResizableBottomPanel, ResizableBottomPanelProps } from "@itwin/mobile-ui-react";
 import { HeaderTitle } from "./Exports";
 
 import "./ViewsBottomPanel.scss";

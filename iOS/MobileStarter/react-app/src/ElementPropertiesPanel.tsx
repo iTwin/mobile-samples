@@ -17,7 +17,7 @@ import {
   ResizableBottomPanel,
   ResizableBottomPanelProps,
   useBeEvent,
-} from "@itwin/mobileui-react";
+} from "@itwin/mobile-ui-react";
 import { HeaderTitle } from "./Exports";
 
 import "./ElementPropertiesPanel.scss";

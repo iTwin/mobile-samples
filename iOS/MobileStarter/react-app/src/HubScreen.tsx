@@ -2,7 +2,7 @@
 * Copyright (c) 2021 Bentley Systems, Incorporated. All rights reserved.
 *--------------------------------------------------------------------------------------------*/
 import React from "react";
-import { VisibleBackButton } from "@itwin/mobileui-react";
+import { VisibleBackButton } from "@itwin/mobile-ui-react";
 import { ProjectInfo, ProjectScope } from "@bentley/ui-framework";
 import { DefaultProjectServices } from "@bentley/ui-framework/lib/ui-framework/clientservices/DefaultProjectServices";
 import { AuthorizedFrontendRequestContext, BriefcaseConnection, DownloadBriefcaseOptions, IModelApp, IModelConnection, NativeApp } from "@bentley/imodeljs-frontend";

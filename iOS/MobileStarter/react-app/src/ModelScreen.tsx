@@ -15,7 +15,7 @@ import {
   TabOrPanelDef,
   useTabsAndStandAlonePanels,
   VisibleBackButton,
-} from "@itwin/mobileui-react";
+} from "@itwin/mobile-ui-react";
 import { AboutBottomPanel, ElementPropertiesPanel, InfoBottomPanel, ViewsBottomPanel } from "./Exports";
 import "./ModelScreen.scss";
 

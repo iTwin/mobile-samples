@@ -443,7 +443,7 @@
 /* Begin XCRemoteSwiftPackageReference section */
 		1FF1B9AA26BDCC35006D6385 /* XCRemoteSwiftPackageReference "itwin-mobile-sdk" */ = {
 			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/iTwin/itwin-mobile-sdk.git";
+			repositoryURL = "https://github.com/iTwin/mobile-sdk.git";
 			requirement = {
 				kind = upToNextMajorVersion;
 				minimumVersion = 0.0.8;

@@ -3,7 +3,7 @@
 *--------------------------------------------------------------------------------------------*/
 import React from "react";
 import { Messenger } from "@itwin/mobile-core";
-import { NavigationButton, VisibleBackButton } from "@itwin/mobileui-react";
+import { NavigationButton, VisibleBackButton } from "@itwin/mobile-ui-react";
 import { Button, Screen } from "./Exports";
 import { IModelConnection, SnapshotConnection } from "@bentley/imodeljs-frontend";
 import "./SnapshotsScreen.scss";

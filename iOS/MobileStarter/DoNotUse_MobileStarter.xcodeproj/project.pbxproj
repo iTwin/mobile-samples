@@ -27,7 +27,7 @@
 		1FC1115F261FC44B00835E6E /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		1FC11161261FC44B00835E6E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		1FE3B33B26D413DA004DD154 /* iOSSamples.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; name = iOSSamples.xcconfig; path = ../iOSSamples.xcconfig; sourceTree = "<group>"; };
-		5FB2050426CF29A500C4DBE1 /* itwin-mobile-sdk */ = {isa = PBXFileReference; lastKnownFileType = folder; name = "itwin-mobile-sdk"; path = "../../../itwin-mobile-sdk"; sourceTree = "<group>"; };
+		5FB2050426CF29A500C4DBE1 /* itwin-mobile-sdk */ = {isa = PBXFileReference; lastKnownFileType = folder; name = "itwin-mobile-sdk"; path = "../../../mobile-sdk"; sourceTree = "<group>"; };
 		5FD7518626DD9DCD00DC3060 /* DocumentPicker.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DocumentPicker.swift; sourceTree = "<group>"; };
 		5FD7518726DD9DCD00DC3060 /* ModelApplication.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ModelApplication.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -441,7 +441,7 @@
 /* Begin XCRemoteSwiftPackageReference section */
 		1FF1B9AA26BDCC35006D6385 /* XCRemoteSwiftPackageReference "itwin-mobile-sdk" */ = {
 			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/iTwin/itwin-mobile-sdk.git";
+			repositoryURL = "https://github.com/iTwin/mobile-sdk.git";
 			requirement = {
 				kind = upToNextMajorVersion;
 				minimumVersion = 0.0.8;

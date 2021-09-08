@@ -30,7 +30,7 @@
       },
       {
         "package": "itwin-mobile-sdk",
-        "repositoryURL": "https://github.com/iTwin/itwin-mobile-sdk.git",
+        "repositoryURL": "https://github.com/iTwin/mobile-sdk.git",
         "state": {
           "branch": null,
           "revision": "60f93721ece019ebec6ee372bfd4458337fb1267",

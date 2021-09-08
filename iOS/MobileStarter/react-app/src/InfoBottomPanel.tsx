@@ -1,7 +1,7 @@
 /*---------------------------------------------------------------------------------------------
 * Copyright (c) 2021 Bentley Systems, Incorporated. All rights reserved.
 *--------------------------------------------------------------------------------------------*/
-import { BottomPanel, BottomPanelProps } from "@itwin/mobileui-react";
+import { BottomPanel, BottomPanelProps } from "@itwin/mobile-ui-react";
 import { HeaderTitle } from "./Exports";
 
 import "./InfoBottomPanel.scss";

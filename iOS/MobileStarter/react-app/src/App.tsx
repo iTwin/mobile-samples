@@ -8,7 +8,7 @@ import { IModelApp, IModelConnection, SnapshotConnection } from "@bentley/imodel
 import { FrameworkReducer, FrameworkState, UiFramework } from "@bentley/ui-framework";
 import { Presentation } from "@bentley/presentation-frontend";
 import { Messenger, presentAlert } from "@itwin/mobile-core";
-import { MobileUi } from "@itwin/mobileui-react";
+import { MobileUi } from "@itwin/mobile-ui-react";
 import { ActiveScreen, SnapshotsScreen, HomeScreen, HubScreen, LoadingScreen, ModelScreen } from "./Exports";
 import { getSupportedRpcs } from "./common/rpcs";
 import "./App.scss";
