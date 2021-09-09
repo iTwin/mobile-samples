@@ -13,8 +13,8 @@ import { IpcHost } from "@bentley/imodeljs-backend";
 // engine instance that is running for node.js. This code runs when the iTwin Mobile backend is
 // initialized from the native code.
 
-export const qaIssuerUrl = "https://qa-imsoidc.bentley.com/";
-export const prodIssuerUrl = "https://imsoidc.bentley.com/";
+export const qaIssuerUrl = "https://qa-ims.bentley.com/";
+export const prodIssuerUrl = "https://ims.bentley.com/";
 
 // tslint:disable-next-line:no-floating-promises
 (async () => {
