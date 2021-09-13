@@ -21,6 +21,22 @@
       margin-left: 10px;
       margin-top: 8px;  
     }
+    .change-project {
+      position: absolute;
+      right: 0px;
+      top: var(--mui-safe-area-top);
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      margin: 10px;
+      div {
+        font-size: medium;
+        flex-grow: 0;
+        background-color: var(--background-color);
+        padding: 10px;
+        border-radius: 5px;
+      }
+    }
   }
 
   .list {
