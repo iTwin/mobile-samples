@@ -42,6 +42,14 @@ const titles = [
   "Downloading iModel..."
 ];
 
+function getActiveProject() {
+  const projectInfoJson = localStorage.getItem("activeProjectInfo");
+  if (projectInfoJson) {
+    return JSON.parse(projectInfoJson) as ProjectInfo;
+  }
+  return undefined;
+}
+
 /// React component to allow downloading and opening models from the iModel Hub.
 export function HubScreen(props: HubScreenProps) {
   const { onOpen, onBack } = props;
@@ -49,47 +57,76 @@ export function HubScreen(props: HubScreenProps) {
   const [projects, setProjects] = React.useState<ProjectInfo[]>([]);
   const [hubIModels, setHubIModels] = React.useState<HubIModel[]>([]);
   const [buttonTitles, setButtonTitles] = React.useState<string[]>([]);
-  const [project, setProject] = React.useState<ProjectInfo>();
+  const [project, setProject] = React.useState(getActiveProject());
+  const [initialized, setInitialized] = React.useState(false);
 
-  React.useEffect(() => {
-    const updateHubIModels = async () => {
-      try {
-        let startTicks = performance.now();
-        if (!IModelApp.authorizationClient?.hasSignedIn) {
-          console.log("About to sign in.");
-          await IModelApp.authorizationClient?.signIn();
-        }
-        setHubStep(HubStep.FetchingProjects);
-        let elapsed = performance.now() - startTicks;
-        console.log("Signed in: " + elapsed);
-        startTicks = performance.now();
-        const fetchedProjects = await getProjects();
-        setProjects(fetchedProjects);
-        setHubStep(HubStep.SelectProject);
-        elapsed = performance.now() - startTicks;
-        console.log("Fetched projects list in " + (elapsed / 1000) + "seconds.");
-        console.log("Projects: " + JSON.stringify(fetchedProjects));
-        const names = fetchedProjects.map((project) => project.name);
-        setButtonTitles(names);
-      } catch (error) {
-        setButtonTitles(["" + error]);
-      }
+  const fetchProjects = React.useCallback(async () => {
+    try {
+      setHubStep(HubStep.FetchingProjects);
+      console.log("Fetching projects list...");
+      const startTicks = performance.now();
+      const fetchedProjects = await getProjects();
+      setProjects(fetchedProjects);
+      setHubStep(HubStep.SelectProject);
+      const elapsed = performance.now() - startTicks;
+      console.log("Fetched projects list in " + (elapsed / 1000) + " seconds.");
+      console.log("Projects: " + JSON.stringify(fetchedProjects));
+      const names = fetchedProjects.map((project) => project.name);
+      setButtonTitles(names);
+    } catch (error) {
+      setButtonTitles(["Fetch Projects " + error, "Sign Out"]);
     }
-    updateHubIModels();
   }, []);
 
-  const selectProject = React.useCallback(async (index) => {
+  const handleProjectSelected = React.useCallback(async (project: ProjectInfo) => {
     setHubStep(HubStep.FetchingIModels);
     const hubClient = new IModelHubClient();
-    // /* get the iModel name */
     const requestContext = await AuthorizedFrontendRequestContext.create();
-    setProject(projects[index]);
-    const imodels = (await hubClient.iModels.get(requestContext, projects[index].wsgId)).sort((a, b) => (a.name ?? "<Unknown").localeCompare(b.name ?? "<Unknown>", undefined, { sensitivity: "base" }));
+    const imodels = (await hubClient.iModels.get(requestContext, project.wsgId)).sort((a, b) => (a.name ?? "<Unknown").localeCompare(b.name ?? "<Unknown>", undefined, { sensitivity: "base" }));
     setHubIModels(imodels);
     const names = imodels.map((imodel) => imodel.name ?? "<Unknown>");
     setButtonTitles(names);
     setHubStep(HubStep.SelectIModel);
-  }, [projects]);
+  }, []);
+
+  React.useEffect(() => {
+    const afterSignedIn = async () => {
+      if (project === undefined) {
+        fetchProjects();
+      } else {
+        handleProjectSelected(project);
+      }
+    }
+    const signin = async () => {
+      try {
+        const startTicks = performance.now();
+        if (!IModelApp.authorizationClient?.hasSignedIn) {
+          console.log("About to sign in.");
+          await IModelApp.authorizationClient?.signIn();
+        }
+        const elapsed = performance.now() - startTicks;
+        console.log("Signin took " + (elapsed / 1000) + " seconds.");
+        afterSignedIn();
+      } catch (error) {
+        setButtonTitles(["Signin " + error, "Sign Out"]);
+      }
+    }
+    if (!initialized) {
+      setInitialized(true);
+      if (IModelApp.authorizationClient?.hasSignedIn) {
+        afterSignedIn();
+      } else {
+        signin();
+      }
+    }
+  }, [project, initialized, fetchProjects, handleProjectSelected]);
+
+  const selectProject = React.useCallback((index) => {
+    const newProject = projects[index];
+    setProject(newProject);
+    localStorage.setItem("activeProjectInfo", JSON.stringify(newProject))
+    handleProjectSelected(newProject);
+  }, [projects, handleProjectSelected]);
 
   const openIModel = React.useCallback((briefcase: LocalBriefcaseProps) => {
     onOpen(briefcase.fileName, BriefcaseConnection.openFile(briefcase));
@@ -125,6 +162,10 @@ export function HubScreen(props: HubScreenProps) {
     return <Button
       key={index}
       onClick={async () => {
+        if (document === "Sign Out") {
+          IModelApp.authorizationClient?.signOut();
+          onBack();
+        }
         if (hubStep === HubStep.SelectProject) {
           selectProject(index);
         }
@@ -135,12 +176,25 @@ export function HubScreen(props: HubScreenProps) {
       title={documentName} />
   });
 
+  let changeProjectButton;
+  if (project) {
+    changeProjectButton = (
+      <div className="change-project ">
+        <div
+          onClick={() => fetchProjects()}
+        >
+          Change Project
+        </div>
+      </div>
+    );
+  }
   return (
     <Screen>
       <div className="hub-screen">
         <div className="title">
           <VisibleBackButton onClick={onBack} />
           <div className="title-text">{titles[hubStep]}</div>
+          {changeProjectButton}
         </div>
         <div className="list">
           <div className="list-items">{iModelButtons}</div>
