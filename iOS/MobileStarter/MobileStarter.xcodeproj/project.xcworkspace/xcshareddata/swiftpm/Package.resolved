@@ -24,8 +24,8 @@
         "repositoryURL": "https://github.com/toddsouthenbentley/itwin-iostest",
         "state": {
           "branch": null,
-          "revision": "bab405d239b7f42bce9dd63aabc7838714f30bbc",
-          "version": "2.19.13"
+          "revision": "035a2e0f66f0e29723c1fc5f520588eb2c943ca4",
+          "version": "2.19.14"
         }
       },
       {
@@ -33,8 +33,8 @@
         "repositoryURL": "https://github.com/iTwin/mobile-sdk.git",
         "state": {
           "branch": null,
-          "revision": "c48b57047c1e916c56252441c456d87a68ab137d",
-          "version": "0.0.24"
+          "revision": "1acae70a3a44f6d580a8a1ac02a9e77b0eeb2cdb",
+          "version": "0.0.25"
         }
       },
       {
