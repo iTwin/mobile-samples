@@ -39,7 +39,8 @@ export const prodIssuerUrl = "https://ims.bentley.com/";
   await IOSHost.startup(options);
   setTimeout(() => {
     MobileHost.device.authInit({ issuerUrl, clientId, redirectUri, scope }, (err) => {
-      console.log(`AuthInit ${err}`);
+      if (err)
+        console.log(`AuthInit ${err}`);
       // MobileHost.authorization.signIn();
     });
   }, 1000);
