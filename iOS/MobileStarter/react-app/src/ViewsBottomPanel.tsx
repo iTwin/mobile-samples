@@ -6,7 +6,7 @@ import * as base64 from "base64-js";
 import { IModelApp, IModelConnection } from "@bentley/imodeljs-frontend";
 import { ThumbnailProps } from "@bentley/imodeljs-common";
 import { DraggableComponent, IconImage, ResizableBottomPanel, ResizableBottomPanelProps } from "@itwin/mobile-ui-react";
-import { HeaderTitle } from "./Exports";
+import { HeaderTitle, updateBackgroundColor } from "./Exports";
 
 import "./ViewsBottomPanel.scss";
 
@@ -91,6 +91,7 @@ export function ViewsBottomPanel(props: ViewsBottomPanelProps) {
   const handleChangeView = React.useCallback((viewSpec: IModelConnection.ViewSpec) => {
     const changeView = async () => {
       const viewState = await iModel.views.load(viewSpec.id);
+      updateBackgroundColor(viewState);
       IModelApp.viewManager.getFirstOpenView()?.changeView(viewState);
       onViewSelected?.();
     };

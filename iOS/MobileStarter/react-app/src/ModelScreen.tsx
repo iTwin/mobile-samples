@@ -2,9 +2,10 @@
 * Copyright (c) 2021 Bentley Systems, Incorporated. All rights reserved.
 *--------------------------------------------------------------------------------------------*/
 import React from "react";
+import { ColorDef } from "@bentley/imodeljs-common";
 import { IModelApp, IModelConnection, ViewState } from "@bentley/imodeljs-frontend";
 import { ViewportComponent } from "@bentley/ui-components";
-import { IconSpec } from "@bentley/ui-core";
+import { getCssVariable, IconSpec } from "@bentley/ui-core";
 import { viewWithUnifiedSelection } from "@bentley/presentation-components";
 import { ActionSheetAction, presentAlert } from "@itwin/mobile-core";
 import {
@@ -30,6 +31,15 @@ export interface ModelScreenProps {
   iModel: IModelConnection;
   /// Callback to go back to the previous screen.
   onBack: () => void;
+}
+
+// Set the model background color based on the currently active dark/light color scheme.
+export function updateBackgroundColor(viewState: ViewState) {
+  const displayStyle = viewState.displayStyle;
+  // Note: the value of the --background-color CSS variable automatically updates when the
+  // color scheme of the web view changes.
+  const bgColor = getCssVariable("--background-color");
+  displayStyle.backgroundColor = ColorDef.fromString(bgColor);
 }
 
 /// React component showing the iModel and containing UI for interacting with it.
@@ -112,6 +122,30 @@ export function ModelScreen(props: ModelScreenProps) {
 
   tabsAndPanelsAPI.setPanels(panels);
 
+  // Effect to update the model background color when the color scheme changes.
+  React.useEffect(() => {
+    const colorSchemeListener = () => {
+      const viewState = IModelApp.viewManager.getFirstOpenView()?.view;
+      if (viewState) {
+        updateBackgroundColor(viewState);
+      }
+    };
+    try {
+      window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', colorSchemeListener);
+    } catch (e) {
+      // Safari didn't support the above BASIC functionality until version 14.
+      window.matchMedia('(prefers-color-scheme: dark)').addListener(colorSchemeListener);
+    }
+    return () => {
+      try {
+        window.matchMedia('(prefers-color-scheme: dark)').removeEventListener('change', colorSchemeListener);
+      } catch (e) {
+        // Safari didn't support the above BASIC functionality until version 14.
+        window.matchMedia('(prefers-color-scheme: dark)').removeListener(colorSchemeListener);
+      }
+    }
+  }, []);
+
   // Effect to load the default view state.
   React.useEffect(() => {
     // React.useEffect callbacks cannot be async, since they have a meaningful return value that is
@@ -120,6 +154,7 @@ export function ModelScreen(props: ModelScreenProps) {
       try {
         const defaultViewId = await iModel.views.queryDefaultViewId();
         const defaultViewState = await iModel.views.load(defaultViewId);
+        updateBackgroundColor(defaultViewState);
         setViewState(defaultViewState);
       } catch (error) {
         // This should never happen in a non-corrupt iModel.
