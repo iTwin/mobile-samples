@@ -2,6 +2,7 @@
 * Copyright (c) 2021 Bentley Systems, Incorporated. All rights reserved.
 *--------------------------------------------------------------------------------------------*/
 import React from "react";
+import { MobileCore } from "@itwin/mobile-core";
 import { VisibleBackButton } from "@itwin/mobile-ui-react";
 import { ProjectInfo, ProjectScope } from "@bentley/ui-framework";
 import { DefaultProjectServices } from "@bentley/ui-framework/lib/ui-framework/clientservices/DefaultProjectServices";
@@ -51,15 +52,21 @@ function getActiveProject() {
   return undefined;
 }
 
+interface IModelInfo {
+  hubIModel: HubIModel;
+  briefcase?: LocalBriefcaseProps;
+}
+
 /// React component to allow downloading and opening models from the iModel Hub.
 export function HubScreen(props: HubScreenProps) {
   const { onOpen, onBack } = props;
   const [hubStep, setHubStep] = React.useState(HubStep.SignIn);
   const [projects, setProjects] = React.useState<ProjectInfo[]>([]);
-  const [hubIModels, setHubIModels] = React.useState<HubIModel[]>([]);
+  const [iModels, setIModels] = React.useState<IModelInfo[]>([]);
   const [buttonTitles, setButtonTitles] = React.useState<string[]>([]);
   const [project, setProject] = React.useState(getActiveProject());
   const [initialized, setInitialized] = React.useState(false);
+  const [haveCachedBriefcase, setHaveCachedBriefcase] = React.useState(false);
 
   // Fetch the list of all projects that this user has access to, then let the user choose one.
   const fetchProjects = React.useCallback(async () => {
@@ -86,15 +93,29 @@ export function HubScreen(props: HubScreenProps) {
   // active project stored in localState.
   const selectProject = React.useCallback(async (project: ProjectInfo) => {
     setHubStep(HubStep.FetchingIModels);
+    setIModels([]);
+    setButtonTitles([]);
     const hubClient = new IModelHubClient();
     const requestContext = await AuthorizedFrontendRequestContext.create();
     const getName = (imodel: HubIModel) => {
       return imodel.name ?? "<Unknown>";
     };
     // Fetch the list of imodels, then sort them by name using case-insensitive sort.
-    const imodels = (await hubClient.iModels.get(requestContext, project.wsgId)).sort((a, b) => (getName(a)).localeCompare(getName(b), undefined, { sensitivity: "base" }));
-    setHubIModels(imodels);
-    const names = imodels.map((imodel) => getName(imodel));
+    const hubIModels = (await hubClient.iModels.get(requestContext, project.wsgId)).sort((a, b) => (getName(a)).localeCompare(getName(b), undefined, { sensitivity: "base" }));
+    const iModelInfos: IModelInfo[] = [];
+    let numCachedBriefcases = 0;
+    for (let i = 0; i < hubIModels.length; ++i) {
+      const hubIModel = hubIModels[i];
+      const localBriefcases = await NativeApp.getCachedBriefcases(hubIModel.id);
+      const briefcase = localBriefcases.length > 0 ? localBriefcases[0] : undefined;
+      if (briefcase) {
+        ++numCachedBriefcases;
+      }
+      setHaveCachedBriefcase(numCachedBriefcases !== 0);
+      iModelInfos.push({ hubIModel, briefcase });
+    }
+    setIModels(iModelInfos);
+    const names = hubIModels.map((imodel) => getName(imodel));
     setButtonTitles(names);
     setHubStep(HubStep.SelectIModel);
   }, []);
@@ -176,8 +197,8 @@ export function HubScreen(props: HubScreenProps) {
 
   // onClick handler for iModel list.
   const handleSelectIModel = React.useCallback(async (index) => {
-    console.log("Select iModel: " + JSON.stringify(hubIModels[index]));
-    const iModel = hubIModels[index];
+    console.log("Select iModel: " + JSON.stringify(iModels[index]));
+    const iModel = iModels[index].hubIModel;
     // First, check to see if we have a local copy of the iModel.
     // NOTE: This does not check to see if the iModel has been updated since it was last
     // downloaded.
@@ -189,52 +210,88 @@ export function HubScreen(props: HubScreenProps) {
       // We do have a local copy of the iModel, so open that local copy.
       openIModel(localBriefcases[0]);
     }
-  }, [hubIModels, downloadIModel, openIModel]);
+  }, [iModels, downloadIModel, openIModel]);
 
   // Convert the button titles into buttons.
-  const iModelButtons = buttonTitles.map((document: string, index: number) => {
-    const lastSlash = document.lastIndexOf("/");
-    const documentName = lastSlash === -1 ? document : document.substring(lastSlash + 1);
-    return <Button
-      key={index}
-      onClick={async () => {
-        if (document === "Sign Out") {
-          IModelApp.authorizationClient?.signOut();
-          onBack();
-        }
-        if (hubStep === HubStep.SelectProject) {
-          handleSelectProject(index);
-        }
-        if (hubStep === HubStep.SelectIModel) {
-          handleSelectIModel(index);
-        }
-      }}
-      title={documentName} />
+  const buttons = buttonTitles.map((title: string, index: number) => {
+    if (hubStep === HubStep.SelectIModel || hubStep === HubStep.DownloadIModel) {
+      const briefcase = iModels[index].briefcase;
+      return (
+        <div className="imodel-row" key={index}>
+          <Button
+            onClick={() => handleSelectIModel(index)}
+            title={title}
+          />
+          {briefcase &&
+            <Button
+              onClick={async () => {
+                await MobileCore.deleteCachedBriefcase(briefcase);
+                if (project) {
+                  selectProject(project);
+                }
+              }}
+              title="Delete"
+            />
+          }
+        </div>);
+    } else {
+      return <Button
+        key={index}
+        onClick={async () => {
+          if (title === "Sign Out") {
+            IModelApp.authorizationClient?.signOut();
+            onBack();
+          }
+          if (hubStep === HubStep.SelectProject) {
+            handleSelectProject(index);
+          }
+        }}
+        title={title} />
+    }
   });
+
+  let deleteAllButton;
+  if (haveCachedBriefcase) {
+    // If there is at least one cached briefcase, allow them all to be deleted.
+    deleteAllButton = (
+      <div
+        onClick={async () => {
+          if (project) {
+            await MobileCore.deleteCachedBriefcases(project.wsgId);
+            selectProject(project);
+          }
+        }}
+      >
+        Delete All Downloads
+      </div>
+    );
+  }
 
   let changeProjectButton;
   if (project) {
     // If the user has selected a project, give them the chance to select a different one.
     changeProjectButton = (
-      <div className="change-project ">
-        <div
-          onClick={() => fetchProjects()}
-        >
-          Change Project
-        </div>
+      <div
+        onClick={() => fetchProjects()}
+      >
+        Change Project
       </div>
     );
   }
+
   return (
     <Screen>
       <div className="hub-screen">
         <div className="title">
           <VisibleBackButton onClick={onBack} />
           <div className="title-text">{titles[hubStep]}</div>
-          {changeProjectButton}
+          <div className="buttons-parent">
+            {deleteAllButton}
+            {changeProjectButton}
+          </div>
         </div>
         <div className="list">
-          <div className="list-items">{iModelButtons}</div>
+          <div className="list-items">{buttons}</div>
         </div>
       </div>
     </Screen>
