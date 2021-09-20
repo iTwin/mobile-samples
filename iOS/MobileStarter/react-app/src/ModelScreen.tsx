@@ -14,6 +14,7 @@ import {
   MobileUiContent,
   NavigationPanel,
   TabOrPanelDef,
+  useIsMountedRef,
   useTabsAndStandAlonePanels,
   VisibleBackButton,
 } from "@itwin/mobile-ui-react";
@@ -50,6 +51,9 @@ export function ModelScreen(props: ModelScreenProps) {
   const documentName = lastSlash === -1 ? filename : filename.substring(lastSlash + 1);
   const [viewState, setViewState] = React.useState<ViewState>();
   const elementPropertiesLabel = "Properties";
+  // Any time we do anything asynchronous, we have to check if the component is still mounted,
+  // or it can lead to a run-time exception.
+  const isMountedRef = useIsMountedRef();
   const moreActions = () => {
     const actions: ActionSheetAction[] =
       [
@@ -154,6 +158,7 @@ export function ModelScreen(props: ModelScreenProps) {
       try {
         const defaultViewId = await iModel.views.queryDefaultViewId();
         const defaultViewState = await iModel.views.load(defaultViewId);
+        if (!isMountedRef.current) return;
         updateBackgroundColor(defaultViewState);
         setViewState(defaultViewState);
       } catch (error) {
@@ -162,7 +167,7 @@ export function ModelScreen(props: ModelScreenProps) {
       }
     };
     loadViewState();
-  }, [iModel.views]);
+  }, [iModel.views, isMountedRef]);
 
   // Note: Changes to the [[viewState]] field of [[ViewportProps]] are ignored after the component is
   // first created. So don't create the [[ViewportComponent]] until after we have loaded the default
