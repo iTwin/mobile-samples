@@ -11,6 +11,7 @@ import { HubIModel, IModelHubClient } from "@bentley/imodelhub-client";
 import { LocalBriefcaseProps, SyncMode } from "@bentley/imodeljs-common";
 import { Button, Screen } from "./Exports";
 import "./HubScreen.scss";
+import { ProgressInfo } from "@bentley/itwin-client";
 
 /// Properties for the [[HubScreen]] React component.
 export interface HubScreenProps {
@@ -57,6 +58,57 @@ interface IModelInfo {
   briefcase?: LocalBriefcaseProps;
 }
 
+function roundedNumber(input: number, decimals?: number) {
+  if (decimals === undefined) {
+    decimals = 2;
+  }
+  let rounded = input.toFixed(decimals);
+  let len = rounded.length;
+  if (decimals > 0) {
+    // Strip off trailing zeroes if we are showing any decimals.
+    while (len > 0 && rounded.charAt(len - 1) === "0") {
+      --len;
+    }
+  }
+  if (len > 0) {
+    if (rounded.charAt(len - 1) === ".") {
+      --len;
+    }
+    rounded = rounded.substr(0, len);
+  } else {
+    rounded = "";
+  }
+  return rounded;
+}
+
+function fileSizeString(input?: number, decimals?: number) {
+  if (input === undefined) {
+    return "? MB";
+  }
+  const kb = 1024; // Should it be 1000?
+  const mb = kb * kb;
+  const gb = mb * kb;
+
+  if (input < kb) {
+    return input.toString() + " B";
+  } else if (input < mb) {
+    return roundedNumber(input / kb, decimals).toString() + " KB";
+  } else if (input < gb) {
+    return roundedNumber(input / mb, decimals).toString() + " MB";
+  } else {
+    return roundedNumber(input / gb, decimals).toString() + " GB";
+  }
+}
+
+function progressString(progress: ProgressInfo | undefined) {
+  let percent = progress?.percent?.toString();
+  if (percent === undefined && progress?.total) {
+    percent = roundedNumber(100.0 * progress.loaded / progress.total, 0);
+  }
+  if (percent === undefined) return "";
+  return " (" + percent + "%)";
+}
+
 /// React component to allow downloading and opening models from the iModel Hub.
 export function HubScreen(props: HubScreenProps) {
   const { onOpen, onBack } = props;
@@ -67,6 +119,7 @@ export function HubScreen(props: HubScreenProps) {
   const [project, setProject] = React.useState(getActiveProject());
   const [initialized, setInitialized] = React.useState(false);
   const [haveCachedBriefcase, setHaveCachedBriefcase] = React.useState(false);
+  const [progress, setProgress] = React.useState<ProgressInfo>();
 
   // Fetch the list of all projects that this user has access to, then let the user choose one.
   const fetchProjects = React.useCallback(async () => {
@@ -182,9 +235,12 @@ export function HubScreen(props: HubScreenProps) {
   const downloadIModel = React.useCallback(async (iModel: HubIModel) => {
     setHubStep(HubStep.DownloadIModel);
     const opts: DownloadBriefcaseOptions = { syncMode: SyncMode.PullOnly };
-    const downloader = await NativeApp.requestDownloadBriefcase(project!.wsgId!, iModel.id!, opts);
+    const downloader = await NativeApp.requestDownloadBriefcase(project!.wsgId!, iModel.id!, opts, undefined, (progress: ProgressInfo) => {
+      setProgress(progress);
+    });
     // Wait for the download to complete.
     await downloader.downloadPromise;
+    setProgress(undefined);
     const localBriefcases = await NativeApp.getCachedBriefcases(iModel.id);
     if (localBriefcases.length === 0) {
       // This should never happen, since we just downloaded it, but check, just in case.
@@ -214,13 +270,17 @@ export function HubScreen(props: HubScreenProps) {
 
   // Convert the button titles into buttons.
   const buttons = buttonTitles.map((title: string, index: number) => {
+    const getTitle = (title: string, briefcase: LocalBriefcaseProps | undefined) => {
+      if (!briefcase) return title;
+      return title + " (" + fileSizeString(briefcase.fileSize) + ")";
+    }
     if (hubStep === HubStep.SelectIModel || hubStep === HubStep.DownloadIModel) {
       const briefcase = iModels[index].briefcase;
       return (
         <div className="imodel-row" key={index}>
           <Button
             onClick={() => handleSelectIModel(index)}
-            title={title}
+            title={getTitle(title, briefcase)}
           />
           {briefcase &&
             <Button
@@ -284,7 +344,7 @@ export function HubScreen(props: HubScreenProps) {
       <div className="hub-screen">
         <div className="title">
           <VisibleBackButton onClick={onBack} />
-          <div className="title-text">{titles[hubStep]}</div>
+          <div className="title-text">{titles[hubStep] + progressString(progress)}</div>
           <div className="buttons-parent">
             {deleteAllButton}
             {changeProjectButton}
