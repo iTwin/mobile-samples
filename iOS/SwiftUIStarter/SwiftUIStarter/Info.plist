@@ -92,5 +92,7 @@
 			</dict>
 		</dict>
 	</array>
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string>Demonstrate Geolocation Polyfill</string>
 </dict>
 </plist>

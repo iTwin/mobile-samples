@@ -3,7 +3,7 @@
 *--------------------------------------------------------------------------------------------*/
 import React from "react";
 import { ColorDef } from "@bentley/imodeljs-common";
-import { IModelApp, IModelConnection, ViewState } from "@bentley/imodeljs-frontend";
+import { FitViewTool, IModelApp, IModelConnection, ViewState } from "@bentley/imodeljs-frontend";
 import { ViewportComponent } from "@bentley/ui-components";
 import { getCssVariable, IconSpec } from "@bentley/ui-core";
 import { viewWithUnifiedSelection } from "@bentley/presentation-components";
@@ -54,22 +54,48 @@ export function ModelScreen(props: ModelScreenProps) {
   // Any time we do anything asynchronous, we have to check if the component is still mounted,
   // or it can lead to a run-time exception.
   const isMountedRef = useIsMountedRef();
+  // Passing an arrow function as the actions instead of the array itself allows for the list
+  // of actions to be dynamic. In this case, the element properties action is only shown if the
+  // selection set is active.
   const moreActions = () => {
+    const handleShowLocation = () => {
+      // Ask for the device's current location, then show the latitude and longitude to the user.
+      // Note that this makes use of a Geolocation Polyfill to work around the fact that the web
+      // view on both iOS and Android does not allow location lookups for non-https pages.
+      navigator.geolocation.getCurrentPosition((position: GeolocationPosition) => {
+        presentAlert({
+          title: "Location",
+          message: "Latitude: " + position.coords.latitude + " Longitude: " + position.coords.longitude,
+          actions: [{
+            name: "ok",
+            title: "OK",
+          }],
+        })
+      }, (positionError: GeolocationPositionError) => {
+        presentAlert({
+          title: "Error",
+          message: "Error getting location: " + positionError.message,
+          actions: [{
+            name: "ok",
+            title: "OK",
+          }],
+        })
+      });
+    };
+    const handleFitView = () => {
+      IModelApp.tools.run(FitViewTool.toolId, IModelApp.viewManager.getFirstOpenView(), true);
+    }
     const actions: ActionSheetAction[] =
       [
         {
-          name: "sample",
-          title: "Sample alert...",
-          onSelected: () => {
-            presentAlert({
-              title: "Information",
-              message: "Sample alert clicked.",
-              actions: [{
-                name: "ok",
-                title: "OK",
-              }],
-            })
-          },
+          name: "location",
+          title: "Show current location...",
+          onSelected: handleShowLocation,
+        },
+        {
+          name: "fitView",
+          title: "Fit View",
+          onSelected: handleFitView,
         },
       ];
 
