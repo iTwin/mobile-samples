@@ -1,5 +1,6 @@
 /*---------------------------------------------------------------------------------------------
-* Copyright (c) 2021 Bentley Systems, Incorporated. All rights reserved.
+* Copyright (c) Bentley Systems, Incorporated. All rights reserved.
+* See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
 import React from "react";
 import { Messenger } from "@itwin/mobile-core";
@@ -18,7 +19,7 @@ export interface SnapshotsScreenProps {
 
 /// React component that displays a list of snapshot iModels stored in the app's Documents folder.
 export function SnapshotsScreen(props: SnapshotsScreenProps) {
-  const {onOpen, onBack} = props;
+  const { onOpen, onBack } = props;
   const [snapshots, setSnapshots] = React.useState<string[]>([]);
 
   // This function sends a message to the native code requesting an array containing the paths to all
@@ -26,12 +27,11 @@ export function SnapshotsScreen(props: SnapshotsScreenProps) {
   // instantaneous, so there is no loading spinner.
   const updateBimDocuments = React.useCallback(async () => {
     const bimDocuments: string[] = await Messenger.query("getBimDocuments");
-    setSnapshots(bimDocuments.sort((a, b) => a.localeCompare(b, undefined, {sensitivity: "base"})));
+    setSnapshots(bimDocuments.sort((a, b) => a.localeCompare(b, undefined, { sensitivity: "base" })));
   }, []);
 
   // React effect run during component initialization.
-  React.useEffect(() =>
-  {
+  React.useEffect(() => {
     updateBimDocuments();
   }, [updateBimDocuments]);
 
@@ -60,7 +60,7 @@ export function SnapshotsScreen(props: SnapshotsScreenProps) {
           onOpen(document, SnapshotConnection.openFile(document));
         }
       }}
-      title={"Choose File..."} 
+      title={"Choose File..."}
     />
   );
 

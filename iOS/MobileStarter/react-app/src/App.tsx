@@ -1,5 +1,6 @@
 /*---------------------------------------------------------------------------------------------
-* Copyright (c) 2021 Bentley Systems, Incorporated. All rights reserved.
+* Copyright (c) Bentley Systems, Incorporated. All rights reserved.
+* See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
 import React from "react";
 import { combineReducers, createStore, Store } from "redux";
@@ -35,7 +36,7 @@ function App() {
   // Start out on the Loading screen.
   const [activeScreen, setActiveScreen] = React.useState(ActiveScreen.Loading);
   // Keep a stack of active screens, so that handleBack can automatically go to the correct place.
-  const [activeStack, setActiveStack] = React.useState<ActiveInfo[]>([{activeScreen}]);
+  const [activeStack, setActiveStack] = React.useState<ActiveInfo[]>([{ activeScreen }]);
   const [modelFilename, setModelFilename] = React.useState("");
   // The currently loaded iModel, or undefined if none is loaded.
   const [iModel, setIModel] = React.useState<IModelConnection>();
@@ -48,7 +49,7 @@ function App() {
     // function for the new active screen. The activeScreen variable (set after updating the activeStack)
     // tracks the current active screen.
     setActiveStack((old) => {
-      return [...old, {activeScreen: activeScreen, cleanup}];
+      return [...old, { activeScreen: activeScreen, cleanup }];
     });
     // Set the new screen as active.
     setActiveScreen(screen);
@@ -160,7 +161,7 @@ function App() {
           // switched to undefined.
           setOpenUrlPath(modelPath);
         } else {
-          handleOpen(modelPath, SnapshotConnection.openFile(modelPath));  
+          handleOpen(modelPath, SnapshotConnection.openFile(modelPath));
         }
       });
     }
@@ -190,7 +191,7 @@ function App() {
     case ActiveScreen.Hub:
       return <HubScreen onOpen={handleOpen} onBack={handleBack} />;
     case ActiveScreen.Model:
-      return <ModelScreen filename={modelFilename} iModel={iModel!} onBack={handleBack}/>
+      return <ModelScreen filename={modelFilename} iModel={iModel!} onBack={handleBack} />
     default:
       return <LoadingScreen />;
   }

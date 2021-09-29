@@ -1,5 +1,6 @@
 /*---------------------------------------------------------------------------------------------
-* Copyright (c) 2021 Bentley Systems, Incorporated. All rights reserved.
+* Copyright (c) Bentley Systems, Incorporated. All rights reserved.
+* See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
 import { Button, Screen } from "./Exports";
 import "./HomeScreen.scss";
@@ -20,15 +21,15 @@ export interface HomeScreenProps {
 
 /// React component for Home screen (shown after loading has completed).
 export function HomeScreen(props: HomeScreenProps) {
-  const {onSelect} = props;
+  const { onSelect } = props;
   return (
     <Screen>
       <div className="home-screen">
         <div className="title">Home</div>
         <div className="list">
           <div className="list-items">
-            <Button title="Snapshot iModels" onClick={() => onSelect(ActiveScreen.Snapshots)}/>
-            <Button title="Hub iModels" onClick={() => onSelect(ActiveScreen.Hub)}/>
+            <Button title="Snapshot iModels" onClick={() => onSelect(ActiveScreen.Snapshots)} />
+            <Button title="Hub iModels" onClick={() => onSelect(ActiveScreen.Hub)} />
           </div>
         </div>
       </div>

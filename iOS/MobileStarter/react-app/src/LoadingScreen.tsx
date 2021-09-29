@@ -1,5 +1,6 @@
 /*---------------------------------------------------------------------------------------------
-* Copyright (c) 2021 Bentley Systems, Incorporated. All rights reserved.
+* Copyright (c) Bentley Systems, Incorporated. All rights reserved.
+* See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
 import { Messenger } from "@itwin/mobile-core";
 import { Button } from "./Button";
@@ -16,7 +17,7 @@ export function LoadingScreen() {
     <Screen>
       <div className="loading-screen">
         Loading...
-        <Button title="Reload" onClick={() => {handleReload();}} />
+        <Button title="Reload" onClick={() => { handleReload(); }} />
         <div className="message">If it gets stuck here, switch away from app and back, then hit the Reload button.</div>
       </div>
     </Screen>
