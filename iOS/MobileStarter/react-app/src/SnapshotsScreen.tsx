@@ -3,7 +3,7 @@
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
 import React from "react";
-import { Messenger } from "@itwin/mobile-core";
+import { Messenger } from "@itwin/mobile-sdk-core";
 import { NavigationButton, VisibleBackButton } from "@itwin/mobile-ui-react";
 import { Button, Screen } from "./Exports";
 import { IModelConnection, SnapshotConnection } from "@bentley/imodeljs-frontend";

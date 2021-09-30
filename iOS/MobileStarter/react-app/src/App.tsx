@@ -8,7 +8,7 @@ import { IOSApp, IOSAppOpts } from "@bentley/mobile-manager/lib/MobileFrontend";
 import { IModelApp, IModelConnection, SnapshotConnection } from "@bentley/imodeljs-frontend";
 import { FrameworkReducer, FrameworkState, UiFramework } from "@bentley/ui-framework";
 import { Presentation } from "@bentley/presentation-frontend";
-import { Messenger, presentAlert } from "@itwin/mobile-core";
+import { Messenger, presentAlert } from "@itwin/mobile-sdk-core";
 import { MobileUi } from "@itwin/mobile-ui-react";
 import { ActiveScreen, SnapshotsScreen, HomeScreen, HubScreen, LoadingScreen, ModelScreen } from "./Exports";
 import { getSupportedRpcs } from "./common/rpcs";

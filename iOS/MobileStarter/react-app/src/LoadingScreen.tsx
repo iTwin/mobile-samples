@@ -2,7 +2,7 @@
 * Copyright (c) Bentley Systems, Incorporated. All rights reserved.
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
-import { Messenger } from "@itwin/mobile-core";
+import { Messenger } from "@itwin/mobile-sdk-core";
 import { Button } from "./Button";
 import { Screen } from "./Exports";
 import "./LoadingScreen.scss";

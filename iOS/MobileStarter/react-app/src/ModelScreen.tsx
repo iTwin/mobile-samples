@@ -8,7 +8,7 @@ import { FitViewTool, IModelApp, IModelConnection, ViewState } from "@bentley/im
 import { ViewportComponent } from "@bentley/ui-components";
 import { getCssVariable, IconSpec } from "@bentley/ui-core";
 import { viewWithUnifiedSelection } from "@bentley/presentation-components";
-import { ActionSheetAction, presentAlert } from "@itwin/mobile-core";
+import { ActionSheetAction, presentAlert } from "@itwin/mobile-sdk-core";
 import {
   ActionSheetButton,
   IconImage,

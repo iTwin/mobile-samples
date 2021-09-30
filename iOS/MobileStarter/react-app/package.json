@@ -5,7 +5,7 @@
   "homepage": "./",
   "scripts": {
     "start": "USE_FAST_SASS=true BROWSER=none react-scripts start",
-    "copy:assets": "cpx \"./node_modules/@itwin/mobile-core/lib/public/locales/**\" ./build/locales && cpx \"./node_modules/@itwin/mobile-ui-react/lib/public/locales/**\" ./build/locales",
+    "copy:assets": "cpx \"./node_modules/@itwin/mobile-sdk-core/lib/public/locales/**\" ./build/locales && cpx \"./node_modules/@itwin/mobile-ui-react/lib/public/locales/**\" ./build/locales",
     "build:frontend": "NODE_OPTIONS=--max_old_space_size=4096 USE_FAST_SASS=true react-scripts build && npm run copy:assets",
     "build:backend": "tsc -p tsconfig.backend.json && webpack --config ./webpack.config.js --env.outdir=./lib/webpack --env.entry=./lib/backend/main.js --env.bundlename=main",
     "build": "npm run build:frontend && npm run build:backend",

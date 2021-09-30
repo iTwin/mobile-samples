@@ -3,7 +3,7 @@
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
 import React from "react";
-import { MobileCore } from "@itwin/mobile-core";
+import { MobileCore } from "@itwin/mobile-sdk-core";
 import { useIsMountedRef, VisibleBackButton } from "@itwin/mobile-ui-react";
 import { ProgressInfo } from "@bentley/itwin-client";
 import { ProjectInfo, ProjectScope } from "@bentley/ui-framework";
