@@ -21,11 +21,11 @@
       },
       {
         "package": "itwin-mobile-ios",
-        "repositoryURL": "https://github.com/toddsouthenbentley/itwin-iostest",
+        "repositoryURL": "https://github.com/iTwin/mobile-ios-package",
         "state": {
           "branch": null,
-          "revision": "afe652f77615956b0c115ecdf3e65e1fee89b6e2",
-          "version": "0.1.1"
+          "revision": "21be6b79f10f292d8ba7800a88ab445d07b69bf3",
+          "version": "2.19.18"
         }
       },
       {
