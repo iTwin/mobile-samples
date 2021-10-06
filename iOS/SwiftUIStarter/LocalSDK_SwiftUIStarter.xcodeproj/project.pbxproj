@@ -127,7 +127,7 @@
 					};
 				};
 			};
-			buildConfigurationList = 5FDD748D26CDA9520007FBC6 /* Build configuration list for PBXProject "DoNotUse_SwiftUIStarter" */;
+			buildConfigurationList = 5FDD748D26CDA9520007FBC6 /* Build configuration list for PBXProject "LocalSDK_SwiftUIStarter" */;
 			compatibilityVersion = "Xcode 9.3";
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
@@ -137,7 +137,7 @@
 			);
 			mainGroup = 5FDD748926CDA9520007FBC6;
 			packageReferences = (
-				5FB2050626D03B2600C4DBE1 /* XCRemoteSwiftPackageReference "itwin-mobile-sdk" */,
+				5FB2050626D03B2600C4DBE1 /* XCRemoteSwiftPackageReference "mobile-sdk" */,
 			);
 			productRefGroup = 5FDD749326CDA9520007FBC6 /* Products */;
 			projectDirPath = "";
@@ -331,7 +331,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.bentley.SwiftUIStarter;
+				PRODUCT_BUNDLE_IDENTIFIER = com.bentley.sample.SwiftUIStarter;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -353,7 +353,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.bentley.SwiftUIStarter;
+				PRODUCT_BUNDLE_IDENTIFIER = com.bentley.sample.SwiftUIStarter;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -363,7 +363,7 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		5FDD748D26CDA9520007FBC6 /* Build configuration list for PBXProject "DoNotUse_SwiftUIStarter" */ = {
+		5FDD748D26CDA9520007FBC6 /* Build configuration list for PBXProject "LocalSDK_SwiftUIStarter" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				5FDD749F26CDA9530007FBC6 /* Debug */,
@@ -384,7 +384,7 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
-		5FB2050626D03B2600C4DBE1 /* XCRemoteSwiftPackageReference "itwin-mobile-sdk" */ = {
+		5FB2050626D03B2600C4DBE1 /* XCRemoteSwiftPackageReference "mobile-sdk" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/iTwin/mobile-sdk.git";
 			requirement = {
@@ -397,7 +397,7 @@
 /* Begin XCSwiftPackageProductDependency section */
 		5FB2050726D03B2600C4DBE1 /* ITwinMobile */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = 5FB2050626D03B2600C4DBE1 /* XCRemoteSwiftPackageReference "itwin-mobile-sdk" */;
+			package = 5FB2050626D03B2600C4DBE1 /* XCRemoteSwiftPackageReference "mobile-sdk" */;
 			productName = ITwinMobile;
 		};
 /* End XCSwiftPackageProductDependency section */
