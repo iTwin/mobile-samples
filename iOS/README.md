@@ -35,12 +35,3 @@ Once you have performed the above setup, you can build and run the samples. Simp
 1. Select your connected device in Finder's left navigation pane.
 1. Select the Files tab.
 1. Drag and drop .bim Snapshot iModel files into the "iTwin Starter" app or the "SwiftUIStarter" app.
-
-## Creating a Bentley account
-
-If you do not already have a Bentley account, you must create one.
-
-1. Click on the "Don't have an account? Register now" link when prompted to sign into the Bentley Apps portal.
-1. Fill in the information and hit "Create Account".
-1. Check your email and copy and paste the verification code that is sent there into the field, then hit "Verify".
-1. Sign in with the newly created account.
