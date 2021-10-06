@@ -41,6 +41,10 @@ Once you have performed the above setup, you can build and run the samples.
 
 1. Open the appropriate Xcode project.
 1. Xcode will take some time to download the Swift Packages that each sample depends on the first time you open that sample Xcode project. Also, it appears that Xcode sometimes randomly fails when installing Swift Packages. If this happens, select File->Packages->Reset Package Caches.
+1. Select the project in the Xcode navigator.
+1. Select the only entry under TARGETS.
+1. Select the Signing & Capabilities tab.
+1. Select your team from the Team popup menu.
 1. Run.
 1. If you get an error dialog that says `Could not connect to React debug server.`, the first thing to try is to uncomment the `ITMAPPLICATION_USE_IP = YES` line in iOSSamples.xcconfig.
 1. Once a sample is installed on your device, you can use Finder to copy a Snapshot iModel to the device if you want to open local snapshot models in the sample:
