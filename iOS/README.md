@@ -4,7 +4,7 @@
 
 Before building the samples, you must configure a Client ID for yourself. To do so, do the following:
 
-1. If you have not already done so, create a Bentley Account. *TODO: Instructions for doing this.*
+1. If you have not already done so, [create a Bentley Account](./BentleyAccount.md).
 1. Go to <https://developer.bentley.com/my-apps/>.
 1. Click the "Register New" button.
 1. Pick a name.
@@ -22,8 +22,9 @@ Before building the samples, you must configure a Client ID for yourself. To do 
     ```
 
     Note: You can use the "Copy" button in the Scopes section to copy your scopes to the clipboard.
+1. You must install node 14 on your Mac, and it needs to be the default node found in your path.
+1. If you are using a Mac with Apple Silicon, you must run a Rosetta 2 Terminal, then cd into the `iOS/MobileStarter/react-app` directory of this repository, then run `npm install`.
 
-You must install node 14 on your Mac, and it needs to be the default node found in your path. (Node 16 *might* work, but it has not been tested.)
 
 ---
 
@@ -34,3 +35,12 @@ Once you have performed the above setup, you can build and run the samples. Simp
 1. Select your connected device in Finder's left navigation pane.
 1. Select the Files tab.
 1. Drag and drop .bim Snapshot iModel files into the "iTwin Starter" app or the "SwiftUIStarter" app.
+
+## Creating a Bentley account
+
+If you do not already have a Bentley account, you must create one.
+
+1. Click on the "Don't have an account? Register now" link when prompted to sign into the Bentley Apps portal.
+1. Fill in the information and hit "Create Account".
+1. Check your email and copy and paste the verification code that is sent there into the field, then hit "Verify".
+1. Sign in with the newly created account.

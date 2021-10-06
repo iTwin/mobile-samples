@@ -28,7 +28,6 @@ Note: These are temporary build instructions for getting these samples running.
     ITMAPPLICATION_USE_IP = YES
     ```
 
-1. Cross Fingers.
 1. Run
 
 ## Updates
