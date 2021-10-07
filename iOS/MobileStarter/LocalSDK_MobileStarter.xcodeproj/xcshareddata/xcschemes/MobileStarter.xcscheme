@@ -17,7 +17,7 @@
                BlueprintIdentifier = "1FC1114F261FC44900835E6E"
                BuildableName = "iTwin Starter.app"
                BlueprintName = "MobileStarter"
-               ReferencedContainer = "container:DoNotUse_MobileStarter.xcodeproj">
+               ReferencedContainer = "container:LocalSDK_MobileStarter.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
       </BuildActionEntries>
@@ -47,7 +47,7 @@
             BlueprintIdentifier = "1FC1114F261FC44900835E6E"
             BuildableName = "iTwin Starter.app"
             BlueprintName = "MobileStarter"
-            ReferencedContainer = "container:DoNotUse_MobileStarter.xcodeproj">
+            ReferencedContainer = "container:LocalSDK_MobileStarter.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
    </LaunchAction>
@@ -64,7 +64,7 @@
             BlueprintIdentifier = "1FC1114F261FC44900835E6E"
             BuildableName = "iTwin Starter.app"
             BlueprintName = "MobileStarter"
-            ReferencedContainer = "container:DoNotUse_MobileStarter.xcodeproj">
+            ReferencedContainer = "container:LocalSDK_MobileStarter.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
    </ProfileAction>
