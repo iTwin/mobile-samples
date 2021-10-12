@@ -8,7 +8,7 @@ import { FitViewTool, IModelApp, IModelConnection, ViewState } from "@bentley/im
 import { ViewportComponent } from "@bentley/ui-components";
 import { getCssVariable, IconSpec } from "@bentley/ui-core";
 import { viewWithUnifiedSelection } from "@bentley/presentation-components";
-import { ActionSheetAction, presentAlert } from "@itwin/mobile-sdk-core";
+import { AlertAction, presentAlert } from "@itwin/mobile-sdk-core";
 import {
   ActionSheetButton,
   IconImage,
@@ -86,7 +86,7 @@ export function ModelScreen(props: ModelScreenProps) {
     const handleFitView = () => {
       IModelApp.tools.run(FitViewTool.toolId, IModelApp.viewManager.getFirstOpenView(), true);
     }
-    const actions: ActionSheetAction[] =
+    const actions: AlertAction[] =
       [
         {
           name: "location",
