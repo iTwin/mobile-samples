@@ -181,7 +181,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 1;
 			shellPath = /bin/sh;
-			shellScript = "cd \"${PROJECT_DIR}/react-app\"\n[ -d node_modules ] || npm install\n";
+			shellScript = "cd \"${PROJECT_DIR}/react-app\"\nexport NODE_BINARY=node\n\n# Fix for machines using nvm\nif [[ -s \"$HOME/.nvm/nvm.sh\" ]]; then\n    . \"$HOME/.nvm/nvm.sh\"\nelif [[ -x \"$(command -v brew)\" && -s \"$(brew --prefix nvm)/nvm.sh\" ]]; then\n    . \"$(brew --prefix nvm)/nvm.sh\"\nfi\n[ -d node_modules ] || npm install\n";
 			showEnvVarsInLog = 0;
 		};
 		1FCA80062620B9CF002F1F76 /* Copy web app assets */ = {
