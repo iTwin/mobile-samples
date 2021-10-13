@@ -3,8 +3,8 @@
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
 import React from "react";
-import { MobileCore } from "@itwin/mobile-sdk-core";
-import { useIsMountedRef, VisibleBackButton } from "@itwin/mobile-ui-react";
+import { AlertAction, MobileCore } from "@itwin/mobile-sdk-core";
+import { ActionSheetButton, IconImage, useIsMountedRef, VisibleBackButton } from "@itwin/mobile-ui-react";
 import { ProgressInfo } from "@bentley/itwin-client";
 import { ProjectInfo, ProjectScope } from "@bentley/ui-framework";
 import { DefaultProjectServices } from "@bentley/ui-framework/lib/ui-framework/clientservices/DefaultProjectServices";
@@ -206,6 +206,7 @@ export function HubScreen(props: HubScreenProps) {
         // Do whatever comes next.
         afterSignedIn();
       } catch (error) {
+        console.log(`Error signing in: ${error}`);
         // There was a problem signing in. Show the error, and give the user the option
         // to sign out. (A token expired error requires sign out.)
         setButtonTitles(["Fetch Projects " + error, "Sign Out"]);
@@ -296,24 +297,29 @@ export function HubScreen(props: HubScreenProps) {
     }
     if (hubStep === HubStep.SelectIModel || hubStep === HubStep.DownloadIModel) {
       const briefcase = iModels[index].briefcase;
+      let deleteButton;
+      if (briefcase) {
+        deleteButton = (
+          <div className="delete-button" onClick={async (e) => {
+            e.stopPropagation();
+            await MobileCore.deleteCachedBriefcase(briefcase);
+            if (!isMountedRef.current) return;
+            if (project) {
+              selectProject(project);
+            }
+          }}>
+            <IconImage iconSpec="icon-delete" />
+          </div>
+        );
+      }
       return (
         <div className="imodel-row" key={index}>
           <Button
             onClick={() => handleSelectIModel(index)}
             title={getTitle(title, briefcase)}
-          />
-          {briefcase &&
-            <Button
-              onClick={async () => {
-                await MobileCore.deleteCachedBriefcase(briefcase);
-                if (!isMountedRef.current) return;
-                if (project) {
-                  selectProject(project);
-                }
-              }}
-              title="Delete"
-            />
-          }
+          >
+            {deleteButton}
+          </Button>
         </div>);
     } else {
       return <Button
@@ -331,33 +337,32 @@ export function HubScreen(props: HubScreenProps) {
     }
   });
 
-  let deleteAllButton;
-  if (haveCachedBriefcase) {
-    // If there is at least one cached briefcase, allow them all to be deleted.
-    deleteAllButton = (
-      <div
-        onClick={async () => {
+  let moreButton;
+
+  if (haveCachedBriefcase || project) {
+    const actions: AlertAction[] = [];
+    if (haveCachedBriefcase) {
+      actions.push({
+        name: "deleteAll",
+        title: "Delete All Downloads",
+        onSelected: async () => {
           if (project) {
             await MobileCore.deleteCachedBriefcases(project.wsgId);
             if (!isMountedRef.current) return;
             selectProject(project);
           }
-        }}
-      >
-        Delete All Downloads
-      </div>
-    );
-  }
-
-  let changeProjectButton;
-  if (project) {
-    // If the user has selected a project, give them the chance to select a different one.
-    changeProjectButton = (
-      <div
-        onClick={() => fetchProjects()}
-      >
-        Change Project
-      </div>
+        }
+      });
+    }
+    if (project) {
+      actions.push({
+        name: "changeProject",
+        title: "Change Project",
+        onSelected: () => fetchProjects(),
+      })
+    }
+    moreButton = (
+      <ActionSheetButton actions={actions} />
     );
   }
 
@@ -367,9 +372,8 @@ export function HubScreen(props: HubScreenProps) {
         <div className="title">
           <VisibleBackButton onClick={onBack} />
           <div className="title-text">{titles[hubStep] + progressString(progress)}</div>
-          <div className="buttons-parent">
-            {deleteAllButton}
-            {changeProjectButton}
+          <div className="more-parent">
+            {moreButton}
           </div>
         </div>
         <div className="list">

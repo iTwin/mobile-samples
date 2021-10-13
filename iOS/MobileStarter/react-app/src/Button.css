@@ -8,4 +8,6 @@
   background-color: var(--background-color-2);
   margin: 10px;
   color: var(--color);
+  display: flex;
+  align-items: center;
 }

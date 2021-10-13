@@ -12,10 +12,11 @@ export interface ButtonProps {
   title: string;
   /// Optional callback for when the button is tapped.
   onClick?: (e: React.MouseEvent<HTMLDivElement>) => void;
+  children?: React.ReactNode;
 }
 
 /// Extremely basic text button React component.
 export function Button(props: ButtonProps) {
-  const { title, onClick } = props;
-  return <div className="Button" onClick={onClick}>{title}</div>
+  const { title, onClick, children } = props;
+  return <div className="Button" onClick={onClick}>{title}{children}</div>
 }
