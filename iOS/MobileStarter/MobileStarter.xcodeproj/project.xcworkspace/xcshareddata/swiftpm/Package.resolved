@@ -24,8 +24,8 @@
         "repositoryURL": "https://github.com/iTwin/mobile-ios-package",
         "state": {
           "branch": null,
-          "revision": "21be6b79f10f292d8ba7800a88ab445d07b69bf3",
-          "version": "2.19.18"
+          "revision": "b1ddabe1abec5a8af12e76da4c1c44022315078a",
+          "version": "2.19.19"
         }
       },
       {
@@ -33,8 +33,8 @@
         "repositoryURL": "https://github.com/iTwin/mobile-sdk.git",
         "state": {
           "branch": null,
-          "revision": "d81967cbce59c95ecc13e162418ae9f3933d48db",
-          "version": "0.0.28"
+          "revision": "26d2203943832baa1bb67bb8143015249e42b6ae",
+          "version": "0.9.1"
         }
       },
       {
@@ -42,8 +42,8 @@
         "repositoryURL": "https://github.com/mxcl/PromiseKit",
         "state": {
           "branch": null,
-          "revision": "d2f7ba14bcdc45e18f4f60ad9df883fb9055f081",
-          "version": "6.15.3"
+          "revision": "2ff97931d2721ecae9f94d8cbf4cf853a7d79180",
+          "version": "6.16.0"
         }
       },
       {
