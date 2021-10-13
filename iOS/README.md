@@ -51,3 +51,11 @@ Once you have performed the above setup, you can build and run the samples.
     1. Select your connected device in Finder's left navigation pane.
     1. Select the Files tab.
     1. Drag and drop .bim Snapshot iModel files into the "iTwin Starter" app or the "SwiftUIStarter" app.
+
+## Organization
+
+The MobileStarter and SwiftUIStarter sample apps are both simple apps that present a full-screen web view. The app UI inside this web view is a React app in the `react-app` directory of each sample app. The `react-app` directory in the SwiftUIStarter sample app is just a symbolic link to the `react-app` directory in the MobileStarter sample app.
+
+It is recommended that you use Visual Studio Code to edit your TypeScript code. Opening the `react-app` directory itself in Visual Studio code will generally be the most convenient way to do this. If you do this, you can use Cmd+Shift+B to start the React debug server, and omit using `npm run start` in a Terminal window.
+
+The `project.json` file inside `react-app` contains dependencies for `@itwin/mobile-sdk-core` and `@itwin/mobile-ui-react`. It also contains dependencies for all the various iModelJS packages. These latter dependencies are optional (since they are already dependencies of `@itwin/mobile-ui-react`), but if they are omitted, Visual Studio Code will not autocomplete against those packages without first manually importing the desired class or function.
