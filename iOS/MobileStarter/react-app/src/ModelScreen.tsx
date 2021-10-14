@@ -19,7 +19,7 @@ import {
   useTabsAndStandAlonePanels,
   VisibleBackButton,
 } from "@itwin/mobile-ui-react";
-import { AboutBottomPanel, ElementPropertiesPanel, InfoBottomPanel, ViewsBottomPanel } from "./Exports";
+import { AboutBottomPanel, ElementPropertiesPanel, i18n, InfoBottomPanel, ViewsBottomPanel } from "./Exports";
 import "./ModelScreen.scss";
 
 // tslint:disable-next-line: variable-name
@@ -51,7 +51,15 @@ export function ModelScreen(props: ModelScreenProps) {
   const lastSlash = filename.lastIndexOf("/");
   const documentName = lastSlash === -1 ? filename : filename.substring(lastSlash + 1);
   const [viewState, setViewState] = React.useState<ViewState>();
-  const elementPropertiesLabel = "Properties";
+  const locationLabel = React.useMemo(() => i18n("ModelScreen", "Location"), []);
+  const errorLabel = React.useMemo(() => i18n("Shared", "Error"), []);
+  const okLabel = React.useMemo(() => i18n("Shared", "OK"), []);
+  const showCurrentLocationLabel = React.useMemo(() => i18n("ModelScreen", "ShowCurrentLocation"), []);
+  const fitViewLabel = React.useMemo(() => i18n("ModelScreen", "FitView"), []);
+  const infoLabel = React.useMemo(() => i18n("ModelScreen", "Info"), []);
+  const aboutLabel = React.useMemo(() => i18n("ModelScreen", "About"), []);
+  const viewsLabel = React.useMemo(() => i18n("ModelScreen", "Views"), []);
+  const elementPropertiesLabel = React.useMemo(() => i18n("ModelScreen", "Properties"), []);
   // Any time we do anything asynchronous, we have to check if the component is still mounted,
   // or it can lead to a run-time exception.
   const isMountedRef = useIsMountedRef();
@@ -64,21 +72,24 @@ export function ModelScreen(props: ModelScreenProps) {
       // Note that this makes use of a Geolocation Polyfill to work around the fact that the web
       // view on both iOS and Android does not allow location lookups for non-https pages.
       navigator.geolocation.getCurrentPosition((position: GeolocationPosition) => {
+        const latitude = position.coords.latitude;
+        const longitude = position.coords.longitude;
         presentAlert({
-          title: "Location",
-          message: "Latitude: " + position.coords.latitude + " Longitude: " + position.coords.longitude,
+          title: locationLabel,
+          message: i18n("ModelScreen", "LocationFormat", { latitude, longitude }),
           actions: [{
             name: "ok",
-            title: "OK",
+            title: okLabel,
           }],
         })
       }, (positionError: GeolocationPositionError) => {
+        const error = positionError.message;
         presentAlert({
-          title: "Error",
-          message: "Error getting location: " + positionError.message,
+          title: errorLabel,
+          message: i18n("ModelScreen", "LocationErrorFormat", { error }),
           actions: [{
             name: "ok",
-            title: "OK",
+            title: okLabel,
           }],
         })
       });
@@ -90,12 +101,12 @@ export function ModelScreen(props: ModelScreenProps) {
       [
         {
           name: "location",
-          title: "Show current location...",
+          title: showCurrentLocationLabel,
           onSelected: handleShowLocation,
         },
         {
           name: "fitView",
-          title: "Fit View",
+          title: fitViewLabel,
           onSelected: handleFitView,
         },
       ];
@@ -113,7 +124,7 @@ export function ModelScreen(props: ModelScreenProps) {
   const moreButton = <ActionSheetButton actions={moreActions} />
   const panels: TabOrPanelDef[] = [
     {
-      label: "Info",
+      label: infoLabel,
       isTab: true,
       popup: <InfoBottomPanel
         key="info"
@@ -122,12 +133,12 @@ export function ModelScreen(props: ModelScreenProps) {
       />
     },
     {
-      label: "About",
+      label: aboutLabel,
       isTab: true,
       popup: <AboutBottomPanel key="about" />
     },
     {
-      label: "Views",
+      label: viewsLabel,
       isTab: true,
       popup: <ViewsBottomPanel
         key="views"

@@ -1,0 +1,61 @@
+{
+  "Shared": {
+    "SelectIModel": "Select iModel",
+    "Error": "Error",
+    "OK": "OK"
+  },
+  "App": {
+    "LoadErrorFormat": "Error loading iModel:\n{{error}}"
+  },
+  "Screen": {
+    "BFormat": "{{size}} B",
+    "KBFormat": "{{size}} KB",
+    "MBFormat": "{{size}} MB",
+    "GBFormat": "{{size}} KB"
+  },
+  "HomeScreen": {
+    "Home": "Home",
+    "SnapshotIModels": "Snapshot iModels",
+    "HubIModels": "Hub iModels"
+  },
+  "SnapshotsScreen": {
+    "ChooseFile": "Choose File..."
+  },
+  "HubScreen": {
+    "Connecting": "Connecting...",
+    "GettingProjectList": "Getting Project List...",
+    "SelectProject": "Select Project",
+    "GettingIModelList": "Getting iModel List...",
+    "DownloadingIModel": "Downloading iModel...",
+    "SignOut": "Sign Out",
+    "FetchProjectsErrorFormat": "Fetch Projects {{error}}",
+    "SigninErrorFormat": "Signin {{error}}",
+    "Unknown": "<Unknown>",
+    "DeleteAllDownloads": "Delete All Downloads",
+    "ChangeProject": "Change Project"
+  },
+  "ModelScreen": {
+    "Location": "Location",
+    "ShowCurrentLocation": "Show Current Location...",
+    "LocationFormat": "Latitude: {{latitude}} Longitude: {{longitude}}",
+    "LocationErrorFormat": "Error getting location: {{error}}",
+    "FitView": "Fit View",
+    "Info": "Info",
+    "About": "About",
+    "Views": "Views",
+    "Properties": "Properties"
+  },
+  "AboutBottomPanel": {
+    "About": "About",
+    "Header": "Random about text goes here."
+  },
+  "ElementPropertiesPanel": {
+    "Properties": "Properties"
+  },
+  "InfoBottomPanel": {
+    "PathFormat": "Path: {{filename}}"
+  },
+  "ViewsBottomPanel": {
+    "Views": "Views"
+  }
+}

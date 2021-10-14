@@ -4,6 +4,7 @@
 *--------------------------------------------------------------------------------------------*/
 // By exporting all the app code from this file, and importing through this file, we can make
 // sure to avoid any import loops.
+export * from "./App";
 export * from "./Button";
 export * from "./Screen";
 export * from "./LoadingScreen";
@@ -14,5 +15,4 @@ export * from "./AboutBottomPanel";
 export * from "./ViewsBottomPanel";
 export * from "./HomeScreen";
 export * from "./HubScreen";
-export * from "./App";
 export * from "./ElementPropertiesPanel";

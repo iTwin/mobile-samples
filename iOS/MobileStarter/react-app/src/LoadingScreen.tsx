@@ -2,23 +2,17 @@
 * Copyright (c) Bentley Systems, Incorporated. All rights reserved.
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
-import { Messenger } from "@itwin/mobile-sdk-core";
-import { Button } from "./Button";
 import { Screen } from "./Exports";
 import "./LoadingScreen.scss";
 
 /// React component that shows while the application is doing its initial loading of iModelJS and iTwinMobileUI.
 export function LoadingScreen() {
-  const handleReload = async () => {
-    await Messenger.initialize();
-    Messenger.sendMessage("reload");
-  };
   return (
     <Screen>
       <div className="loading-screen">
         Loading...
-        <Button title="Reload" onClick={() => { handleReload(); }} />
-        <div className="message">If it gets stuck here, switch away from app and back, then hit the Reload button.</div>
+        <div className="message">Note: this screen shows before the i18next used by iModelJS has been initialized.</div>
+        <div className="message">That should happen fast enough that you don't need to show text to the user, but this cannot be localized.</div>
       </div>
     </Screen>
   );

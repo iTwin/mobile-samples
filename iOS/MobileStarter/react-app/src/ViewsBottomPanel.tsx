@@ -7,7 +7,7 @@ import * as base64 from "base64-js";
 import { IModelApp, IModelConnection } from "@bentley/imodeljs-frontend";
 import { ThumbnailProps } from "@bentley/imodeljs-common";
 import { DraggableComponent, IconImage, ResizableBottomPanel, ResizableBottomPanelProps } from "@itwin/mobile-ui-react";
-import { HeaderTitle, updateBackgroundColor } from "./Exports";
+import { HeaderTitle, i18n, updateBackgroundColor } from "./Exports";
 
 import "./ViewsBottomPanel.scss";
 
@@ -27,6 +27,7 @@ export function ViewsBottomPanel(props: ViewsBottomPanelProps) {
   const { iModel, onViewSelected, ...otherProps } = props;
   const [viewSpecs, setViewSpecs] = React.useState<IModelConnection.ViewSpec[]>([]);
   const [thumbnails, setThumbnails] = React.useState<(string | undefined)[]>([]);
+  const viewsLabel = React.useMemo(() => i18n("ViewsBottomPanel", "Views"), []);
 
   // React effect run during component initialization.
   React.useEffect(() => {
@@ -128,7 +129,7 @@ export function ViewsBottomPanel(props: ViewsBottomPanelProps) {
       {...otherProps}
       className="views-bottom-panel"
       header={<DraggableComponent className="resizable-panel-header">
-        <HeaderTitle label="Views" iconSpec="icon-saved-view" />
+        <HeaderTitle label={viewsLabel} iconSpec="icon-saved-view" />
       </DraggableComponent>}
     >
       <div className="list">

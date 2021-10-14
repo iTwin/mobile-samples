@@ -19,7 +19,7 @@ import {
   ResizableBottomPanelProps,
   useBeEvent,
 } from "@itwin/mobile-ui-react";
-import { HeaderTitle } from "./Exports";
+import { HeaderTitle, i18n } from "./Exports";
 
 import "./ElementPropertiesPanel.scss";
 
@@ -68,6 +68,7 @@ export function ElementPropertiesPanel(props: ElementPropertiesPanelProps) {
     ruleset: "Items",
   };
   const dataProvider = new PresentationPropertyDataProvider(ppdpProps);
+  const propertiesLabel = React.useMemo(() => i18n("ElementPropertiesPanel", "Properties"), []);
 
   useBeEvent(() => {
     setSelectionCount(iModel.selectionSet.size);
@@ -79,7 +80,7 @@ export function ElementPropertiesPanel(props: ElementPropertiesPanelProps) {
       selectionCount={selectionCount}
       header={<DraggableComponent className="resizable-panel-header">
         <div className="header-row">
-          <HeaderTitle label="Properties" iconSpec="icon-details" />
+          <HeaderTitle label={propertiesLabel} iconSpec="icon-details" />
           <div className="title">
             <div style={{ marginRight: 10, pointerEvents: "auto" }}
               onClick={onCloseClick}>

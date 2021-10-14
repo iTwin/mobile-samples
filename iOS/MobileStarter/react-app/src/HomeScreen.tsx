@@ -2,7 +2,8 @@
 * Copyright (c) Bentley Systems, Incorporated. All rights reserved.
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
-import { Button, Screen } from "./Exports";
+import React from "react";
+import { Button, i18n, Screen } from "./Exports";
 import "./HomeScreen.scss";
 
 export enum ActiveScreen {
@@ -22,14 +23,17 @@ export interface HomeScreenProps {
 /// React component for Home screen (shown after loading has completed).
 export function HomeScreen(props: HomeScreenProps) {
   const { onSelect } = props;
+  const homeLabel = React.useMemo(() => i18n("HomeScreen", "Home"), []);
+  const snapshotIModelsLabel = React.useMemo(() => i18n("HomeScreen", "SnapshotIModels"), []);
+  const hubIModelsLabel = React.useMemo(() => i18n("HomeScreen", "HubIModels"), []);
   return (
     <Screen>
       <div className="home-screen">
-        <div className="title">Home</div>
+        <div className="title">{homeLabel}</div>
         <div className="list">
           <div className="list-items">
-            <Button title="Snapshot iModels" onClick={() => onSelect(ActiveScreen.Snapshots)} />
-            <Button title="Hub iModels" onClick={() => onSelect(ActiveScreen.Hub)} />
+            <Button title={snapshotIModelsLabel} onClick={() => onSelect(ActiveScreen.Snapshots)} />
+            <Button title={hubIModelsLabel} onClick={() => onSelect(ActiveScreen.Hub)} />
           </div>
         </div>
       </div>

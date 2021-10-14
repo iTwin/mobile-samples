@@ -5,7 +5,7 @@
 import React from "react";
 import { Messenger } from "@itwin/mobile-sdk-core";
 import { NavigationButton, VisibleBackButton } from "@itwin/mobile-ui-react";
-import { Button, Screen } from "./Exports";
+import { Button, i18n, Screen } from "./Exports";
 import { IModelConnection, SnapshotConnection } from "@bentley/imodeljs-frontend";
 import "./SnapshotsScreen.scss";
 
@@ -21,6 +21,8 @@ export interface SnapshotsScreenProps {
 export function SnapshotsScreen(props: SnapshotsScreenProps) {
   const { onOpen, onBack } = props;
   const [snapshots, setSnapshots] = React.useState<string[]>([]);
+  const chooseFileLabel = React.useMemo(() => i18n("SnapshotsScreen", "ChooseFile"), []);
+  const selectIModelLabel = React.useMemo(() => i18n("Shared", "SelectIModel"), []);
 
   // This function sends a message to the native code requesting an array containing the paths to all
   // the *.bim files in the app's Documents folder. Note that fetching this list should be nearly
@@ -60,7 +62,7 @@ export function SnapshotsScreen(props: SnapshotsScreenProps) {
           onOpen(document, SnapshotConnection.openFile(document));
         }
       }}
-      title={"Choose File..."}
+      title={chooseFileLabel}
     />
   );
 
@@ -71,7 +73,7 @@ export function SnapshotsScreen(props: SnapshotsScreenProps) {
           <div className="back-button">
             <VisibleBackButton onClick={onBack} />
           </div>
-          <div className="title-text">Select iModel</div>
+          <div className="title-text">{selectIModelLabel}</div>
           <div className="refresh">
             <NavigationButton
               iconSpec="icon-refresh"

@@ -11,7 +11,7 @@ import { DefaultProjectServices } from "@bentley/ui-framework/lib/ui-framework/c
 import { AuthorizedFrontendRequestContext, BriefcaseConnection, DownloadBriefcaseOptions, IModelApp, IModelConnection, NativeApp } from "@bentley/imodeljs-frontend";
 import { HubIModel, IModelHubClient } from "@bentley/imodelhub-client";
 import { LocalBriefcaseProps, SyncMode } from "@bentley/imodeljs-common";
-import { Button, Screen } from "./Exports";
+import { Button, fileSizeString, i18n, progressString, Screen } from "./Exports";
 import "./HubScreen.scss";
 
 /// Properties for the [[HubScreen]] React component.
@@ -37,15 +37,6 @@ enum HubStep {
   DownloadIModel,
 }
 
-const titles = [
-  "Connecting...",
-  "Getting Project List...",
-  "Select Project",
-  "Getting iModel List...",
-  "Select iModel",
-  "Downloading iModel..."
-];
-
 function getActiveProject() {
   const projectInfoJson = localStorage.getItem("activeProjectInfo");
   if (projectInfoJson) {
@@ -57,57 +48,6 @@ function getActiveProject() {
 interface IModelInfo {
   hubIModel: HubIModel;
   briefcase?: LocalBriefcaseProps;
-}
-
-function roundedNumber(input: number, decimals?: number) {
-  if (decimals === undefined) {
-    decimals = 2;
-  }
-  let rounded = input.toFixed(decimals);
-  let len = rounded.length;
-  if (decimals > 0) {
-    // Strip off trailing zeroes if we are showing any decimals.
-    while (len > 0 && rounded.charAt(len - 1) === "0") {
-      --len;
-    }
-  }
-  if (len > 0) {
-    if (rounded.charAt(len - 1) === ".") {
-      --len;
-    }
-    rounded = rounded.substr(0, len);
-  } else {
-    rounded = "";
-  }
-  return rounded;
-}
-
-function fileSizeString(input?: number, decimals?: number) {
-  if (input === undefined) {
-    return "? MB";
-  }
-  const kb = 1024; // Should it be 1000?
-  const mb = kb * kb;
-  const gb = mb * kb;
-
-  if (input < kb) {
-    return input.toString() + " B";
-  } else if (input < mb) {
-    return roundedNumber(input / kb, decimals).toString() + " KB";
-  } else if (input < gb) {
-    return roundedNumber(input / mb, decimals).toString() + " MB";
-  } else {
-    return roundedNumber(input / gb, decimals).toString() + " GB";
-  }
-}
-
-function progressString(progress: ProgressInfo | undefined) {
-  let percent = progress?.percent?.toString();
-  if (percent === undefined && progress?.total) {
-    percent = roundedNumber(100.0 * progress.loaded / progress.total, 0);
-  }
-  if (percent === undefined) return "";
-  return " (" + percent + "%)";
 }
 
 /// React component to allow downloading and opening models from the iModel Hub.
@@ -124,6 +64,18 @@ export function HubScreen(props: HubScreenProps) {
   // Any time we do anything asynchronous, we have to check if the component is still mounted,
   // or it can lead to a run-time exception.
   const isMountedRef = useIsMountedRef();
+  const titleLabels = React.useMemo(() => [
+    i18n("HubScreen", "Connecting"),
+    i18n("HubScreen", "GettingProjectList"),
+    i18n("HubScreen", "SelectProject"),
+    i18n("HubScreen", "GettingIModelList"),
+    i18n("Shared", "SelectIModel"),
+    i18n("HubScreen", "DownloadingIModel"),
+  ], []);
+  const signOutLabel = React.useMemo(() => i18n("HubScreen", "SignOut"), []);
+  const unknownLabel = React.useMemo(() => i18n("HubScreen", "Unknown"), []);
+  const deleteAllDownloadsLabel = React.useMemo(() => i18n("HubScreen", "DeleteAllDownloads"), []);
+  const changeProjectLabel = React.useMemo(() => i18n("HubScreen", "ChangeProject"), []);
 
   // Fetch the list of all projects that this user has access to, then let the user choose one.
   const fetchProjects = React.useCallback(async () => {
@@ -144,9 +96,9 @@ export function HubScreen(props: HubScreenProps) {
     } catch (error) {
       // There was a problem fetching the projects. Show the error, and give the user the option
       // to sign out. (A token expired error requires sign out.)
-      setButtonTitles(["Fetch Projects " + error, "Sign Out"]);
+      setButtonTitles([i18n("HubScreen", "FetchProjectsErrorFormat", { error }), signOutLabel]);
     }
-  }, [isMountedRef]);
+  }, [isMountedRef, signOutLabel]);
 
   // Called when a user selects a project from the list, or when loading the
   // active project stored in localState.
@@ -158,7 +110,7 @@ export function HubScreen(props: HubScreenProps) {
     const requestContext = await AuthorizedFrontendRequestContext.create();
     if (!isMountedRef.current) return;
     const getName = (imodel: HubIModel) => {
-      return imodel.name ?? "<Unknown>";
+      return imodel.name ?? unknownLabel;
     };
     // Fetch the list of imodels, then sort them by name using case-insensitive sort.
     const hubIModels = (await hubClient.iModels.get(requestContext, project.wsgId)).sort((a, b) => (getName(a)).localeCompare(getName(b), undefined, { sensitivity: "base" }));
@@ -180,7 +132,7 @@ export function HubScreen(props: HubScreenProps) {
     const names = hubIModels.map((imodel) => getName(imodel));
     setButtonTitles(names);
     setHubStep(HubStep.SelectIModel);
-  }, [isMountedRef]);
+  }, [isMountedRef, unknownLabel]);
 
   // Effect that makes sure we are signed in, then continues to whatever comes next.
   React.useEffect(() => {
@@ -209,8 +161,7 @@ export function HubScreen(props: HubScreenProps) {
         console.log(`Error signing in: ${error}`);
         // There was a problem signing in. Show the error, and give the user the option
         // to sign out. (A token expired error requires sign out.)
-        setButtonTitles(["Fetch Projects " + error, "Sign Out"]);
-        setButtonTitles(["Signin " + error, "Sign Out"]);
+        setButtonTitles([i18n("HubScreen", "SigninErrorFormat", { error }), signOutLabel]);
       }
     }
     // We only want to do this once, and since the effect gets called when various things
@@ -226,7 +177,7 @@ export function HubScreen(props: HubScreenProps) {
         signin();
       }
     }
-  }, [project, initialized, fetchProjects, selectProject, isMountedRef]);
+  }, [project, initialized, fetchProjects, selectProject, isMountedRef, signOutLabel]);
 
   // onClick handler for the project list.
   const handleSelectProject = React.useCallback((index) => {
@@ -325,7 +276,7 @@ export function HubScreen(props: HubScreenProps) {
       return <Button
         key={index}
         onClick={async () => {
-          if (title === "Sign Out") {
+          if (title === signOutLabel) {
             IModelApp.authorizationClient?.signOut();
             onBack();
           }
@@ -344,7 +295,7 @@ export function HubScreen(props: HubScreenProps) {
     if (haveCachedBriefcase) {
       actions.push({
         name: "deleteAll",
-        title: "Delete All Downloads",
+        title: deleteAllDownloadsLabel,
         onSelected: async () => {
           if (project) {
             await MobileCore.deleteCachedBriefcases(project.wsgId);
@@ -357,7 +308,7 @@ export function HubScreen(props: HubScreenProps) {
     if (project) {
       actions.push({
         name: "changeProject",
-        title: "Change Project",
+        title: changeProjectLabel,
         onSelected: () => fetchProjects(),
       })
     }
@@ -371,7 +322,7 @@ export function HubScreen(props: HubScreenProps) {
       <div className="hub-screen">
         <div className="title">
           <VisibleBackButton onClick={onBack} />
-          <div className="title-text">{titles[hubStep] + progressString(progress)}</div>
+          <div className="title-text">{titleLabels[hubStep] + progressString(progress)}</div>
           <div className="more-parent">
             {moreButton}
           </div>
