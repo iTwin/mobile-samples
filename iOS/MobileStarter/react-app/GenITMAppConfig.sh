@@ -73,6 +73,9 @@ fi
 if [ "${ITMAPPLICATION_REDIRECT_URI}" != "" ]; then
     echo "  , "'"'"redirectUri"'"'": "'"'"${ITMAPPLICATION_REDIRECT_URI}"'"'"" >> "ITMAppConfig.json"
 fi
+if [ "${ITM_DEBUG_I18N}" != "" ]; then
+    echo "  , "'"'"debugI18n"'"'": "'"'"${ITM_DEBUG_I18N}"'"'"" >> "ITMAppConfig.json"
+fi
 echo "}" >> "ITMAppConfig.json"
 if [ "${ReleaseMode}" = "YES" ]; then
     echo "Remote debugging disabled."
