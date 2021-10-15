@@ -6,6 +6,7 @@ import React from "react";
 import * as base64 from "base64-js";
 import { IModelApp, IModelConnection } from "@bentley/imodeljs-frontend";
 import { ThumbnailProps } from "@bentley/imodeljs-common";
+import { ReloadedEvent } from "@itwin/mobile-sdk-core";
 import { DraggableComponent, IconImage, ResizableBottomPanel, ResizableBottomPanelProps } from "@itwin/mobile-ui-react";
 import { HeaderTitle, i18n, updateBackgroundColor } from "./Exports";
 
@@ -28,6 +29,7 @@ export function ViewsBottomPanel(props: ViewsBottomPanelProps) {
   const [viewSpecs, setViewSpecs] = React.useState<IModelConnection.ViewSpec[]>([]);
   const [thumbnails, setThumbnails] = React.useState<(string | undefined)[]>([]);
   const viewsLabel = React.useMemo(() => i18n("ViewsBottomPanel", "Views"), []);
+  const reloadedEvent = React.useRef(new ReloadedEvent());
 
   // React effect run during component initialization.
   React.useEffect(() => {
@@ -63,6 +65,7 @@ export function ViewsBottomPanel(props: ViewsBottomPanelProps) {
         setThumbnails((old) => {
           return [...old, thumbnailUrl];
         });
+        reloadedEvent.current.emit();
       }
     };
 
@@ -131,6 +134,7 @@ export function ViewsBottomPanel(props: ViewsBottomPanelProps) {
       header={<DraggableComponent className="resizable-panel-header">
         <HeaderTitle label={viewsLabel} iconSpec="icon-saved-view" />
       </DraggableComponent>}
+      reloadedEvent={reloadedEvent.current}
     >
       <div className="list">
         <div className="list-items">
