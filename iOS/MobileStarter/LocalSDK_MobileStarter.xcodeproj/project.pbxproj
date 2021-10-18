@@ -27,6 +27,7 @@
 		1FC1115F261FC44B00835E6E /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		1FC11161261FC44B00835E6E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		1FE3B33B26D413DA004DD154 /* iOSSamples.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; name = iOSSamples.xcconfig; path = ../iOSSamples.xcconfig; sourceTree = "<group>"; };
+		1FFD587A271DF094005B37DA /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; name = README.md; path = ../README.md; sourceTree = "<group>"; };
 		5FB2050426CF29A500C4DBE1 /* itwin-mobile-sdk */ = {isa = PBXFileReference; lastKnownFileType = folder; name = "itwin-mobile-sdk"; path = "../../../mobile-sdk"; sourceTree = "<group>"; };
 		5FD7518626DD9DCD00DC3060 /* DocumentPicker.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DocumentPicker.swift; sourceTree = "<group>"; };
 		5FD7518726DD9DCD00DC3060 /* ModelApplication.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ModelApplication.swift; sourceTree = "<group>"; };
@@ -47,6 +48,7 @@
 		1FC11147261FC44900835E6E = {
 			isa = PBXGroup;
 			children = (
+				1FFD587A271DF094005B37DA /* README.md */,
 				1FE3B33B26D413DA004DD154 /* iOSSamples.xcconfig */,
 				1F6EB10C26D46210003BA335 /* ITMApplication.xcconfig */,
 				5FB2050426CF29A500C4DBE1 /* itwin-mobile-sdk */,
@@ -97,8 +99,7 @@
 				1FC1114C261FC44900835E6E /* Sources */,
 				1FC1114D261FC44900835E6E /* Frameworks */,
 				1FC1114E261FC44900835E6E /* Resources */,
-				1F967D1A2620F62E00839493 /* Install Node Modules */,
-				1FCA800A2620CB6B002F1F76 /* Build WebApp */,
+				1F967D1A2620F62E00839493 /* Check react-app */,
 				1FCA80062620B9CF002F1F76 /* Copy web app assets */,
 			);
 			buildRules = (
@@ -162,24 +163,24 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
-		1F967D1A2620F62E00839493 /* Install Node Modules */ = {
+		1F967D1A2620F62E00839493 /* Check react-app */ = {
 			isa = PBXShellScriptBuildPhase;
 			alwaysOutOfDate = 1;
-			buildActionMask = 8;
+			buildActionMask = 12;
 			files = (
 			);
 			inputFileListPaths = (
 			);
 			inputPaths = (
 			);
-			name = "Install Node Modules";
+			name = "Check react-app";
 			outputFileListPaths = (
 			);
 			outputPaths = (
 			);
-			runOnlyForDeploymentPostprocessing = 1;
+			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "cd \"${PROJECT_DIR}/react-app\"\nexport NODE_BINARY=node\n\n# Fix for machines using nvm\nif [[ -s \"$HOME/.nvm/nvm.sh\" ]]; then\n    . \"$HOME/.nvm/nvm.sh\"\nelif [[ -x \"$(command -v brew)\" && -s \"$(brew --prefix nvm)/nvm.sh\" ]]; then\n    . \"$(brew --prefix nvm)/nvm.sh\"\nfi\n[ -d node_modules ] || npm install\n";
+			shellScript = "cd \"${PROJECT_DIR}/react-app\"\nif [[ ! -d node_modules ]]; then\n  echo Cannot find react-app/node_modules. Please follow the steps in iOS/REAMDE.md.\n  exit 1\nfi\nif [[ ! -d build ]]; then\n  echo Cannot find react-app/build. Please follow the steps in iOS/README.md.\n  exit 1\nfi\nif [[ ! -d lib ]]; then\n  echo Cannot find react-app/lib. Please follow the steps in iOS/README.md.\n  exit 1\nfi\n";
 			showEnvVarsInLog = 0;
 		};
 		1FCA80062620B9CF002F1F76 /* Copy web app assets */ = {
@@ -200,26 +201,6 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "\"${PROJECT_DIR}/../CopyWebAppAssets.sh\"\n";
-		};
-		1FCA800A2620CB6B002F1F76 /* Build WebApp */ = {
-			isa = PBXShellScriptBuildPhase;
-			alwaysOutOfDate = 1;
-			buildActionMask = 8;
-			files = (
-			);
-			inputFileListPaths = (
-			);
-			inputPaths = (
-			);
-			name = "Build WebApp";
-			outputFileListPaths = (
-			);
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 1;
-			shellPath = /bin/sh;
-			shellScript = "cd \"${PROJECT_DIR}/react-app\"\nnpm run build\n";
-			showEnvVarsInLog = 0;
 		};
 /* End PBXShellScriptBuildPhase section */
 

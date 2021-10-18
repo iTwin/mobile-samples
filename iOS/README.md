@@ -1,6 +1,6 @@
 # iTwin Mobile SDK iOS Samples
 
-## Setup
+## Client ID Setup
 
 Before building the samples, you must configure a Client ID for yourself. To do so, do the following:
 
@@ -14,14 +14,23 @@ Before building the samples, you must configure a Client ID for yourself. To do 
 1. Enter `imodeljs://app/signout-callback` for "Post logout redirect URIs".
 1. Save.
 1. Select your newly generated app. You will see that it has a Client ID, and Scopes.
-1. Create a a file named `ITMApplication.xcconfig` in this directory with the following contents (replacing parts in angle brackets):
+
+## ITMApplication.xcconfig Setup
+
+1. Create a a file named `ITMApplication.xcconfig` in this directory with the following contents:
 
     ```xcconfig
     ITMAPPLICATION_CLIENT_ID = <Your Client ID>
     ITMAPPLICATION_SCOPE = <Your Scope>
     ```
 
-    Note: You can use the "Copy" button in the Scopes section to copy your scopes to the clipboard.
+    Note: If you already had a Client ID, browse to your app's page on developer.bently.com. If you just created it, you should already be there.
+
+1. Copy your client ID from the app's page, then replace &lt;Your Client ID&gt;.    
+1. Use the "Copy" button in the Scopes section of the app's page to copy your scopes to the clipboard. Then replace &lt;Your scope&gt;.
+
+## NPM Setup
+
 1. You must install node 14 on your Mac, and it needs to be the default node found in your path.
 1. If you are using a Mac with Apple Silicon, you must do the following:
     1. Run a Rosetta 2 Terminal.

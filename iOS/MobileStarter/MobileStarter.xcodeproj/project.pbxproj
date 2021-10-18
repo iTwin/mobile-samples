@@ -14,6 +14,7 @@
 		1FC1115B261FC44900835E6E /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 1FC11159261FC44900835E6E /* Main.storyboard */; };
 		1FC1115D261FC44B00835E6E /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 1FC1115C261FC44B00835E6E /* Assets.xcassets */; };
 		1FC11160261FC44B00835E6E /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 1FC1115E261FC44B00835E6E /* LaunchScreen.storyboard */; };
+		1FEAE63E271DE401004853E9 /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = 1FEAE63D271DE401004853E9 /* README.md */; };
 		1FF1B9AC26BDCC35006D6385 /* ITwinMobile in Frameworks */ = {isa = PBXBuildFile; productRef = 1FF1B9AB26BDCC35006D6385 /* ITwinMobile */; };
 		5FD7518D26DD9E3F00DC3060 /* DocumentPicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5FD7518B26DD9E3F00DC3060 /* DocumentPicker.swift */; };
 		5FD7518E26DD9E3F00DC3060 /* ModelApplication.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5FD7518C26DD9E3F00DC3060 /* ModelApplication.swift */; };
@@ -29,6 +30,7 @@
 		1FC1115C261FC44B00835E6E /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		1FC1115F261FC44B00835E6E /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		1FC11161261FC44B00835E6E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		1FEAE63D271DE401004853E9 /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; name = README.md; path = ../README.md; sourceTree = "<group>"; };
 		5FD7518B26DD9E3F00DC3060 /* DocumentPicker.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DocumentPicker.swift; sourceTree = "<group>"; };
 		5FD7518C26DD9E3F00DC3060 /* ModelApplication.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ModelApplication.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -48,6 +50,7 @@
 		1FC11147261FC44900835E6E = {
 			isa = PBXGroup;
 			children = (
+				1FEAE63D271DE401004853E9 /* README.md */,
 				1FBF081826D44A410078738A /* iOSSamples.xcconfig */,
 				1F2ECBF626D467320006AEF0 /* ITMApplication.xcconfig */,
 				1FC11152261FC44900835E6E /* MobileStarter */,
@@ -97,8 +100,7 @@
 				1FC1114C261FC44900835E6E /* Sources */,
 				1FC1114D261FC44900835E6E /* Frameworks */,
 				1FC1114E261FC44900835E6E /* Resources */,
-				1F967D1A2620F62E00839493 /* Install Node Modules */,
-				1FCA800A2620CB6B002F1F76 /* Build WebApp */,
+				1F967D1A2620F62E00839493 /* Check react-app */,
 				1FCA80062620B9CF002F1F76 /* Copy web app assets */,
 			);
 			buildRules = (
@@ -153,6 +155,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				1FEAE63E271DE401004853E9 /* README.md in Resources */,
 				1F2ECBF726D467330006AEF0 /* ITMApplication.xcconfig in Resources */,
 				1FC11160261FC44B00835E6E /* LaunchScreen.storyboard in Resources */,
 				1FC1115D261FC44B00835E6E /* Assets.xcassets in Resources */,
@@ -164,24 +167,24 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
-		1F967D1A2620F62E00839493 /* Install Node Modules */ = {
+		1F967D1A2620F62E00839493 /* Check react-app */ = {
 			isa = PBXShellScriptBuildPhase;
 			alwaysOutOfDate = 1;
-			buildActionMask = 8;
+			buildActionMask = 12;
 			files = (
 			);
 			inputFileListPaths = (
 			);
 			inputPaths = (
 			);
-			name = "Install Node Modules";
+			name = "Check react-app";
 			outputFileListPaths = (
 			);
 			outputPaths = (
 			);
-			runOnlyForDeploymentPostprocessing = 1;
+			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "cd \"${PROJECT_DIR}/react-app\"\nexport NODE_BINARY=node\n\n# Fix for machines using nvm\nif [[ -s \"$HOME/.nvm/nvm.sh\" ]]; then\n    . \"$HOME/.nvm/nvm.sh\"\nelif [[ -x \"$(command -v brew)\" && -s \"$(brew --prefix nvm)/nvm.sh\" ]]; then\n    . \"$(brew --prefix nvm)/nvm.sh\"\nfi\n[ -d node_modules ] || npm install\n";
+			shellScript = "cd \"${PROJECT_DIR}/react-app\"\nif [[ ! -d node_modules ]]; then\n  echo Cannot find react-app/node_modules. Please follow the steps in iOS/REAMDE.md.\n  exit 1\nfi\nif [[ ! -d build ]]; then\n  echo Cannot find react-app/build. Please follow the steps in iOS/README.md.\n  exit 1\nfi\nif [[ ! -d lib ]]; then\n  echo Cannot find react-app/lib. Please follow the steps in iOS/README.md.\n  exit 1\nfi\n";
 			showEnvVarsInLog = 0;
 		};
 		1FCA80062620B9CF002F1F76 /* Copy web app assets */ = {
@@ -202,26 +205,6 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "\"${PROJECT_DIR}/../CopyWebAppAssets.sh\"\n";
-		};
-		1FCA800A2620CB6B002F1F76 /* Build WebApp */ = {
-			isa = PBXShellScriptBuildPhase;
-			alwaysOutOfDate = 1;
-			buildActionMask = 8;
-			files = (
-			);
-			inputFileListPaths = (
-			);
-			inputPaths = (
-			);
-			name = "Build WebApp";
-			outputFileListPaths = (
-			);
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 1;
-			shellPath = /bin/sh;
-			shellScript = "cd \"${PROJECT_DIR}/react-app\"\nnpm run build\n";
-			showEnvVarsInLog = 0;
 		};
 /* End PBXShellScriptBuildPhase section */
 
