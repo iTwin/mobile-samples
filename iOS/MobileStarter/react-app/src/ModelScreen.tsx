@@ -48,8 +48,6 @@ export function updateBackgroundColor(viewState: ViewState) {
 export function ModelScreen(props: ModelScreenProps) {
   const tabsAndPanelsAPI = useTabsAndStandAlonePanels();
   const { filename, iModel, onBack } = props;
-  const lastSlash = filename.lastIndexOf("/");
-  const documentName = lastSlash === -1 ? filename : filename.substring(lastSlash + 1);
   const [viewState, setViewState] = React.useState<ViewState>();
   const locationLabel = React.useMemo(() => i18n("ModelScreen", "Location"), []);
   const errorLabel = React.useMemo(() => i18n("Shared", "Error"), []);
@@ -128,7 +126,7 @@ export function ModelScreen(props: ModelScreenProps) {
       isTab: true,
       popup: <InfoBottomPanel
         key="info"
-        name={documentName}
+        name={iModel.name}
         filename={filename}
       />
     },

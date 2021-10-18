@@ -20,10 +20,12 @@ interface InfoBottomPanelProps extends BottomPanelProps {
 export function InfoBottomPanel(props: InfoBottomPanelProps) {
   const { name, filename } = props;
   const pathLabel = React.useMemo(() => i18n("InfoBottomPanel", "PathFormat", { filename }), [filename]);
+  // Note: This is just a sample app. Don't construct a filename that results in an XSS injection due to the
+  // use of dangerouslySetInnerHTML below. An app designed for end users would never display a path like this.
   return (
     <BottomPanel {...props} className="info-bottom-panel">
       <HeaderTitle label={name} iconSpec="icon-info-hollow" />
-      <div>{pathLabel}</div>
+      <div dangerouslySetInnerHTML={{ __html: pathLabel }} />
     </BottomPanel>
   );
 }
