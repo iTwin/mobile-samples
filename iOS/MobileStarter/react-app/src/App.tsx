@@ -10,6 +10,7 @@ import { FrameworkReducer, FrameworkState, UiFramework } from "@bentley/ui-frame
 import { Presentation } from "@bentley/presentation-frontend";
 import { Messenger, presentAlert } from "@itwin/mobile-sdk-core";
 import { MobileUi } from "@itwin/mobile-ui-react";
+import { FeatureTracking as MeasureToolsFeatureTracking, MeasureTools } from "@bentley/measure-tools-react";
 import { ActiveScreen, SnapshotsScreen, HomeScreen, HubScreen, LoadingScreen, ModelScreen, i18n } from "./Exports";
 import { getSupportedRpcs } from "./common/rpcs";
 import "./App.scss";
@@ -74,6 +75,9 @@ function App() {
         await Presentation.initialize();
         await MobileUi.initialize(IModelApp.i18n);
         await IModelApp.i18n.registerNamespace("ReactApp").readFinished;
+        await MeasureTools.startup();
+        MeasureToolsFeatureTracking.stop();
+
         // The following message lets the native side know that it is safe to send app-specific
         // messages from the native code to the TypeScript code.
         Messenger.sendMessage("didFinishLaunching");

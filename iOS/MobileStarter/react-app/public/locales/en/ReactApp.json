@@ -43,7 +43,8 @@
     "Info": "Info",
     "About": "About",
     "Views": "Views",
-    "Properties": "Properties"
+    "Properties": "Properties",
+    "Tools": "Tools"
   },
   "AboutBottomPanel": {
     "About": "About",
@@ -57,5 +58,15 @@
   },
   "ViewsBottomPanel": {
     "Views": "Views"
+  },
+  "ToolsBottomPanel": {
+    "Angle": "Angle",
+    "Area": "Area",
+    "Clear": "Clear",
+    "Distance": "Distance",
+    "Location": "Location",
+    "Perpendicular": "Perpendicular",
+    "Radius": "Radius",
+    "Select": "Select"
   }
 }

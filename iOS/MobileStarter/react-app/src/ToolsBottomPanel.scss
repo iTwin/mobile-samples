@@ -1,0 +1,39 @@
+/*---------------------------------------------------------------------------------------------
+* Copyright (c) 2021 Bentley Systems, Incorporated. All rights reserved.
+*--------------------------------------------------------------------------------------------*/
+.button-row {
+  display: flex;
+  padding-top: 15px;
+  padding-bottom: 15px;
+  align-items: flex-start;
+  &.scrolling .mui-circular-button-circle:active:not(.selected) {
+    background-color: var(--circle-color);
+  }
+}
+
+.button-spacer {
+  width: 11px;
+  height: 11px;
+  flex-shrink: 0;
+  flex-grow: 1;
+}
+
+.button-row-fades {
+  margin-top: 10px;
+  height: calc(100% - 10px);
+}
+
+.tool-button {
+  max-width: 114px;
+  min-width: 75px;
+}
+
+.tools-bottom-panel .button-spacer {
+  width: 0px;
+}
+
+@media (prefers-color-scheme: dark) {
+  .mui-circular-button-label {
+    color: var(--muic-gray-b);
+  }  
+}

@@ -29,6 +29,7 @@
     "@bentley/itwin-client": "2.19.16",
     "@bentley/linear-referencing-backend": "2.19.16",
     "@bentley/linear-referencing-common": "2.19.16",
+    "@bentley/measure-tools-react": "^0.5.0",
     "@bentley/mobile-manager": "2.19.16",
     "@bentley/orbitgt-core": "2.19.16",
     "@bentley/presentation-backend": "2.19.16",
