@@ -100,11 +100,7 @@ export function ToolsBottomPanel(props: ToolsBottomPanelProps) {
           className="tool-button"
           label={IModelApp.i18n.translate(value.labelKey)}
           iconSpec={/* value.toolItemDef.iconSpec ??  */value.icon}
-          iconColor="white"
           selected={activeToolId === value.toolItemDef.toolId}
-          selectedCircleColor="var(--muic-gray-3)"
-          selectedIconColor="white"
-          circleColor="var(--muic-gray-6)"
           onClick={async () => {
             // ensure the selectedView is the main viewport otherwise some tools (e.g. dynamicCrossSectionCommand)
             // won't execute as the selected view is incompatible

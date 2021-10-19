@@ -26,6 +26,18 @@
 .tool-button {
   max-width: 114px;
   min-width: 75px;
+
+  .mui-circular-button-label {
+    color: var(--muic-foreground-inactive);
+  }  
+  .mui-circular-button-circle {
+    --circle-color: var(--muic-gray-6);
+    --selected-circle-color: var(--muic-gray-3);
+  }
+  .mui-circular-button-icon {
+    --icon-color: white;
+    --selected-icon-color: white;
+  }
 }
 
 .tools-bottom-panel .button-spacer {
@@ -33,7 +45,14 @@
 }
 
 @media (prefers-color-scheme: dark) {
-  .mui-circular-button-label {
-    color: var(--muic-gray-b);
-  }  
+  .tool-button {
+    .mui-circular-button-circle {
+      --circle-color: var(--muic-gray-6);
+      --selected-circle-color: var(--muic-gray-9);
+    }
+    .mui-circular-button-icon {
+      --icon-color: black;
+      --selected-icon-color: black;
+    }
+  }
 }
