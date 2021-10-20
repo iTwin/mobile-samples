@@ -4,6 +4,7 @@
 *--------------------------------------------------------------------------------------------*/
 // By exporting all the app code from this file, and importing through this file, we can make
 // sure to avoid any import loops.
+export * from "./ToolAssistance";
 export * from "./App";
 export * from "./Button";
 export * from "./Screen";

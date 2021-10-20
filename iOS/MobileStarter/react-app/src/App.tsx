@@ -5,13 +5,13 @@
 import React from "react";
 import { combineReducers, createStore, Store } from "redux";
 import { IOSApp, IOSAppOpts } from "@bentley/mobile-manager/lib/MobileFrontend";
-import { IModelApp, IModelConnection, SnapshotConnection } from "@bentley/imodeljs-frontend";
-import { FrameworkReducer, FrameworkState, UiFramework } from "@bentley/ui-framework";
+import { IModelApp, IModelConnection, SnapshotConnection, ToolAssistanceInstructions } from "@bentley/imodeljs-frontend";
+import { AppNotificationManager, FrameworkReducer, FrameworkState, UiFramework } from "@bentley/ui-framework";
 import { Presentation } from "@bentley/presentation-frontend";
 import { Messenger, presentAlert } from "@itwin/mobile-sdk-core";
 import { MobileUi } from "@itwin/mobile-ui-react";
 import { FeatureTracking as MeasureToolsFeatureTracking, MeasureTools } from "@bentley/measure-tools-react";
-import { ActiveScreen, SnapshotsScreen, HomeScreen, HubScreen, LoadingScreen, ModelScreen, i18n } from "./Exports";
+import { ActiveScreen, SnapshotsScreen, HomeScreen, HubScreen, LoadingScreen, ModelScreen, i18n, ToolAssistance } from "./Exports";
 import { getSupportedRpcs } from "./common/rpcs";
 import "./App.scss";
 
@@ -32,6 +32,13 @@ const rootReducer = combineReducers({
 });
 const anyWindow: any = window;
 const appReduxStore: Store<RootState> = createStore(rootReducer, anyWindow.__REDUX_DEVTOOLS_EXTENSION__ && anyWindow.__REDUX_DEVTOOLS_EXTENSION__());
+
+class AppToolAssistanceNotificationManager extends AppNotificationManager {
+  public setToolAssistance(instructions: ToolAssistanceInstructions | undefined): void {
+    ToolAssistance.onSetToolAssistance.emit(instructions);
+    super.setToolAssistance(instructions);
+  }
+}
 
 function App() {
   // Start out on the Loading screen.
@@ -68,6 +75,7 @@ function App() {
         const opts: IOSAppOpts = {
           iModelApp: {
             rpcInterfaces: getSupportedRpcs(),
+            notifications: new AppToolAssistanceNotificationManager(),
           },
         }
         await IOSApp.startup(opts);

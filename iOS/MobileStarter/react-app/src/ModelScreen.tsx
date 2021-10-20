@@ -19,7 +19,7 @@ import {
   useTabsAndStandAlonePanels,
   VisibleBackButton,
 } from "@itwin/mobile-ui-react";
-import { AboutBottomPanel, ElementPropertiesPanel, i18n, InfoBottomPanel, ToolsBottomPanel, ViewsBottomPanel } from "./Exports";
+import { AboutBottomPanel, ToolAssistance, ElementPropertiesPanel, i18n, InfoBottomPanel, ToolsBottomPanel, ViewsBottomPanel } from "./Exports";
 import "./ModelScreen.scss";
 
 // tslint:disable-next-line: variable-name
@@ -219,26 +219,29 @@ export function ModelScreen(props: ModelScreenProps) {
   // first created. So don't create the [[ViewportComponent]] until after we have loaded the default
   // view state.
   return (
-    <MobileUiContent>
+    <>
       {viewState &&
         <div id="main-viewport">
           <UnifiedSelectionViewportComponent imodel={iModel} viewState={viewState} />
         </div>
       }
-      <NavigationPanel
-        left={
-          <>
-            <VisibleBackButton onClick={onBack} />
-          </>
-        }
-        right={
-          <>
-            {moreButton}
-          </>
-        }
-      />
-      {tabsAndPanelsAPI.renderTabBarAndPanels()}
-    </MobileUiContent >
+      <MobileUiContent>
+        <NavigationPanel
+          left={
+            <>
+              <VisibleBackButton onClick={onBack} />
+            </>
+          }
+          right={
+            <>
+              {moreButton}
+            </>
+          }
+        />
+        <ToolAssistance />
+        {tabsAndPanelsAPI.renderTabBarAndPanels()}
+      </MobileUiContent >
+    </>
   );
 }
 

@@ -102,11 +102,11 @@ export function ToolsBottomPanel(props: ToolsBottomPanelProps) {
           iconSpec={/* value.toolItemDef.iconSpec ??  */value.icon}
           selected={activeToolId === value.toolItemDef.toolId}
           onClick={async () => {
-            // ensure the selectedView is the main viewport otherwise some tools (e.g. dynamicCrossSectionCommand)
-            // won't execute as the selected view is incompatible
+            // Ensure the selectedView is the main viewport otherwise some tools won't execute as the selected view is incompatible.
+            // This only applies when an app has more than one viewport, but does no harm.
             IModelApp.viewManager.setSelectedView(IModelApp.viewManager.getFirstOpenView());
 
-            // always use the virtual cursor for locating elements
+            // Always use the virtual cursor for locating elements
             ToolSettings.enableVirtualCursorForLocate = true;
 
             value.toolItemDef.execute();
