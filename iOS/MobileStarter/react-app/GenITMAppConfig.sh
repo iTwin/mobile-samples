@@ -57,6 +57,9 @@ if [ "${ReleaseMode}" != "YES" ]; then
         fi
     else
         appHost="$(hostname)"
+        if [ "$ITMAPPLICATION_ADD_DOT_LOCAL" = "YES" ]; then
+            appHost="${appHost}.local"
+        fi
     fi
     if [ "$appHost" = "" ]; then
         echo "ERROR: hostname is blank."
