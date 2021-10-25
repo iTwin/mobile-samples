@@ -12,9 +12,11 @@ import { AlertAction, presentAlert } from "@itwin/mobile-sdk-core";
 import {
   ActionSheetButton,
   IconImage,
+  MobileUi,
   MobileUiContent,
   NavigationPanel,
   TabOrPanelDef,
+  useBeEvent,
   useIsMountedRef,
   useTabsAndStandAlonePanels,
   VisibleBackButton,
@@ -38,9 +40,9 @@ export interface ModelScreenProps {
 // Set the model background color based on the currently active dark/light color scheme.
 export function updateBackgroundColor(viewState: ViewState) {
   const displayStyle = viewState.displayStyle;
-  // Note: the value of the --background-color CSS variable automatically updates when the
+  // Note: the value of the --muic-background-model CSS variable automatically updates when the
   // color scheme of the web view changes.
-  const bgColor = getCssVariable("--background-color");
+  const bgColor = getCssVariable("--muic-background-model");
   displayStyle.backgroundColor = ColorDef.fromString(bgColor);
 }
 
@@ -172,29 +174,13 @@ export function ModelScreen(props: ModelScreenProps) {
 
   tabsAndPanelsAPI.setPanels(panels);
 
-  // Effect to update the model background color when the color scheme changes.
-  React.useEffect(() => {
-    const colorSchemeListener = () => {
-      const viewState = IModelApp.viewManager.getFirstOpenView()?.view;
-      if (viewState) {
-        updateBackgroundColor(viewState);
-      }
-    };
-    try {
-      window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', colorSchemeListener);
-    } catch (e) {
-      // Safari didn't support the above BASIC functionality until version 14.
-      window.matchMedia('(prefers-color-scheme: dark)').addListener(colorSchemeListener);
+  // Update the model background color when the color scheme changes.
+  useBeEvent(() => {
+    const viewState = IModelApp.viewManager.getFirstOpenView()?.view;
+    if (viewState) {
+      updateBackgroundColor(viewState);
     }
-    return () => {
-      try {
-        window.matchMedia('(prefers-color-scheme: dark)').removeEventListener('change', colorSchemeListener);
-      } catch (e) {
-        // Safari didn't support the above BASIC functionality until version 14.
-        window.matchMedia('(prefers-color-scheme: dark)').removeListener(colorSchemeListener);
-      }
-    }
-  }, []);
+  }, MobileUi.onColorSchemeChanged);
 
   // Effect to load the default view state.
   React.useEffect(() => {

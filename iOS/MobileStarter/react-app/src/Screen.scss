@@ -4,64 +4,14 @@
 *--------------------------------------------------------------------------------------------*/
 :root {
   --background-color: white;
-  --background-color-2: #d0d0d0;
+  --background-color-2: var(--muic-gray-9);
   --color: black;
-  --inactive-color: rgb(77, 87, 95);
-  --muic-background-tab-bar: var(--background-color-2);
-  --muic-foreground-inactive: var(--inactive-color);
-  --muic-active-contrast: var(--background-color);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background-color: #282c34;
-    --background-color-2: #484c54;
-    --color: white;
-    --inactive-color: rgb(178, 168, 160);
-  }
-
-  .mui-bottom-panel-shadow {
-    box-shadow: 0px -2px 4px rgba(255,255,255,0.12);
-  }
-
-  .mui-drag-handle {
-    background-color: rgba(255,255,255,0.2);
-  }
-
-  .uicore-expandable-blocks-block {
-    background-color: var(--background-color);
-    border-color: var(--background-color-2);
-    color: var(--color);
-    .header {
-      background-color: var(--background-color);
-      .icon-container,.title {
-        color: var(--color);
-      }
-    }
-  }
-  .uicore-expandable-blocks-block:hover {
-    .header {
-      .icon-container,.title {
-        color: var(--color);
-      }
-    }
-  }
-  .uicore-expandable-blocks-block.is-expanded {
-    .content {
-      background-color: var(--background-color);
-    }
-    .components-property-record-label,.components-property-record-value {
-      color: var(--color);
-    }
-  }
-}
-
-.mui-bottom-panel-body {
-  background-color: var(--background-color);
-}
-
-.mui-panel-header-title {
-  color: var(--color);
+[preferred-color-scheme = "dark"] {
+  --background-color: var(--muic-gray-2);
+  --background-color-2: var(--muic-gray-4);
+  --color: white;
 }
 
 .screen {
