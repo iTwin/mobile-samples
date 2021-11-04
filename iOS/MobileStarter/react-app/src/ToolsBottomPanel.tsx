@@ -106,8 +106,8 @@ export function ToolsBottomPanel(props: ToolsBottomPanelProps) {
             // This only applies when an app has more than one viewport, but does no harm.
             IModelApp.viewManager.setSelectedView(IModelApp.viewManager.getFirstOpenView());
 
-            // Always use the virtual cursor for locating elements
-            ToolSettings.enableVirtualCursorForLocate = true;
+            // Use the virtual cursor for locating elements other than the select tool
+            ToolSettings.enableVirtualCursorForLocate = value.toolItemDef.toolId !== CoreTools.selectElementCommand.toolId;
 
             value.toolItemDef.execute();
             onToolClick?.();
