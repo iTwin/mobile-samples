@@ -27,7 +27,11 @@ class ModelApplication: ITMApplication {
             return Promise.value(())
         }
         registerQueryHandler("getBimDocuments") { () -> Promise<[String]> in
-            return Promise.value(DocumentHelper.getDocumentsWith(extension: UTType.bim_iModel.preferredFilenameExtension!))
+            if #available(iOS 14.0, *) {
+                return Promise.value(DocumentHelper.getDocumentsWith(extension: UTType.bim_iModel.preferredFilenameExtension!))
+            } else {
+                return Promise.value(DocumentHelper.getDocumentsWith(extension: "bim"))
+            }
         }
     }
     

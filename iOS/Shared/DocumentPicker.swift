@@ -8,6 +8,7 @@ import ITwinMobile
 import PromiseKit
 import UniformTypeIdentifiers
 
+@available(iOS 14.0, *)
 extension UTType {
     /// The UTType exported by this application (in Info.plist).
     static var bim_iModel = UTType(exportedAs: "com.bentley.bim-imodel")
@@ -224,12 +225,12 @@ class DocumentPicker: ITMNativeUIComponent {
     /// Creates the `UIDocumentPickerViewController` that will be presented to the user.
     /// - Parameter coordinator: The coordinator that implements the `UIDocumentPickerDelegate` functions.
     /// - Returns: The controller instance.
-    private func makeUIViewController(coordinator: DocumentPickerCoordinator) -> some UIDocumentPickerViewController {
+    private func makeUIViewController(coordinator: DocumentPickerCoordinator) -> UIDocumentPickerViewController {
         let controller: UIDocumentPickerViewController
         if #available(iOS 14, *) {
             controller = UIDocumentPickerViewController(forOpeningContentTypes: [.bim_iModel], asCopy: false)
         } else {
-            controller = UIDocumentPickerViewController(documentTypes: [UTType.bim_iModel.identifier], in: .open)
+            controller = UIDocumentPickerViewController(documentTypes: ["com.bentley.bim-imodel"], in: .open)
         }
         controller.allowsMultipleSelection = false
         controller.modalPresentationStyle = .fullScreen
