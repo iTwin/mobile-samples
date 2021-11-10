@@ -1,6 +1,6 @@
 {
   "name": "react-app",
-  "version": "0.9.5",
+  "version": "0.9.6",
   "private": true,
   "homepage": "./",
   "scripts": {
@@ -61,8 +61,8 @@
     "@bentley/ui-framework": "2.19.19",
     "@bentley/ui-ninezone": "2.19.19",
     "@bentley/webgl-compatibility": "2.19.19",
-    "@itwin/mobile-sdk-core": "0.9.5",
-    "@itwin/mobile-ui-react": "0.9.5",
+    "@itwin/mobile-sdk-core": "0.9.6",
+    "@itwin/mobile-ui-react": "0.9.6",
     "base64-js": "^1.5.1",
     "classnames": "^2.2.6",
     "react": "^16.14.0",
