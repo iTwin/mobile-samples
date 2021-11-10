@@ -18,6 +18,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     }
 
     func scene(_ scene: UIScene, openURLContexts URLContexts: Set<UIOpenURLContext>) {
+        // Note: This only gets called in iOS 13 and later.
         if let url = URLContexts.first?.url {
             DocumentHelper.openInboxUrl(url)
         }
