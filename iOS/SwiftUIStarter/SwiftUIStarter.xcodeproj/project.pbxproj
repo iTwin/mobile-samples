@@ -7,8 +7,6 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		1F56529826D4651B002C7260 /* iOSSamples.xcconfig in Resources */ = {isa = PBXBuildFile; fileRef = 1F56529626D4651B002C7260 /* iOSSamples.xcconfig */; };
-		1F56529926D4651B002C7260 /* ITMApplication.xcconfig in Resources */ = {isa = PBXBuildFile; fileRef = 1F56529726D4651B002C7260 /* ITMApplication.xcconfig */; };
 		5FB2050826D03B2600C4DBE1 /* ITwinMobile in Frameworks */ = {isa = PBXBuildFile; productRef = 5FB2050726D03B2600C4DBE1 /* ITwinMobile */; };
 		5FD7518326DD9D4C00DC3060 /* DocumentPicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5FD7518126DD9D4C00DC3060 /* DocumentPicker.swift */; };
 		5FD7518426DD9D4C00DC3060 /* ModelApplication.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5FD7518226DD9D4C00DC3060 /* ModelApplication.swift */; };
@@ -120,7 +118,7 @@
 			isa = PBXProject;
 			attributes = {
 				LastSwiftUpdateCheck = 1250;
-				LastUpgradeCheck = 1300;
+				LastUpgradeCheck = 1310;
 				TargetAttributes = {
 					5FDD749126CDA9520007FBC6 = {
 						CreatedOnToolsVersion = 12.5.1;
@@ -153,10 +151,8 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				1F56529926D4651B002C7260 /* ITMApplication.xcconfig in Resources */,
 				5FDD749D26CDA9530007FBC6 /* Preview Assets.xcassets in Resources */,
 				5FDD749A26CDA9530007FBC6 /* Assets.xcassets in Resources */,
-				1F56529826D4651B002C7260 /* iOSSamples.xcconfig in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
