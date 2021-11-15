@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		1F2D7B6A2742D97700AAB11E /* PrintLogger.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F2D7B692742D97700AAB11E /* PrintLogger.swift */; };
 		5FB2050826D03B2600C4DBE1 /* ITwinMobile in Frameworks */ = {isa = PBXBuildFile; productRef = 5FB2050726D03B2600C4DBE1 /* ITwinMobile */; };
 		5FD7518326DD9D4C00DC3060 /* DocumentPicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5FD7518126DD9D4C00DC3060 /* DocumentPicker.swift */; };
 		5FD7518426DD9D4C00DC3060 /* ModelApplication.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5FD7518226DD9D4C00DC3060 /* ModelApplication.swift */; };
@@ -16,6 +17,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		1F2D7B692742D97700AAB11E /* PrintLogger.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PrintLogger.swift; sourceTree = "<group>"; };
 		1F56529626D4651B002C7260 /* iOSSamples.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; name = iOSSamples.xcconfig; path = ../iOSSamples.xcconfig; sourceTree = "<group>"; };
 		1F56529726D4651B002C7260 /* ITMApplication.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; name = ITMApplication.xcconfig; path = ../ITMApplication.xcconfig; sourceTree = "<group>"; };
 		5FD7518126DD9D4C00DC3060 /* DocumentPicker.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DocumentPicker.swift; sourceTree = "<group>"; };
@@ -44,6 +46,7 @@
 			children = (
 				5FD7518126DD9D4C00DC3060 /* DocumentPicker.swift */,
 				5FD7518226DD9D4C00DC3060 /* ModelApplication.swift */,
+				1F2D7B692742D97700AAB11E /* PrintLogger.swift */,
 			);
 			name = Shared;
 			path = ../../Shared;
@@ -186,6 +189,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				5FD7518426DD9D4C00DC3060 /* ModelApplication.swift in Sources */,
+				1F2D7B6A2742D97700AAB11E /* PrintLogger.swift in Sources */,
 				5FD7518326DD9D4C00DC3060 /* DocumentPicker.swift in Sources */,
 				5FDD749626CDA9520007FBC6 /* SwiftUIStarterApp.swift in Sources */,
 			);

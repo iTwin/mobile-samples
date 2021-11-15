@@ -14,6 +14,7 @@ class ModelApplication: ITMApplication {
     /// Registers query handlers.
     required init() {
         super.init()
+        ITMApplication.logger = PrintLogger()
         registerQueryHandler("didFinishLaunching") { () -> Promise<()> in
             self.itmMessenger.frontendLaunchSuceeded()
             return Promise.value(())
