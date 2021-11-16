@@ -40,7 +40,7 @@ Before building the samples, you must configure a Client ID for yourself. To do 
 1. cd into the `iOS/MobileStarter/react-app` directory of this repository.
 1. If you are not on a Mac with Apple Silicon and did so above, run `npm install`.
 1. Run `npm run build`.
-1. Run `npm run start`. __Note:__ This starts a Read Debug Server on your Mac that the app will communicate with. It must be running when you run the app. This requires that the device be able to connect to your Mac. If you want the app to run purely on the device (like it would if it were released), uncomment the `ITMAPPLICATION_NO_DEBUG_SERVER = YES` line in iOSSamples.xcconfig. If you do this, there is no need for the React Debug Server to be running when you run the app.
+1. Run `npm run start`. __Note:__ This starts a React Debug Server on your Mac that the app will communicate with. It must be running when you run the app. This requires that the device be able to connect to your Mac. If you want the app to run purely on the device (like it would if it were released), uncomment the `ITMAPPLICATION_NO_DEBUG_SERVER = YES` line in iOSSamples.xcconfig. If you do this, there is no need for the React Debug Server to be running when you run the app.
 
 ---
 
