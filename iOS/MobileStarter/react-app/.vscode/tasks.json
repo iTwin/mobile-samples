@@ -5,7 +5,7 @@
 			"type": "npm",
 			"script": "build",
 			"problemMatcher": [
-				"$tslint5"
+				"$eslint-stylish"
 			],
 			"group": "build",
 			"label": "npm: build",
@@ -17,33 +17,33 @@
 			"label": "npm run start",
 			"isBackground": true,
 			"problemMatcher": {
-					"owner": "javascript",
-					"fileLocation": [
-							"relative",
-							"${workspaceFolder}"
-					],
-					"pattern": [
-							{
-									"regexp": "^(\\.[^\\s].*)$",
-									"file": 1
-							},
-							{
-									"regexp": "^\\s+Line\\s+(\\d+):(\\d+):\\s*(.*)$",
-									"line": 1,
-									"column": 2,
-									"message": 3,
-									"loop": true
-							}
-					],
-					"background": {
-							"activeOnStart": true,
-							"beginsPattern": "^Compiling...",
-							"endsPattern": "^Compiled |^Failed to compile"
+				"owner": "javascript",
+				"fileLocation": [
+					"relative",
+					"${workspaceFolder}"
+				],
+				"pattern": [
+					{
+						"regexp": "^(\\.[^\\s].*)$",
+						"file": 1
+					},
+					{
+						"regexp": "^\\s+Line\\s+(\\d+):(\\d+):\\s*(.*)$",
+						"line": 1,
+						"column": 2,
+						"message": 3,
+						"loop": true
 					}
+				],
+				"background": {
+					"activeOnStart": true,
+					"beginsPattern": "^Compiling...",
+					"endsPattern": "^Compiled |^Failed to compile"
+				}
 			},
 			"group": {
-					"kind": "build",
-					"isDefault": true
+				"kind": "build",
+				"isDefault": true
 			}
 		}
 	]
