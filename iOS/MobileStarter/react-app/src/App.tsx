@@ -8,7 +8,7 @@ import { IOSApp, IOSAppOpts } from "@itwin/core-mobile/lib/cjs/MobileFrontend";
 import { IModelApp, IModelConnection, SnapshotConnection, ToolAssistanceInstructions } from "@itwin/core-frontend";
 import { AppNotificationManager, FrameworkReducer, FrameworkState, UiFramework } from "@itwin/appui-react";
 import { Presentation } from "@itwin/presentation-frontend";
-import { Messenger, presentAlert } from "@itwin/mobile-sdk-core";
+import { ITMAuthorizationClient, Messenger, presentAlert } from "@itwin/mobile-sdk-core";
 import { MobileUi } from "@itwin/mobile-ui-react";
 // import { FeatureTracking as MeasureToolsFeatureTracking, MeasureTools } from "@bentley/measure-tools-react";
 import { ActiveScreen, HomeScreen, HubScreen, i18n, LoadingScreen, ModelScreen, SnapshotsScreen, ToolAssistance } from "./Exports";
@@ -76,6 +76,7 @@ function App() {
           iModelApp: {
             rpcInterfaces: getSupportedRpcs(),
             notifications: new AppToolAssistanceNotificationManager(),
+            authorizationClient: new ITMAuthorizationClient(),
           },
         }
         await IOSApp.startup(opts);
