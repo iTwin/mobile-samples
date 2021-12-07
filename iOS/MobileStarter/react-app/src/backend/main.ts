@@ -3,12 +3,11 @@
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
 import * as path from "path";
-import { Presentation, PresentationManagerMode } from "@bentley/presentation-backend";
-import { GetMetaDataFunction, LogFunction, Logger, LogLevel } from "@bentley/bentleyjs-core";
-import { IOSHost, MobileHost, MobileHostOpts } from "@bentley/mobile-manager/lib/MobileBackend";
+import { Presentation, PresentationManagerMode } from "@itwin/presentation-backend";
+import { LogFunction, Logger, LoggingMetaData, LogLevel } from "@itwin/core-bentley";
+import { IOSHost, MobileHost, MobileHostOpts } from "@itwin/core-mobile/lib/cjs/MobileBackend";
 import { getSupportedRpcs } from "../common/rpcs";
-import setupEnv from "../common/configuration";
-import { IpcHost } from "@bentley/imodeljs-backend";
+import { IpcHost } from "@itwin/core-backend";
 
 // This is the file that generates main.js, which is loaded by the backend into a Google V8 JavaScript
 // engine instance that is running for node.js. This code runs when the iTwin Mobile backend is
@@ -19,9 +18,6 @@ export const prodIssuerUrl = "https://ims.bentley.com/";
 
 // tslint:disable-next-line:no-floating-promises
 (async () => {
-  // Setup environment
-  setupEnv();
-
   // Initialize logging
   redirectLoggingToFrontend();
   Logger.setLevelDefault(LogLevel.Warning);
@@ -67,7 +63,7 @@ export const prodIssuerUrl = "https://ims.bentley.com/";
 
 function redirectLoggingToFrontend(this: any): void {
   const getLogFunction = (level: LogLevel): LogFunction => {
-    return (category: string, message: string, getMetaData?: GetMetaDataFunction): void => {
+    return (category: string, message: string, getMetaData?: LoggingMetaData): void => {
       let metaData = {};
       if (getMetaData) {
         // Sometimes getMetaData sent to this function is an Object instead of a GetMetaDataFunction.

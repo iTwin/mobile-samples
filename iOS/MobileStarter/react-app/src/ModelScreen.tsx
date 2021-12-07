@@ -3,25 +3,14 @@
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
 import React from "react";
-import { ColorDef } from "@bentley/imodeljs-common";
-import { FitViewTool, IModelApp, IModelConnection, ViewState } from "@bentley/imodeljs-frontend";
-import { ViewportComponent } from "@bentley/ui-components";
-import { getCssVariable, IconSpec } from "@bentley/ui-core";
-import { viewWithUnifiedSelection } from "@bentley/presentation-components";
+import { ColorDef } from "@itwin/core-common";
+import { FitViewTool, IModelApp, IModelConnection, ViewState } from "@itwin/core-frontend";
+import { ViewportComponent } from "@itwin/imodel-components-react";
+import { getCssVariable, IconSpec } from "@itwin/core-react";
+import { viewWithUnifiedSelection } from "@itwin/presentation-components";
 import { AlertAction, presentAlert } from "@itwin/mobile-sdk-core";
-import {
-  ActionSheetButton,
-  IconImage,
-  MobileUi,
-  MobileUiContent,
-  NavigationPanel,
-  TabOrPanelDef,
-  useBeEvent,
-  useIsMountedRef,
-  useTabsAndStandAlonePanels,
-  VisibleBackButton,
-} from "@itwin/mobile-ui-react";
-import { AboutBottomPanel, ToolAssistance, ElementPropertiesPanel, i18n, InfoBottomPanel, ToolsBottomPanel, ViewsBottomPanel } from "./Exports";
+import { ActionSheetButton, IconImage, MobileUi, MobileUiContent, NavigationPanel, TabOrPanelDef, useBeEvent, useIsMountedRef, useTabsAndStandAlonePanels, VisibleBackButton } from "@itwin/mobile-ui-react";
+import { AboutBottomPanel, ElementPropertiesPanel, i18n, InfoBottomPanel, ToolAssistance, ToolsBottomPanel, ViewsBottomPanel } from "./Exports";
 import "./ModelScreen.scss";
 
 // tslint:disable-next-line: variable-name

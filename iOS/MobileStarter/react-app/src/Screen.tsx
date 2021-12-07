@@ -3,7 +3,7 @@
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
 import React from "react";
-import { IModelApp } from "@bentley/imodeljs-frontend";
+import { IModelApp } from "@itwin/core-frontend";
 import { ProgressInfo } from "@bentley/itwin-client";
 import { MobileCore } from "@itwin/mobile-sdk-core";
 import "./Screen.scss";
@@ -27,9 +27,9 @@ function shouldDebugI18n() {
 
 export function i18n(prefix: string, key: string, options?: any) {
   if (shouldDebugI18n()) {
-    return "=" + IModelApp.i18n.translate(`ReactApp:${prefix}.${key}`, options) + "=";
+    return "=" + IModelApp.localization.getLocalizedStringWithNamespace("ReactApp", `${prefix}.${key}`, options) + "=";
   } else {
-    return IModelApp.i18n.translate(`ReactApp:${prefix}.${key}`, options);
+    return IModelApp.localization.getLocalizedStringWithNamespace("ReactApp", `${prefix}.${key}`, options);
   }
 }
 
@@ -37,7 +37,7 @@ export function roundedNumber(input: number, decimals?: number) {
   if (decimals === undefined) {
     decimals = 2;
   }
-  let decimalSeparator = 1.2.toLocaleString().indexOf(",") === -1 ? "." : ",";
+  let decimalSeparator = (1.2).toLocaleString().indexOf(",") === -1 ? "." : ",";
   let rounded = input.toLocaleString(undefined, { minimumFractionDigits: 0, maximumFractionDigits: decimals });
   let len = rounded.length;
   if (len > 0) {

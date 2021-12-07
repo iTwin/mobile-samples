@@ -3,13 +3,9 @@
 *--------------------------------------------------------------------------------------------*/
 import * as React from "react";
 import classnames from "classnames";
-import { CoreTools } from "@bentley/ui-framework";
-import {
-  IModelApp, ToolSettings,
-} from "@bentley/imodeljs-frontend";
-import {
-  MeasureToolDefinitions
-} from "@bentley/measure-tools-react";
+import { CoreTools } from "@itwin/appui-react";
+import { IModelApp, ToolSettings } from "@itwin/core-frontend";
+// import { MeasureToolDefinitions } from "@bentley/measure-tools-react";
 import {
   assignRef,
   BottomPanel,
@@ -72,13 +68,13 @@ export function ToolsBottomPanel(props: ToolsBottomPanelProps) {
   const { onToolClick, ...others } = props;
   const tools = [
     { labelKey: "ReactApp:ToolsBottomPanel.Select", icon: "icon-gesture-touch", toolItemDef: CoreTools.selectElementCommand },
-    { labelKey: "ReactApp:ToolsBottomPanel.Distance", icon: "icon-measure-distance", toolItemDef: MeasureToolDefinitions.measureDistanceToolCommand },
-    { labelKey: "ReactApp:ToolsBottomPanel.Location", icon: "icon-measure-location", toolItemDef: MeasureToolDefinitions.measureLocationToolCommand },
-    { labelKey: "ReactApp:ToolsBottomPanel.Area", icon: "icon-measure-2d", toolItemDef: MeasureToolDefinitions.measureAreaToolCommand },
-    { labelKey: "ReactApp:ToolsBottomPanel.Radius", icon: "icon-measure-arc", toolItemDef: MeasureToolDefinitions.measureRadiusToolCommand },
-    { labelKey: "ReactApp:ToolsBottomPanel.Angle", icon: "icon-measure-angle", toolItemDef: MeasureToolDefinitions.measureAngleToolCommand },
-    { labelKey: "ReactApp:ToolsBottomPanel.Perpendicular", icon: "icon-measure-perpendicular", toolItemDef: MeasureToolDefinitions.measurePerpendicularToolCommand },
-    { labelKey: "ReactApp:ToolsBottomPanel.Clear", icon: "icon-measure-clear", toolItemDef: MeasureToolDefinitions.clearMeasurementsToolCommand },
+    // { labelKey: "ReactApp:ToolsBottomPanel.Distance", icon: "icon-measure-distance", toolItemDef: MeasureToolDefinitions.measureDistanceToolCommand },
+    // { labelKey: "ReactApp:ToolsBottomPanel.Location", icon: "icon-measure-location", toolItemDef: MeasureToolDefinitions.measureLocationToolCommand },
+    // { labelKey: "ReactApp:ToolsBottomPanel.Area", icon: "icon-measure-2d", toolItemDef: MeasureToolDefinitions.measureAreaToolCommand },
+    // { labelKey: "ReactApp:ToolsBottomPanel.Radius", icon: "icon-measure-arc", toolItemDef: MeasureToolDefinitions.measureRadiusToolCommand },
+    // { labelKey: "ReactApp:ToolsBottomPanel.Angle", icon: "icon-measure-angle", toolItemDef: MeasureToolDefinitions.measureAngleToolCommand },
+    // { labelKey: "ReactApp:ToolsBottomPanel.Perpendicular", icon: "icon-measure-perpendicular", toolItemDef: MeasureToolDefinitions.measurePerpendicularToolCommand },
+    // { labelKey: "ReactApp:ToolsBottomPanel.Clear", icon: "icon-measure-clear", toolItemDef: MeasureToolDefinitions.clearMeasurementsToolCommand },
   ];
 
   const activeToolId = useActiveToolId();
@@ -98,7 +94,7 @@ export function ToolsBottomPanel(props: ToolsBottomPanelProps) {
         return <CircularButton
           key={value.labelKey}
           className="tool-button"
-          label={IModelApp.i18n.translate(value.labelKey)}
+          label={IModelApp.localization.getLocalizedString(value.labelKey)}
           iconSpec={/* value.toolItemDef.iconSpec ??  */value.icon}
           selected={activeToolId === value.toolItemDef.toolId}
           onClick={async () => {

@@ -3,22 +3,11 @@
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
 import * as React from "react";
-import { IModelApp, IModelConnection } from "@bentley/imodeljs-frontend";
-import { FillCentered } from "@bentley/ui-core";
-import { PropertyGrid } from "@bentley/ui-components";
-import {
-  IPresentationPropertyDataProvider,
-  PresentationPropertyDataProvider,
-  PresentationPropertyDataProviderProps,
-  usePropertyDataProviderWithUnifiedSelection,
-} from "@bentley/presentation-components";
-import {
-  DraggableComponent,
-  IconImage,
-  ResizableBottomPanel,
-  ResizableBottomPanelProps,
-  useBeEvent,
-} from "@itwin/mobile-ui-react";
+import { IModelApp, IModelConnection } from "@itwin/core-frontend";
+import { FillCentered } from "@itwin/core-react";
+import { PropertyGrid } from "@itwin/components-react";
+import { IPresentationPropertyDataProvider, PresentationPropertyDataProvider, PresentationPropertyDataProviderProps, usePropertyDataProviderWithUnifiedSelection } from "@itwin/presentation-components";
+import { DraggableComponent, IconImage, ResizableBottomPanel, ResizableBottomPanelProps, useBeEvent } from "@itwin/mobile-ui-react";
 import { HeaderTitle, i18n } from "./Exports";
 
 import "./ElementPropertiesPanel.scss";
