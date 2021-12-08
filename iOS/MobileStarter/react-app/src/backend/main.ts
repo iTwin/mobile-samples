@@ -7,7 +7,8 @@ import { Presentation, PresentationManagerMode } from "@itwin/presentation-backe
 import { LogFunction, Logger, LoggingMetaData, LogLevel } from "@itwin/core-bentley";
 import { IOSHost, MobileHost, MobileHostOpts } from "@itwin/core-mobile/lib/cjs/MobileBackend";
 import { getSupportedRpcs } from "../common/rpcs";
-import { IpcHost } from "@itwin/core-backend";
+import { IModelHostConfiguration, IpcHost } from "@itwin/core-backend";
+import { IModelHubBackend } from "@bentley/imodelhub-client/lib/cjs/imodelhub-node";
 
 // This is the file that generates main.js, which is loaded by the backend into a Google V8 JavaScript
 // engine instance that is running for node.js. This code runs when the iTwin Mobile backend is
@@ -26,8 +27,11 @@ export const prodIssuerUrl = "https://ims.bentley.com/";
   const clientId = process.env.ITMAPPLICATION_CLIENT_ID ?? "<Error>";
   const redirectUri = process.env.ITMAPPLICATION_REDIRECT_URI ?? "imodeljs://app/signin-callback";
   const scope = process.env.ITMAPPLICATION_SCOPE ?? "email openid profile organization itwinjs";
+  const iModelHost = new IModelHostConfiguration();
+  iModelHost.hubAccess = new IModelHubBackend();
   // Initialize imodeljs-backend
   const options: MobileHostOpts = {
+    iModelHost,
     mobileHost: {
       noInitializeAuthClient: true,
       authConfig: { issuerUrl, clientId, redirectUri, scope },
