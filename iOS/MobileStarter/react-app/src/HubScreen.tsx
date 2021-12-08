@@ -43,7 +43,17 @@ enum HubStep {
 function getActiveProject() {
   const projectInfoJson = localStorage.getItem("activeProjectInfo");
   if (projectInfoJson) {
-    return JSON.parse(projectInfoJson) as ITwin;
+    let project = JSON.parse(projectInfoJson);
+    if (project.id) {
+      return project as ITwin;
+    } else if (project.wsgId) {
+      // If we get here, the project stored in localStorage comes from iModelJs 2.19.x. Convert it to iTwin 3.
+      return {
+        name: project.name,
+        id: project.wsgId,
+        code: project.projectNumber,
+      } as ITwin;
+    }
   }
   return undefined;
 }
