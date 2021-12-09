@@ -5,13 +5,14 @@
     "OK": "OK"
   },
   "App": {
-    "LoadErrorFormat": "Error loading iModel:\n{{error}}"
+    "LoadErrorFormat": "Error loading iModel:\n{{- error}}"
   },
   "Screen": {
     "BFormat": "{{size}} B",
     "KBFormat": "{{size}} KB",
     "MBFormat": "{{size}} MB",
-    "GBFormat": "{{size}} KB"
+    "GBFormat": "{{size}} KB",
+    "LoadedFormat": " ({{value}} loaded)"
   },
   "HomeScreen": {
     "Home": "Home",
@@ -28,17 +29,19 @@
     "GettingIModelList": "Getting iModel List...",
     "DownloadingIModel": "Downloading iModel...",
     "SignOut": "Sign Out",
-    "FetchProjectsErrorFormat": "Fetch Projects {{error}}",
-    "SigninErrorFormat": "Signin {{error}}",
+    "FetchProjectsErrorFormat": "Error getting projects list: {{- error}}",
+    "SigninErrorFormat": "Error signing in: {{- error}}",
     "Unknown": "<Unknown>",
     "DeleteAllDownloads": "Delete All Downloads",
-    "ChangeProject": "Change Project"
+    "ChangeProject": "Change Project",
+    "Filter": "Filter",
+    "DownloadErrorFormat": "Error downloading iModel: {{- error}}"
   },
   "ModelScreen": {
     "Location": "Location",
     "ShowCurrentLocation": "Show Current Location...",
     "LocationFormat": "Latitude: {{latitude}} Longitude: {{longitude}}",
-    "LocationErrorFormat": "Error getting location: {{error}}",
+    "LocationErrorFormat": "Error getting location: {{- error}}",
     "FitView": "Fit View",
     "Info": "Info",
     "About": "About",
@@ -54,7 +57,7 @@
     "Properties": "Properties"
   },
   "InfoBottomPanel": {
-    "PathFormat": "Path: {{filename}}"
+    "PathFormat": "Path: {{- filename}}"
   },
   "ViewsBottomPanel": {
     "Views": "Views"

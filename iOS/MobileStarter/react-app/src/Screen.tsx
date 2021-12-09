@@ -75,7 +75,13 @@ export function progressString(progress: ProgressInfo | undefined) {
   if (percent === undefined && progress?.total) {
     percent = roundedNumber(100.0 * progress.loaded / progress.total, 0);
   }
-  if (percent === undefined) return "";
+  if (percent === undefined) {
+    if (progress && progress.loaded) {
+      return i18n("Screen", "LoadedFormat", { value: progress.loaded });
+    } else {
+      return "";
+    }
+  }
   return " (" + percent + "%)";
 }
 
