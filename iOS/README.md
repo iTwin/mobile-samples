@@ -8,7 +8,16 @@ Before building the samples, you must configure a Client ID for yourself. To do 
 1. Go to <https://developer.bentley.com/my-apps/>.
 1. Click the "Register New" button.
 1. Pick a name.
-1. Check the check box next to "Visualization".
+1. Check the check boxes next to "Visualization", "Administration", and "Digital Twin Management".
+1. Remove the following scopes by selecting the X next to them:
+    * library:modify
+    * realitydata:modify
+    * library:read
+    * imodels:modify
+    * storage:modify
+    * storage:read
+    * projects:modify
+    * users:read
 1. Select "Desktop/Mobile" as the application type.
 1. Enter `imodeljs://app/signin-callback` for "Redirect URIs".
 1. Enter `imodeljs://app/signout-callback` for "Post logout redirect URIs".
