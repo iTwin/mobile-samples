@@ -10,7 +10,7 @@ import { ProgressCallback, ProgressInfo } from "@bentley/itwin-client";
 // import { ProjectInfo, ProjectScope } from "@itwin/appui-react";
 // import { DefaultProjectServices } from "@bentley/ui-framework/lib/ui-framework/clientservices/DefaultProjectServices";
 import { BriefcaseConnection, DownloadBriefcaseOptions, IModelApp, IModelConnection, NativeApp } from "@itwin/core-frontend";
-import { HubIModel, IModelHubClient } from "@bentley/imodelhub-client";
+import { Authorization, IModelsClient, MinimalIModel } from "@itwin/imodels-client-management";
 import { BriefcaseDownloader, LocalBriefcaseProps, SyncMode } from "@itwin/core-common";
 import { Button, fileSizeString, FilterControl, i18n, progressString, Screen } from "./Exports";
 import "./HubScreen.scss";
@@ -75,7 +75,7 @@ function getActiveProject() {
 }
 
 interface IModelInfo {
-  hubIModel: HubIModel;
+  minimalIModel: MinimalIModel;
   briefcase?: LocalBriefcaseProps;
 }
 
@@ -114,7 +114,6 @@ export function HubScreen(props: HubScreenProps) {
     i18n("HubScreen", "DownloadingIModel"),
   ], []);
   const signOutLabel = React.useMemo(() => i18n("HubScreen", "SignOut"), []);
-  const unknownLabel = React.useMemo(() => i18n("HubScreen", "Unknown"), []);
   const deleteAllDownloadsLabel = React.useMemo(() => i18n("HubScreen", "DeleteAllDownloads"), []);
   const changeProjectLabel = React.useMemo(() => i18n("HubScreen", "ChangeProject"), []);
   const filterLabel = React.useMemo(() => i18n("HubScreen", "Filter"), []);
@@ -164,33 +163,41 @@ export function HubScreen(props: HubScreenProps) {
     setHubStep(HubStep.FetchingIModels);
     setIModels([]);
     setButtonTitles([]);
-    const hubClient = new IModelHubClient();
-    // const requestContext = await AuthorizedFrontendRequestContext.create();
-    if (!isMountedRef.current) return;
-    const getName = (imodel: HubIModel) => {
-      return imodel.name ?? unknownLabel;
+    const imodelsClient = new IModelsClient();
+    const getAuthorization = async (): Promise<Authorization> => {
+      const token = (await IModelApp.getAccessToken()).slice("Bearer ".length);
+      return { scheme: "Bearer", token };
     };
-    // Fetch the list of imodels, then sort them by name using case-insensitive sort.
-    const hubIModels = (await hubClient.iModels.get(await IModelApp.getAccessToken(), project.id)).sort((a, b) => (getName(a)).localeCompare(getName(b), undefined, { sensitivity: "base" }));
+    const minimalIModels: MinimalIModel[] = [];
+    // Fetch the list of iModels.
+    for await (const minimalIModel of imodelsClient.iModels.getMinimalList({
+      authorization: getAuthorization,
+      urlParams: {
+        projectId: project.id,
+      }
+    })) {
+      minimalIModels.push(minimalIModel);
+    }
     if (!isMountedRef.current) return;
+    // Sort them by name using case-insensitive sort.
+    minimalIModels.sort((a, b) => a.displayName.localeCompare(b.displayName, undefined, { sensitivity: "base" }));
     const iModelInfos: IModelInfo[] = [];
     let numCachedBriefcases = 0;
-    for (let i = 0; i < hubIModels.length; ++i) {
-      const hubIModel = hubIModels[i];
-      const localBriefcases = await NativeApp.getCachedBriefcases(hubIModel.id);
+    for (const minimalIModel of minimalIModels) {
+      const localBriefcases = await NativeApp.getCachedBriefcases(minimalIModel.id);
       if (!isMountedRef.current) return;
       const briefcase = localBriefcases.length > 0 ? localBriefcases[0] : undefined;
       if (briefcase) {
         ++numCachedBriefcases;
       }
       setHaveCachedBriefcase(numCachedBriefcases !== 0);
-      iModelInfos.push({ hubIModel, briefcase });
+      iModelInfos.push({ minimalIModel, briefcase });
     }
     setIModels(iModelInfos);
-    const names = hubIModels.map((imodel) => getName(imodel));
+    const names = minimalIModels.map((imodel) => imodel.displayName);
     setButtonTitles(names);
     setHubStep(HubStep.SelectIModel);
-  }, [isMountedRef, unknownLabel]);
+  }, [isMountedRef]);
 
   // Effect that makes sure we are signed in, then continues to whatever comes next.
   React.useEffect(() => {
@@ -262,7 +269,7 @@ export function HubScreen(props: HubScreenProps) {
   }, [onOpen]);
 
   // Download the specified imodel, then open it once it has been downloaded.
-  const downloadIModel = React.useCallback(async (iModel: HubIModel) => {
+  const downloadIModel = React.useCallback(async (iModel: MinimalIModel) => {
     const origButtonTitles = [...buttonTitles];
     setButtonTitles([]);
     setHubStep(HubStep.DownloadIModel);
@@ -306,7 +313,7 @@ export function HubScreen(props: HubScreenProps) {
   // onClick handler for iModel list.
   const handleSelectIModel = React.useCallback(async (index) => {
     console.log("Select iModel: " + JSON.stringify(iModels[index]));
-    const iModel = iModels[index].hubIModel;
+    const iModel = iModels[index].minimalIModel;
     // First, check to see if we have a local copy of the iModel.
     // NOTE: This does not check to see if the iModel has been updated since it was last
     // downloaded.

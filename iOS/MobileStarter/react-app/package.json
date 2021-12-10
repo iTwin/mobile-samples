@@ -1,6 +1,6 @@
 {
   "name": "react-app",
-  "version": "0.9.8",
+  "version": "1.0.0-dev.1",
   "private": true,
   "homepage": "./",
   "scripts": {
@@ -49,8 +49,11 @@
     "@itwin/core-react": "3.0.0-dev.141",
     "@itwin/ecschema-metadata": "3.0.0-dev.141",
     "@itwin/imodel-components-react": "3.0.0-dev.141",
+    "@itwin/imodels-client-management": "^0.1.0",
     "@itwin/linear-referencing-backend": "3.0.0-dev.141",
     "@itwin/linear-referencing-common": "3.0.0-dev.141",
+    "@itwin/mobile-sdk-core": "1.0.0-dev.1",
+    "@itwin/mobile-ui-react": "1.0.0-dev.1",
     "@itwin/presentation-backend": "3.0.0-dev.141",
     "@itwin/presentation-common": "3.0.0-dev.141",
     "@itwin/presentation-components": "3.0.0-dev.141",

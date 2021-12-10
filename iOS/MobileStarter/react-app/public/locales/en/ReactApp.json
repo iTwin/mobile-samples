@@ -31,7 +31,6 @@
     "SignOut": "Sign Out",
     "FetchProjectsErrorFormat": "Error getting projects list: {{- error}}",
     "SigninErrorFormat": "Error signing in: {{- error}}",
-    "Unknown": "<Unknown>",
     "DeleteAllDownloads": "Delete All Downloads",
     "ChangeProject": "Change Project",
     "Filter": "Filter",
