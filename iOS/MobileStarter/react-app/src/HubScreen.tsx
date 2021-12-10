@@ -79,10 +79,10 @@ interface IModelInfo {
   briefcase?: LocalBriefcaseProps;
 }
 
-function presentError(formatKey: string, error: any) {
+function presentError(formatKey: string, error: any, namespace = "HubScreen") {
   presentAlert({
     title: i18n("Shared", "Error"),
-    message: i18n("HubScreen", formatKey, { error }),
+    message: i18n(namespace, formatKey, { error }),
     actions: [{
       name: "ok",
       title: i18n("Shared", "OK"),
@@ -163,41 +163,48 @@ export function HubScreen(props: HubScreenProps) {
     setHubStep(HubStep.FetchingIModels);
     setIModels([]);
     setButtonTitles([]);
-    const imodelsClient = new IModelsClient();
-    const getAuthorization = async (): Promise<Authorization> => {
-      const token = (await IModelApp.getAccessToken()).slice("Bearer ".length);
-      return { scheme: "Bearer", token };
-    };
-    const minimalIModels: MinimalIModel[] = [];
-    // Fetch the list of iModels.
-    for await (const minimalIModel of imodelsClient.iModels.getMinimalList({
-      authorization: getAuthorization,
-      urlParams: {
-        projectId: project.id,
+    try {
+      const imodelsClient = new IModelsClient();
+      const getAuthorization = async (): Promise<Authorization> => {
+        const token = (await IModelApp.getAccessToken()).slice("Bearer ".length);
+        return { scheme: "Bearer", token };
+      };
+      const minimalIModels: MinimalIModel[] = [];
+      // Fetch the list of iModels.
+      for await (const minimalIModel of imodelsClient.iModels.getMinimalList({
+        authorization: getAuthorization,
+        urlParams: {
+          projectId: project.id,
+        }
+      })) {
+        minimalIModels.push(minimalIModel);
       }
-    })) {
-      minimalIModels.push(minimalIModel);
-    }
-    if (!isMountedRef.current) return;
-    // Sort them by name using case-insensitive sort.
-    minimalIModels.sort((a, b) => a.displayName.localeCompare(b.displayName, undefined, { sensitivity: "base" }));
-    const iModelInfos: IModelInfo[] = [];
-    let numCachedBriefcases = 0;
-    for (const minimalIModel of minimalIModels) {
-      const localBriefcases = await NativeApp.getCachedBriefcases(minimalIModel.id);
       if (!isMountedRef.current) return;
-      const briefcase = localBriefcases.length > 0 ? localBriefcases[0] : undefined;
-      if (briefcase) {
-        ++numCachedBriefcases;
+      // Sort them by name using case-insensitive sort.
+      minimalIModels.sort((a, b) => a.displayName.localeCompare(b.displayName, undefined, { sensitivity: "base" }));
+      const iModelInfos: IModelInfo[] = [];
+      let numCachedBriefcases = 0;
+      for (const minimalIModel of minimalIModels) {
+        const localBriefcases = await NativeApp.getCachedBriefcases(minimalIModel.id);
+        if (!isMountedRef.current) return;
+        const briefcase = localBriefcases.length > 0 ? localBriefcases[0] : undefined;
+        if (briefcase) {
+          ++numCachedBriefcases;
+        }
+        setHaveCachedBriefcase(numCachedBriefcases !== 0);
+        iModelInfos.push({ minimalIModel, briefcase });
       }
-      setHaveCachedBriefcase(numCachedBriefcases !== 0);
-      iModelInfos.push({ minimalIModel, briefcase });
+      setIModels(iModelInfos);
+      const names = minimalIModels.map((imodel) => imodel.displayName);
+      setButtonTitles(names);
+      setHubStep(HubStep.SelectIModel);
+    } catch (error) {
+      // There was a problem fetching iModels. Show the error, and give the user the option
+      // to sign out.
+      presentError("GetIModelsErrorFormat", error);
+      setButtonTitles([signOutLabel]);
     }
-    setIModels(iModelInfos);
-    const names = minimalIModels.map((imodel) => imodel.displayName);
-    setButtonTitles(names);
-    setHubStep(HubStep.SelectIModel);
-  }, [isMountedRef]);
+  }, [isMountedRef, signOutLabel]);
 
   // Effect that makes sure we are signed in, then continues to whatever comes next.
   React.useEffect(() => {
@@ -303,6 +310,8 @@ export function HubScreen(props: HubScreenProps) {
         openIModel(localBriefcases[0]);
       }
     } catch (error) {
+      // There was an error downloading the iModel. Show the error, then go back to the
+      // iModels list.
       presentError("DownloadErrorFormat", error);
       if (!isMountedRef.current) return;
       setButtonTitles(origButtonTitles);
@@ -314,19 +323,26 @@ export function HubScreen(props: HubScreenProps) {
   const handleSelectIModel = React.useCallback(async (index) => {
     console.log("Select iModel: " + JSON.stringify(iModels[index]));
     const iModel = iModels[index].minimalIModel;
-    // First, check to see if we have a local copy of the iModel.
-    // NOTE: This does not check to see if the iModel has been updated since it was last
-    // downloaded.
-    const localBriefcases = await NativeApp.getCachedBriefcases(iModel.id);
-    if (!isMountedRef.current) return;
-    if (localBriefcases.length === 0) {
-      // We don't have a local copy of the iModel, so download it and then open it.
-      downloadIModel(iModel);
-    } else {
-      // We do have a local copy of the iModel, so open that local copy.
-      openIModel(localBriefcases[0]);
+    try {
+      // First, check to see if we have a local copy of the iModel.
+      // NOTE: This does not check to see if the iModel has been updated since it was last
+      // downloaded.
+      const localBriefcases = await NativeApp.getCachedBriefcases(iModel.id);
+      if (!isMountedRef.current) return;
+      if (localBriefcases.length === 0) {
+        // We don't have a local copy of the iModel, so download it and then open it.
+        downloadIModel(iModel);
+      } else {
+        // We do have a local copy of the iModel, so open that local copy.
+        openIModel(localBriefcases[0]);
+      }
+    } catch (error) {
+      // There was a problem loading the iModel. Show the error, and give the user the option
+      // to sign out.
+      presentError("LoadErrorFormat", error, "App");
+      setButtonTitles([signOutLabel]);
     }
-  }, [iModels, downloadIModel, openIModel, isMountedRef]);
+  }, [iModels, downloadIModel, openIModel, isMountedRef, signOutLabel]);
 
   let filteredTitles = buttonTitles;
   if (filter && hubStep === HubStep.SelectProject) {
@@ -345,10 +361,15 @@ export function HubScreen(props: HubScreenProps) {
         deleteButton = (
           <div className="delete-button" onClick={async (e) => {
             e.stopPropagation();
-            await MobileCore.deleteCachedBriefcase(briefcase);
-            if (!isMountedRef.current) return;
-            if (project) {
-              selectProject(project);
+            try {
+              await MobileCore.deleteCachedBriefcase(briefcase);
+              if (!isMountedRef.current) return;
+              if (project) {
+                selectProject(project);
+              }
+            } catch (error) {
+              // There was a problem deleting the cached briefcase. Show the error.
+              presentError("DeleteErrorFormat", error);
             }
           }}>
             <IconImage iconSpec="icon-delete" />
@@ -370,7 +391,11 @@ export function HubScreen(props: HubScreenProps) {
         onClick={async () => {
           if (title === signOutLabel) {
             if (IModelApp.authorizationClient instanceof ITMAuthorizationClient) {
-              await IModelApp.authorizationClient.signOut();
+              try {
+                await IModelApp.authorizationClient.signOut();
+              } catch (error) {
+                console.log(`Error signing out: ${error}`);
+              }
             }
             onBack();
           }
@@ -392,8 +417,14 @@ export function HubScreen(props: HubScreenProps) {
         title: deleteAllDownloadsLabel,
         onSelected: async () => {
           if (project) {
-            await MobileCore.deleteCachedBriefcases(project.id);
-            if (!isMountedRef.current) return;
+            try {
+              await MobileCore.deleteCachedBriefcases(project.id);
+              if (!isMountedRef.current) return;
+            } catch (error) {
+              // There was a problem deleting the cached briefcases. Show the error, then refresh
+              // anyway so if any were successfully deleted, it will reflect that.
+              presentError("DeleteAllErrorFormat", error);
+            }
             selectProject(project);
           }
         }
