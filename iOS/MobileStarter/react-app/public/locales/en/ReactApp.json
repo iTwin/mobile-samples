@@ -30,11 +30,14 @@
     "DownloadingIModel": "Downloading iModel...",
     "SignOut": "Sign Out",
     "FetchProjectsErrorFormat": "Error getting projects list: {{- error}}",
+    "GetIModelsErrorFormat": "Error getting iModels list: {{- error}}",
     "SigninErrorFormat": "Error signing in: {{- error}}",
     "DeleteAllDownloads": "Delete All Downloads",
     "ChangeProject": "Change Project",
     "Filter": "Filter",
-    "DownloadErrorFormat": "Error downloading iModel: {{- error}}"
+    "DownloadErrorFormat": "Error downloading iModel: {{- error}}",
+    "DeleteErrorFormat": "Error deleting local download of iModel: {{- error}}",
+    "DeleteAllErrorFormat": "Error deleting local downloads of all iModels in project: {{- error}}"
   },
   "ModelScreen": {
     "Location": "Location",
