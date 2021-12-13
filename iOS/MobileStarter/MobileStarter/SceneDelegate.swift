@@ -4,6 +4,7 @@
 *--------------------------------------------------------------------------------------------*/
 
 import UIKit
+import ITwinMobile
 
 @available(iOS 13.0, *)
 class SceneDelegate: UIResponder, UIWindowSceneDelegate {
@@ -16,6 +17,12 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         // If using a storyboard, the `window` property will automatically be initialized and attached to the scene.
         // This delegate does not imply the connecting scene or session are new (see `application:configurationForConnectingSceneSession` instead).
         guard let _ = (scene as? UIWindowScene) else { return }
+        
+            // Use our ModelApplication (a subclass of ITMApplication) as the application object.
+        ITMViewController.application = ModelApplication()
+            // Delay the automatic loading of the frontend and backend to account for problem when
+            // that happens before the application's first willEnterForeground.
+        ITMViewController.delayedAutoLoad = true
     }
 
     func scene(_ scene: UIScene, openURLContexts URLContexts: Set<UIOpenURLContext>) {
