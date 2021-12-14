@@ -73,6 +73,7 @@ Once you have performed the above setup, you can build and run the samples.
     1. Select your connected device in Finder's left navigation pane.
     1. Select the Files tab.
     1. Drag and drop .bim Snapshot iModel files into the "iTwin Starter" app or the "SwiftUIStarter" app.
+1. Please see [Debugging.md](./Debugging.md) for instructions on debugging.
 
 ## Organization
 
