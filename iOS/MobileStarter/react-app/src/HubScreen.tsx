@@ -11,7 +11,7 @@ import { ProgressCallback, ProgressInfo } from "@bentley/itwin-client";
 // import { DefaultProjectServices } from "@bentley/ui-framework/lib/ui-framework/clientservices/DefaultProjectServices";
 import { BriefcaseConnection, DownloadBriefcaseOptions, IModelApp, IModelConnection, NativeApp } from "@itwin/core-frontend";
 import { Authorization, IModelsClient, MinimalIModel } from "@itwin/imodels-client-management";
-import { BriefcaseDownloader, LocalBriefcaseProps, SyncMode } from "@itwin/core-common";
+import { BentleyError, BriefcaseDownloader, BriefcaseStatus, IModelStatus, LocalBriefcaseProps, SyncMode } from "@itwin/core-common";
 import { Button, fileSizeString, FilterControl, i18n, presentError, progressString, Screen } from "./Exports";
 import "./HubScreen.scss";
 
@@ -271,6 +271,7 @@ export function HubScreen(props: HubScreenProps) {
     setHubStep(HubStep.DownloadIModel);
     const opts: DownloadBriefcaseOptions = { syncMode: SyncMode.PullOnly };
     let downloader: BriefcaseDownloader | undefined;
+    let canceled = false;
     try {
       downloader = await NativeApp.requestDownloadBriefcase(project!.id!, iModel.id!, opts, undefined, (progress: ProgressInfo) => {
         if (!handleProgress(progress)) {
@@ -279,10 +280,12 @@ export function HubScreen(props: HubScreenProps) {
             console.log("NO downloader to cancel!");
           }
           downloader?.requestCancel();
+          canceled = true;
         }
       });
       if (!isMountedRef.current) {
         downloader.requestCancel();
+        canceled = true;
         return;
       }
       // Wait for the download to complete.
@@ -299,12 +302,32 @@ export function HubScreen(props: HubScreenProps) {
         openIModel(localBriefcases[0]);
       }
     } catch (error) {
+      if (error instanceof BentleyError) {
+        if (error.errorNumber === IModelStatus.FileAlreadyExists) {
+          // When a download is canceled, the partial briefcase file does not get deleted, which causes
+          // any subsequent download attempt to fail with this error number. If that happens, delete the
+          // briefcase and try again.
+          try {
+            // When syncMode is SyncMode.PullOnly (which is what we use), briefcaseId is ALWAYS 0, so try
+            // to delete the existing file using that briefcaseId.
+            const filename = await NativeApp.getBriefcaseFileName({ iModelId: iModel.id, briefcaseId: 0 });
+            await NativeApp.deleteBriefcase(filename);
+            if (!isMountedRef.current) return;
+            await downloadIModel(iModel);
+            return;
+          } catch (_error) { }
+        } else if (error.errorNumber === BriefcaseStatus.DownloadCancelled && canceled) {
+          // When we call requestCancel, it causes the downloader to throw this error; ignore.
+          return;
+        }
+      }
       // There was an error downloading the iModel. Show the error, then go back to the
       // iModels list.
       presentError("DownloadErrorFormat", error, "HubScreen");
       if (!isMountedRef.current) return;
       setButtonTitles(origButtonTitles);
       setHubStep(HubStep.SelectIModel);
+      setProgress(undefined);
     }
   }, [openIModel, project, isMountedRef, buttonTitles, handleProgress]);
 
