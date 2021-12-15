@@ -8,10 +8,10 @@ import { IOSApp, IOSAppOpts } from "@itwin/core-mobile/lib/cjs/MobileFrontend";
 import { IModelApp, IModelConnection, SnapshotConnection, ToolAssistanceInstructions } from "@itwin/core-frontend";
 import { AppNotificationManager, FrameworkReducer, FrameworkState, UiFramework } from "@itwin/appui-react";
 import { Presentation } from "@itwin/presentation-frontend";
-import { ITMAuthorizationClient, Messenger, presentAlert } from "@itwin/mobile-sdk-core";
+import { ITMAuthorizationClient, Messenger } from "@itwin/mobile-sdk-core";
 import { MobileUi } from "@itwin/mobile-ui-react";
 // import { FeatureTracking as MeasureToolsFeatureTracking, MeasureTools } from "@bentley/measure-tools-react";
-import { ActiveScreen, HomeScreen, HubScreen, i18n, LoadingScreen, ModelScreen, SnapshotsScreen, ToolAssistance } from "./Exports";
+import { ActiveScreen, HomeScreen, HubScreen, LoadingScreen, ModelScreen, presentError, SnapshotsScreen, ToolAssistance } from "./Exports";
 import { getSupportedRpcs } from "./common/rpcs";
 import "./App.scss";
 
@@ -125,14 +125,7 @@ function App() {
       };
       pushActiveInfo(ActiveScreen.Model, cleanup);
     } catch (error) {
-      presentAlert({
-        title: i18n("Shared", "Error"),
-        message: i18n("App", "LoadErrorFormat", { error }),
-        actions: [{
-          name: "ok",
-          title: i18n("Shared", "OK"),
-        }],
-      })
+      presentError("LoadErrorFormat", error);
     }
   }, [iModel, pushActiveInfo]);
 
