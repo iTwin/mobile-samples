@@ -92,9 +92,10 @@ export function Screen(props?: ScreenProps) {
 }
 
 export function presentError(formatKey: string, error: any, namespace = "App") {
+  const errorMessage = (error instanceof Error) ? error.message : error;
   presentAlert({
     title: i18n("Shared", "Error"),
-    message: i18n(namespace, formatKey, { error }),
+    message: i18n(namespace, formatKey, { error: errorMessage }),
     actions: [{
       name: "ok",
       title: i18n("Shared", "OK"),
