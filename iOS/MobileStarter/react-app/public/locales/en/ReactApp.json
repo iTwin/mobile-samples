@@ -74,6 +74,11 @@
     "Location": "Location",
     "Perpendicular": "Perpendicular",
     "Radius": "Radius",
-    "Select": "Select"
+    "Select": "Select",
+    "SectionByPlane": "Section by Plane",
+    "SectionByElement": "Section by Element",
+    "SectionByRange": "Section by Range",
+    "SectionByShape": "Section by Shape",
+    "ClearSection": "Clear Section"
   }
 }
