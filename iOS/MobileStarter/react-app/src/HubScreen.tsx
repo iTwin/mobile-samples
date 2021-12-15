@@ -3,7 +3,7 @@
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
 import React from "react";
-import { AlertAction, ITMAuthorizationClient, MobileCore, presentAlert } from "@itwin/mobile-sdk-core";
+import { AlertAction, ITMAuthorizationClient, MobileCore } from "@itwin/mobile-sdk-core";
 import { ActionSheetButton, IconImage, useIsMountedRef, VisibleBackButton } from "@itwin/mobile-ui-react";
 import { Project as ITwin, ProjectsAccessClient } from "@itwin/projects-client";
 import { ProgressCallback, ProgressInfo } from "@bentley/itwin-client";
@@ -12,7 +12,7 @@ import { ProgressCallback, ProgressInfo } from "@bentley/itwin-client";
 import { BriefcaseConnection, DownloadBriefcaseOptions, IModelApp, IModelConnection, NativeApp } from "@itwin/core-frontend";
 import { Authorization, IModelsClient, MinimalIModel } from "@itwin/imodels-client-management";
 import { BriefcaseDownloader, LocalBriefcaseProps, SyncMode } from "@itwin/core-common";
-import { Button, fileSizeString, FilterControl, i18n, progressString, Screen } from "./Exports";
+import { Button, fileSizeString, FilterControl, i18n, presentError, progressString, Screen } from "./Exports";
 import "./HubScreen.scss";
 
 /// Properties for the [[HubScreen]] React component.
@@ -79,17 +79,6 @@ interface IModelInfo {
   briefcase?: LocalBriefcaseProps;
 }
 
-function presentError(formatKey: string, error: any, namespace = "HubScreen") {
-  presentAlert({
-    title: i18n("Shared", "Error"),
-    message: i18n(namespace, formatKey, { error }),
-    actions: [{
-      name: "ok",
-      title: i18n("Shared", "OK"),
-    }],
-  });
-}
-
 /// React component to allow downloading and opening models from the iModel Hub.
 export function HubScreen(props: HubScreenProps) {
   const { onOpen, onBack } = props;
@@ -152,7 +141,7 @@ export function HubScreen(props: HubScreenProps) {
     } catch (error) {
       // There was a problem fetching the projects. Show the error, and give the user the option
       // to sign out.
-      presentError("FetchProjectsErrorFormat", error);
+      presentError("FetchProjectsErrorFormat", error, "HubScreen");
       setButtonTitles([signOutLabel]);
     }
   }, [isMountedRef, signOutLabel, handleProgress]);
@@ -201,7 +190,7 @@ export function HubScreen(props: HubScreenProps) {
     } catch (error) {
       // There was a problem fetching iModels. Show the error, and give the user the option
       // to sign out.
-      presentError("GetIModelsErrorFormat", error);
+      presentError("GetIModelsErrorFormat", error, "HubScreen");
       setButtonTitles([signOutLabel]);
     }
   }, [isMountedRef, signOutLabel]);
@@ -234,7 +223,7 @@ export function HubScreen(props: HubScreenProps) {
       } catch (error) {
         // There was a problem signing in. Show the error, and give the user the option
         // to sign out.
-        presentError("SigninErrorFormat", error);
+        presentError("SigninErrorFormat", error, "HubScreen");
         setButtonTitles([signOutLabel]);
       }
     }
@@ -312,7 +301,7 @@ export function HubScreen(props: HubScreenProps) {
     } catch (error) {
       // There was an error downloading the iModel. Show the error, then go back to the
       // iModels list.
-      presentError("DownloadErrorFormat", error);
+      presentError("DownloadErrorFormat", error, "HubScreen");
       if (!isMountedRef.current) return;
       setButtonTitles(origButtonTitles);
       setHubStep(HubStep.SelectIModel);
@@ -339,7 +328,7 @@ export function HubScreen(props: HubScreenProps) {
     } catch (error) {
       // There was a problem loading the iModel. Show the error, and give the user the option
       // to sign out.
-      presentError("LoadErrorFormat", error, "App");
+      presentError("LoadErrorFormat", error);
       setButtonTitles([signOutLabel]);
     }
   }, [iModels, downloadIModel, openIModel, isMountedRef, signOutLabel]);
@@ -369,7 +358,7 @@ export function HubScreen(props: HubScreenProps) {
               }
             } catch (error) {
               // There was a problem deleting the cached briefcase. Show the error.
-              presentError("DeleteErrorFormat", error);
+              presentError("DeleteErrorFormat", error, "HubScreen");
             }
           }}>
             <IconImage iconSpec="icon-delete" />
@@ -423,7 +412,7 @@ export function HubScreen(props: HubScreenProps) {
             } catch (error) {
               // There was a problem deleting the cached briefcases. Show the error, then refresh
               // anyway so if any were successfully deleted, it will reflect that.
-              presentError("DeleteAllErrorFormat", error);
+              presentError("DeleteAllErrorFormat", error, "HubScreen");
             }
             selectProject(project);
           }

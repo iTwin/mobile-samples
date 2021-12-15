@@ -5,7 +5,7 @@
 import React from "react";
 import { IModelApp } from "@itwin/core-frontend";
 import { ProgressInfo } from "@bentley/itwin-client";
-import { MobileCore } from "@itwin/mobile-sdk-core";
+import { MobileCore, presentAlert } from "@itwin/mobile-sdk-core";
 import "./Screen.scss";
 
 /// Properties for the [[Screen]] React component.
@@ -89,4 +89,15 @@ export function progressString(progress: ProgressInfo | undefined) {
 /// React component for a simple full-screen UI with arbitrary children.
 export function Screen(props?: ScreenProps) {
   return <div className="screen">{props?.children}</div>
+}
+
+export function presentError(formatKey: string, error: any, namespace = "App") {
+  presentAlert({
+    title: i18n("Shared", "Error"),
+    message: i18n(namespace, formatKey, { error }),
+    actions: [{
+      name: "ok",
+      title: i18n("Shared", "OK"),
+    }],
+  });
 }

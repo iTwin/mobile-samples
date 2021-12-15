@@ -4,13 +4,13 @@
 *--------------------------------------------------------------------------------------------*/
 import React from "react";
 import { ColorDef } from "@itwin/core-common";
-import { FitViewTool, IModelApp, IModelConnection, ViewState } from "@itwin/core-frontend";
+import { FitViewTool, IModelApp, IModelConnection, StandardViewId, ViewCreator3d, ViewCreator3dOptions, ViewState } from "@itwin/core-frontend";
 import { ViewportComponent } from "@itwin/imodel-components-react";
 import { getCssVariable, IconSpec } from "@itwin/core-react";
 import { viewWithUnifiedSelection } from "@itwin/presentation-components";
 import { AlertAction, presentAlert } from "@itwin/mobile-sdk-core";
 import { ActionSheetButton, IconImage, MobileUi, MobileUiContent, NavigationPanel, TabOrPanelDef, useBeEvent, useIsMountedRef, useTabsAndStandAlonePanels, VisibleBackButton } from "@itwin/mobile-ui-react";
-import { AboutBottomPanel, ElementPropertiesPanel, i18n, InfoBottomPanel, ToolAssistance, ToolsBottomPanel, ViewsBottomPanel } from "./Exports";
+import { AboutBottomPanel, ElementPropertiesPanel, i18n, InfoBottomPanel, presentError, ToolAssistance, ToolsBottomPanel, ViewsBottomPanel } from "./Exports";
 import "./ModelScreen.scss";
 
 // tslint:disable-next-line: variable-name
@@ -45,6 +45,7 @@ export function ModelScreen(props: ModelScreenProps) {
   const okLabel = React.useMemo(() => i18n("Shared", "OK"), []);
   const showCurrentLocationLabel = React.useMemo(() => i18n("ModelScreen", "ShowCurrentLocation"), []);
   const fitViewLabel = React.useMemo(() => i18n("ModelScreen", "FitView"), []);
+  const defaultViewLabel = React.useMemo(() => i18n("ModelScreen", "DefaultView"), []);
   const infoLabel = React.useMemo(() => i18n("ModelScreen", "Info"), []);
   const aboutLabel = React.useMemo(() => i18n("ModelScreen", "About"), []);
   const viewsLabel = React.useMemo(() => i18n("ModelScreen", "Views"), []);
@@ -98,6 +99,11 @@ export function ModelScreen(props: ModelScreenProps) {
           name: "fitView",
           title: fitViewLabel,
           onSelected: handleFitView,
+        },
+        {
+          name: "defaultView",
+          title: defaultViewLabel,
+          onSelected: applyDefaultView,
         },
       ];
 
@@ -171,24 +177,26 @@ export function ModelScreen(props: ModelScreenProps) {
     }
   }, MobileUi.onColorSchemeChanged);
 
-  // Effect to load the default view state.
-  React.useEffect(() => {
-    // React.useEffect callbacks cannot be async, since they have a meaningful return value that is
-    // not a Promise.
-    const loadViewState = async () => {
-      try {
-        const defaultViewId = await iModel.views.queryDefaultViewId();
-        const defaultViewState = await iModel.views.load(defaultViewId);
-        if (!isMountedRef.current) return;
-        updateBackgroundColor(defaultViewState);
-        setViewState(defaultViewState);
-      } catch (error) {
-        // This should never happen in a non-corrupt iModel.
-        console.error("Error loading default view state: " + error);
+  const applyDefaultView = React.useCallback(async () => {
+    try {
+      const opts: ViewCreator3dOptions = {
+        standardViewId: StandardViewId.RightIso,
       }
-    };
-    loadViewState();
-  }, [iModel.views, isMountedRef]);
+      const vc = new ViewCreator3d(iModel);
+      const defaultViewState = await vc.createDefaultView(opts);
+      if (!isMountedRef.current) return;
+      updateBackgroundColor(defaultViewState);
+      setViewState(defaultViewState);
+    } catch (error) {
+      // I don't think this can ever happen.
+      presentError("ApplyDefaultViewErrorFormat", error, "ModelScreen");
+    }
+  }, [iModel, isMountedRef]);
+
+  // Effect to apply the default view state after component is loaded.
+  React.useEffect(() => {
+    applyDefaultView();
+  }, [applyDefaultView]);
 
   // Note: Changes to the [[viewState]] field of [[ViewportProps]] are ignored after the component is
   // first created. So don't create the [[ViewportComponent]] until after we have loaded the default

@@ -45,11 +45,13 @@
     "LocationFormat": "Latitude: {{latitude}} Longitude: {{longitude}}",
     "LocationErrorFormat": "Error getting location: {{- error}}",
     "FitView": "Fit View",
+    "DefaultView": "Default View",
     "Info": "Info",
     "About": "About",
     "Views": "Views",
     "Properties": "Properties",
-    "Tools": "Tools"
+    "Tools": "Tools",
+    "ApplyDefaultViewErrorFormat": "Error applying default view: {{- error}}"
   },
   "AboutBottomPanel": {
     "About": "About",
