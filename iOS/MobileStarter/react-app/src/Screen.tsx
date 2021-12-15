@@ -91,11 +91,12 @@ export function Screen(props?: ScreenProps) {
   return <div className="screen">{props?.children}</div>
 }
 
-export function presentError(formatKey: string, error: any, namespace = "App") {
+export function presentError(formatKey: string, error: any, namespace = "App", showStatusBar = true) {
   const errorMessage = (error instanceof Error) ? error.message : error;
   presentAlert({
     title: i18n("Shared", "Error"),
     message: i18n(namespace, formatKey, { error: errorMessage }),
+    showStatusBar,
     actions: [{
       name: "ok",
       title: i18n("Shared", "OK"),

@@ -68,6 +68,7 @@ export function ModelScreen(props: ModelScreenProps) {
         presentAlert({
           title: locationLabel,
           message: i18n("ModelScreen", "LocationFormat", { latitude, longitude }),
+          showStatusBar: true,
           actions: [{
             name: "ok",
             title: okLabel,
@@ -78,6 +79,7 @@ export function ModelScreen(props: ModelScreenProps) {
         presentAlert({
           title: errorLabel,
           message: i18n("ModelScreen", "LocationErrorFormat", { error }),
+          showStatusBar: true,
           actions: [{
             name: "ok",
             title: okLabel,
@@ -117,7 +119,7 @@ export function ModelScreen(props: ModelScreenProps) {
     }
     return actions;
   };
-  const moreButton = <ActionSheetButton actions={moreActions} />
+  const moreButton = <ActionSheetButton actions={moreActions} showStatusBar />
   const panels: TabOrPanelDef[] = [
     {
       label: infoLabel,

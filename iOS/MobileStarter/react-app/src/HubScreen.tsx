@@ -450,7 +450,7 @@ export function HubScreen(props: HubScreenProps) {
       })
     }
     moreButton = (
-      <ActionSheetButton actions={actions} />
+      <ActionSheetButton actions={actions} showStatusBar />
     );
   }
 
