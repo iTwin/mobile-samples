@@ -9,7 +9,20 @@ import { ViewportComponent } from "@itwin/imodel-components-react";
 import { getCssVariable, IconSpec } from "@itwin/core-react";
 import { viewWithUnifiedSelection } from "@itwin/presentation-components";
 import { AlertAction, presentAlert } from "@itwin/mobile-sdk-core";
-import { ActionSheetButton, IconImage, MobileUi, MobileUiContent, NavigationPanel, TabOrPanelDef, useBeEvent, useIsMountedRef, useTabsAndStandAlonePanels, VisibleBackButton } from "@itwin/mobile-ui-react";
+import { useTheme } from "@itwin/itwinui-react";
+import {
+  ActionSheetButton,
+  IconImage,
+  MobileUi,
+  MobileUiContent,
+  NavigationPanel,
+  TabOrPanelDef,
+  useActiveColorSchemeIsDark,
+  useBeEvent,
+  useIsMountedRef,
+  useTabsAndStandAlonePanels,
+  VisibleBackButton,
+} from "@itwin/mobile-ui-react";
 import { AboutBottomPanel, ElementPropertiesPanel, i18n, InfoBottomPanel, presentError, ToolAssistance, ToolsBottomPanel, ViewsBottomPanel } from "./Exports";
 import "./ModelScreen.scss";
 
@@ -40,6 +53,7 @@ export function ModelScreen(props: ModelScreenProps) {
   const tabsAndPanelsAPI = useTabsAndStandAlonePanels();
   const { filename, iModel, onBack } = props;
   const [viewState, setViewState] = React.useState<ViewState>();
+  const isDark = useActiveColorSchemeIsDark();
   const locationLabel = React.useMemo(() => i18n("ModelScreen", "Location"), []);
   const errorLabel = React.useMemo(() => i18n("Shared", "Error"), []);
   const okLabel = React.useMemo(() => i18n("Shared", "OK"), []);
@@ -199,6 +213,10 @@ export function ModelScreen(props: ModelScreenProps) {
   React.useEffect(() => {
     applyDefaultView();
   }, [applyDefaultView]);
+
+  // The useTheme hook below does not currently detect theme changes on the fly if "os" is
+  // set as the theme.
+  useTheme(isDark ? "dark" : "light");
 
   // Note: Changes to the [[viewState]] field of [[ViewportProps]] are ignored after the component is
   // first created. So don't create the [[ViewportComponent]] until after we have loaded the default

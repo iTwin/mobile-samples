@@ -6,6 +6,8 @@ import React from "react";
 import { IModelApp } from "@itwin/core-frontend";
 import { ProgressInfo } from "@bentley/itwin-client";
 import { MobileCore, presentAlert } from "@itwin/mobile-sdk-core";
+import { useTheme } from "@itwin/itwinui-react";
+import { useActiveColorSchemeIsDark } from "@itwin/mobile-ui-react";
 import "./Screen.scss";
 
 /// Properties for the [[Screen]] React component.
@@ -88,6 +90,11 @@ export function progressString(progress: ProgressInfo | undefined) {
 
 /// React component for a simple full-screen UI with arbitrary children.
 export function Screen(props?: ScreenProps) {
+  const isDark = useActiveColorSchemeIsDark();
+
+  // The useTheme hook below does not currently detect theme changes on the fly if "os" is
+  // set as the theme.
+  useTheme(isDark ? "dark" : "light");
   return <div className="screen">{props?.children}</div>
 }
 
