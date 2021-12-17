@@ -18,6 +18,9 @@
 // Set the following setting if you want to put delimiters around the app's localized strings.
 // ITM_DEBUG_I18N = YES
 //
+// Set the following setting if you want to enable ShowTime tap visibility:
+// ITM_SHOWTIME_ENABLED = YES
+//
 // If you want to run the built app locally on the device instead of using the React debug
 // server, set the following:
 // ITMAPPLICATION_NO_DEBUG_SERVER = YES

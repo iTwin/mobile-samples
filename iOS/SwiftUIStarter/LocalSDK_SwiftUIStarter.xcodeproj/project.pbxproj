@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		1F2D7B662742D70700AAB11E /* PrintLogger.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F2D7B652742D70700AAB11E /* PrintLogger.swift */; };
+		1F4692CA276C07ED00480CED /* ShowTime in Frameworks */ = {isa = PBXBuildFile; productRef = 1F4692C9276C07ED00480CED /* ShowTime */; };
 		5FB2050826D03B2600C4DBE1 /* ITwinMobile in Frameworks */ = {isa = PBXBuildFile; productRef = 5FB2050726D03B2600C4DBE1 /* ITwinMobile */; };
 		5FD7517E26DD927400DC3060 /* DocumentPicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5FD7517C26DD927400DC3060 /* DocumentPicker.swift */; };
 		5FD7517F26DD927400DC3060 /* ModelApplication.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5FD7517D26DD927400DC3060 /* ModelApplication.swift */; };
@@ -35,6 +36,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				1F4692CA276C07ED00480CED /* ShowTime in Frameworks */,
 				5FB2050826D03B2600C4DBE1 /* ITwinMobile in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -111,6 +113,7 @@
 			name = SwiftUIStarter;
 			packageProductDependencies = (
 				5FB2050726D03B2600C4DBE1 /* ITwinMobile */,
+				1F4692C9276C07ED00480CED /* ShowTime */,
 			);
 			productName = SwiftUIStarter;
 			productReference = 5FDD749226CDA9520007FBC6 /* SwiftUIStarter.app */;
@@ -141,6 +144,7 @@
 			mainGroup = 5FDD748926CDA9520007FBC6;
 			packageReferences = (
 				5FB2050626D03B2600C4DBE1 /* XCRemoteSwiftPackageReference "mobile-sdk" */,
+				1F4692C8276C07ED00480CED /* XCRemoteSwiftPackageReference "ShowTime" */,
 			);
 			productRefGroup = 5FDD749326CDA9520007FBC6 /* Products */;
 			projectDirPath = "";
@@ -386,17 +390,30 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
+		1F4692C8276C07ED00480CED /* XCRemoteSwiftPackageReference "ShowTime" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/KaneCheshire/ShowTime.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 2.0.0;
+			};
+		};
 		5FB2050626D03B2600C4DBE1 /* XCRemoteSwiftPackageReference "mobile-sdk" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/iTwin/mobile-sdk.git";
 			requirement = {
 				kind = upToNextMajorVersion;
-				minimumVersion = 1.0.0-dev.1;
+				minimumVersion = "1.0.0-dev.1";
 			};
 		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
+		1F4692C9276C07ED00480CED /* ShowTime */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 1F4692C8276C07ED00480CED /* XCRemoteSwiftPackageReference "ShowTime" */;
+			productName = ShowTime;
+		};
 		5FB2050726D03B2600C4DBE1 /* ITwinMobile */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = 5FB2050626D03B2600C4DBE1 /* XCRemoteSwiftPackageReference "mobile-sdk" */;

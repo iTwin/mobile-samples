@@ -8,6 +8,7 @@ import WebKit
 import ITwinMobile
 import PromiseKit
 import UniformTypeIdentifiers
+import ShowTime
 
 /// This app's `ITMApplication` sub-class that handles the messages coming from the web view.
 class ModelApplication: ITMApplication {
@@ -42,5 +43,14 @@ class ModelApplication: ITMApplication {
     /// - Parameter viewController: The view controller.
     override func viewWillAppear(viewController: ITMViewController) {
         viewController.itmNativeUI?.addComponent(DocumentPicker(viewController: viewController, itmMessenger: ITMViewController.application.itmMessenger))
+    }
+    
+    override func loadITMAppConfig() -> JSON? {
+        let config = super.loadITMAppConfig()
+        let showtimeEnableValue = config?["showtimeEnabled"] as? String ?? "NO"
+        if showtimeEnableValue != "YES" {
+            ShowTime.enabled = ShowTime.Enabled.never
+        }
+        return config
     }
 }

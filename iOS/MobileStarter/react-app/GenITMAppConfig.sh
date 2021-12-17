@@ -79,6 +79,9 @@ fi
 if [ "${ITM_DEBUG_I18N}" != "" ]; then
     echo "  , "'"'"debugI18n"'"'": "'"'"${ITM_DEBUG_I18N}"'"'"" >> "ITMAppConfig.json"
 fi
+if [ "${ITM_SHOWTIME_ENABLED}" != "" ]; then
+    echo "  , "'"'"showtimeEnabled"'"'": "'"'"${ITM_SHOWTIME_ENABLED}"'"'"" >> "ITMAppConfig.json"
+fi
 echo "}" >> "ITMAppConfig.json"
 if [ "${ReleaseMode}" = "YES" ]; then
     echo "Remote debugging disabled."
