@@ -10,7 +10,8 @@ import { ProgressCallback, ProgressInfo } from "@bentley/itwin-client";
 // import { ProjectInfo, ProjectScope } from "@itwin/appui-react";
 // import { DefaultProjectServices } from "@bentley/ui-framework/lib/ui-framework/clientservices/DefaultProjectServices";
 import { BriefcaseConnection, DownloadBriefcaseOptions, IModelApp, IModelConnection, NativeApp } from "@itwin/core-frontend";
-import { Authorization, IModelsClient, MinimalIModel } from "@itwin/imodels-client-management";
+import { IModelsClient, MinimalIModel } from "@itwin/imodels-client-management";
+import { AccessTokenAdapter } from "@itwin/imodels-access-frontend";
 import { BentleyError, BriefcaseDownloader, BriefcaseStatus, IModelStatus, LocalBriefcaseProps, SyncMode } from "@itwin/core-common";
 import { Button, fileSizeString, FilterControl, i18n, presentError, progressString, Screen } from "./Exports";
 import "./HubScreen.scss";
@@ -154,14 +155,11 @@ export function HubScreen(props: HubScreenProps) {
     setButtonTitles([]);
     try {
       const imodelsClient = new IModelsClient();
-      const getAuthorization = async (): Promise<Authorization> => {
-        const token = (await IModelApp.getAccessToken()).slice("Bearer ".length);
-        return { scheme: "Bearer", token };
-      };
+      const accessToken = await IModelApp.getAccessToken();
       const minimalIModels: MinimalIModel[] = [];
       // Fetch the list of iModels.
       for await (const minimalIModel of imodelsClient.iModels.getMinimalList({
-        authorization: getAuthorization,
+        authorization: AccessTokenAdapter.toAuthorizationCallback(accessToken),
         urlParams: {
           projectId: project.id,
         }
