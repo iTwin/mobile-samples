@@ -9,6 +9,7 @@ Follow the instructions in the [iOS Readme](../../README.md) to get things worki
 ## Initial checkout and build
 
 1. Make sure that your system is configured to use node 14.
+1. If you are not on the main branch, make sure to switch to the appropriate branch for _all_ GitHub repositories below after cloning.
 1. cd into <span style="font-family: monospace">mobile-sdk-samples/iOS/MobileStarter/react-app</span>.
 1. Run `npm install`.
 1. Check out https://github.com/iTwin/mobile-sdk-core into <span style="font-family: monospace">mobile-sdk-core</span> alongside <span style="font-family: monospace">mobile-sdk-samples</span>.
