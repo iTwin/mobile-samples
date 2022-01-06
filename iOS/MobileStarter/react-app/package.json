@@ -29,7 +29,6 @@
     "webpack-cli": "^3.3.11"
   },
   "dependencies": {
-    "@bentley/imodelhub-client": "3.0.0-dev.173",
     "@bentley/itwin-client": "3.0.0-dev.173",
     "@itwin/appui-abstract": "3.0.0-dev.173",
     "@itwin/appui-layout-react": "3.0.0-dev.173",
@@ -49,8 +48,9 @@
     "@itwin/core-react": "3.0.0-dev.173",
     "@itwin/ecschema-metadata": "3.0.0-dev.173",
     "@itwin/imodel-components-react": "3.0.0-dev.173",
-    "@itwin/imodels-access-frontend": "^0.2.1",
-    "@itwin/imodels-client-management": "^0.2.1",
+    "@itwin/imodels-access-frontend": "^0.2.2",
+    "@itwin/imodels-access-backend": "^0.2.2",
+    "@itwin/imodels-client-management": "^0.2.2",
     "@itwin/linear-referencing-backend": "3.0.0-dev.173",
     "@itwin/linear-referencing-common": "3.0.0-dev.173",
     "@itwin/mobile-sdk-core": "1.0.0-dev.2",
