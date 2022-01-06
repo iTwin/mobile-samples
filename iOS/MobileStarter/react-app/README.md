@@ -12,6 +12,7 @@ Follow the instructions in the [iOS Readme](../../README.md) to get things worki
 1. If you are not on the main branch, make sure to switch to the appropriate branch for _all_ GitHub repositories below after cloning.
 1. cd into <span style="font-family: monospace">mobile-sdk-samples/iOS/MobileStarter/react-app</span>.
 1. Run `npm install`.
+1. Check out https://github.com/iTwin/mobile-sdk into <span style="font-family: monospace">mobile-sdk</span> alongside <span style="font-family: monospace">mobile-sdk-samples</span>.
 1. Check out https://github.com/iTwin/mobile-sdk-core into <span style="font-family: monospace">mobile-sdk-core</span> alongside <span style="font-family: monospace">mobile-sdk-samples</span>.
 1. cd into <span style="font-family: monospace">mobile-sdk-core</span>.
 1. Run `npm install`.
@@ -23,12 +24,12 @@ Follow the instructions in the [iOS Readme](../../README.md) to get things worki
 1. cd back to <span style="font-family: monospace">mobile-sdk-samples/iOS/MobileStarter/react-app</span>.
 1. Run `npm run build`.
 1. Run `npm run start` to start the React debug server.
-1. Open <span style="font-family: monospace">mobile-sdk-samples/iOS/MobileStarter/MobileStarter.xcodeproj</span>.
+1. Open <span style="font-family: monospace">mobile-sdk-samples/iOS/MobileStarter/LocalSDK_MobileStarter.xcodeproj</span>.
 1. Run
 
 ## Updates
 
-1. Use `git pull` to update <span style="font-family: monospace">mobile-sdk-samples</span>, <span style="font-family: monospace">mobile-sdk-core</span>, and <span style="font-family: monospace">mobile-ui-react</span>.
+1. Use `git pull` to update <span style="font-family: monospace">mobile-sdk-samples</span>, <span style="font-family: monospace">mobile-sdk</span>, <span style="font-family: monospace">mobile-sdk-core</span>, and <span style="font-family: monospace">mobile-ui-react</span>.
 1. cd into <span style="font-family: monospace">mobile-sdk-samples/iOS/MobileStarter/react-app</span>.
 1. Run `npm install`.
 1. cd into <span style="font-family: monospace">mobile-ui-react</span>.
@@ -41,7 +42,7 @@ Follow the instructions in the [iOS Readme](../../README.md) to get things worki
 1. cd into <span style="font-family: monospace">mobile-sdk-samples/iOS/MobileStarter/react-app</span>.
 1. Run `npm run build`
 1. Run `npm run start` to start the React debug server
-1. Open <span style="font-family: monospace">mobile-sdk-samples/iOS/MobileStarter/MobileStarter.xcodeproj</span>.
+1. Open <span style="font-family: monospace">mobile-sdk-samples/iOS/MobileStarter/LocalSDK_MobileStarter.xcodeproj</span>.
 1. File->Packages->Update to Latest Package Versions
 1. Wait for Xcode to download and install any updates to the dependent Swift Packages.
 1. Run
