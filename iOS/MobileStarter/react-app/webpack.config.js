@@ -124,7 +124,12 @@ function getConfig(env) {
     ],
     optimization: devMode ? undefined : {
       minimize: true,
-      minimizer: [new TerserPlugin()],
+      minimizer: [new TerserPlugin({
+        terserOptions: {
+          keep_classnames: /AbortSignal/,
+          keep_fnames: /AbortSignal/
+        }
+      })],
     }
   };
 
