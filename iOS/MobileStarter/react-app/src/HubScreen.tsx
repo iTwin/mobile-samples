@@ -40,7 +40,12 @@ enum HubStep {
 function getActiveProject() {
   const projectInfoJson = localStorage.getItem("activeProjectInfo");
   if (projectInfoJson) {
-    return JSON.parse(projectInfoJson) as ProjectInfo;
+    const project = JSON.parse(projectInfoJson) as ProjectInfo;
+    // Other versions of this app can result in the stored project not being a ProjectInfo.
+    // If that happens, just return undefined.
+    if (project.name !== undefined && project.projectNumber !== undefined && project.wsgId !== undefined && project.readStatus !== undefined) {
+      return project;
+    }
   }
   return undefined;
 }
