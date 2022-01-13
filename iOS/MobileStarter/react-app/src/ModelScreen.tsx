@@ -196,6 +196,7 @@ export function ModelScreen(props: ModelScreenProps) {
   const applyDefaultView = React.useCallback(async () => {
     try {
       const opts: ViewCreator3dOptions = {
+        cameraOn: false,
         standardViewId: StandardViewId.RightIso,
       }
       const vc = new ViewCreator3d(iModel);
