@@ -79,6 +79,7 @@
     "SectionByElement": "Section by Element",
     "SectionByRange": "Section by Range",
     "SectionByShape": "Section by Shape",
-    "ClearSection": "Clear Section"
+    "ClearSection": "Clear Section",
+    "Walk": "Walk"
   }
 }

@@ -4,7 +4,7 @@
 import * as React from "react";
 import classnames from "classnames";
 import { CoreTools, ToolItemDef } from "@itwin/appui-react";
-import { IModelApp, ToolSettings, ViewClipClearTool } from "@itwin/core-frontend";
+import { IModelApp, ToolSettings, ViewClipClearTool, WalkViewTool } from "@itwin/core-frontend";
 // import { MeasureToolDefinitions } from "@bentley/measure-tools-react";
 import {
   assignRef,
@@ -64,9 +64,20 @@ export interface ToolsBottomPanelProps extends BottomPanelProps {
   onToolClick?: () => void;
 }
 
+function viewLookAndMoveCommand() {
+  return new ToolItemDef({
+    toolId: "View.LookAndMove",
+    iconSpec: WalkViewTool.iconSpec,
+    label: WalkViewTool.flyover,
+    description: WalkViewTool.description,
+    isHidden: false,
+    execute: async () => IModelApp.tools.run("View.LookAndMove", IModelApp.viewManager.selectedView),
+  });
+}
+
 export function ToolsBottomPanel(props: ToolsBottomPanelProps) {
   const { onToolClick, ...others } = props;
-  const tools = [
+  const tools = React.useMemo(() => [
     { labelKey: "ReactApp:ToolsBottomPanel.Select", icon: "icon-gesture-touch", toolItemDef: CoreTools.selectElementCommand },
     // { labelKey: "ReactApp:ToolsBottomPanel.Distance", icon: "icon-measure-distance", toolItemDef: MeasureToolDefinitions.measureDistanceToolCommand },
     // { labelKey: "ReactApp:ToolsBottomPanel.Location", icon: "icon-measure-location", toolItemDef: MeasureToolDefinitions.measureLocationToolCommand },
@@ -75,12 +86,13 @@ export function ToolsBottomPanel(props: ToolsBottomPanelProps) {
     // { labelKey: "ReactApp:ToolsBottomPanel.Angle", icon: "icon-measure-angle", toolItemDef: MeasureToolDefinitions.measureAngleToolCommand },
     // { labelKey: "ReactApp:ToolsBottomPanel.Perpendicular", icon: "icon-measure-perpendicular", toolItemDef: MeasureToolDefinitions.measurePerpendicularToolCommand },
     // { labelKey: "ReactApp:ToolsBottomPanel.Clear", icon: "icon-measure-clear", toolItemDef: MeasureToolDefinitions.clearMeasurementsToolCommand },
+    { labelKey: "ReactApp:ToolsBottomPanel.Walk", icon: "icon-walk", toolItemDef: viewLookAndMoveCommand() },
     { labelKey: "ReactApp:ToolsBottomPanel.SectionByPlane", toolItemDef: CoreTools.sectionByPlaneCommandItemDef },
     { labelKey: "ReactApp:ToolsBottomPanel.SectionByElement", toolItemDef: CoreTools.sectionByElementCommandItemDef },
     { labelKey: "ReactApp:ToolsBottomPanel.SectionByRange", toolItemDef: CoreTools.sectionByRangeCommandItemDef },
     { labelKey: "ReactApp:ToolsBottomPanel.SectionByShape", toolItemDef: CoreTools.sectionByShapeCommandItemDef },
     { labelKey: "ReactApp:ToolsBottomPanel.ClearSection", icon: "icon-section-clear", toolItemDef: ToolItemDef.getItemDefForTool(ViewClipClearTool) },
-  ];
+  ], []);
 
   const activeToolId = useActiveToolId();
   const activeToolIndex = activeToolId !== undefined ? tools.findIndex((tool) => activeToolId === tool.toolItemDef.toolId) : undefined;
