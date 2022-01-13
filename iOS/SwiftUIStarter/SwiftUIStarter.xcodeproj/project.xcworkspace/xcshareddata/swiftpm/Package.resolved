@@ -33,8 +33,8 @@
         "repositoryURL": "https://github.com/iTwin/mobile-ios-package",
         "state": {
           "branch": null,
-          "revision": "4c51b23d7edc592fcee730d3e9e1e372f04c931d",
-          "version": "2.19.28"
+          "revision": "77b45d93a8bc80dba4986183857a0bf8d2b8c6b9",
+          "version": "2.19.31"
         }
       },
       {
@@ -42,8 +42,8 @@
         "repositoryURL": "https://github.com/iTwin/mobile-sdk.git",
         "state": {
           "branch": null,
-          "revision": "fff8a83d2e0774202e6fbb4c109baf1150f005b0",
-          "version": "0.9.8"
+          "revision": "9eec2778edb1f19e6230df7169424038c2e939bf",
+          "version": "0.9.9"
         }
       },
       {
