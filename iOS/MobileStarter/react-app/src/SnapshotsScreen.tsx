@@ -6,7 +6,7 @@ import React from "react";
 import { Messenger } from "@itwin/mobile-sdk-core";
 import { NavigationButton, VisibleBackButton } from "@itwin/mobile-ui-react";
 import { Button, i18n, Screen } from "./Exports";
-import { IModelConnection, SnapshotConnection } from "@bentley/imodeljs-frontend";
+import { IModelConnection, SnapshotConnection } from "@itwin/core-frontend";
 import "./SnapshotsScreen.scss";
 
 /// Properties for the [[SnapshotsScreen]] React component.

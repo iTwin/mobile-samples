@@ -8,7 +8,16 @@ Before building the samples, you must configure a Client ID for yourself. To do 
 1. Go to <https://developer.bentley.com/my-apps/>.
 1. Click the "Register New" button.
 1. Pick a name.
-1. Check the check box next to "Visualization".
+1. Check the check boxes next to "Visualization", "Administration", and "Digital Twin Management".
+1. Remove the following scopes by selecting the X next to them:
+    * library:modify
+    * realitydata:modify
+    * library:read
+    * imodels:modify
+    * storage:modify
+    * storage:read
+    * projects:modify
+    * users:read
 1. Select "Desktop/Mobile" as the application type.
 1. Enter `imodeljs://app/signin-callback` for "Redirect URIs".
 1. Enter `imodeljs://app/signout-callback` for "Post logout redirect URIs".
@@ -64,6 +73,7 @@ Once you have performed the above setup, you can build and run the samples.
     1. Select your connected device in Finder's left navigation pane.
     1. Select the Files tab.
     1. Drag and drop .bim Snapshot iModel files into the "iTwin Starter" app or the "SwiftUIStarter" app.
+1. Please see [Debugging.md](./Debugging.md) for instructions on debugging.
 
 ## Organization
 

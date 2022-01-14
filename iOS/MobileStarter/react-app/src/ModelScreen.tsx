@@ -3,12 +3,13 @@
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
 import React from "react";
-import { ColorDef } from "@bentley/imodeljs-common";
-import { FitViewTool, IModelApp, IModelConnection, ViewState } from "@bentley/imodeljs-frontend";
-import { ViewportComponent } from "@bentley/ui-components";
-import { getCssVariable, IconSpec } from "@bentley/ui-core";
-import { viewWithUnifiedSelection } from "@bentley/presentation-components";
+import { ColorDef } from "@itwin/core-common";
+import { FitViewTool, IModelApp, IModelConnection, StandardViewId, ViewCreator3d, ViewCreator3dOptions, ViewState } from "@itwin/core-frontend";
+import { ViewportComponent } from "@itwin/imodel-components-react";
+import { getCssVariable, IconSpec } from "@itwin/core-react";
+import { viewWithUnifiedSelection } from "@itwin/presentation-components";
 import { AlertAction, presentAlert } from "@itwin/mobile-sdk-core";
+import { useTheme } from "@itwin/itwinui-react";
 import {
   ActionSheetButton,
   IconImage,
@@ -16,12 +17,13 @@ import {
   MobileUiContent,
   NavigationPanel,
   TabOrPanelDef,
+  useActiveColorSchemeIsDark,
   useBeEvent,
   useIsMountedRef,
   useTabsAndStandAlonePanels,
   VisibleBackButton,
 } from "@itwin/mobile-ui-react";
-import { AboutBottomPanel, ToolAssistance, ElementPropertiesPanel, i18n, InfoBottomPanel, ToolsBottomPanel, ViewsBottomPanel } from "./Exports";
+import { AboutBottomPanel, ElementPropertiesPanel, i18n, InfoBottomPanel, presentError, ToolAssistance, ToolsBottomPanel, ViewsBottomPanel } from "./Exports";
 import "./ModelScreen.scss";
 
 // tslint:disable-next-line: variable-name
@@ -51,11 +53,13 @@ export function ModelScreen(props: ModelScreenProps) {
   const tabsAndPanelsAPI = useTabsAndStandAlonePanels();
   const { filename, iModel, onBack } = props;
   const [viewState, setViewState] = React.useState<ViewState>();
+  const isDark = useActiveColorSchemeIsDark();
   const locationLabel = React.useMemo(() => i18n("ModelScreen", "Location"), []);
   const errorLabel = React.useMemo(() => i18n("Shared", "Error"), []);
   const okLabel = React.useMemo(() => i18n("Shared", "OK"), []);
   const showCurrentLocationLabel = React.useMemo(() => i18n("ModelScreen", "ShowCurrentLocation"), []);
   const fitViewLabel = React.useMemo(() => i18n("ModelScreen", "FitView"), []);
+  const defaultViewLabel = React.useMemo(() => i18n("ModelScreen", "DefaultView"), []);
   const infoLabel = React.useMemo(() => i18n("ModelScreen", "Info"), []);
   const aboutLabel = React.useMemo(() => i18n("ModelScreen", "About"), []);
   const viewsLabel = React.useMemo(() => i18n("ModelScreen", "Views"), []);
@@ -78,6 +82,7 @@ export function ModelScreen(props: ModelScreenProps) {
         presentAlert({
           title: locationLabel,
           message: i18n("ModelScreen", "LocationFormat", { latitude, longitude }),
+          showStatusBar: true,
           actions: [{
             name: "ok",
             title: okLabel,
@@ -88,6 +93,7 @@ export function ModelScreen(props: ModelScreenProps) {
         presentAlert({
           title: errorLabel,
           message: i18n("ModelScreen", "LocationErrorFormat", { error }),
+          showStatusBar: true,
           actions: [{
             name: "ok",
             title: okLabel,
@@ -110,6 +116,11 @@ export function ModelScreen(props: ModelScreenProps) {
           title: fitViewLabel,
           onSelected: handleFitView,
         },
+        {
+          name: "defaultView",
+          title: defaultViewLabel,
+          onSelected: applyDefaultView,
+        },
       ];
 
     if (IModelApp.viewManager.getFirstOpenView()?.view.iModel.selectionSet.isActive) {
@@ -122,7 +133,7 @@ export function ModelScreen(props: ModelScreenProps) {
     }
     return actions;
   };
-  const moreButton = <ActionSheetButton actions={moreActions} />
+  const moreButton = <ActionSheetButton actions={moreActions} showStatusBar />
   const panels: TabOrPanelDef[] = [
     {
       label: infoLabel,
@@ -182,24 +193,30 @@ export function ModelScreen(props: ModelScreenProps) {
     }
   }, MobileUi.onColorSchemeChanged);
 
-  // Effect to load the default view state.
-  React.useEffect(() => {
-    // React.useEffect callbacks cannot be async, since they have a meaningful return value that is
-    // not a Promise.
-    const loadViewState = async () => {
-      try {
-        const defaultViewId = await iModel.views.queryDefaultViewId();
-        const defaultViewState = await iModel.views.load(defaultViewId);
-        if (!isMountedRef.current) return;
-        updateBackgroundColor(defaultViewState);
-        setViewState(defaultViewState);
-      } catch (error) {
-        // This should never happen in a non-corrupt iModel.
-        console.error("Error loading default view state: " + error);
+  const applyDefaultView = React.useCallback(async () => {
+    try {
+      const opts: ViewCreator3dOptions = {
+        standardViewId: StandardViewId.RightIso,
       }
-    };
-    loadViewState();
-  }, [iModel.views, isMountedRef]);
+      const vc = new ViewCreator3d(iModel);
+      const defaultViewState = await vc.createDefaultView(opts);
+      if (!isMountedRef.current) return;
+      updateBackgroundColor(defaultViewState);
+      setViewState(defaultViewState);
+    } catch (error) {
+      // I don't think this can ever happen.
+      presentError("ApplyDefaultViewErrorFormat", error, "ModelScreen");
+    }
+  }, [iModel, isMountedRef]);
+
+  // Effect to apply the default view state after component is loaded.
+  React.useEffect(() => {
+    applyDefaultView();
+  }, [applyDefaultView]);
+
+  // The useTheme hook below does not currently detect theme changes on the fly if "os" is
+  // set as the theme.
+  useTheme(isDark ? "dark" : "light");
 
   // Note: Changes to the [[viewState]] field of [[ViewportProps]] are ignored after the component is
   // first created. So don't create the [[ViewportComponent]] until after we have loaded the default

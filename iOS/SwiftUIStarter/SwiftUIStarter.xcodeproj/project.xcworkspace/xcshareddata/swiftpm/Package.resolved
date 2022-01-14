@@ -33,8 +33,8 @@
         "repositoryURL": "https://github.com/iTwin/mobile-ios-package",
         "state": {
           "branch": null,
-          "revision": "77b45d93a8bc80dba4986183857a0bf8d2b8c6b9",
-          "version": "2.19.31"
+          "revision": "5e4bbb913b1122b4b5113feccaa4a7133772f04c",
+          "version": "3.0.28"
         }
       },
       {
@@ -42,8 +42,8 @@
         "repositoryURL": "https://github.com/iTwin/mobile-sdk.git",
         "state": {
           "branch": null,
-          "revision": "9eec2778edb1f19e6230df7169424038c2e939bf",
-          "version": "0.9.9"
+          "revision": "0b62af89318e190e8322a40de3f00b0ad0607b36",
+          "version": "1.0.0-dev.2"
         }
       },
       {
@@ -62,6 +62,15 @@
           "branch": null,
           "revision": "c01bbdf2d633cf049ae1ed1a68a2020a8bda32e2",
           "version": "5.1.0"
+        }
+      },
+      {
+        "package": "ShowTime",
+        "repositoryURL": "https://github.com/KaneCheshire/ShowTime.git",
+        "state": {
+          "branch": null,
+          "revision": "f4e976931fc5f9b7a7d011f40c62a250c4ff53ab",
+          "version": "2.5.3"
         }
       }
     ]

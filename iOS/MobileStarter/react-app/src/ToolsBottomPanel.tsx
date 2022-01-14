@@ -3,13 +3,9 @@
 *--------------------------------------------------------------------------------------------*/
 import * as React from "react";
 import classnames from "classnames";
-import { CoreTools } from "@bentley/ui-framework";
-import {
-  IModelApp, ToolSettings,
-} from "@bentley/imodeljs-frontend";
-import {
-  MeasureToolDefinitions
-} from "@bentley/measure-tools-react";
+import { CoreTools, ToolItemDef } from "@itwin/appui-react";
+import { IModelApp, ToolSettings, ViewClipClearTool, WalkViewTool } from "@itwin/core-frontend";
+// import { MeasureToolDefinitions } from "@bentley/measure-tools-react";
 import {
   assignRef,
   BottomPanel,
@@ -68,22 +64,45 @@ export interface ToolsBottomPanelProps extends BottomPanelProps {
   onToolClick?: () => void;
 }
 
+function viewLookAndMoveCommand() {
+  return new ToolItemDef({
+    toolId: "View.LookAndMove",
+    iconSpec: WalkViewTool.iconSpec,
+    label: WalkViewTool.flyover,
+    description: WalkViewTool.description,
+    isHidden: false,
+    execute: async () => IModelApp.tools.run("View.LookAndMove", IModelApp.viewManager.selectedView),
+  });
+}
+
 export function ToolsBottomPanel(props: ToolsBottomPanelProps) {
   const { onToolClick, ...others } = props;
-  const tools = [
+  const tools = React.useMemo(() => [
     { labelKey: "ReactApp:ToolsBottomPanel.Select", icon: "icon-gesture-touch", toolItemDef: CoreTools.selectElementCommand },
-    { labelKey: "ReactApp:ToolsBottomPanel.Distance", icon: "icon-measure-distance", toolItemDef: MeasureToolDefinitions.measureDistanceToolCommand },
-    { labelKey: "ReactApp:ToolsBottomPanel.Location", icon: "icon-measure-location", toolItemDef: MeasureToolDefinitions.measureLocationToolCommand },
-    { labelKey: "ReactApp:ToolsBottomPanel.Area", icon: "icon-measure-2d", toolItemDef: MeasureToolDefinitions.measureAreaToolCommand },
-    { labelKey: "ReactApp:ToolsBottomPanel.Radius", icon: "icon-measure-arc", toolItemDef: MeasureToolDefinitions.measureRadiusToolCommand },
-    { labelKey: "ReactApp:ToolsBottomPanel.Angle", icon: "icon-measure-angle", toolItemDef: MeasureToolDefinitions.measureAngleToolCommand },
-    { labelKey: "ReactApp:ToolsBottomPanel.Perpendicular", icon: "icon-measure-perpendicular", toolItemDef: MeasureToolDefinitions.measurePerpendicularToolCommand },
-    { labelKey: "ReactApp:ToolsBottomPanel.Clear", icon: "icon-measure-clear", toolItemDef: MeasureToolDefinitions.clearMeasurementsToolCommand },
-  ];
+    // { labelKey: "ReactApp:ToolsBottomPanel.Distance", icon: "icon-measure-distance", toolItemDef: MeasureToolDefinitions.measureDistanceToolCommand },
+    // { labelKey: "ReactApp:ToolsBottomPanel.Location", icon: "icon-measure-location", toolItemDef: MeasureToolDefinitions.measureLocationToolCommand },
+    // { labelKey: "ReactApp:ToolsBottomPanel.Area", icon: "icon-measure-2d", toolItemDef: MeasureToolDefinitions.measureAreaToolCommand },
+    // { labelKey: "ReactApp:ToolsBottomPanel.Radius", icon: "icon-measure-arc", toolItemDef: MeasureToolDefinitions.measureRadiusToolCommand },
+    // { labelKey: "ReactApp:ToolsBottomPanel.Angle", icon: "icon-measure-angle", toolItemDef: MeasureToolDefinitions.measureAngleToolCommand },
+    // { labelKey: "ReactApp:ToolsBottomPanel.Perpendicular", icon: "icon-measure-perpendicular", toolItemDef: MeasureToolDefinitions.measurePerpendicularToolCommand },
+    // { labelKey: "ReactApp:ToolsBottomPanel.Clear", icon: "icon-measure-clear", toolItemDef: MeasureToolDefinitions.clearMeasurementsToolCommand },
+    { labelKey: "ReactApp:ToolsBottomPanel.Walk", icon: "icon-walk", toolItemDef: viewLookAndMoveCommand() },
+    { labelKey: "ReactApp:ToolsBottomPanel.SectionByPlane", toolItemDef: CoreTools.sectionByPlaneCommandItemDef },
+    { labelKey: "ReactApp:ToolsBottomPanel.SectionByElement", toolItemDef: CoreTools.sectionByElementCommandItemDef },
+    { labelKey: "ReactApp:ToolsBottomPanel.SectionByRange", toolItemDef: CoreTools.sectionByRangeCommandItemDef },
+    { labelKey: "ReactApp:ToolsBottomPanel.SectionByShape", toolItemDef: CoreTools.sectionByShapeCommandItemDef },
+    { labelKey: "ReactApp:ToolsBottomPanel.ClearSection", icon: "icon-section-clear", toolItemDef: ToolItemDef.getItemDefForTool(ViewClipClearTool) },
+  ], []);
 
   const activeToolId = useActiveToolId();
   const activeToolIndex = activeToolId !== undefined ? tools.findIndex((tool) => activeToolId === tool.toolItemDef.toolId) : undefined;
   const toolsRowRef = React.useRef<HTMLDivElement>(null);
+
+  // Use the virtual cursor for locating elements other than the select tool
+  // Any time activeToolId changes, ToolsBottomPanel() will execute again (due to useActiveToolId updating activeToolId).
+  // This allows us to put this here instead of inside the tool activation. If this is in the tool activation, it won't
+  // auto-detect when a tool ends on its own (switching back to select tool). The section tools all end on their own.
+  ToolSettings.enableVirtualCursorForLocate = activeToolId !== CoreTools.selectElementCommand.toolId;
 
   return <BottomPanel
     {...others}
@@ -98,16 +117,13 @@ export function ToolsBottomPanel(props: ToolsBottomPanelProps) {
         return <CircularButton
           key={value.labelKey}
           className="tool-button"
-          label={IModelApp.i18n.translate(value.labelKey)}
-          iconSpec={/* value.toolItemDef.iconSpec ??  */value.icon}
+          label={IModelApp.localization.getLocalizedString(value.labelKey)}
+          iconSpec={value.icon ?? value.toolItemDef.iconSpec}
           selected={activeToolId === value.toolItemDef.toolId}
           onClick={async () => {
             // Ensure the selectedView is the main viewport otherwise some tools won't execute as the selected view is incompatible.
             // This only applies when an app has more than one viewport, but does no harm.
             IModelApp.viewManager.setSelectedView(IModelApp.viewManager.getFirstOpenView());
-
-            // Use the virtual cursor for locating elements other than the select tool
-            ToolSettings.enableVirtualCursorForLocate = value.toolItemDef.toolId !== CoreTools.selectElementCommand.toolId;
 
             value.toolItemDef.execute();
             onToolClick?.();

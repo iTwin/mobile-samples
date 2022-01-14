@@ -3,9 +3,11 @@
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
 import React from "react";
-import { IModelApp } from "@bentley/imodeljs-frontend";
+import { IModelApp } from "@itwin/core-frontend";
 import { ProgressInfo } from "@bentley/itwin-client";
-import { MobileCore } from "@itwin/mobile-sdk-core";
+import { MobileCore, presentAlert } from "@itwin/mobile-sdk-core";
+import { useTheme } from "@itwin/itwinui-react";
+import { useActiveColorSchemeIsDark } from "@itwin/mobile-ui-react";
 import "./Screen.scss";
 
 /// Properties for the [[Screen]] React component.
@@ -27,9 +29,9 @@ function shouldDebugI18n() {
 
 export function i18n(prefix: string, key: string, options?: any) {
   if (shouldDebugI18n()) {
-    return "=" + IModelApp.i18n.translate(`ReactApp:${prefix}.${key}`, options) + "=";
+    return "=" + IModelApp.localization.getLocalizedStringWithNamespace("ReactApp", `${prefix}.${key}`, options) + "=";
   } else {
-    return IModelApp.i18n.translate(`ReactApp:${prefix}.${key}`, options);
+    return IModelApp.localization.getLocalizedStringWithNamespace("ReactApp", `${prefix}.${key}`, options);
   }
 }
 
@@ -37,7 +39,7 @@ export function roundedNumber(input: number, decimals?: number) {
   if (decimals === undefined) {
     decimals = 2;
   }
-  let decimalSeparator = 1.2.toLocaleString().indexOf(",") === -1 ? "." : ",";
+  let decimalSeparator = (1.2).toLocaleString().indexOf(",") === -1 ? "." : ",";
   let rounded = input.toLocaleString(undefined, { minimumFractionDigits: 0, maximumFractionDigits: decimals });
   let len = rounded.length;
   if (len > 0) {
@@ -75,12 +77,36 @@ export function progressString(progress: ProgressInfo | undefined) {
   if (percent === undefined && progress?.total) {
     percent = roundedNumber(100.0 * progress.loaded / progress.total, 0);
   }
-  if (percent === undefined) return "";
+  if (percent === undefined) {
+    if (progress && progress.loaded) {
+      return i18n("Screen", "LoadedFormat", { value: progress.loaded });
+    } else {
+      return "";
+    }
+  }
   return " (" + percent + "%)";
 }
 
 
 /// React component for a simple full-screen UI with arbitrary children.
 export function Screen(props?: ScreenProps) {
+  const isDark = useActiveColorSchemeIsDark();
+
+  // The useTheme hook below does not currently detect theme changes on the fly if "os" is
+  // set as the theme.
+  useTheme(isDark ? "dark" : "light");
   return <div className="screen">{props?.children}</div>
+}
+
+export function presentError(formatKey: string, error: any, namespace = "App", showStatusBar = true) {
+  const errorMessage = (error instanceof Error) ? error.message : error;
+  presentAlert({
+    title: i18n("Shared", "Error"),
+    message: i18n(namespace, formatKey, { error: errorMessage }),
+    showStatusBar,
+    actions: [{
+      name: "ok",
+      title: i18n("Shared", "OK"),
+    }],
+  });
 }

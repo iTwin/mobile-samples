@@ -4,14 +4,14 @@
 *--------------------------------------------------------------------------------------------*/
 import React from "react";
 import { combineReducers, createStore, Store } from "redux";
-import { IOSApp, IOSAppOpts } from "@bentley/mobile-manager/lib/MobileFrontend";
-import { IModelApp, IModelConnection, SnapshotConnection, ToolAssistanceInstructions } from "@bentley/imodeljs-frontend";
-import { AppNotificationManager, FrameworkReducer, FrameworkState, UiFramework } from "@bentley/ui-framework";
-import { Presentation } from "@bentley/presentation-frontend";
-import { Messenger, presentAlert } from "@itwin/mobile-sdk-core";
+import { IOSApp, IOSAppOpts } from "@itwin/core-mobile/lib/cjs/MobileFrontend";
+import { IModelApp, IModelConnection, SnapshotConnection, ToolAssistanceInstructions } from "@itwin/core-frontend";
+import { AppNotificationManager, FrameworkReducer, FrameworkState, UiFramework } from "@itwin/appui-react";
+import { Presentation } from "@itwin/presentation-frontend";
+import { ITMAuthorizationClient, Messenger } from "@itwin/mobile-sdk-core";
 import { MobileUi } from "@itwin/mobile-ui-react";
-import { FeatureTracking as MeasureToolsFeatureTracking, MeasureTools } from "@bentley/measure-tools-react";
-import { ActiveScreen, SnapshotsScreen, HomeScreen, HubScreen, LoadingScreen, ModelScreen, i18n, ToolAssistance } from "./Exports";
+// import { FeatureTracking as MeasureToolsFeatureTracking, MeasureTools } from "@bentley/measure-tools-react";
+import { ActiveScreen, HomeScreen, HubScreen, LoadingScreen, ModelScreen, presentError, SnapshotsScreen, ToolAssistance } from "./Exports";
 import { getSupportedRpcs } from "./common/rpcs";
 import "./App.scss";
 
@@ -76,15 +76,16 @@ function App() {
           iModelApp: {
             rpcInterfaces: getSupportedRpcs(),
             notifications: new AppToolAssistanceNotificationManager(),
+            authorizationClient: new ITMAuthorizationClient(),
           },
         }
         await IOSApp.startup(opts);
         await UiFramework.initialize(appReduxStore);
         await Presentation.initialize();
-        await MobileUi.initialize(IModelApp.i18n);
-        await IModelApp.i18n.registerNamespace("ReactApp").readFinished;
-        await MeasureTools.startup();
-        MeasureToolsFeatureTracking.stop();
+        await MobileUi.initialize(IModelApp.localization);
+        await IModelApp.localization.registerNamespace("ReactApp");
+        // await MeasureTools.startup();
+        // MeasureToolsFeatureTracking.stop();
 
         // The following message lets the native side know that it is safe to send app-specific
         // messages from the native code to the TypeScript code.
@@ -124,14 +125,7 @@ function App() {
       };
       pushActiveInfo(ActiveScreen.Model, cleanup);
     } catch (error) {
-      presentAlert({
-        title: i18n("Shared", "Error"),
-        message: i18n("App", "LoadErrorFormat", { error }),
-        actions: [{
-          name: "ok",
-          title: i18n("Shared", "OK"),
-        }],
-      })
+      presentError("LoadErrorFormat", error);
     }
   }, [iModel, pushActiveInfo]);
 
