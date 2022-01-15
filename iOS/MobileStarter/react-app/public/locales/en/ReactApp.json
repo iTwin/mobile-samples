@@ -34,10 +34,13 @@
     "SigninErrorFormat": "Error signing in: {{- error}}",
     "DeleteAllDownloads": "Delete All Downloads",
     "ChangeProject": "Change Project",
-    "Filter": "Filter",
+    "Filter": "Search",
     "DownloadErrorFormat": "Error downloading iModel: {{- error}}",
     "DeleteErrorFormat": "Error deleting local download of iModel: {{- error}}",
-    "DeleteAllErrorFormat": "Error deleting local downloads of all iModels in project: {{- error}}"
+    "DeleteAllErrorFormat": "Error deleting local downloads of all iModels in project: {{- error}}",
+    "All": "ALL",
+    "Recents": "RECENT",
+    "Favorites": "FAVORITES"
   },
   "ModelScreen": {
     "Location": "Location",

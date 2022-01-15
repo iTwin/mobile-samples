@@ -4,15 +4,14 @@
 *--------------------------------------------------------------------------------------------*/
 import React from "react";
 import { AlertAction, ITMAuthorizationClient, MobileCore } from "@itwin/mobile-sdk-core";
-import { ActionSheetButton, IconImage, useIsMountedRef, VisibleBackButton } from "@itwin/mobile-ui-react";
-import { Project as ITwin, ProjectsAccessClient } from "@itwin/projects-client";
+import { ActionSheetButton, HorizontalPicker, IconImage, useIsMountedRef, VisibleBackButton } from "@itwin/mobile-ui-react";
+import { Project as ITwin, ProjectsAccessClient, ProjectsQueryArg, ProjectsSearchableProperty, ProjectsSource } from "@itwin/projects-client";
 import { ProgressCallback, ProgressInfo } from "@bentley/itwin-client";
-// import { ProjectInfo, ProjectScope } from "@itwin/appui-react";
-// import { DefaultProjectServices } from "@bentley/ui-framework/lib/ui-framework/clientservices/DefaultProjectServices";
 import { BriefcaseConnection, DownloadBriefcaseOptions, IModelApp, IModelConnection, NativeApp } from "@itwin/core-frontend";
 import { IModelsClient, MinimalIModel } from "@itwin/imodels-client-management";
 import { AccessTokenAdapter } from "@itwin/imodels-access-frontend";
 import { BentleyError, BriefcaseDownloader, BriefcaseStatus, IModelStatus, LocalBriefcaseProps, SyncMode } from "@itwin/core-common";
+import { LoadingSpinner } from "@itwin/core-react";
 import { Button, fileSizeString, FilterControl, i18n, presentError, progressString, Screen } from "./Exports";
 import "./HubScreen.scss";
 
@@ -25,30 +24,33 @@ export interface HubScreenProps {
 }
 
 // Get all the projects that this user has access to, sorted by most recent use.
-async function getProjects(progress?: ProgressCallback) {
+async function getProjects(progress?: ProgressCallback, source = ProjectsSource.All, searchString = "") {
   const client = new ProjectsAccessClient();
-  const chunkSize = 1000;
+  const chunkSize = 100;
   const allProjects: ITwin[] = [];
   const accessToken = await IModelApp.getAccessToken();
-  for (let skip = 0; true; skip += chunkSize) {
-    try {
-      const chunk = await client.getAll(accessToken, { pagination: { skip, top: chunkSize } });
-      allProjects.push(...chunk);
-      progress?.({ loaded: allProjects.length });
-      if (chunk.length < chunkSize) {
-        return allProjects;
-      }
-    } catch (ex) {
-      console.log(`Exception fetching projects: ${ex}`);
-      if (allProjects.length > 0) {
-        return allProjects;
-      } else {
-        throw ex;
-      }
+
+  try {
+    let queryArgs: ProjectsQueryArg = { pagination: { skip: 0, top: chunkSize } };
+    if (source === ProjectsSource.All && searchString.length > 0)
+      queryArgs.search = { searchString, propertyName: ProjectsSearchableProperty.Name, exactMatch: false };
+    else
+      queryArgs.source = source;
+    const chunk = await client.getAll(accessToken, queryArgs);
+    allProjects.push(...chunk);
+    progress?.({ loaded: allProjects.length });
+    return allProjects;
+    // if (chunk.length <= chunkSize) {
+    //   return allProjects;
+    // }
+  } catch (ex) {
+    console.log(`Exception fetching projects: ${ex}`);
+    if (allProjects.length > 0) {
+      return allProjects;
+    } else {
+      throw ex;
     }
   }
-  // const projectServices = new DefaultProjectServices();
-  // return projectServices.getProjects(ProjectScope.MostRecentlyUsed, 40, 0);
 }
 
 enum HubStep {
@@ -92,14 +94,15 @@ export function HubScreen(props: HubScreenProps) {
   const [haveCachedBriefcase, setHaveCachedBriefcase] = React.useState(false);
   const [progress, setProgress] = React.useState<ProgressInfo>();
   const [filter, setFilter] = React.useState("");
+  const [projectSource, setProjectSource] = React.useState(ProjectsSource.Recents);
   // Any time we do anything asynchronous, we have to check if the component is still mounted,
   // or it can lead to a run-time exception.
   const isMountedRef = useIsMountedRef();
   const titleLabels = React.useMemo(() => [
     i18n("HubScreen", "Connecting"),
-    i18n("HubScreen", "GettingProjectList"),
     i18n("HubScreen", "SelectProject"),
-    i18n("HubScreen", "GettingIModelList"),
+    i18n("HubScreen", "SelectProject"),
+    i18n("Shared", "SelectIModel"),
     i18n("Shared", "SelectIModel"),
     i18n("HubScreen", "DownloadingIModel"),
   ], []);
@@ -107,6 +110,8 @@ export function HubScreen(props: HubScreenProps) {
   const deleteAllDownloadsLabel = React.useMemo(() => i18n("HubScreen", "DeleteAllDownloads"), []);
   const changeProjectLabel = React.useMemo(() => i18n("HubScreen", "ChangeProject"), []);
   const filterLabel = React.useMemo(() => i18n("HubScreen", "Filter"), []);
+  const projectSources = React.useMemo(() => [ProjectsSource.All, ProjectsSource.Recents, ProjectsSource.Favorites], []);
+  const projectSourceLabels = React.useMemo(() => [i18n("HubScreen", "All"), i18n("HubScreen", "Recents"), i18n("HubScreen", "Favorites")], []);
 
   // Note: This doesn't list isMountedRef as a dependency, because doing so would be useless. The function
   // is passed into tasks that take time. They cannot be updated. As it happens, isMountedRef never changes,
@@ -129,7 +134,9 @@ export function HubScreen(props: HubScreenProps) {
       setHubStep(HubStep.FetchingProjects);
       console.log("Fetching projects list...");
       const startTicks = performance.now();
-      const fetchedProjects = (await getProjects(handleProgress)).sort((a, b) => (a.name ?? "").localeCompare(b.name ?? "", undefined, { sensitivity: "base" }));
+      let fetchedProjects = await getProjects(handleProgress, projectSource, filter);
+      if (projectSource === ProjectsSource.Favorites)
+        fetchedProjects = fetchedProjects.sort((a, b) => (a.name ?? "").localeCompare(b.name ?? "", undefined, { sensitivity: "base" }));
       console.log(`Fetched ${fetchedProjects.length} projects.`);
       if (!isMountedRef.current) return;
       setProgress(undefined);
@@ -145,7 +152,14 @@ export function HubScreen(props: HubScreenProps) {
       presentError("FetchProjectsErrorFormat", error, "HubScreen");
       setButtonTitles([signOutLabel]);
     }
-  }, [isMountedRef, signOutLabel, handleProgress]);
+  }, [isMountedRef, signOutLabel, handleProgress, projectSource, filter]);
+
+  // Reload the projects when the projectSource or filter changes and we're already in the SelectProject HubStep.
+  // We don't want to do this when fetchProjects itself changes, so it's intentionally not on the dependency list.
+  React.useEffect(() => {
+    if (hubStep === HubStep.SelectProject)
+      fetchProjects();
+  }, [projectSource, filter]); // eslint-disable-line react-hooks/exhaustive-deps
 
   // Called when a user selects a project from the list, or when loading the
   // active project stored in localState.
@@ -243,19 +257,12 @@ export function HubScreen(props: HubScreenProps) {
 
   // onClick handler for the project list.
   const handleSelectProject = React.useCallback((index: number, name: string) => {
-    let newProject;
-    if (filter) {
-      // This assumes that project names have to be unique. I believe that is true, but it might not be.
-      // If not, we would have to store an index lookup as a state variable.
-      newProject = projects[projects.findIndex((project) => project.name === name)];
-    } else {
-      newProject = projects[index];
-    }
+    const newProject = projects[index];
     setProject(newProject);
     // Remember the most recently selected project so that it will load by default later.
     localStorage.setItem("activeProjectInfo", JSON.stringify(newProject))
     selectProject(newProject);
-  }, [projects, selectProject, filter]);
+  }, [projects, selectProject]);
 
   // Open the imodel referenced by the briefcase. It is already downloaded before this is called.
   const openIModel = React.useCallback((briefcase: LocalBriefcaseProps) => {
@@ -354,12 +361,8 @@ export function HubScreen(props: HubScreenProps) {
     }
   }, [iModels, downloadIModel, openIModel, isMountedRef, signOutLabel]);
 
-  let filteredTitles = buttonTitles;
-  if (filter && hubStep === HubStep.SelectProject) {
-    filteredTitles = buttonTitles.filter((value) => value.toLocaleLowerCase().indexOf(filter) !== -1);
-  }
   // Convert the button titles into buttons.
-  const buttons = filteredTitles.map((title: string, index: number) => {
+  const buttons = buttonTitles.map((title: string, index: number) => {
     const getTitle = (title: string, briefcase: LocalBriefcaseProps | undefined) => {
       if (!briefcase) return title;
       return title + " (" + fileSizeString(briefcase.fileSize) + ")";
@@ -452,19 +455,12 @@ export function HubScreen(props: HubScreenProps) {
     );
   }
 
-  let filterSection;
+  const handleFilter = (value: string) => {
+    if (!isMountedRef.current) return;
+    setFilter(value);
+  };
 
-  if (hubStep === HubStep.SelectProject && projects.length > 5) {
-    const handleFilter = (value: string) => {
-      if (!isMountedRef.current) return;
-      setFilter(value.toLocaleLowerCase());
-    };
-    filterSection = (
-      <div className="filter-section">
-        <FilterControl placeholder={filterLabel} onFilter={handleFilter} />
-      </div>
-    );
-  }
+  const loading = hubStep === HubStep.FetchingProjects || hubStep === HubStep.FetchingIModels;
   return (
     <Screen>
       <div className="hub-screen">
@@ -475,11 +471,21 @@ export function HubScreen(props: HubScreenProps) {
             {moreButton}
           </div>
         </div>
-        {filterSection}
+        {(hubStep === HubStep.SelectProject || hubStep === HubStep.FetchingProjects) &&
+          <div className="project-source">
+            <HorizontalPicker
+              items={projectSourceLabels}
+              selectedIndex={projectSources.findIndex(key => key === projectSource)}
+              onItemSelected={index => setProjectSource(projectSources[index])} />
+            {projectSource === ProjectsSource.All && <FilterControl placeholder={filterLabel} onFilter={handleFilter} value={filter} />}
+          </div>
+        }
+
         <div className="list">
-          <div className="list-items">{buttons}</div>
+          {loading && <LoadingSpinner />}
+          {!loading && <div className="list-items">{buttons}</div>}
         </div>
       </div>
-    </Screen>
+    </Screen >
   );
 }

@@ -10,13 +10,14 @@ import React from "react";
 export interface FilterControlProps {
   placeholder?: string;
   onFilter?: (value: string) => void;
+  value?: string;
 }
 
 /**
  * A React component representing a simple list filter input field.
  */
 export function FilterControl(props: FilterControlProps) {
-  const { placeholder, onFilter } = props;
+  const { placeholder, onFilter, value } = props;
   const [pendingFilter, setPendingFilter] = React.useState<NodeJS.Timeout>();
 
   const clearPendingFilter = React.useCallback(() => {
@@ -39,6 +40,7 @@ export function FilterControl(props: FilterControlProps) {
       <input
         type="text"
         placeholder={placeholder}
+        value={value}
         autoCapitalize="off"
         autoComplete="off"
         autoCorrect="off"
