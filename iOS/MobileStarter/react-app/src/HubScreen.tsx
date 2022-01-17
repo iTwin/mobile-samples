@@ -455,10 +455,10 @@ export function HubScreen(props: HubScreenProps) {
     );
   }
 
-  const handleFilter = (value: string) => {
+  const handleFilter = React.useCallback((value: string) => {
     if (!isMountedRef.current) return;
     setFilter(value);
-  };
+  }, [isMountedRef]);
 
   const loading = hubStep === HubStep.FetchingProjects || hubStep === HubStep.FetchingIModels;
   return (
@@ -477,7 +477,7 @@ export function HubScreen(props: HubScreenProps) {
               items={projectSourceLabels}
               selectedIndex={projectSources.findIndex(key => key === projectSource)}
               onItemSelected={index => setProjectSource(projectSources[index])} />
-            {projectSource === ProjectsSource.All && <FilterControl placeholder={filterLabel} onFilter={handleFilter} value={filter} />}
+            {projectSource === ProjectsSource.All && <FilterControl placeholder={filterLabel} onFilter={handleFilter} initialValue={filter} />}
           </div>
         }
 

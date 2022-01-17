@@ -9,31 +9,23 @@ import React from "react";
  */
 export interface FilterControlProps {
   placeholder?: string;
+  initialValue?: string;
   onFilter?: (value: string) => void;
-  value?: string;
 }
 
 /**
  * A React component representing a simple list filter input field.
  */
 export function FilterControl(props: FilterControlProps) {
-  const { placeholder, onFilter, value } = props;
-  const [pendingFilter, setPendingFilter] = React.useState<NodeJS.Timeout>();
+  const { placeholder, onFilter, initialValue } = props;
+  const [value, setValue] = React.useState<string>(initialValue ?? "");
 
-  const clearPendingFilter = React.useCallback(() => {
-    if (pendingFilter) {
-      clearTimeout(pendingFilter);
-      setPendingFilter(undefined);
+  React.useEffect(() => {
+    if (onFilter) {
+      const id = setTimeout(() => onFilter(value), 500);
+      return () => clearTimeout(id);
     }
-  }, [pendingFilter]);
-
-  const handleChange = React.useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
-    const value = e.currentTarget.value;
-    clearPendingFilter();
-    setPendingFilter(setTimeout(() => {
-      onFilter?.(value);
-    }, 500));
-  }, [clearPendingFilter, onFilter]);
+  }, [value, onFilter]);
 
   return (
     <div className="filter-control">
@@ -44,11 +36,9 @@ export function FilterControl(props: FilterControlProps) {
         autoCapitalize="off"
         autoComplete="off"
         autoCorrect="off"
-        onChange={handleChange}
+        onChange={e => setValue(e.target.value)}
         onKeyPress={(e) => {
           if (e.key === "Enter") {
-            clearPendingFilter();
-            onFilter?.(e.currentTarget.value);
             e.currentTarget.blur();
           }
         }}
