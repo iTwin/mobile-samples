@@ -46,6 +46,7 @@
     "LocationErrorFormat": "Error getting location: {{- error}}",
     "FitView": "Fit View",
     "DefaultView": "Default View",
+    "ToggleCamera": "Toggle Camera",
     "Info": "Info",
     "About": "About",
     "Views": "Views",
