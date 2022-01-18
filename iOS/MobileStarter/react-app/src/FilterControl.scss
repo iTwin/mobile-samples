@@ -3,17 +3,16 @@
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
 .filter-control {
-  position: relative;
-  padding: 0px 6px 1px 6px;
-  box-sizing: border-box;
-  width: 100vw;
+  display: flex;
+  align-items: center;
+  margin-left: 8px;
+  margin-right: 8px;
+  margin-bottom: 8px;
+
   input {
+    flex-grow: 1;
     font-size: 14px;
-    position: relative;
-    top: -6px;
     box-sizing: border-box;
-    margin: 0px;
-    width: 100%;
     height: 38px;
     padding-left: 13px;
     padding-right: 13px;
@@ -24,5 +23,12 @@
     &:focus {
       outline: none;
     }
+  }
+
+  .filter-clear {
+    position: absolute;
+    display: block;
+    right: 16px;
+    color: var(--muic-gray-7);
   }
 }

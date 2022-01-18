@@ -2,7 +2,9 @@
 * Copyright (c) Bentley Systems, Incorporated. All rights reserved.
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
+import { IconImage } from "@itwin/mobile-ui-react";
 import React from "react";
+import "./FilterControl.scss";
 
 /**
  * Properties for the [[FilterControl]] React component.
@@ -43,6 +45,9 @@ export function FilterControl(props: FilterControlProps) {
           }
         }}
       />
+      {value && <div className="filter-clear" onClick={() => setValue("")}>
+        <IconImage iconSpec=" icon-close-circular" fontSize="20px" />
+      </div>}
     </div>
   );
 }
