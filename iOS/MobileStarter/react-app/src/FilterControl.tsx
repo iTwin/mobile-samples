@@ -46,7 +46,7 @@ export function FilterControl(props: FilterControlProps) {
         }}
       />
       {value && <div className="filter-clear" onClick={() => setValue("")}>
-        <IconImage iconSpec=" icon-close-circular" fontSize="20px" />
+        <IconImage iconSpec=" icon-close-circular" fontSize="20px" size="40px" />
       </div>}
     </div>
   );
