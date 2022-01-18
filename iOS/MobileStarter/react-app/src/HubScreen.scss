@@ -12,7 +12,7 @@
   .title {
     width: 100vw;
     background-color: var(--background-color-2);
-    padding-top: env(safe-area-inset-top);
+    padding-top: calc(env(safe-area-inset-top) + 5px);
     padding-left: env(safe-area-inset-left);
     padding-right: env(safe-area-inset-right);
     padding-bottom: 4px;
