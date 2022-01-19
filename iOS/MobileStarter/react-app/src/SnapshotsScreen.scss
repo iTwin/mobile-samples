@@ -12,20 +12,15 @@
   .title {
     width: 100vw;
     background-color: var(--background-color-2);
-    padding-top: env(safe-area-inset-top);
+    padding-top: calc(env(safe-area-inset-top) + 5px);
     padding-left: env(safe-area-inset-left);
     padding-right: env(safe-area-inset-right);
-    padding-bottom: 20px;
+    padding-bottom: 4px;
     display: flex;
-    align-items: stretch;
-    justify-content: space-between;
-    .back-button {
-      margin-top: 10px;
-    }
+    align-items: center;
+    justify-content: stretch;
     .title-text {
       margin-left: 10px;
-      display: flex;
-      align-items: center;
     }
     .refresh {
       flex-grow: 1;

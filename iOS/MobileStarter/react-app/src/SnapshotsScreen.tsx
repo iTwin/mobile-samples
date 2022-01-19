@@ -4,7 +4,7 @@
 *--------------------------------------------------------------------------------------------*/
 import React from "react";
 import { Messenger } from "@itwin/mobile-sdk-core";
-import { NavigationButton, VisibleBackButton } from "@itwin/mobile-ui-react";
+import { BackButton, NavigationButton } from "@itwin/mobile-ui-react";
 import { Button, i18n, Screen } from "./Exports";
 import { IModelConnection, SnapshotConnection } from "@itwin/core-frontend";
 import "./SnapshotsScreen.scss";
@@ -71,7 +71,7 @@ export function SnapshotsScreen(props: SnapshotsScreenProps) {
       <div className="snapshots-screen">
         <div className="title">
           <div className="back-button">
-            <VisibleBackButton onClick={onBack} />
+            <BackButton onClick={onBack} />
           </div>
           <div className="title-text">{selectIModelLabel}</div>
           <div className="refresh">

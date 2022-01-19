@@ -4,7 +4,16 @@
 *--------------------------------------------------------------------------------------------*/
 import React from "react";
 import { ColorDef } from "@itwin/core-common";
-import { FitViewTool, IModelApp, IModelConnection, StandardViewId, ViewCreator3d, ViewCreator3dOptions, ViewState } from "@itwin/core-frontend";
+import {
+  FitViewTool,
+  IModelApp,
+  IModelConnection,
+  StandardViewId,
+  ViewCreator3d,
+  ViewCreator3dOptions,
+  ViewState,
+  ViewToggleCameraTool,
+} from "@itwin/core-frontend";
 import { ViewportComponent } from "@itwin/imodel-components-react";
 import { getCssVariable, IconSpec } from "@itwin/core-react";
 import { viewWithUnifiedSelection } from "@itwin/presentation-components";
@@ -60,6 +69,7 @@ export function ModelScreen(props: ModelScreenProps) {
   const showCurrentLocationLabel = React.useMemo(() => i18n("ModelScreen", "ShowCurrentLocation"), []);
   const fitViewLabel = React.useMemo(() => i18n("ModelScreen", "FitView"), []);
   const defaultViewLabel = React.useMemo(() => i18n("ModelScreen", "DefaultView"), []);
+  const toggleCameraLabel = React.useMemo(() => i18n("ModelScreen", "ToggleCamera"), []);
   const infoLabel = React.useMemo(() => i18n("ModelScreen", "Info"), []);
   const aboutLabel = React.useMemo(() => i18n("ModelScreen", "About"), []);
   const viewsLabel = React.useMemo(() => i18n("ModelScreen", "Views"), []);
@@ -121,6 +131,11 @@ export function ModelScreen(props: ModelScreenProps) {
           title: defaultViewLabel,
           onSelected: applyDefaultView,
         },
+        {
+          name: "toggleCamera",
+          title: toggleCameraLabel,
+          onSelected: toggleCamera,
+        }
       ];
 
     if (IModelApp.viewManager.getFirstOpenView()?.view.iModel.selectionSet.isActive) {
@@ -208,6 +223,10 @@ export function ModelScreen(props: ModelScreenProps) {
       presentError("ApplyDefaultViewErrorFormat", error, "ModelScreen");
     }
   }, [iModel, isMountedRef]);
+
+  const toggleCamera = React.useCallback(() => {
+    IModelApp.tools.run(ViewToggleCameraTool.toolId, IModelApp.viewManager.getFirstOpenView());
+  }, []);
 
   // Effect to apply the default view state after component is loaded.
   React.useEffect(() => {

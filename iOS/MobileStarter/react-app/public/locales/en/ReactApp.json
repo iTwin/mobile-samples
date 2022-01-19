@@ -49,6 +49,7 @@
     "LocationErrorFormat": "Error getting location: {{- error}}",
     "FitView": "Fit View",
     "DefaultView": "Default View",
+    "ToggleCamera": "Toggle Camera",
     "Info": "Info",
     "About": "About",
     "Views": "Views",
@@ -82,6 +83,7 @@
     "SectionByElement": "Section by Element",
     "SectionByRange": "Section by Range",
     "SectionByShape": "Section by Shape",
-    "ClearSection": "Clear Section"
+    "ClearSection": "Clear Section",
+    "Walk": "Walk"
   }
 }

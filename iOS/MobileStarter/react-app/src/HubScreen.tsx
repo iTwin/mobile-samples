@@ -4,7 +4,7 @@
 *--------------------------------------------------------------------------------------------*/
 import React from "react";
 import { AlertAction, ITMAuthorizationClient, MobileCore } from "@itwin/mobile-sdk-core";
-import { ActionSheetButton, HorizontalPicker, IconImage, useIsMountedRef, VisibleBackButton } from "@itwin/mobile-ui-react";
+import { ActionSheetButton, BackButton, HorizontalPicker, IconImage, useIsMountedRef } from "@itwin/mobile-ui-react";
 import { Project as ITwin, ProjectsAccessClient, ProjectsQueryArg, ProjectsSearchableProperty, ProjectsSource } from "@itwin/projects-client";
 import { ProgressCallback, ProgressInfo } from "@bentley/itwin-client";
 import { BriefcaseConnection, DownloadBriefcaseOptions, IModelApp, IModelConnection, NativeApp } from "@itwin/core-frontend";
@@ -462,7 +462,7 @@ export function HubScreen(props: HubScreenProps) {
     <Screen>
       <div className="hub-screen">
         <div className="title">
-          <VisibleBackButton onClick={onBack} />
+          <BackButton onClick={onBack} />
           <div className="title-text">{titleLabels[hubStep] + progressString(progress)}</div>
           <div className="right-tools-parent">
             {moreButton}
