@@ -12,7 +12,7 @@ Follow the instructions in the [iOS Readme](../../README.md) to get things worki
 1. If you are not on the main branch, make sure to switch to the appropriate branch for _all_ GitHub repositories below after cloning.
 1. cd into `mobile-sdk-samples/iOS/MobileStarter/react-app`.
 1. Run `npm install`.
-1. Check out https://github.com/iTwin/mobile-sdk into `mobile-sdk` alongside `mobile-sdk-samples`.
+1. Check out https://github.com/iTwin/mobile-sdk-ios into `mobile-sdk-ios` alongside `mobile-sdk-samples`.
 1. Check out https://github.com/iTwin/mobile-sdk-core into `mobile-sdk-core` alongside `mobile-sdk-samples`.
 1. cd into `mobile-sdk-core`.
 1. Run `npm install`.
@@ -29,7 +29,7 @@ Follow the instructions in the [iOS Readme](../../README.md) to get things worki
 
 ## Updates
 
-1. Use `git pull` to update `mobile-sdk-samples`, `mobile-sdk`, `mobile-sdk-core`, and `mobile-ui-react`.
+1. Use `git pull` to update `mobile-sdk-samples`, `mobile-sdk-ios`, `mobile-sdk-core`, and `mobile-ui-react`.
 1. cd into `mobile-sdk-samples/iOS/MobileStarter/react-app`.
 1. Run `npm install`.
 1. cd into `mobile-ui-react`.
