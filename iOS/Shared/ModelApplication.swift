@@ -42,6 +42,7 @@ class ModelApplication: ITMApplication {
     /// Adds our DocumentPicker component to the native UI collection.
     /// - Parameter viewController: The view controller.
     override func viewWillAppear(viewController: ITMViewController) {
+        super.viewWillAppear(viewController: viewController)
         viewController.itmNativeUI?.addComponent(DocumentPicker(viewController: viewController, itmMessenger: ITMViewController.application.itmMessenger))
     }
     
