@@ -6,7 +6,7 @@
   "scripts": {
     "start": "USE_FAST_SASS=true BROWSER=none react-scripts start",
     "copy:assets": "cpx \"./node_modules/@itwin/mobile-sdk-core/lib/public/locales/**\" ./build/locales && cpx \"./node_modules/@itwin/mobile-ui-react/lib/public/locales/**\" ./build/locales",
-    "build:frontend": "NODE_OPTIONS=--max_old_space_size=6144 USE_FAST_SASS=true react-scripts build && npm run copy:assets",
+    "build:frontend": "NODE_OPTIONS=--max_old_space_size=10240 USE_FAST_SASS=true react-scripts build && npm run copy:assets",
     "build:backend": "tsc -p tsconfig.backend.json && webpack --config ./webpack.config.js --env.outdir=./lib/webpack --env.entry=./lib/backend/main.js --env.bundlename=main",
     "build": "npm run build:frontend && npm run build:backend",
     "clean": "rimraf build lib"
@@ -47,8 +47,8 @@
     "@itwin/core-react": "rc",
     "@itwin/ecschema-metadata": "rc",
     "@itwin/imodel-components-react": "rc",
-    "@itwin/imodels-access-frontend": "latest",
     "@itwin/imodels-access-backend": "latest",
+    "@itwin/imodels-access-frontend": "latest",
     "@itwin/imodels-client-management": "latest",
     "@itwin/linear-referencing-backend": "rc",
     "@itwin/linear-referencing-common": "rc",

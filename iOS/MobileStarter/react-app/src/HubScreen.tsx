@@ -40,9 +40,6 @@ async function getProjects(progress?: ProgressCallback, source = ProjectsSource.
     allProjects.push(...chunk);
     progress?.({ loaded: allProjects.length });
     return allProjects;
-    // if (chunk.length <= chunkSize) {
-    //   return allProjects;
-    // }
   } catch (ex) {
     console.log(`Exception fetching projects: ${ex}`);
     if (allProjects.length > 0) {
