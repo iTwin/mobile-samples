@@ -34,7 +34,7 @@
     "SigninErrorFormat": "Error signing in: {{- error}}",
     "DeleteAllDownloads": "Delete All Downloads",
     "ChangeProject": "Change Project",
-    "Filter": "Search",
+    "Search": "Search",
     "DownloadErrorFormat": "Error downloading iModel: {{- error}}",
     "DeleteErrorFormat": "Error deleting local download of iModel: {{- error}}",
     "DeleteAllErrorFormat": "Error deleting local downloads of all iModels in project: {{- error}}",

@@ -12,7 +12,7 @@ import { IModelsClient, MinimalIModel } from "@itwin/imodels-client-management";
 import { AccessTokenAdapter } from "@itwin/imodels-access-frontend";
 import { BentleyError, BriefcaseDownloader, BriefcaseStatus, IModelStatus, LocalBriefcaseProps, SyncMode } from "@itwin/core-common";
 import { LoadingSpinner } from "@itwin/core-react";
-import { Button, fileSizeString, FilterControl, i18n, presentError, progressString, Screen } from "./Exports";
+import { Button, fileSizeString, SearchControl, i18n, presentError, progressString, Screen } from "./Exports";
 import "./HubScreen.scss";
 
 /// Properties for the [[HubScreen]] React component.
@@ -90,7 +90,7 @@ export function HubScreen(props: HubScreenProps) {
   const [initialized, setInitialized] = React.useState(false);
   const [haveCachedBriefcase, setHaveCachedBriefcase] = React.useState(false);
   const [progress, setProgress] = React.useState<ProgressInfo>();
-  const [filter, setFilter] = React.useState("");
+  const [search, setSearch] = React.useState("");
   const [projectSource, setProjectSource] = React.useState(ProjectsSource.Recents);
   // Any time we do anything asynchronous, we have to check if the component is still mounted,
   // or it can lead to a run-time exception.
@@ -106,7 +106,7 @@ export function HubScreen(props: HubScreenProps) {
   const signOutLabel = React.useMemo(() => i18n("HubScreen", "SignOut"), []);
   const deleteAllDownloadsLabel = React.useMemo(() => i18n("HubScreen", "DeleteAllDownloads"), []);
   const changeProjectLabel = React.useMemo(() => i18n("HubScreen", "ChangeProject"), []);
-  const filterLabel = React.useMemo(() => i18n("HubScreen", "Filter"), []);
+  const searchLabel = React.useMemo(() => i18n("HubScreen", "Search"), []);
   const projectSources = React.useMemo(() => [ProjectsSource.All, ProjectsSource.Recents, ProjectsSource.Favorites], []);
   const projectSourceLabels = React.useMemo(() => [i18n("HubScreen", "All"), i18n("HubScreen", "Recents"), i18n("HubScreen", "Favorites")], []);
 
@@ -131,7 +131,7 @@ export function HubScreen(props: HubScreenProps) {
       setHubStep(HubStep.FetchingProjects);
       console.log("Fetching projects list...");
       const startTicks = performance.now();
-      let fetchedProjects = await getProjects(handleProgress, projectSource, filter);
+      let fetchedProjects = await getProjects(handleProgress, projectSource, search);
       if (projectSource === ProjectsSource.Favorites)
         fetchedProjects = fetchedProjects.sort((a, b) => (a.name ?? "").localeCompare(b.name ?? "", undefined, { sensitivity: "base" }));
       console.log(`Fetched ${fetchedProjects.length} projects.`);
@@ -149,14 +149,14 @@ export function HubScreen(props: HubScreenProps) {
       presentError("FetchProjectsErrorFormat", error, "HubScreen");
       setButtonTitles([signOutLabel]);
     }
-  }, [isMountedRef, signOutLabel, handleProgress, projectSource, filter]);
+  }, [isMountedRef, signOutLabel, handleProgress, projectSource, search]);
 
-  // Reload the projects when the projectSource or filter changes and we're already in the SelectProject HubStep.
+  // Reload the projects when the projectSource or search changes and we're already in the SelectProject HubStep.
   // We don't want to do this when fetchProjects itself changes, so it's intentionally not on the dependency list.
   React.useEffect(() => {
     if (hubStep === HubStep.SelectProject)
       fetchProjects();
-  }, [projectSource, filter]); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [projectSource, search]); // eslint-disable-line react-hooks/exhaustive-deps
 
   // Called when a user selects a project from the list, or when loading the
   // active project stored in localState.
@@ -454,7 +454,7 @@ export function HubScreen(props: HubScreenProps) {
 
   const handleFilter = React.useCallback((value: string) => {
     if (!isMountedRef.current) return;
-    setFilter(value);
+    setSearch(value);
   }, [isMountedRef]);
 
   const loading = hubStep === HubStep.FetchingProjects || hubStep === HubStep.FetchingIModels;
@@ -474,7 +474,7 @@ export function HubScreen(props: HubScreenProps) {
               items={projectSourceLabels}
               selectedIndex={projectSources.findIndex(key => key === projectSource)}
               onItemSelected={index => setProjectSource(projectSources[index])} />
-            {projectSource === ProjectsSource.All && <FilterControl placeholder={filterLabel} onFilter={handleFilter} initialValue={filter} />}
+            {projectSource === ProjectsSource.All && <SearchControl placeholder={searchLabel} onSearch={handleFilter} initialValue={search} />}
           </div>
         }
 

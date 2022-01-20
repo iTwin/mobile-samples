@@ -4,22 +4,22 @@
 *--------------------------------------------------------------------------------------------*/
 import { IconImage } from "@itwin/mobile-ui-react";
 import React from "react";
-import "./FilterControl.scss";
+import "./SearchControl.scss";
 
 /**
- * Properties for the [[FilterControl]] React component.
+ * Properties for the [[SearchControl]] React component.
  */
-export interface FilterControlProps {
+export interface SearchControlProps {
   placeholder?: string;
   initialValue?: string;
-  onFilter?: (value: string) => void;
+  onSearch?: (value: string) => void;
 }
 
 /**
- * A React component representing a simple list filter input field.
+ * A React component representing a simple search input field.
  */
-export function FilterControl(props: FilterControlProps) {
-  const { placeholder, onFilter, initialValue } = props;
+export function SearchControl(props: SearchControlProps) {
+  const { placeholder, onSearch: onFilter, initialValue } = props;
   const [value, setValue] = React.useState<string>(initialValue ?? "");
 
   React.useEffect(() => {
@@ -30,7 +30,7 @@ export function FilterControl(props: FilterControlProps) {
   }, [value, onFilter]);
 
   return (
-    <div className="filter-control">
+    <div className="search-control">
       <input
         type="text"
         placeholder={placeholder}
@@ -45,7 +45,7 @@ export function FilterControl(props: FilterControlProps) {
           }
         }}
       />
-      {value && <div className="filter-clear" onClick={() => setValue("")}>
+      {value && <div className="search-clear" onClick={() => setValue("")}>
         <IconImage iconSpec=" icon-close-circular" fontSize="20px" size="40px" />
       </div>}
     </div>

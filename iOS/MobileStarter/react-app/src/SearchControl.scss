@@ -2,7 +2,7 @@
 * Copyright (c) Bentley Systems, Incorporated. All rights reserved.
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
-.filter-control {
+.search-control {
   display: flex;
   align-items: center;
   margin-left: 8px;
@@ -25,7 +25,7 @@
     }
   }
 
-  .filter-clear {
+  .search-clear {
     position: absolute;
     display: block;
     right: 8px;

@@ -18,4 +18,4 @@ export * from "./HomeScreen";
 export * from "./HubScreen";
 export * from "./ElementPropertiesPanel";
 export * from "./ToolsBottomPanel";
-export * from "./FilterControl";
+export * from "./SearchControl";
