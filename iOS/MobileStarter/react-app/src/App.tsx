@@ -8,7 +8,7 @@ import { IOSApp, IOSAppOpts } from "@itwin/core-mobile/lib/cjs/MobileFrontend";
 import { IModelApp, IModelConnection, SnapshotConnection, ToolAssistanceInstructions } from "@itwin/core-frontend";
 import { AppNotificationManager, FrameworkReducer, FrameworkState, UiFramework } from "@itwin/appui-react";
 import { Presentation } from "@itwin/presentation-frontend";
-import { ITMAuthorizationClient, Messenger } from "@itwin/mobile-sdk-core";
+import { ITMAuthorizationClient, Messenger, MobileCore } from "@itwin/mobile-sdk-core";
 import { MobileUi } from "@itwin/mobile-ui-react";
 // import { FeatureTracking as MeasureToolsFeatureTracking, MeasureTools } from "@bentley/measure-tools-react";
 import { ActiveScreen, HomeScreen, HubScreen, LoadingScreen, ModelScreen, presentError, SnapshotsScreen, ToolAssistance } from "./Exports";
@@ -78,6 +78,15 @@ function App() {
             notifications: new AppToolAssistanceNotificationManager(),
             authorizationClient: new ITMAuthorizationClient(),
           },
+        }
+        const lowResolution = MobileCore.getUrlSearchParam("lowResolution") === "YES";
+        if (lowResolution) {
+          // Improves FPS on really slow devices and iOS simulator.
+          // Shader compilation still causes one-time slowness when interacting with model.
+          opts.iModelApp!.renderSys = {
+            devicePixelRatioOverride: 0.25, // Reduce resolution
+            dpiAwareLOD: true, // Reduce tile LOD for low resolution
+          };
         }
         await IOSApp.startup(opts);
         await UiFramework.initialize(appReduxStore);
