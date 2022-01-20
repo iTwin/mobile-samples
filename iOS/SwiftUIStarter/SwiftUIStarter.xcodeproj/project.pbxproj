@@ -141,7 +141,7 @@
 			);
 			mainGroup = 5FDD748926CDA9520007FBC6;
 			packageReferences = (
-				5FB2050626D03B2600C4DBE1 /* XCRemoteSwiftPackageReference "mobile-sdk" */,
+				5FB2050626D03B2600C4DBE1 /* XCRemoteSwiftPackageReference "mobile-sdk-ios" */,
 				1F4692CB276C0AED00480CED /* XCRemoteSwiftPackageReference "ShowTime" */,
 			);
 			productRefGroup = 5FDD749326CDA9520007FBC6 /* Products */;
@@ -396,9 +396,9 @@
 				minimumVersion = 2.0.0;
 			};
 		};
-		5FB2050626D03B2600C4DBE1 /* XCRemoteSwiftPackageReference "mobile-sdk" */ = {
+		5FB2050626D03B2600C4DBE1 /* XCRemoteSwiftPackageReference "mobile-sdk-ios" */ = {
 			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/iTwin/mobile-sdk.git";
+			repositoryURL = "https://github.com/iTwin/mobile-sdk-ios.git";
 			requirement = {
 				kind = upToNextMajorVersion;
 				minimumVersion = "1.0.0-dev.1";
@@ -414,7 +414,7 @@
 		};
 		5FB2050726D03B2600C4DBE1 /* ITwinMobile */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = 5FB2050626D03B2600C4DBE1 /* XCRemoteSwiftPackageReference "mobile-sdk" */;
+			package = 5FB2050626D03B2600C4DBE1 /* XCRemoteSwiftPackageReference "mobile-sdk-ios" */;
 			productName = ITwinMobile;
 		};
 /* End XCSwiftPackageProductDependency section */

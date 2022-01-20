@@ -79,6 +79,9 @@ fi
 if [ "${ITM_DEBUG_I18N}" != "" ]; then
     echo "  , "'"'"debugI18n"'"'": "'"'"${ITM_DEBUG_I18N}"'"'"" >> "ITMAppConfig.json"
 fi
+if [ "${ITM_LOW_RESOLUTION}" != "" ]; then
+    echo "  , "'"'"lowResolution"'"'": "'"'"${ITM_LOW_RESOLUTION}"'"'"" >> "ITMAppConfig.json"
+fi
 if [ "${ITM_SHOWTIME_ENABLED}" != "" ]; then
     echo "  , "'"'"showtimeEnabled"'"'": "'"'"${ITM_SHOWTIME_ENABLED}"'"'"" >> "ITMAppConfig.json"
 fi
