@@ -5,7 +5,7 @@
 import React from "react";
 import { AlertAction, ITMAuthorizationClient, MobileCore } from "@itwin/mobile-sdk-core";
 import { ActionSheetButton, BackButton, HorizontalPicker, IconImage, useIsMountedRef } from "@itwin/mobile-ui-react";
-import { Project as ITwin, ProjectsAccessClient, ProjectsQueryArg, ProjectsSearchableProperty, ProjectsSource } from "@itwin/projects-client";
+import { Project as ITwin, ProjectsAccessClient, ProjectsQueryArg, ProjectsQueryFunction, ProjectsSearchableProperty, ProjectsSource } from "@itwin/projects-client";
 import { ProgressCallback, ProgressInfo } from "@bentley/itwin-client";
 import { BriefcaseConnection, DownloadBriefcaseOptions, IModelApp, IModelConnection, NativeApp } from "@itwin/core-frontend";
 import { IModelsClient, MinimalIModel } from "@itwin/imodels-client-management";
@@ -36,14 +36,14 @@ async function getProjects(progress?: ProgressCallback, source = ProjectsSource.
       queryArgs.search = { searchString, propertyName: ProjectsSearchableProperty.Name, exactMatch: false };
     else
       queryArgs.source = source;
-    const chunk = await client.getAll(accessToken, queryArgs);
-    allProjects.push(...chunk);
+    const chunk = await client.getByQuery(accessToken, queryArgs);
+    allProjects.push(...chunk.projects);
     progress?.({ loaded: allProjects.length });
-    return allProjects;
+    return { projects: allProjects, next: chunk.links?.next };
   } catch (ex) {
     console.log(`Exception fetching projects: ${ex}`);
     if (allProjects.length > 0) {
-      return allProjects;
+      return { projects: allProjects, next: undefined };
     } else {
       throw ex;
     }
@@ -84,6 +84,7 @@ export function HubScreen(props: HubScreenProps) {
   const { onOpen, onBack } = props;
   const [hubStep, setHubStep] = React.useState(HubStep.SignIn);
   const [projects, setProjects] = React.useState<ITwin[]>([]);
+  const [loadMore, setLoadMore] = React.useState<ProjectsQueryFunction>();
   const [iModels, setIModels] = React.useState<IModelInfo[]>([]);
   const [buttonTitles, setButtonTitles] = React.useState<string[]>([]);
   const [project, setProject] = React.useState(getActiveProject());
@@ -104,6 +105,7 @@ export function HubScreen(props: HubScreenProps) {
     i18n("HubScreen", "DownloadingIModel"),
   ], []);
   const signOutLabel = React.useMemo(() => i18n("HubScreen", "SignOut"), []);
+  const loadMoreLabel = React.useMemo(() => i18n("HubScreen", "LoadMore"), []);
   const deleteAllDownloadsLabel = React.useMemo(() => i18n("HubScreen", "DeleteAllDownloads"), []);
   const changeProjectLabel = React.useMemo(() => i18n("HubScreen", "ChangeProject"), []);
   const searchLabel = React.useMemo(() => i18n("HubScreen", "Search"), []);
@@ -131,16 +133,19 @@ export function HubScreen(props: HubScreenProps) {
       setHubStep(HubStep.FetchingProjects);
       console.log("Fetching projects list...");
       const startTicks = performance.now();
-      let fetchedProjects = await getProjects(handleProgress, projectSource, search);
-      if (projectSource === ProjectsSource.Favorites)
-        fetchedProjects = fetchedProjects.sort((a, b) => (a.name ?? "").localeCompare(b.name ?? "", undefined, { sensitivity: "base" }));
+      const { projects: fetchedProjects, next } = await getProjects(handleProgress, projectSource, search);
+      // if (projectSource === ProjectsSource.Favorites)
+      //   fetchedProjects = fetchedProjects.sort((a, b) => (a.name ?? "").localeCompare(b.name ?? "", undefined, { sensitivity: "base" }));
       console.log(`Fetched ${fetchedProjects.length} projects.`);
       if (!isMountedRef.current) return;
       setProgress(undefined);
       setProjects(fetchedProjects);
+      setLoadMore(next);
       const elapsed = performance.now() - startTicks;
       console.log("Fetched projects list in " + (elapsed / 1000) + " seconds.");
-      const names = fetchedProjects.filter((project) => project.name).map((project) => project.name!);
+      let names = fetchedProjects.filter((project) => project.name).map((project) => project.name!);
+      if (next)
+        names.push(loadMoreLabel);
       setButtonTitles(names);
       setHubStep(HubStep.SelectProject);
     } catch (error) {
@@ -149,7 +154,7 @@ export function HubScreen(props: HubScreenProps) {
       presentError("FetchProjectsErrorFormat", error, "HubScreen");
       setButtonTitles([signOutLabel]);
     }
-  }, [isMountedRef, signOutLabel, handleProgress, projectSource, search]);
+  }, [isMountedRef, signOutLabel, handleProgress, projectSource, search, loadMoreLabel]);
 
   // Reload the projects when the projectSource or search changes and we're already in the SelectProject HubStep.
   // We don't want to do this when fetchProjects itself changes, so it's intentionally not on the dependency list.
@@ -409,8 +414,17 @@ export function HubScreen(props: HubScreenProps) {
             }
             onBack();
           }
-          if (hubStep === HubStep.SelectProject) {
-            handleSelectProject(index, title);
+          else if (hubStep === HubStep.SelectProject) {
+            if (title === loadMoreLabel) {
+              if (loadMore) {
+                const accessToken = await IModelApp.getAccessToken();
+                const { projects: moreProjects, links } = await loadMore(accessToken);
+                setProjects([...projects, ...moreProjects]);
+                setLoadMore(links.next);
+              }
+            } else {
+              handleSelectProject(index, title);
+            }
           }
         }}
         title={title} />

@@ -40,7 +40,8 @@
     "DeleteAllErrorFormat": "Error deleting local downloads of all iModels in project: {{- error}}",
     "All": "ALL",
     "Recents": "RECENT",
-    "Favorites": "FAVORITES"
+    "Favorites": "FAVORITES",
+    "LoadMore": "Load More..."
   },
   "ModelScreen": {
     "Location": "Location",
