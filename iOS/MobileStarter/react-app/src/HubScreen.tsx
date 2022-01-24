@@ -6,7 +6,7 @@ import React from "react";
 import { AlertAction, ITMAuthorizationClient, MobileCore } from "@itwin/mobile-sdk-core";
 import { ActionSheetButton, BackButton, IconImage, useIsMountedRef } from "@itwin/mobile-ui-react";
 import { Project as ITwin, ProjectsAccessClient } from "@itwin/projects-client";
-import { ProgressCallback, ProgressInfo } from "@bentley/itwin-client";
+import { ProgressCallback, ProgressInfo } from "@itwin/core-frontend/lib/cjs/request/Request";
 // import { ProjectInfo, ProjectScope } from "@itwin/appui-react";
 // import { DefaultProjectServices } from "@bentley/ui-framework/lib/ui-framework/clientservices/DefaultProjectServices";
 import { BriefcaseConnection, DownloadBriefcaseOptions, IModelApp, IModelConnection, NativeApp } from "@itwin/core-frontend";
