@@ -24,9 +24,7 @@
   },
   "HubScreen": {
     "Connecting": "Connecting...",
-    "GettingProjectList": "Getting Project List...",
     "SelectProject": "Select Project",
-    "GettingIModelList": "Getting iModel List...",
     "DownloadingIModel": "Downloading iModel",
     "SignOut": "Sign Out",
     "FetchProjectsErrorFormat": "Error getting projects list: {{- error}}",
