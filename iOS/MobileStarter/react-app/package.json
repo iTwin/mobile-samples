@@ -50,6 +50,7 @@
     "@itwin/imodels-access-backend": "latest",
     "@itwin/imodels-access-frontend": "latest",
     "@itwin/imodels-client-management": "latest",
+    "@itwin/itwinui-react": "latest",
     "@itwin/linear-referencing-backend": "rc",
     "@itwin/linear-referencing-common": "rc",
     "@itwin/mobile-sdk-core": "1.0.0-dev.2",

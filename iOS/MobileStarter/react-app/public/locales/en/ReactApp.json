@@ -27,7 +27,7 @@
     "GettingProjectList": "Getting Project List...",
     "SelectProject": "Select Project",
     "GettingIModelList": "Getting iModel List...",
-    "DownloadingIModel": "Downloading iModel...",
+    "DownloadingIModel": "Downloading iModel",
     "SignOut": "Sign Out",
     "FetchProjectsErrorFormat": "Error getting projects list: {{- error}}",
     "GetIModelsErrorFormat": "Error getting iModels list: {{- error}}",
@@ -41,7 +41,7 @@
     "All": "ALL",
     "Recents": "RECENT",
     "Favorites": "FAVORITES",
-    "LoadMore": "Load More..."
+    "Downloading": "Downloading"
   },
   "ModelScreen": {
     "Location": "Location",
