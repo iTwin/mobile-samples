@@ -5,7 +5,7 @@
 import React from "react";
 import { AlertAction, ITMAuthorizationClient, MobileCore } from "@itwin/mobile-sdk-core";
 import { ActionSheetButton, BackButton, HorizontalPicker, IconImage, useIsMountedRef } from "@itwin/mobile-ui-react";
-import { Project as ITwin, ProjectsAccessClient, ProjectsQueryArg, ProjectsSearchableProperty, ProjectsSource } from "@itwin/projects-client";
+import { Project, ProjectsAccessClient, ProjectsQueryArg, ProjectsSearchableProperty, ProjectsSource } from "@itwin/projects-client";
 import { ProgressCallback, ProgressInfo } from "@bentley/itwin-client";
 import { BriefcaseConnection, DownloadBriefcaseOptions, IModelApp, IModelConnection, NativeApp } from "@itwin/core-frontend";
 import { IModelsClient, MinimalIModel } from "@itwin/imodels-client-management";
@@ -28,7 +28,7 @@ export interface HubScreenProps {
 async function getProjects(progress?: ProgressCallback, source = ProjectsSource.All, searchString = "") {
   const client = new ProjectsAccessClient();
   const chunkSize = 100;
-  const allProjects: ITwin[] = [];
+  const allProjects: Project[] = [];
   const accessToken = await IModelApp.getAccessToken();
 
   try {
@@ -53,9 +53,7 @@ async function getProjects(progress?: ProgressCallback, source = ProjectsSource.
 
 enum HubStep {
   SignIn,
-  // FetchingProjects,
   SelectProject,
-  // FetchingIModels,
   SelectIModel,
   DownloadIModel,
   Error
@@ -70,7 +68,7 @@ function getActiveProject() {
     if (project.id) {
       // The format of the project object changed in iTwin 3. Since the id field is required, return
       // undefined if our stored project does not have a value for that field.
-      return project as ITwin;
+      return project as Project;
     } else {
       return undefined;
     }
@@ -78,7 +76,7 @@ function getActiveProject() {
   return undefined;
 }
 
-function saveActiveProject(project: ITwin) {
+function saveActiveProject(project: Project) {
   localStorage.setItem(HubScreen.ACTIVE_PROJECT_INFO, JSON.stringify(project));
 }
 
@@ -157,7 +155,7 @@ function IModelList(props: IModelListProps) {
   </HubScreenButtonList>;
 }
 
-async function getIModels(project: ITwin) {
+async function getIModels(project: Project) {
   const imodelsClient = new IModelsClient();
   const accessToken = await IModelApp.getAccessToken();
   const minimalIModels: MinimalIModel[] = [];
@@ -181,7 +179,7 @@ async function getIModels(project: ITwin) {
   return iModelInfos;
 }
 
-async function downloadIModel(project: ITwin, iModel: MinimalIModel, handleProgress: (progress: ProgressInfo) => boolean): Promise<IModelInfo> {
+async function downloadIModel(project: Project, iModel: MinimalIModel, handleProgress: (progress: ProgressInfo) => boolean): Promise<IModelInfo> {
   const opts: DownloadBriefcaseOptions = { syncMode: SyncMode.PullOnly };
   let downloader: BriefcaseDownloader | undefined;
   let canceled = false;
@@ -231,7 +229,7 @@ async function downloadIModel(project: ITwin, iModel: MinimalIModel, handleProgr
 }
 
 interface IModelDownloaderProps {
-  project: ITwin;
+  project: Project;
   model: IModelInfo;
   onDownloaded: (model: IModelInfo) => void;
   onCanceled?: () => void;
@@ -280,7 +278,7 @@ function IModelDownloader(props: IModelDownloaderProps) {
 }
 
 interface IModelPickerProps {
-  project: ITwin | undefined;
+  project: Project | undefined;
   signedIn: boolean;
   onSelect?: (model: IModelInfo) => void;
   onLoaded?: (models: IModelInfo[]) => void;
@@ -328,7 +326,7 @@ function IModelPicker(props: IModelPickerProps) {
 }
 
 interface ProjectButtonProps extends Omit<ButtonProps, "title"> {
-  project: ITwin;
+  project: Project;
 }
 
 function ProjectButton(props: ProjectButtonProps) {
@@ -340,9 +338,9 @@ function ProjectButton(props: ProjectButtonProps) {
 }
 
 interface ProjectListProps {
-  projects: ITwin[];
+  projects: Project[];
   loading?: boolean;
-  onClick?: (project: ITwin) => void;
+  onClick?: (project: Project) => void;
 }
 
 function ProjectList(props: ProjectListProps) {
@@ -354,13 +352,13 @@ function ProjectList(props: ProjectListProps) {
 
 interface ProjectPickerProps {
   signedIn: boolean;
-  onSelect?: (project: ITwin) => void;
+  onSelect?: (project: Project) => void;
   onError?: (error: any) => void;
 }
 
 function ProjectPicker(props: ProjectPickerProps) {
   const { signedIn, onSelect, onError } = props;
-  const [projects, setProjects] = React.useState<ITwin[]>([]);
+  const [projects, setProjects] = React.useState<Project[]>([]);
   const [search, setSearch] = React.useState("");
   const [projectSource, setProjectSource] = React.useState(ProjectsSource.Recents);
   const [loading, setLoading] = React.useState(false);
