@@ -17,14 +17,6 @@ import { ProgressRadial } from "@itwin/itwinui-react";
 import { Button, fileSizeString, SearchControl, i18n, presentError, Screen, ButtonProps } from "./Exports";
 import "./HubScreen.scss";
 
-/// Properties for the [[HubScreen]] React component.
-export interface HubScreenProps {
-  /// Callback called when an iModel is opened.
-  onOpen: (filename: string, iModelPromise: Promise<IModelConnection>) => Promise<void>;
-  /// Callback called when the back button is pressed to go to the previous screen.
-  onBack: () => void;
-}
-
 // Get all the projects that this user has access to, sorted by most recent use.
 async function getProjects(progress?: ProgressCallback, source = ProjectsSource.All, searchString = "") {
   const client = new ProjectsAccessClient();
@@ -50,14 +42,6 @@ async function getProjects(progress?: ProgressCallback, source = ProjectsSource.
       throw ex;
     }
   }
-}
-
-enum HubStep {
-  SignIn,
-  SelectProject,
-  SelectIModel,
-  DownloadIModel,
-  Error
 }
 
 HubScreen.ACTIVE_PROJECT_INFO = "activeProjectInfo";
@@ -246,6 +230,7 @@ function IModelDownloader(props: IModelDownloaderProps) {
   const [canceled, setCanceled] = React.useState(false);
   const isMountedRef = useIsMountedRef();
   const downloadingLabel = React.useMemo(() => i18n("HubScreen", "Downloading"), []);
+  const cancelLabel = React.useMemo(() => i18n("HubScreen", "Cancel"), []);
 
   const handleProgress = React.useCallback((progressInfo: ProgressInfo) => {
     if (isMountedRef.current) {
@@ -273,7 +258,7 @@ function IModelDownloader(props: IModelDownloaderProps) {
     <div>{downloadingLabel}</div>
     <div style={{ paddingBottom: 10 }}>{model.minimalIModel.displayName}</div>
     <ProgressRadial value={progress} indeterminate={indeterminate}>{indeterminate ? "" : progress.toString()}</ProgressRadial>
-    <Button title="Cancel" onClick={() => {
+    <Button title={cancelLabel} onClick={() => {
       setCanceled(true);
       onCanceled?.();
     }} />
@@ -431,6 +416,22 @@ function ProjectPicker(props: ProjectPickerProps) {
       }} />}
     </ProjectList>
   </>;
+}
+
+/// Properties for the [[HubScreen]] React component.
+export interface HubScreenProps {
+  /// Callback called when an iModel is opened.
+  onOpen: (filename: string, iModelPromise: Promise<IModelConnection>) => Promise<void>;
+  /// Callback called when the back button is pressed to go to the previous screen.
+  onBack: () => void;
+}
+
+enum HubStep {
+  SignIn,
+  SelectProject,
+  SelectIModel,
+  DownloadIModel,
+  Error
 }
 
 /// React component to allow downloading and opening models from the iModel Hub.

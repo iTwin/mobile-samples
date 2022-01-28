@@ -40,7 +40,8 @@
     "Recents": "RECENT",
     "Favorites": "FAVORITES",
     "Downloading": "Downloading",
-    "LoadMore": "Load More..."
+    "LoadMore": "Load More...",
+    "Cancel": "Cancel"
   },
   "ModelScreen": {
     "Location": "Location",
