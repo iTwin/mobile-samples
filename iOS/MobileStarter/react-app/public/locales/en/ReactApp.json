@@ -39,7 +39,8 @@
     "All": "ALL",
     "Recents": "RECENT",
     "Favorites": "FAVORITES",
-    "Downloading": "Downloading"
+    "Downloading": "Downloading",
+    "LoadMore": "Load More..."
   },
   "ModelScreen": {
     "Location": "Location",

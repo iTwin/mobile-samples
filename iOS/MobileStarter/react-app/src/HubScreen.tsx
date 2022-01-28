@@ -3,9 +3,10 @@
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
 import React from "react";
+import classnames from "classnames";
 import { AlertAction, ITMAuthorizationClient, MobileCore } from "@itwin/mobile-sdk-core";
 import { ActionSheetButton, BackButton, HorizontalPicker, IconImage, useIsMountedRef } from "@itwin/mobile-ui-react";
-import { Project, ProjectsAccessClient, ProjectsQueryArg, ProjectsSearchableProperty, ProjectsSource } from "@itwin/projects-client";
+import { Project, ProjectsAccessClient, ProjectsQueryArg, ProjectsQueryFunction, ProjectsSearchableProperty, ProjectsSource } from "@itwin/projects-client";
 import { ProgressCallback, ProgressInfo } from "@bentley/itwin-client";
 import { BriefcaseConnection, DownloadBriefcaseOptions, IModelApp, IModelConnection, NativeApp } from "@itwin/core-frontend";
 import { IModelsClient, MinimalIModel } from "@itwin/imodels-client-management";
@@ -86,9 +87,8 @@ interface IModelInfo {
 }
 
 function HubScreenButton(props: ButtonProps) {
-  return <div className="imodel-row">
-    <Button {...props} />
-  </div>;
+  const { className, ...others } = props;
+  return <Button className={classnames("imodel-row", className)} {...others} />;
 }
 
 interface HubScreenButtonListProps {
@@ -141,17 +141,17 @@ function IModelButton(props: IModelButtonProps) {
   </HubScreenButton>
 }
 
-interface IModelListProps {
+interface IModelListProps extends HubScreenButtonListProps {
   models: IModelInfo[];
-  loading?: boolean;
   onClick?: (model: IModelInfo) => void;
   onCacheDeleted?: (modelInfo: IModelInfo) => void;
 }
 
 function IModelList(props: IModelListProps) {
-  const { models, loading, onClick, onCacheDeleted } = props;
+  const { models, loading, onClick, onCacheDeleted, children } = props;
   return <HubScreenButtonList loading={loading}>
     {models.map((model, index) => <IModelButton key={index} modelInfo={model} onClick={() => onClick?.(model)} onCacheDeleted={onCacheDeleted} />)}
+    {children}
   </HubScreenButtonList>;
 }
 
@@ -187,13 +187,16 @@ async function downloadIModel(project: Project, iModel: MinimalIModel, handlePro
     downloader = await NativeApp.requestDownloadBriefcase(project.id, iModel.id, opts, undefined, (progress: ProgressInfo) => {
       if (!handleProgress(progress)) {
         console.log("Canceling download.");
-        if (!downloader) {
-          console.log("NO downloader to cancel!");
-        }
         downloader?.requestCancel();
         canceled = true;
       }
     });
+
+    if (canceled) {
+      // If we got here we canceled before the initial return from NativeApp.requestDownloadBriefcase
+      downloader.requestCancel();
+      return { minimalIModel: iModel };
+    }
 
     // Wait for the download to complete.
     console.log(`Downloading name:${iModel.displayName} id:${iModel.id}`);
@@ -337,16 +340,16 @@ function ProjectButton(props: ProjectButtonProps) {
   />;
 }
 
-interface ProjectListProps {
+interface ProjectListProps extends HubScreenButtonListProps {
   projects: Project[];
-  loading?: boolean;
   onClick?: (project: Project) => void;
 }
 
 function ProjectList(props: ProjectListProps) {
-  const { projects, loading, onClick } = props;
+  const { projects, loading, onClick, children } = props;
   return <HubScreenButtonList loading={loading}>
     {projects.map((project, index) => <ProjectButton key={index} project={project} onClick={() => onClick?.(project)} />)}
+    {children}
   </HubScreenButtonList>;
 }
 
@@ -362,6 +365,9 @@ function ProjectPicker(props: ProjectPickerProps) {
   const [search, setSearch] = React.useState("");
   const [projectSource, setProjectSource] = React.useState(ProjectsSource.Recents);
   const [loading, setLoading] = React.useState(false);
+  const [nextFunc, setNextFunc] = React.useState<ProjectsQueryFunction>();
+  const [loadingMore, setLoadingMore] = React.useState(false);
+  const loadMoreLabel = React.useMemo(() => i18n("HubScreen", "LoadMore"), []);
   const isMountedRef = useIsMountedRef();
   const searchLabel = React.useMemo(() => i18n("HubScreen", "Search"), []);
   const projectSources = React.useMemo(() => [ProjectsSource.All, ProjectsSource.Recents, ProjectsSource.Favorites], []);
@@ -380,11 +386,11 @@ function ProjectPicker(props: ProjectPickerProps) {
     const fetchProjects = async () => {
       try {
         setLoading(true);
-        const { projects: fetchedProjects/* , next */ } = await getProjects(undefined, projectSource, search);
+        const { projects: fetchedProjects, next } = await getProjects(undefined, projectSource, search);
         if (!isMountedRef.current)
           return;
         setProjects(fetchedProjects);
-        //TODO: add load more button
+        setNextFunc(() => projectSource === ProjectsSource.All ? next : undefined);
       } catch (error) {
         setProjects([]);
         presentError("FetchProjectsErrorFormat", error, "HubScreen");
@@ -403,7 +409,27 @@ function ProjectPicker(props: ProjectPickerProps) {
         onItemSelected={index => setProjectSource(projectSources[index])} />
       {projectSource === ProjectsSource.All && <SearchControl placeholder={searchLabel} onSearch={searchVal => setSearch(searchVal)} initialValue={search} />}
     </div>
-    <ProjectList projects={projects} onClick={onSelect} loading={loading} />
+    <ProjectList projects={projects} onClick={onSelect} loading={loading}>
+      {loadingMore && <LoadingSpinner />}
+      {nextFunc && !loadingMore && <HubScreenButton title={loadMoreLabel} style={{ ["--color" as any]: "var(--muic-active)" }} onClick={async () => {
+        if (loadingMore) return;
+        setLoadingMore(true);
+        const accessToken = await IModelApp.getAccessToken();
+        if (!isMountedRef.current) return;
+        try {
+          const moreProjects = await nextFunc(accessToken);
+          if (!isMountedRef.current) return;
+          if (moreProjects.projects.length) {
+            setProjects((oldProjects) => [...oldProjects, ...moreProjects.projects]);
+            setNextFunc(projectSource === ProjectsSource.All && moreProjects.links.next ? () => moreProjects.links.next : undefined);
+          }
+        } catch (error) {
+          presentError("FetchProjectsErrorFormat", error, "HubScreen");
+          onError?.(error);
+        }
+        setLoadingMore(false);
+      }} />}
+    </ProjectList>
   </>;
 }
 
