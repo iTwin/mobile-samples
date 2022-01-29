@@ -1,5 +1,9 @@
 # iTwin Mobile SDK iOS Samples
 
+## Consistency Across Modules
+
+These samples make use of the [`itwin-mobile-sdk-ios`](https://github.com/iTwin/mobile-sdk-ios) Swift Package (which itself uses the [`itwin-mobile-native-ios`](https://github.com/iTwin/mobile-native-ios/releases) Swift Package), as well as the `@itwin/mobile-sdk-core` and `@itwin/mobile-ui-react` npm modules. In order to work properly, all of these things have to be in sync with each other. When new functionality is added to any of the dependent modules, and that new functionality is used in the samples, the samples won't work until the next official release of the dependent modules. That means that there is a very good chance that the main branch __will not work__ at any given time. To avoid problems when using these samples, you should always check out a release tag.
+
 ## Client ID Setup
 
 Before building the samples, you must configure a Client ID for yourself. To do so, do the following:
@@ -53,13 +57,15 @@ Before building the samples, you must configure a Client ID for yourself. To do 
 1. cd into the `iOS/MobileStarter/react-app` directory of this repository.
 1. If you are not on a Mac with Apple Silicon and did so above, run `npm install`.
 1. Run `npm run build`.
-1. Run `npm run start`. __Note:__ This starts a React Debug Server on your Mac that the app will communicate with. It must be running when you run the app. This requires that the device be able to connect to your Mac. If you want the app to run purely on the device (like it would if it were released), uncomment the `ITMAPPLICATION_NO_DEBUG_SERVER = YES` line in iOSSamples.xcconfig. If you do this, there is no need for the React Debug Server to be running when you run the app.
+1. Run `npm run start`. __Note:__ This starts a React Debug Server on your Mac that the app will communicate with. It must be running when you run the app. This requires that the device be able to connect to your Mac. If you want the app to run purely on the device (like it would if it were released), uncomment the `ITMAPPLICATION_NO_DEBUG_SERVER = YES` line in iOSSamples.xcconfig. If you do this, there is no need for the React Debug Server to be running when you run the app. (If you open the react-app directory in Visual Studio Code, it is configured such that Cmd+Shift+B will perform the `npm run start` in an integrated terminal.)
 
 ---
 
 ## Running the Samples
 
 Once you have performed the above setup, you can build and run the samples.
+
+__Note:__ The samples cannot currently be built for or run on the iOS Simulator on an Apple Silicon Mac. This will be fixed in the future, but for the moment if you are using a Mac with an Apple Silicon processor, you can only build for and run on a connected iOS device.
 
 1. Open the appropriate Xcode project.
 1. Xcode will take some time to download the Swift Packages that each sample depends on the first time you open that sample Xcode project. Also, it appears that Xcode sometimes randomly fails when installing Swift Packages. If this happens, select File->Packages->Reset Package Caches.

@@ -4,7 +4,7 @@
 *--------------------------------------------------------------------------------------------*/
 import React from "react";
 import { IModelApp } from "@itwin/core-frontend";
-import { ProgressInfo } from "@bentley/itwin-client";
+import { ProgressInfo } from "@itwin/core-frontend/lib/cjs/request/Request";
 import { MobileCore, presentAlert } from "@itwin/mobile-sdk-core";
 import { useTheme } from "@itwin/itwinui-react";
 import { useActiveColorSchemeIsDark } from "@itwin/mobile-ui-react";

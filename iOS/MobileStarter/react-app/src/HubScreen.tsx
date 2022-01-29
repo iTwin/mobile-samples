@@ -7,7 +7,7 @@ import classnames from "classnames";
 import { AlertAction, ITMAuthorizationClient, MobileCore } from "@itwin/mobile-sdk-core";
 import { ActionSheetButton, BackButton, HorizontalPicker, IconImage, useIsMountedRef } from "@itwin/mobile-ui-react";
 import { Project, ProjectsAccessClient, ProjectsQueryArg, ProjectsQueryFunction, ProjectsSearchableProperty, ProjectsSource } from "@itwin/projects-client";
-import { ProgressCallback, ProgressInfo } from "@bentley/itwin-client";
+import { ProgressCallback, ProgressInfo } from "@itwin/core-frontend/lib/cjs/request/Request";
 import { BriefcaseConnection, DownloadBriefcaseOptions, IModelApp, IModelConnection, NativeApp } from "@itwin/core-frontend";
 import { IModelsClient, MinimalIModel } from "@itwin/imodels-client-management";
 import { AccessTokenAdapter } from "@itwin/imodels-access-frontend";
