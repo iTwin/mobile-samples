@@ -1,0 +1,115 @@
+/*---------------------------------------------------------------------------------------------
+* Copyright (c) Bentley Systems, Incorporated. All rights reserved.
+* See LICENSE.md in the project root for license terms and full copyright notice.
+*--------------------------------------------------------------------------------------------*/
+import React from "react";
+import { useIsMountedRef } from "@itwin/mobile-ui-react";
+import { Project } from "@itwin/projects-client";
+import { ProgressInfo } from "@itwin/core-frontend/lib/cjs/request/Request";
+import { DownloadBriefcaseOptions, NativeApp } from "@itwin/core-frontend";
+import { MinimalIModel } from "@itwin/imodels-client-management";
+import { BentleyError, BriefcaseDownloader, BriefcaseStatus, IModelStatus, SyncMode } from "@itwin/core-common";
+import { ProgressRadial } from "@itwin/itwinui-react";
+import { Button, i18n, presentError, IModelInfo } from "./Exports";
+
+async function downloadIModel(project: Project, iModel: MinimalIModel, handleProgress: (progress: ProgressInfo) => boolean): Promise<IModelInfo> {
+  const opts: DownloadBriefcaseOptions = { syncMode: SyncMode.PullOnly };
+  let downloader: BriefcaseDownloader | undefined;
+  let canceled = false;
+  try {
+    downloader = await NativeApp.requestDownloadBriefcase(project.id, iModel.id, opts, undefined, (progress: ProgressInfo) => {
+      if (!handleProgress(progress)) {
+        console.log("Canceling download.");
+        downloader?.requestCancel();
+        canceled = true;
+      }
+    });
+
+    if (canceled) {
+      // If we got here we canceled before the initial return from NativeApp.requestDownloadBriefcase
+      downloader.requestCancel();
+      return { minimalIModel: iModel };
+    }
+
+    // Wait for the download to complete.
+    console.log(`Downloading name:${iModel.displayName} id:${iModel.id}`);
+    await downloader.downloadPromise;
+    const localBriefcases = await NativeApp.getCachedBriefcases(iModel.id);
+    if (localBriefcases.length === 0) {
+      // This should never happen, since we just downloaded it, but check, just in case.
+      console.error("Error downloading iModel.");
+    }
+    return { minimalIModel: iModel, briefcase: localBriefcases[0] };
+  } catch (error) {
+    if (error instanceof BentleyError) {
+      if (error.errorNumber === IModelStatus.FileAlreadyExists) {
+        // When a download is canceled, the partial briefcase file does not get deleted, which causes
+        // any subsequent download attempt to fail with this error number. If that happens, delete the
+        // briefcase and try again.
+        try {
+          // When syncMode is SyncMode.PullOnly (which is what we use), briefcaseId is ALWAYS 0, so try
+          // to delete the existing file using that briefcaseId.
+          const filename = await NativeApp.getBriefcaseFileName({ iModelId: iModel.id, briefcaseId: 0 });
+          await NativeApp.deleteBriefcase(filename);
+          return downloadIModel(project, iModel, handleProgress);
+        } catch (_error) { }
+      } else if (error.errorNumber === BriefcaseStatus.DownloadCancelled && canceled) {
+        // When we call requestCancel, it causes the downloader to throw this error; ignore.
+        return { minimalIModel: iModel };
+      }
+    }
+    // There was an error downloading the iModel. Show the error
+    presentError("DownloadErrorFormat", error, "HubScreen");
+  }
+  return { minimalIModel: iModel };
+}
+
+export interface IModelDownloaderProps {
+  project: Project;
+  model: IModelInfo;
+  onDownloaded: (model: IModelInfo) => void;
+  onCanceled?: () => void;
+}
+
+export function IModelDownloader(props: IModelDownloaderProps) {
+  const { project, model, onDownloaded, onCanceled } = props;
+  const [progress, setProgress] = React.useState(0);
+  const [indeterminate, setIndeterminate] = React.useState(true);
+  const [downloading, setDownloading] = React.useState(false);
+  const [canceled, setCanceled] = React.useState(false);
+  const isMountedRef = useIsMountedRef();
+  const downloadingLabel = React.useMemo(() => i18n("HubScreen", "Downloading"), []);
+  const cancelLabel = React.useMemo(() => i18n("HubScreen", "Cancel"), []);
+
+  const handleProgress = React.useCallback((progressInfo: ProgressInfo) => {
+    if (isMountedRef.current) {
+      const percent: number = progressInfo.percent ?? (progressInfo.total ? Math.round(100.0 * progressInfo.loaded / progressInfo.total) : 0);
+      setProgress(percent);
+      setIndeterminate(false);
+    }
+    return isMountedRef.current && !canceled;
+  }, [canceled, isMountedRef]);
+
+  React.useEffect(() => {
+    if (downloading)
+      return;
+
+    const fetchIModel = async () => {
+      const newModel = await downloadIModel(project, model.minimalIModel, handleProgress);
+      if (!isMountedRef.current) return;
+      onDownloaded(newModel);
+    };
+    setDownloading(true);
+    fetchIModel();
+  }, [downloading, handleProgress, isMountedRef, model.minimalIModel, onDownloaded, project]);
+
+  return <div className="centered">
+    <div>{downloadingLabel}</div>
+    <div style={{ paddingBottom: 10 }}>{model.minimalIModel.displayName}</div>
+    <ProgressRadial value={progress} indeterminate={indeterminate}>{indeterminate ? "" : progress.toString()}</ProgressRadial>
+    <Button title={cancelLabel} onClick={() => {
+      setCanceled(true);
+      onCanceled?.();
+    }} />
+  </div>;
+}
