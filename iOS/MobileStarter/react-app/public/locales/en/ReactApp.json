@@ -41,7 +41,8 @@
     "Favorites": "Favorites",
     "Downloading": "Downloading",
     "LoadMore": "Load More...",
-    "Cancel": "Cancel"
+    "Cancel": "Cancel",
+    "IModelButtonFormat": "{{name}} ({{size}})"
   },
   "ModelScreen": {
     "Location": "Location",

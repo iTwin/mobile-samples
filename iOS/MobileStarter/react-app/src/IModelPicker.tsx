@@ -11,6 +11,7 @@ import { IModelsClient, MinimalIModel } from "@itwin/imodels-client-management";
 import { AccessTokenAdapter } from "@itwin/imodels-access-frontend";
 import { LocalBriefcaseProps } from "@itwin/core-common";
 import { fileSizeString, presentError, ButtonProps, HubScreenButton, HubScreenButtonListProps, HubScreenButtonList } from "./Exports";
+import { i18n } from "./Screen";
 
 export interface IModelInfo {
   minimalIModel: MinimalIModel;
@@ -30,7 +31,7 @@ function IModelButton(props: IModelButtonProps) {
   const getTitle = React.useCallback(() => {
     if (!briefcase)
       return minimalIModel.displayName;
-    return `${minimalIModel.displayName} (${fileSizeString(briefcase.fileSize)})`;
+    return i18n("HubScreen", "IModelButtonFormat", { name: minimalIModel.displayName, size: fileSizeString(briefcase.fileSize) });
   }, [briefcase, minimalIModel.displayName]);
 
   const deleteBriefcase = React.useCallback(async (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
