@@ -23,7 +23,7 @@ interface IModelButtonProps extends Omit<ButtonProps, "title"> {
 };
 
 function IModelButton(props: IModelButtonProps) {
-  const { modelInfo, onClick, onCacheDeleted } = props;
+  const { modelInfo, onCacheDeleted, ...others } = props;
   const { minimalIModel, briefcase } = modelInfo;
   const isMountedRef = useIsMountedRef();
 
@@ -46,7 +46,7 @@ function IModelButton(props: IModelButtonProps) {
     }
   }, [briefcase, isMountedRef, modelInfo, onCacheDeleted]);
 
-  return <HubScreenButton title={getTitle()} onClick={onClick}>
+  return <HubScreenButton title={getTitle()} {...others}>
     {briefcase && <div className="delete-button" onClick={deleteBriefcase}>
       <IconImage iconSpec="icon-delete" />
     </div>}
@@ -55,14 +55,14 @@ function IModelButton(props: IModelButtonProps) {
 
 interface IModelListProps extends HubScreenButtonListProps {
   models: IModelInfo[];
-  onClick?: (model: IModelInfo) => void;
+  onSelect?: (model: IModelInfo) => void;
   onCacheDeleted?: (modelInfo: IModelInfo) => void;
 }
 
 function IModelList(props: IModelListProps) {
-  const { models, loading, onClick, onCacheDeleted, children } = props;
+  const { models, loading, onSelect, onCacheDeleted, children } = props;
   return <HubScreenButtonList loading={loading}>
-    {models.map((model, index) => <IModelButton key={index} modelInfo={model} onClick={() => onClick?.(model)} onCacheDeleted={onCacheDeleted} />)}
+    {models.map((model, index) => <IModelButton key={index} modelInfo={model} onClick={() => onSelect?.(model)} onCacheDeleted={onCacheDeleted} />)}
     {children}
   </HubScreenButtonList>;
 }
@@ -126,7 +126,7 @@ export function IModelPicker(props: IModelPickerProps) {
     fetchModels();
   }, [isMountedRef, onError, onLoaded, project]);
 
-  return <IModelList models={iModels} loading={loading} onClick={onSelect} onCacheDeleted={(model) => {
+  return <IModelList models={iModels} loading={loading} onSelect={onSelect} onCacheDeleted={(model) => {
     model.briefcase = undefined;
     setIModels([...iModels]);
   }} />;
