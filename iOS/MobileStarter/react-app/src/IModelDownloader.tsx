@@ -8,18 +8,17 @@ import { Project } from "@itwin/projects-client";
 import { ProgressInfo } from "@itwin/core-frontend/lib/cjs/request/Request";
 import { DownloadBriefcaseOptions, NativeApp } from "@itwin/core-frontend";
 import { MinimalIModel } from "@itwin/imodels-client-management";
-import { BentleyError, BriefcaseDownloader, BriefcaseStatus, IModelStatus, SyncMode } from "@itwin/core-common";
+import { BentleyError, BriefcaseDownloader, BriefcaseStatus, IModelStatus, LocalBriefcaseProps, SyncMode } from "@itwin/core-common";
 import { ProgressRadial } from "@itwin/itwinui-react";
 import { Button, i18n, presentError, IModelInfo } from "./Exports";
 
-async function downloadIModel(project: Project, iModel: MinimalIModel, handleProgress: (progress: ProgressInfo) => boolean): Promise<IModelInfo> {
+async function downloadIModel(project: Project, iModel: MinimalIModel, handleProgress: (progress: ProgressInfo) => boolean): Promise<LocalBriefcaseProps | undefined> {
   const opts: DownloadBriefcaseOptions = { syncMode: SyncMode.PullOnly };
   let downloader: BriefcaseDownloader | undefined;
   let canceled = false;
   try {
     downloader = await NativeApp.requestDownloadBriefcase(project.id, iModel.id, opts, undefined, (progress: ProgressInfo) => {
       if (!handleProgress(progress)) {
-        console.log("Canceling download.");
         downloader?.requestCancel();
         canceled = true;
       }
@@ -28,18 +27,17 @@ async function downloadIModel(project: Project, iModel: MinimalIModel, handlePro
     if (canceled) {
       // If we got here we canceled before the initial return from NativeApp.requestDownloadBriefcase
       downloader.requestCancel();
-      return { minimalIModel: iModel };
+      return undefined;
     }
 
     // Wait for the download to complete.
-    console.log(`Downloading name:${iModel.displayName} id:${iModel.id}`);
     await downloader.downloadPromise;
     const localBriefcases = await NativeApp.getCachedBriefcases(iModel.id);
     if (localBriefcases.length === 0) {
       // This should never happen, since we just downloaded it, but check, just in case.
       console.error("Error downloading iModel.");
     }
-    return { minimalIModel: iModel, briefcase: localBriefcases[0] };
+    return localBriefcases[0];
   } catch (error) {
     if (error instanceof BentleyError) {
       if (error.errorNumber === IModelStatus.FileAlreadyExists) {
@@ -55,13 +53,13 @@ async function downloadIModel(project: Project, iModel: MinimalIModel, handlePro
         } catch (_error) { }
       } else if (error.errorNumber === BriefcaseStatus.DownloadCancelled && canceled) {
         // When we call requestCancel, it causes the downloader to throw this error; ignore.
-        return { minimalIModel: iModel };
+        return undefined;
       }
     }
     // There was an error downloading the iModel. Show the error
     presentError("DownloadErrorFormat", error, "HubScreen");
   }
-  return { minimalIModel: iModel };
+  return undefined;
 }
 
 export interface IModelDownloaderProps {
@@ -85,7 +83,7 @@ export function IModelDownloader(props: IModelDownloaderProps) {
     if (isMountedRef.current) {
       const percent: number = progressInfo.percent ?? (progressInfo.total ? Math.round(100.0 * progressInfo.loaded / progressInfo.total) : 0);
       setProgress(percent);
-      setIndeterminate(false);
+      setIndeterminate(progressInfo.percent === undefined && progressInfo.total === undefined);
     }
     return isMountedRef.current && !canceled;
   }, [canceled, isMountedRef]);
@@ -95,9 +93,10 @@ export function IModelDownloader(props: IModelDownloaderProps) {
       return;
 
     const fetchIModel = async () => {
-      const newModel = await downloadIModel(project, model.minimalIModel, handleProgress);
+      const minimalIModel = model.minimalIModel;
+      const briefcase = await downloadIModel(project, minimalIModel, handleProgress);
       if (!isMountedRef.current) return;
-      onDownloaded(newModel);
+      onDownloaded({ minimalIModel, briefcase });
     };
     setDownloading(true);
     fetchIModel();
