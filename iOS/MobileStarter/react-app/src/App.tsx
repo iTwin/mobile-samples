@@ -77,7 +77,6 @@ function App() {
             rpcInterfaces: getSupportedRpcs(),
             notifications: new AppToolAssistanceNotificationManager(),
             authorizationClient: new ITMAuthorizationClient(),
-            tileAdmin: { gpuMemoryLimits: "aggressive" }
           },
         }
         const lowResolution = MobileCore.getUrlSearchParam("lowResolution") === "YES";

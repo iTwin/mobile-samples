@@ -32,21 +32,24 @@ function IModelButton(props: IModelButtonProps) {
     return title + " (" + fileSizeString(briefcase.fileSize) + ")";
   }
 
+  const deleteBriefcase = React.useCallback(async (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
+    e.stopPropagation();
+    if (!briefcase) return;
+    try {
+      await MobileCore.deleteCachedBriefcase(briefcase);
+      if (!isMountedRef.current) return;
+      onCacheDeleted?.(modelInfo);
+    } catch (error) {
+      // There was a problem deleting the cached briefcase. Show the error.
+      presentError("DeleteErrorFormat", error, "HubScreen");
+    }
+  }, [briefcase, isMountedRef, modelInfo, onCacheDeleted]);
+
   return <HubScreenButton
     title={getTitle(minimalIModel.displayName, briefcase)}
     onClick={onClick}
   >
-    {briefcase && <div className="delete-button" onClick={async (e) => {
-      e.stopPropagation();
-      try {
-        await MobileCore.deleteCachedBriefcase(briefcase);
-        if (!isMountedRef.current) return;
-        onCacheDeleted?.(modelInfo);
-      } catch (error) {
-        // There was a problem deleting the cached briefcase. Show the error.
-        presentError("DeleteErrorFormat", error, "HubScreen");
-      }
-    }}>
+    {briefcase && <div className="delete-button" onClick={deleteBriefcase}>
       <IconImage iconSpec="icon-delete" />
     </div>}
   </HubScreenButton>

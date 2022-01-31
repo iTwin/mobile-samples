@@ -36,9 +36,9 @@
     "DownloadErrorFormat": "Error downloading iModel: {{- error}}",
     "DeleteErrorFormat": "Error deleting local download of iModel: {{- error}}",
     "DeleteAllErrorFormat": "Error deleting local downloads of all iModels in project: {{- error}}",
-    "All": "ALL",
-    "Recents": "RECENT",
-    "Favorites": "FAVORITES",
+    "All": "All",
+    "Recents": "Recent",
+    "Favorites": "Favorites",
     "Downloading": "Downloading",
     "LoadMore": "Load More...",
     "Cancel": "Cancel"
