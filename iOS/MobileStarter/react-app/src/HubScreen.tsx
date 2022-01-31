@@ -121,14 +121,16 @@ export function HubScreen(props: HubScreenProps) {
 
   switch (hubStep) {
     case HubStep.SelectProject:
-      stepContent = <ProjectPicker signedIn={initialized}
-        onSelect={(newProject) => {
-          saveActiveProject(newProject);
-          setProject(newProject);
-          setHubStep(HubStep.SelectIModel);
-        }}
-        onError={() => setHubStep(HubStep.Error)}
-      />;
+      if (initialized) {
+        stepContent = <ProjectPicker
+          onSelect={(newProject) => {
+            saveActiveProject(newProject);
+            setProject(newProject);
+            setHubStep(HubStep.SelectIModel);
+          }}
+          onError={() => setHubStep(HubStep.Error)}
+        />;
+      }
       break;
 
     case HubStep.SelectIModel:
@@ -150,17 +152,16 @@ export function HubScreen(props: HubScreenProps) {
             name: "deleteAll",
             title: deleteAllDownloadsLabel,
             onSelected: async () => {
-              if (project) {
-                try {
-                  await MobileCore.deleteCachedBriefcases(project.id);
-                  if (!isMountedRef.current) return;
-                  setHaveCachedBriefcase(false);
-                } catch (error) {
-                  // There was a problem deleting the cached briefcases. Show the error, then refresh
-                  // anyway so if any were successfully deleted, it will reflect that.
-                  presentError("DeleteAllErrorFormat", error, "HubScreen");
-                  setProject({ ...project });
-                }
+              if (!project) return;
+              try {
+                await MobileCore.deleteCachedBriefcases(project.id);
+                if (!isMountedRef.current) return;
+                setHaveCachedBriefcase(false);
+              } catch (error) {
+                // There was a problem deleting the cached briefcases. Show the error, then refresh
+                // anyway so if any were successfully deleted, it will reflect that.
+                presentError("DeleteAllErrorFormat", error, "HubScreen");
+                setProject({ ...project });
               }
             }
           });
@@ -190,7 +191,7 @@ export function HubScreen(props: HubScreenProps) {
       break;
 
     case HubStep.Error:
-      stepContent = <div className="-list">
+      stepContent = <div className="centered-list">
         <Button title={signOutLabel} onClick={async () => {
           if (IModelApp.authorizationClient instanceof ITMAuthorizationClient) {
             try {
