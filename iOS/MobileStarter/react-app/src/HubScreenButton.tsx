@@ -9,7 +9,7 @@ import { Button, ButtonProps } from "./Exports";
 
 export function HubScreenButton(props: ButtonProps) {
   const { className, ...others } = props;
-  return <Button className={classnames("imodel-row", className)} {...others} />;
+  return <Button className={classnames("hubscreen-button", className)} {...others} />;
 }
 
 export interface HubScreenButtonListProps {
@@ -20,9 +20,9 @@ export interface HubScreenButtonListProps {
 export function HubScreenButtonList(props: HubScreenButtonListProps) {
   const { children, loading } = props;
   if (loading)
-    return <div className="centered"><LoadingSpinner /></div>;
+    return <div className="centered-list"><LoadingSpinner /></div>;
 
-  return <div className="list">
+  return <div className="hubscreen-list">
     <div className="list-items">{children}</div>
   </div>;
 }

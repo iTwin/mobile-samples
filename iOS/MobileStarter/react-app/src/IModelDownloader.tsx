@@ -102,7 +102,7 @@ export function IModelDownloader(props: IModelDownloaderProps) {
     fetchIModel();
   }, [downloading, handleProgress, isMountedRef, model.minimalIModel, onDownloaded, project]);
 
-  return <div className="centered">
+  return <div className="centered-list">
     <div>{downloadingLabel}</div>
     <div style={{ paddingBottom: 10 }}>{model.minimalIModel.displayName}</div>
     <ProgressRadial value={progress} indeterminate={indeterminate}>{indeterminate ? "" : progress.toString()}</ProgressRadial>

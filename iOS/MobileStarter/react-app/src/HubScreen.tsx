@@ -190,7 +190,7 @@ export function HubScreen(props: HubScreenProps) {
       break;
 
     case HubStep.Error:
-      stepContent = <div className="centered">
+      stepContent = <div className="-list">
         <Button title={signOutLabel} onClick={async () => {
           if (IModelApp.authorizationClient instanceof ITMAuthorizationClient) {
             try {
