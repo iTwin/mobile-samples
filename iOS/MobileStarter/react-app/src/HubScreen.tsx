@@ -132,48 +132,46 @@ export function HubScreen(props: HubScreenProps) {
       break;
 
     case HubStep.SelectIModel:
-      const actions: AlertAction[] = [];
-      if (haveCachedBriefcase) {
-        actions.push({
-          name: "deleteAll",
-          title: deleteAllDownloadsLabel,
-          onSelected: async () => {
-            if (project) {
-              try {
-                await MobileCore.deleteCachedBriefcases(project.id);
-                if (!isMountedRef.current) return;
-                setHaveCachedBriefcase(false);
-              } catch (error) {
-                // There was a problem deleting the cached briefcases. Show the error, then refresh
-                // anyway so if any were successfully deleted, it will reflect that.
-                presentError("DeleteAllErrorFormat", error, "HubScreen");
-                setProject({ ...project });
+      if (project) {
+        stepContent = <IModelPicker project={project}
+          onLoaded={(models) => setHaveCachedBriefcase(models.some(model => model.briefcase !== undefined))}
+          onSelect={(model) => {
+            setIModel(model);
+            if (model.briefcase)
+              onOpen(model.briefcase.fileName, BriefcaseConnection.openFile(model.briefcase));
+            else
+              setHubStep(HubStep.DownloadIModel);
+          }}
+          onError={() => setHubStep(HubStep.Error)}
+        />;
+        const actions: AlertAction[] = [];
+        if (haveCachedBriefcase) {
+          actions.push({
+            name: "deleteAll",
+            title: deleteAllDownloadsLabel,
+            onSelected: async () => {
+              if (project) {
+                try {
+                  await MobileCore.deleteCachedBriefcases(project.id);
+                  if (!isMountedRef.current) return;
+                  setHaveCachedBriefcase(false);
+                } catch (error) {
+                  // There was a problem deleting the cached briefcases. Show the error, then refresh
+                  // anyway so if any were successfully deleted, it will reflect that.
+                  presentError("DeleteAllErrorFormat", error, "HubScreen");
+                  setProject({ ...project });
+                }
               }
             }
-          }
-        });
-      }
-      if (project) {
+          });
+        }
         actions.push({
           name: "changeProject",
           title: changeProjectLabel,
           onSelected: () => setHubStep(HubStep.SelectProject),
         })
-      }
-      if (actions.length > 0) {
         moreButton = <ActionSheetButton actions={actions} showStatusBar />;
       }
-      stepContent = <IModelPicker signedIn={initialized} project={project}
-        onLoaded={(models) => setHaveCachedBriefcase(models.some(model => model.briefcase !== undefined))}
-        onSelect={(model) => {
-          setIModel(model);
-          if (model.briefcase)
-            onOpen(model.briefcase.fileName, BriefcaseConnection.openFile(model.briefcase));
-          else
-            setHubStep(HubStep.DownloadIModel);
-        }}
-        onError={() => setHubStep(HubStep.Error)}
-      />;
       break;
 
     case HubStep.DownloadIModel:

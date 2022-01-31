@@ -27,10 +27,11 @@ function IModelButton(props: IModelButtonProps) {
   const { minimalIModel, briefcase } = modelInfo;
   const isMountedRef = useIsMountedRef();
 
-  const getTitle = (title: string, briefcase: LocalBriefcaseProps | undefined) => {
-    if (!briefcase) return title;
-    return title + " (" + fileSizeString(briefcase.fileSize) + ")";
-  }
+  const getTitle = React.useCallback(() => {
+    if (!briefcase)
+      return minimalIModel.displayName;
+    return `${minimalIModel.displayName} (${fileSizeString(briefcase.fileSize)})`;
+  }, [briefcase, minimalIModel.displayName]);
 
   const deleteBriefcase = React.useCallback(async (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
     e.stopPropagation();
@@ -45,10 +46,7 @@ function IModelButton(props: IModelButtonProps) {
     }
   }, [briefcase, isMountedRef, modelInfo, onCacheDeleted]);
 
-  return <HubScreenButton
-    title={getTitle(minimalIModel.displayName, briefcase)}
-    onClick={onClick}
-  >
+  return <HubScreenButton title={getTitle()} onClick={onClick}>
     {briefcase && <div className="delete-button" onClick={deleteBriefcase}>
       <IconImage iconSpec="icon-delete" />
     </div>}
@@ -94,15 +92,14 @@ async function getIModels(project: Project) {
 }
 
 export interface IModelPickerProps {
-  project: Project | undefined;
-  signedIn: boolean;
+  project: Project;
   onSelect?: (model: IModelInfo) => void;
   onLoaded?: (models: IModelInfo[]) => void;
   onError?: (error: any) => void;
 }
 
 export function IModelPicker(props: IModelPickerProps) {
-  const { project, signedIn, onSelect, onLoaded, onError } = props;
+  const { project, onSelect, onLoaded, onError } = props;
   const [iModels, setIModels] = React.useState<IModelInfo[]>([]);
   const [loading, setLoading] = React.useState(false);
   const isMountedRef = useIsMountedRef();
@@ -110,12 +107,6 @@ export function IModelPicker(props: IModelPickerProps) {
   React.useEffect(() => {
     if (!isMountedRef.current)
       return;
-
-    if (!project || !signedIn) {
-      setIModels([]);
-      setLoading(false);
-      return;
-    }
 
     const fetchModels = async () => {
       try {
@@ -133,7 +124,7 @@ export function IModelPicker(props: IModelPickerProps) {
       setLoading(false);
     };
     fetchModels();
-  }, [isMountedRef, onError, onLoaded, project, signedIn]);
+  }, [isMountedRef, onError, onLoaded, project]);
 
   return <IModelList models={iModels} loading={loading} onClick={onSelect} onCacheDeleted={(model) => {
     model.briefcase = undefined;
