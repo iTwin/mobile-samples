@@ -29,10 +29,8 @@ interface ProjectButtonProps extends Omit<ButtonProps, "title"> {
 
 function ProjectButton(props: ProjectButtonProps) {
   const { project, onClick } = props;
-  return <HubScreenButton
-    title={project.name ?? ""}
-    onClick={onClick}
-  />;
+  const noNameLabel = React.useMemo(() => i18n("HubScreen", "NoName"), []);
+  return <HubScreenButton title={project.name ?? noNameLabel} onClick={onClick} />;
 }
 
 interface ProjectListProps extends HubScreenButtonListProps {

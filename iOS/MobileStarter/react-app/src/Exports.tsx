@@ -19,6 +19,7 @@ export * from "./HubScreenButton";
 export * from "./IModelDownloader";
 export * from "./IModelPicker";
 export * from "./ProjectPicker";
+export * from "./SignIn";
 export * from "./HubScreen";
 export * from "./ElementPropertiesPanel";
 export * from "./ToolsBottomPanel";

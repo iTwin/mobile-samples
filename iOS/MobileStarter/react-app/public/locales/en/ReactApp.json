@@ -42,7 +42,8 @@
     "Downloading": "Downloading",
     "LoadMore": "Load More...",
     "Cancel": "Cancel",
-    "IModelButtonFormat": "{{name}} ({{size}})"
+    "IModelButtonFormat": "{{name}} ({{size}})",
+    "NoName": "<No Name>"
   },
   "ModelScreen": {
     "Location": "Location",
