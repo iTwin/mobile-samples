@@ -61,8 +61,8 @@ interface IModelListProps extends HubScreenButtonListProps {
 }
 
 function IModelList(props: IModelListProps) {
-  const { models, loading, onSelect, onCacheDeleted, children } = props;
-  return <HubScreenButtonList loading={loading}>
+  const { models, onSelect, onCacheDeleted, children, ...others } = props;
+  return <HubScreenButtonList {...others}>
     {models.map((model, index) => <IModelButton key={index} modelInfo={model} onClick={() => onSelect?.(model)} onCacheDeleted={onCacheDeleted} />)}
     {children}
   </HubScreenButtonList>;
