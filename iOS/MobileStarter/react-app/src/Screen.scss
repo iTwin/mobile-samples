@@ -19,6 +19,10 @@
   color: var(--color);
   width: 100vw;
   height: 100vh;
+  .mui-navigation-button {
+    color: var(--color);
+    filter: none;
+  }
 }
 
 // Disable selection in all elements except text input fields by default.

@@ -6,7 +6,7 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  max-height: 100vh;
+  height: calc(100vh - var(--itm-keyboard-height));
   font-size: calc(10px + 2vmin);
 
   .title {
@@ -29,36 +29,33 @@
     }
   }
 
-  .filter-section {
+  .project-source {
     width: 100vw;
     background-color: var(--background-color-2);
-    div {
-      position: relative;
-      padding: 0px 6px 1px 6px;
-      box-sizing: border-box;
-      width: 100vw;
-    }
-    input {
-      font-size: 14px;
-      position: relative;
-      top: -6px;
-      box-sizing: border-box;
-      margin: 0px;
-      width: 100%;
-      height: 38px;
-      padding-left: 13px;
-      padding-right: 13px;
-      background-color: var(--muic-background);
-      color: var(--muic-foreground-2);
-      border: 1px solid var(--muic-gray-9);
-      border-radius: 60px;
-      &:focus {
-        outline: none;
-      }
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    justify-content: center;
+
+    .mui-horizontal-picker {
+      height: 40px;
+      font-size: 18px;
+      margin-left: 8px;
+      margin-right: 8px;
+      margin-bottom: 8px;
     }
   }
 
-  .list {
+  .centered-list {
+    display: flex;
+    width: 100%;
+    height: 100%;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .hubscreen-list {
     width: 100%;
     height: 100%;
     overflow-y: auto;
@@ -77,6 +74,6 @@
   }
 }
 
-.imodel-row {
+.hubscreen-button {
   display: flex;
 }
