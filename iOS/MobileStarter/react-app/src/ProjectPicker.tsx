@@ -39,8 +39,8 @@ interface ProjectListProps extends HubScreenButtonListProps {
 }
 
 function ProjectList(props: ProjectListProps) {
-  const { projects, loading, onSelect, children } = props;
-  return <HubScreenButtonList loading={loading}>
+  const { projects, onSelect, children, ...others } = props;
+  return <HubScreenButtonList {...others}>
     {projects.map((project, index) => <ProjectButton key={index} project={project} onClick={() => onSelect?.(project)} />)}
     {children}
   </HubScreenButtonList>;
@@ -106,6 +106,13 @@ export function ProjectPicker(props: ProjectPickerProps) {
     setLoadingMore(false);
   }, [isMountedRef, loadingMore, nextFunc, onError, projectSource]);
 
+  const onScroll = React.useCallback((element: HTMLElement) => {
+    const atBottom = element.scrollTop > 0 && element.scrollHeight - element.scrollTop <= element.clientHeight
+    if (atBottom) {
+      loadMore();
+    }
+  }, [loadMore]);
+
   return <>
     <div className="project-source">
       <HorizontalPicker
@@ -114,7 +121,7 @@ export function ProjectPicker(props: ProjectPickerProps) {
         onItemSelected={index => setProjectSource(projectSources[index])} />
       {projectSource === ProjectsSource.All && <SearchControl placeholder={searchLabel} onSearch={searchVal => setSearch(searchVal)} initialValue={search} />}
     </div>
-    <ProjectList projects={projects} onSelect={onSelect} loading={loading}>
+    <ProjectList projects={projects} onSelect={onSelect} onScroll={onScroll} loading={loading}>
       {loadingMore && <LoadingSpinner />}
       {nextFunc && !loadingMore && <HubScreenButton title={loadMoreLabel} style={{ ["--color" as any]: "var(--muic-active)" }} onClick={loadMore} />}
     </ProjectList>
