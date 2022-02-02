@@ -17,20 +17,15 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         // This delegate does not imply the connecting scene or session are new (see `application:configurationForConnectingSceneSession` instead).
         guard let _ = (scene as? UIWindowScene) else { return }
         
-            // Use our ModelApplication (a subclass of ITMApplication) as the application object.
+        // Use our ModelApplication (a subclass of ITMApplication) as the application object.
         ITMViewController.application = ModelApplication()
 
-        if #available(iOS 13, *) {
-            // Delay the automatic loading of the frontend and backend to account for problem when
-            // that happens before the application's first willEnterForeground.
-            // Note that the sequence of events is different prior to iOS 13, so only do this in
-            // iOS 13 and later.
-            ITMViewController.delayedAutoLoad = true
-        }
+        // Delay the automatic loading of the frontend and backend to account for problem when
+        // that happens before the application's first willEnterForeground.
+        ITMViewController.delayedAutoLoad = true
     }
 
     func scene(_ scene: UIScene, openURLContexts URLContexts: Set<UIOpenURLContext>) {
-        // Note: This only gets called in iOS 13 and later.
         if let url = URLContexts.first?.url {
             DocumentHelper.openInboxUrl(url)
         }
