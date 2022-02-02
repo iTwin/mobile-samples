@@ -1,11 +1,16 @@
 #! /bin/zsh
 
-function printUsage
-{
+function printUsage {
     echo "usage: GenITMAppConfig.sh [--help] | [--release | -r]"
     echo
     echo Run with no arguments to enable react-scripts debug server mode.
     echo Run with --release or -r to disable react-scripts debug server mode.
+}
+
+function extractVariables {
+env | egrep "^${1}" | sort | while read envVariable; do
+  echo "  , \"$(echo ${envVariable} | cut -d = -f 1)\": \"$(echo ${envVariable} | cut -d = -f 2-)\"" >> "ITMAppConfig.json"
+done
 }
 
 if [ "${1}" = "--release" -o "${1}" = "-r" -o "${ITMAPPLICATION_NO_DEBUG_SERVER}" = "YES" ]; then
@@ -28,10 +33,6 @@ if [ "${ITMAPPLICATION_CLIENT_ID}" = "" ]; then
     echo This goes into iOSSamples.xcconfig, used by the iOS sample Xcode projects.
     exit 1
 fi
-cat <<EOT > "ITMAppConfig.json"
-{
-  "clientId": "${ITMAPPLICATION_CLIENT_ID}"
-EOT
 if [ "${ReleaseMode}" != "YES" ]; then
     if [ "$REACT_SERVER_PORT" = "" ]; then
         # Look for a node process listening on TCP for incoming traffic from
@@ -65,26 +66,14 @@ if [ "${ReleaseMode}" != "YES" ]; then
         echo "ERROR: hostname is blank."
         exit 1
     fi
-    echo "  , "'"'"baseUrl"'"'": "'"'"http://${appHost}:${REACT_SERVER_PORT}"'"'"" >> "ITMAppConfig.json"
+    export ITMAPPLICATION_BASE_URL=http://${appHost}:${REACT_SERVER_PORT}
 fi
-if [ "${ITMAPPLICATION_SCOPE}" != "" ]; then
-    echo "  , "'"'"scope"'"'": "'"'"${ITMAPPLICATION_SCOPE}"'"'"" >> "ITMAppConfig.json"
-fi
-if [ "${ITMAPPLICATION_ISSUER_URL}" != "" ]; then
-    echo "  , "'"'"issuerUrl"'"'": "'"'"${ITMAPPLICATION_ISSUER_URL}"'"'"" >> "ITMAppConfig.json"
-fi
-if [ "${ITMAPPLICATION_REDIRECT_URI}" != "" ]; then
-    echo "  , "'"'"redirectUri"'"'": "'"'"${ITMAPPLICATION_REDIRECT_URI}"'"'"" >> "ITMAppConfig.json"
-fi
-if [ "${ITM_DEBUG_I18N}" != "" ]; then
-    echo "  , "'"'"debugI18n"'"'": "'"'"${ITM_DEBUG_I18N}"'"'"" >> "ITMAppConfig.json"
-fi
-if [ "${ITM_LOW_RESOLUTION}" != "" ]; then
-    echo "  , "'"'"lowResolution"'"'": "'"'"${ITM_LOW_RESOLUTION}"'"'"" >> "ITMAppConfig.json"
-fi
-if [ "${ITM_SHOWTIME_ENABLED}" != "" ]; then
-    echo "  , "'"'"showtimeEnabled"'"'": "'"'"${ITM_SHOWTIME_ENABLED}"'"'"" >> "ITMAppConfig.json"
-fi
+cat <<EOT > "ITMAppConfig.json"
+{
+  "Version": "1.0"
+EOT
+extractVariables ITMAPPLICATION_
+extractVariables ITMSAMPLE_
 echo "}" >> "ITMAppConfig.json"
 if [ "${ReleaseMode}" = "YES" ]; then
     echo "Remote debugging disabled."
