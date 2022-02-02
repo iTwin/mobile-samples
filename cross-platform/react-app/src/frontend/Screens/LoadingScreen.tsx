@@ -2,7 +2,7 @@
 * Copyright (c) Bentley Systems, Incorporated. All rights reserved.
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
-import { Screen } from "./Exports";
+import { Screen } from "../Exports";
 import "./LoadingScreen.scss";
 
 /// React component that shows while the application is doing its initial loading of iModelJS and iTwinMobileUI.

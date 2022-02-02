@@ -4,7 +4,7 @@
 *--------------------------------------------------------------------------------------------*/
 import React from "react";
 import { BottomPanel, BottomPanelProps } from "@itwin/mobile-ui-react";
-import { HeaderTitle, i18n } from "./Exports";
+import { HeaderTitle, i18n } from "../Exports";
 
 import "./InfoBottomPanel.scss";
 

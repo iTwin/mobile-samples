@@ -8,7 +8,7 @@ import { IModelApp, IModelConnection } from "@itwin/core-frontend";
 import { ThumbnailProps } from "@itwin/core-common";
 import { ReloadedEvent } from "@itwin/mobile-sdk-core";
 import { DraggableComponent, IconImage, ResizableBottomPanel, ResizableBottomPanelProps } from "@itwin/mobile-ui-react";
-import { HeaderTitle, i18n, updateBackgroundColor } from "./Exports";
+import { HeaderTitle, i18n, updateBackgroundColor } from "../Exports";
 
 import "./ViewsBottomPanel.scss";
 

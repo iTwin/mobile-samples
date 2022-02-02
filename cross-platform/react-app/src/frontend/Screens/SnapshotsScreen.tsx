@@ -5,7 +5,7 @@
 import React from "react";
 import { Messenger } from "@itwin/mobile-sdk-core";
 import { BackButton, NavigationButton } from "@itwin/mobile-ui-react";
-import { Button, i18n, Screen } from "./Exports";
+import { Button, i18n, Screen } from "../Exports";
 import { IModelConnection, SnapshotConnection } from "@itwin/core-frontend";
 import "./SnapshotsScreen.scss";
 

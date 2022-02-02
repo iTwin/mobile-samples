@@ -10,7 +10,7 @@ import { DownloadBriefcaseOptions, NativeApp } from "@itwin/core-frontend";
 import { MinimalIModel } from "@itwin/imodels-client-management";
 import { BentleyError, BriefcaseDownloader, BriefcaseStatus, IModelStatus, LocalBriefcaseProps, SyncMode } from "@itwin/core-common";
 import { ProgressRadial } from "@itwin/itwinui-react";
-import { Button, i18n, presentError, IModelInfo } from "./Exports";
+import { Button, i18n, presentError, IModelInfo } from "../../Exports";
 
 async function downloadIModel(project: Project, iModel: MinimalIModel, handleProgress: (progress: ProgressInfo) => boolean): Promise<LocalBriefcaseProps | undefined> {
   const opts: DownloadBriefcaseOptions = { syncMode: SyncMode.PullOnly };

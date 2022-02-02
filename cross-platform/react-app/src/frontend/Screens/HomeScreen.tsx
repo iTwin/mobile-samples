@@ -3,7 +3,7 @@
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
 import React from "react";
-import { Button, i18n, Screen } from "./Exports";
+import { Button, i18n, Screen } from "../Exports";
 import "./HomeScreen.scss";
 
 export enum ActiveScreen {

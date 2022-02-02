@@ -8,7 +8,7 @@ import { FillCentered } from "@itwin/core-react";
 import { PropertyGrid } from "@itwin/components-react";
 import { IPresentationPropertyDataProvider, PresentationPropertyDataProvider, PresentationPropertyDataProviderProps, usePropertyDataProviderWithUnifiedSelection } from "@itwin/presentation-components";
 import { DraggableComponent, IconImage, ResizableBottomPanel, ResizableBottomPanelProps, useBeEvent } from "@itwin/mobile-ui-react";
-import { HeaderTitle, i18n } from "./Exports";
+import { HeaderTitle, i18n } from "../Exports";
 
 import "./ElementPropertiesPanel.scss";
 

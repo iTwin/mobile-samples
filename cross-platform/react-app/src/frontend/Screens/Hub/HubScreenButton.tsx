@@ -5,7 +5,7 @@
 import React from "react";
 import classnames from "classnames";
 import { LoadingSpinner } from "@itwin/core-react";
-import { Button, ButtonProps } from "./Exports";
+import { Button, ButtonProps } from "../../Exports";
 import { useScroll } from "@itwin/mobile-ui-react";
 
 export function HubScreenButton(props: ButtonProps) {

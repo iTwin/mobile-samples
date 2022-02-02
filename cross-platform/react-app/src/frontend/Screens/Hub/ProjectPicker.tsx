@@ -7,7 +7,7 @@ import { HorizontalPicker, useIsMountedRef } from "@itwin/mobile-ui-react";
 import { Project, ProjectsAccessClient, ProjectsQueryArg, ProjectsQueryFunction, ProjectsSearchableProperty, ProjectsSource } from "@itwin/projects-client";
 import { IModelApp } from "@itwin/core-frontend";
 import { LoadingSpinner } from "@itwin/core-react";
-import { SearchControl, i18n, presentError, ButtonProps, HubScreenButton, HubScreenButtonListProps, HubScreenButtonList } from "./Exports";
+import { SearchControl, i18n, presentError, ButtonProps, HubScreenButton, HubScreenButtonListProps, HubScreenButtonList } from "../../Exports";
 
 async function getProjects(source = ProjectsSource.All, searchString = "") {
   const client = new ProjectsAccessClient();
