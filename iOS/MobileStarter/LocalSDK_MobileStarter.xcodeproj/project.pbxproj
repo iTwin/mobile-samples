@@ -187,7 +187,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "cd \"${PROJECT_DIR}/react-app\"\nif [[ ! -d node_modules ]]; then\n  echo Cannot find react-app/node_modules. Please follow the steps in iOS/REAMDE.md.\n  exit 1\nfi\nif [[ ! -d build ]]; then\n  echo Cannot find react-app/build. Please follow the steps in iOS/README.md.\n  exit 1\nfi\nif [[ ! -d lib ]]; then\n  echo Cannot find react-app/lib. Please follow the steps in iOS/README.md.\n  exit 1\nfi\n";
+			shellScript = "cd \"${PROJECT_DIR}/../../cross-platform/react-app\"\nif [[ ! -d node_modules ]]; then\n  echo Cannot find react-app/node_modules. Please follow the steps in iOS/REAMDE.md.\n  exit 1\nfi\nif [[ ! -d build ]]; then\n  echo Cannot find react-app/build. Please follow the steps in iOS/README.md.\n  exit 1\nfi\nif [[ ! -d lib ]]; then\n  echo Cannot find react-app/lib. Please follow the steps in iOS/README.md.\n  exit 1\nfi\n";
 			showEnvVarsInLog = 0;
 		};
 		1FCA80062620B9CF002F1F76 /* Copy web app assets */ = {
@@ -370,6 +370,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = WLDT6Q3PUY;
 				ENABLE_BITCODE = NO;
 				INFOPLIST_FILE = MobileStarter/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -389,6 +390,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = WLDT6Q3PUY;
 				ENABLE_BITCODE = NO;
 				INFOPLIST_FILE = MobileStarter/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (

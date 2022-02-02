@@ -10,7 +10,7 @@ Follow the instructions in the [iOS Readme](../../README.md) to get things worki
 
 1. Make sure that your system is configured to use node 14.
 1. If you are not on the main branch, make sure to switch to the appropriate branch for _all_ GitHub repositories below after cloning.
-1. cd into `mobile-samples/iOS/MobileStarter/react-app`.
+1. cd into `mobile-samples/cross-platform/react-app`.
 1. Run `npm install`.
 1. Check out https://github.com/iTwin/mobile-sdk-ios into `mobile-sdk-ios` alongside `mobile-samples`.
 1. Check out https://github.com/iTwin/mobile-sdk-core into `mobile-sdk-core` alongside `mobile-samples`.
@@ -21,7 +21,7 @@ Follow the instructions in the [iOS Readme](../../README.md) to get things worki
 1. cd into `mobile-ui-react`.
 1. Run `npm install`.
 1. Run `npm run build:debug`.
-1. cd back to `mobile-samples/iOS/MobileStarter/react-app`.
+1. cd back to `mobile-samples/cross-platform/react-app`.
 1. Run `npm run build`.
 1. Run `npm run start` to start the React debug server.
 1. Open `mobile-samples/iOS/MobileStarter/LocalSDK_MobileStarter.xcodeproj`.
@@ -30,7 +30,7 @@ Follow the instructions in the [iOS Readme](../../README.md) to get things worki
 ## Updates
 
 1. Use `git pull` to update `mobile-samples`, `mobile-sdk-ios`, `mobile-sdk-core`, and `mobile-ui-react`.
-1. cd into `mobile-samples/iOS/MobileStarter/react-app`.
+1. cd into `mobile-samples/cross-platform/react-app`.
 1. Run `npm install`.
 1. cd into `mobile-ui-react`.
 1. Run `npm install`
@@ -39,7 +39,7 @@ Follow the instructions in the [iOS Readme](../../README.md) to get things worki
 1. Run `npm run build:debug`.
 1. cd into `mobile-ui-react`.
 1. Run `npm run build:debug`.
-1. cd into `mobile-samples/iOS/MobileStarter/react-app`.
+1. cd into `mobile-samples/cross-platform/react-app`.
 1. Run `npm run build`
 1. Run `npm run start` to start the React debug server
 1. Open `mobile-samples/iOS/MobileStarter/LocalSDK_MobileStarter.xcodeproj`.
