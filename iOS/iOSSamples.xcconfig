@@ -15,16 +15,6 @@
 // en0, set the following to the name of the device to use.
 // ITMAPPLICATION_SERVER_DEVICE
 //
-// Set the following setting if you want to put delimiters around the app's localized strings.
-// ITM_DEBUG_I18N = YES
-//
-// Set the following setting if you want the model to display in low resolution. If you are
-// running on a Simulator with iOS before iOS 15, it is HIGHLY recommended that you set this.
-// ITM_LOW_RESOLUTION = YES
-//
-// Set the following setting if you want to enable ShowTime tap visibility:
-// ITM_SHOWTIME_ENABLED = YES
-//
 // If you want to run the built app locally on the device instead of using the React debug
 // server, set the following:
 // ITMAPPLICATION_NO_DEBUG_SERVER = YES
@@ -32,3 +22,13 @@
 // Other supported ITMApplication settings:
 // ITMAPPLICATION_ISSUER_URL
 // ITMAPPLICATION_REDIRECT_URI
+//
+// Set the following setting if you want to put delimiters around the app's localized strings.
+// ITMSAMPLE_DEBUG_I18N = YES
+//
+// Set the following setting if you want the model to display in low resolution. If you are
+// running on a Simulator with iOS before iOS 15, it is HIGHLY recommended that you set this.
+// ITMSAMPLE_LOW_RESOLUTION = YES
+//
+// Set the following setting if you want to enable ShowTime tap visibility:
+// ITMSAMPLE_SHOWTIME_ENABLED = YES
