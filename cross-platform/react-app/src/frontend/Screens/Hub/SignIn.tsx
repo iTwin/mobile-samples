@@ -6,7 +6,7 @@ import React from "react";
 import { useIsMountedRef } from "@itwin/mobile-ui-react";
 import { IModelApp } from "@itwin/core-frontend";
 import { LoadingSpinner } from "@itwin/core-react";
-import { Button, i18n, presentError } from "./Exports";
+import { Button, i18n, presentError } from "../../Exports";
 
 export interface SignInProps {
   onBack: () => void;

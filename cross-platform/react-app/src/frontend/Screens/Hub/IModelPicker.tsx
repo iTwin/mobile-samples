@@ -10,8 +10,8 @@ import { IModelApp, NativeApp } from "@itwin/core-frontend";
 import { IModelsClient, MinimalIModel } from "@itwin/imodels-client-management";
 import { AccessTokenAdapter } from "@itwin/imodels-access-frontend";
 import { LocalBriefcaseProps } from "@itwin/core-common";
-import { fileSizeString, presentError, ButtonProps, HubScreenButton, HubScreenButtonListProps, HubScreenButtonList } from "./Exports";
-import { i18n } from "./Screen";
+import { fileSizeString, presentError, ButtonProps, HubScreenButton, HubScreenButtonListProps, HubScreenButtonList } from "../../Exports";
+import { i18n } from "../../Exports";
 
 export interface IModelInfo {
   minimalIModel: MinimalIModel;

@@ -7,7 +7,7 @@ import { AlertAction, ITMAuthorizationClient, MobileCore } from "@itwin/mobile-s
 import { ActionSheetButton, BackButton, useIsMountedRef } from "@itwin/mobile-ui-react";
 import { Project } from "@itwin/projects-client";
 import { BriefcaseConnection, IModelApp, IModelConnection } from "@itwin/core-frontend";
-import { Button, i18n, presentError, Screen, IModelInfo, IModelPicker, IModelDownloader, ProjectPicker, SignIn } from "./Exports";
+import { Button, i18n, presentError, Screen, IModelInfo, IModelPicker, IModelDownloader, ProjectPicker, SignIn } from "../../Exports";
 import "./HubScreen.scss";
 
 HubScreen.ACTIVE_PROJECT_INFO = "activeProjectInfo";

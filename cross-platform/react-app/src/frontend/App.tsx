@@ -12,7 +12,7 @@ import { ITMAuthorizationClient, Messenger, MobileCore } from "@itwin/mobile-sdk
 import { MobileUi } from "@itwin/mobile-ui-react";
 // import { FeatureTracking as MeasureToolsFeatureTracking, MeasureTools } from "@bentley/measure-tools-react";
 import { ActiveScreen, HomeScreen, HubScreen, LoadingScreen, ModelScreen, presentError, SnapshotsScreen, ToolAssistance } from "./Exports";
-import { getSupportedRpcs } from "./common/rpcs";
+import { getSupportedRpcs } from "../common/rpcs";
 import "./App.scss";
 
 /// Interface to allow switching from one screen to another.
