@@ -12,9 +12,6 @@ import ShowTime
 
 /// This app's `ITMApplication` sub-class that handles the messages coming from the web view.
 class ModelApplication: ITMApplication {
-    private var debugI18n = false
-    private var lowResolution = false
-
     /// Registers query handlers.
     required init() {
         super.init()
@@ -38,6 +35,15 @@ class ModelApplication: ITMApplication {
                 return Promise.value(DocumentHelper.getDocumentsWith(extension: "bim"))
             }
         }
+        
+        var showtimeEnabled = false
+        if let configData = configData {
+            extractConfigDataToEnv(configData: configData, "ITMSAMPLE_");
+            showtimeEnabled = configData.isYes("ITMSAMPLE_SHOWTIME_ENABLED")
+        }
+        if !showtimeEnabled {
+            ShowTime.enabled = ShowTime.Enabled.never
+        }
     }
     
     /// Called when the `ITMViewController` will appear.
@@ -48,29 +54,16 @@ class ModelApplication: ITMApplication {
         super.viewWillAppear(viewController: viewController)
         viewController.itmNativeUI?.addComponent(DocumentPicker(viewController: viewController, itmMessenger: ITMViewController.application.itmMessenger))
     }
-    
-    override func loadITMAppConfig() -> JSON? {
-        let configData = super.loadITMAppConfig()
-        var showtimeEnabled = false
-        if let configData = configData {
-            extractConfigDataToEnv(configData: configData, "ITMSAMPLE_");
-            debugI18n = configData["ITMSAMPLE_DEBUG_I18N"] as? String == "YES"
-            lowResolution = configData["ITMSAMPLE_LOW_RESOLUTION"] as? String == "YES"
-            showtimeEnabled = configData["ITMSAMPLE_SHOWTIME_ENABLED"] as? String == "YES"
-        }
-        if !showtimeEnabled {
-            ShowTime.enabled = ShowTime.Enabled.never
-        }
-        return configData
-    }
-    
+      
     override func getUrlHashParams() -> String {
         var hashParams = ""
-        if debugI18n {
-            hashParams += "&debugI18n=YES"
-        }
-        if lowResolution {
-            hashParams += "&lowResolution=YES"
+        if let configData = configData {
+            if configData.isYes("ITMSAMPLE_DEBUG_I18N") {
+                hashParams += "&debugI18n=YES"
+            }
+            if configData.isYes("ITMSAMPLE_LOW_RESOLUTION") {
+                hashParams += "&lowResolution=YES"
+            }
         }
         return hashParams
     }

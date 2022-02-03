@@ -19,6 +19,11 @@
 // server, set the following:
 // ITMAPPLICATION_NO_DEBUG_SERVER = YES
 //
+// Set the following setting if you want to enable logging of messages passed between swift and typescript:
+// ITMAPPLICAITON_MESSAGE_LOGGING = YES
+// Or to include the data passed with the messages (may contain sensitive data, DO NOT enable this in a release build):
+// ITMAPPLICAITON_FULL_MESSAGE_LOGGING = YES
+//
 // Other supported ITMApplication settings:
 // ITMAPPLICATION_ISSUER_URL
 // ITMAPPLICATION_REDIRECT_URI
