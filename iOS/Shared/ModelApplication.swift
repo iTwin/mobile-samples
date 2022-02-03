@@ -38,7 +38,7 @@ class ModelApplication: ITMApplication {
         
         var showtimeEnabled = false
         if let configData = configData {
-            extractConfigDataToEnv(configData: configData, "ITMSAMPLE_");
+            extractConfigDataToEnv(configData: configData, prefix: "ITMSAMPLE_");
             showtimeEnabled = configData.isYes("ITMSAMPLE_SHOWTIME_ENABLED")
         }
         if !showtimeEnabled {
