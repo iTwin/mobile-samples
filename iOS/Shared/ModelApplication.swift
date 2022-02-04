@@ -58,6 +58,16 @@ class ModelApplication: ITMApplication {
     override func getUrlHashParams() -> String {
         var hashParams = ""
         if let configData = configData {
+            // Other characters are probably OK in a hash parameter, but we want to play it safe.
+            // Note: CharactersSet.alphanumerics includes non-ASCII Unicode letters, so we can't start with that and then add a few symbols.
+            let allowedCharacters = CharacterSet(charactersIn: "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-_.")
+            if let tokenServerUrl = configData["ITMSAMPLE_TOKEN_SERVER_URL"] as? String,
+               let encodedTokenServerUrl = tokenServerUrl.addingPercentEncoding(withAllowedCharacters: allowedCharacters),
+               let tokenServerIdToken = configData["ITMSAMPLE_TOKEN_SERVER_ID_TOKEN"] as? String,
+               let encodedTokenServerIdToken = tokenServerIdToken.addingPercentEncoding(withAllowedCharacters: allowedCharacters) {
+                hashParams += "&tokenServerUrl=\(encodedTokenServerUrl)"
+                hashParams += "&tokenServerIdToken=\(encodedTokenServerIdToken)"
+            }
             if configData.isYes("ITMSAMPLE_DEBUG_I18N") {
                 hashParams += "&debugI18n=YES"
             }

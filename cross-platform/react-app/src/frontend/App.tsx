@@ -5,6 +5,7 @@
 import React from "react";
 import { combineReducers, createStore, Store } from "redux";
 import { IOSApp, IOSAppOpts } from "@itwin/core-mobile/lib/cjs/MobileFrontend";
+import { AuthorizationClient } from "@itwin/core-common";
 import { IModelApp, IModelConnection, SnapshotConnection, ToolAssistanceInstructions } from "@itwin/core-frontend";
 import { AppNotificationManager, FrameworkReducer, FrameworkState, UiFramework } from "@itwin/appui-react";
 import { Presentation } from "@itwin/presentation-frontend";
@@ -13,6 +14,7 @@ import { MobileUi } from "@itwin/mobile-ui-react";
 // import { FeatureTracking as MeasureToolsFeatureTracking, MeasureTools } from "@bentley/measure-tools-react";
 import { ActiveScreen, HomeScreen, HubScreen, LoadingScreen, ModelScreen, presentError, SnapshotsScreen, ToolAssistance } from "./Exports";
 import { getSupportedRpcs } from "../common/rpcs";
+import { TokenServerAuthClient } from "../common/TokenServerAuthClient";
 import "./App.scss";
 
 /// Interface to allow switching from one screen to another.
@@ -37,6 +39,16 @@ class AppToolAssistanceNotificationManager extends AppNotificationManager {
   public setToolAssistance(instructions: ToolAssistanceInstructions | undefined): void {
     ToolAssistance.onSetToolAssistance.emit(instructions);
     super.setToolAssistance(instructions);
+  }
+}
+
+function createAuthorizationClient(): AuthorizationClient {
+  const tokenServerUrl = MobileCore.getUrlSearchParam("tokenServerUrl");
+  const tokenServerIdToken = MobileCore.getUrlSearchParam("tokenServerIdToken");
+  if (tokenServerUrl && tokenServerIdToken) {
+    return new TokenServerAuthClient(tokenServerUrl, tokenServerIdToken);
+  } else {
+    return new ITMAuthorizationClient();
   }
 }
 
@@ -76,7 +88,7 @@ function App() {
           iModelApp: {
             rpcInterfaces: getSupportedRpcs(),
             notifications: new AppToolAssistanceNotificationManager(),
-            authorizationClient: new ITMAuthorizationClient(),
+            authorizationClient: createAuthorizationClient(),
           },
         }
         const lowResolution = MobileCore.getUrlSearchParam("lowResolution") === "YES";

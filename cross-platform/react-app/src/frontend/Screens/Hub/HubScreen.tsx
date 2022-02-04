@@ -106,7 +106,18 @@ export function HubScreen(props: HubScreenProps) {
           else
             setHubStep(HubStep.DownloadIModel);
         }}
-        onError={() => setHubStep(HubStep.Error)}
+        onError={(error) => {
+          if (error.code === "ProjectNotFound") {
+            // The project that was being used before is no longer accesible. This could be due to a
+            // user change, a permissions change (user was removed from the project), or a project
+            // deletion (assuming that's even possible).
+            // Switch to project selection.
+            setHubStep(HubStep.SelectProject);
+          }
+          else {
+            setHubStep(HubStep.Error);
+          }
+        }}
       />;
       const actions: AlertAction[] = [];
       if (haveCachedBriefcase) {
