@@ -64,6 +64,7 @@ export function ProjectPicker(props: ProjectPickerProps) {
   const searchLabel = React.useMemo(() => i18n("HubScreen", "Search"), []);
   const projectSources = React.useMemo(() => [ProjectsSource.All, ProjectsSource.Recents, ProjectsSource.Favorites], []);
   const projectSourceLabels = React.useMemo(() => [i18n("HubScreen", "All"), i18n("HubScreen", "Recents"), i18n("HubScreen", "Favorites")], []);
+  const fetchId = React.useRef(0);
 
   React.useEffect(() => {
     if (!isMountedRef.current)
@@ -72,8 +73,10 @@ export function ProjectPicker(props: ProjectPickerProps) {
     const fetchProjects = async () => {
       try {
         setLoading(true);
+        const currFetchId = ++fetchId.current;
         const { projects: fetchedProjects, next } = await getProjects(projectSource, search);
-        if (!isMountedRef.current)
+        // If the component is no longer mounted or another fetch has occurred, just return.
+        if (!isMountedRef.current || fetchId.current !== currFetchId)
           return;
         setProjects(fetchedProjects);
         setNextFunc(() => projectSource === ProjectsSource.All ? next : undefined);
