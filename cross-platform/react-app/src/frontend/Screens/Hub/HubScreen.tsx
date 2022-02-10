@@ -108,7 +108,7 @@ export function HubScreen(props: HubScreenProps) {
         }}
         onError={(error) => {
           if (error.code === "ProjectNotFound") {
-            // The project that was being used before is no longer accesible. This could be due to a
+            // The project that was being used before is no longer accessible. This could be due to a
             // user change, a permissions change (user was removed from the project), or a project
             // deletion (assuming that's even possible).
             // Switch to project selection.
@@ -154,8 +154,11 @@ export function HubScreen(props: HubScreenProps) {
         model={iModel}
         onDownloaded={(model) => {
           setIModel(model);
-          if (model.briefcase)
+          if (model.briefcase) {
             onOpen(model.briefcase.fileName, BriefcaseConnection.openFile(model.briefcase));
+          } else {
+            setHubStep(HubStep.SelectIModel);
+          }
         }}
         onCanceled={() => setHubStep(HubStep.SelectIModel)}
       />;

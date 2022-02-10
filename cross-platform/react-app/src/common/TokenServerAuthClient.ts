@@ -7,55 +7,80 @@ import * as jwt from "jsonwebtoken";
 import {
   AccessToken,
   AuthStatus,
-  BeUiEvent,
   BentleyError,
 } from "@itwin/core-bentley";
 import { PromiseUtil } from "./PromiseUtil";
 import { AuthorizationClient } from "@itwin/core-common";
 
+/**
+ * AuthorizationClient implementation that communicates with a sample token server. This
+ * uses a local ID token as the authorization in the request it makes to the token server.
+ * 
+ * Note: This class is instantiated in both the frontend and the backend.
+ */
 export class TokenServerAuthClient implements AuthorizationClient {
-  public readonly onAccessTokenChanged = new BeUiEvent<AccessToken>();
-  protected _accessToken?: AccessToken;
-  protected _expiresAt?: Date;
+  private _accessToken?: AccessToken;
+  private _expiresAt?: Date;
+  private _tokenServerIdToken?: string;
 
-  constructor(protected _tokenServerUrl: string, protected _tokenServerIdToken: string) {
+  /// The ID token to use when communicating with the token server. This token must NOT include
+  /// a "Bearer " prefix. Any time this is undefined, getAccessToken will return an empty string.
+  public get tokenServerIdToken() { return this._tokenServerIdToken; }
+  public set tokenServerIdToken(token: string | undefined) {
+    this._tokenServerIdToken = token;
+    this._accessToken = undefined;
+    this._expiresAt = undefined;
+  }
+  /**
+   * Constructor.
+   * @param _tokenServerUrl The URL of the token server.
+   * @param token The token to use for authorization when communicating with the token server.
+   */
+  constructor(private _tokenServerUrl: string, token: string | undefined = undefined) {
+    this._tokenServerIdToken = token;
   }
 
-  private async fetchAccessToken() {
+  private fetchAccessToken() {
     return new Promise<void>((resolve, reject) => {
-      // NOTE: This has to run on the backend and the frontend. The http package does that.
-      const request = http.request(this._tokenServerUrl, (response) => {
-        let rawData = "";
-        let rawError: Error | undefined;
-        response.on("data", (data) => {
-          rawData += data;
-        });
-        response.on("error", (error) => {
-          rawError = error;
-        });
-        response.on("end", () => {
-          if (response.statusCode !== 200) {
-            reject(new Error(`Error fetching public key: ${response.statusCode}: ${response.statusMessage}`));
-          }
-          else if (rawError) {
-            reject(rawError);
-          }
-          else {
-            this._accessToken = rawData;
-            const tokenJson = jwt.decode(this._accessToken.split(" ")[1]);
-            if (typeof tokenJson === "object" && tokenJson?.exp) {
-              this._expiresAt = new Date(tokenJson.exp * 1000);
-              console.log(`Fetched access token will expire at ${this._expiresAt.toLocaleString()}`);
-            } else {
-              this._expiresAt = undefined;
+      try {
+        // NOTE: This has to run on the backend and the frontend. The http package does that.
+        const request = http.request(this._tokenServerUrl, (response) => {
+          let rawData = "";
+          let rawError: Error | undefined;
+          response.on("data", (data) => {
+            rawData += data;
+          });
+          response.on("error", (error) => {
+            rawError = error;
+            request.abort();
+          });
+          response.on("end", () => {
+            if (response.statusCode !== 200) {
+              reject(new Error(`Error fetching public key: ${response.statusCode}: ${response.statusMessage}`));
             }
-            this.onAccessTokenChanged.emit(this._accessToken);
-            resolve();
-          }
+            else if (rawError) {
+              reject(rawError);
+            }
+            else {
+              this._accessToken = rawData;
+              const tokenJson = jwt.decode(this._accessToken.split(" ")[1]);
+              if (typeof tokenJson === "object" && tokenJson?.exp) {
+                this._expiresAt = new Date(tokenJson.exp * 1000);
+              } else {
+                this._expiresAt = undefined;
+              }
+              resolve();
+            }
+          });
         });
-      });
-      request.setHeader("Authorization", `Bearer ${this._tokenServerIdToken}`);
-      request.end();
+        request.setHeader("Authorization", `Bearer ${this.tokenServerIdToken}`);
+        request.on("error", (error) => {
+          reject(error);
+        });
+        request.end();
+      } catch (error) {
+        reject(error);
+      }
     });
   }
 
@@ -71,9 +96,20 @@ export class TokenServerAuthClient implements AuthorizationClient {
     return this._expiresAt.getTime() - Date.now() <= 1 * 59 * 1000; // Consider 59 seconds before expiry as expired
   }
 
+  /**
+   * Returns an access token from the token server.
+   * 
+   * Note: Once a token is fetched from the token server, that token will be returned
+   * repeatedly as long as it isn't due to expire for at least 59 seconds. When it is due
+   * to expire, a new token will be fetched. The 59 second figure was chosen due to the
+   * implementation details of the way the token server works. Until the token is within
+   * 1 minute of expiring, it will always return the same token, so asking for a new one
+   * doesn't do any good.
+   * @returns The access token from the token server.
+   */
   public async getAccessToken(): Promise<AccessToken> {
     try {
-      if (this.needsAccessToken()) {
+      if (this.needsAccessToken() && this.tokenServerIdToken) {
         await PromiseUtil.consolidateCall("TokenServerAuthClient.fetchAccessToken", () => this.fetchAccessToken());
       }
       if (!this._accessToken) {

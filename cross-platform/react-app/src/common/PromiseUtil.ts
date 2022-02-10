@@ -22,21 +22,17 @@ export class PromiseUtil {
       // thrown by the consolidated call, so we want to allow it to be thrown.
       return activePromise;
     }
-    let resolver: (result: T) => void;
-    let rejector: (e: Error) => void;
-    PromiseUtil._activeConsolidators.set(key, new Promise<T>((resolve, reject) => {
-      resolver = resolve;
-      rejector = reject;
-    }));
-    try {
-      const result = await call();
-      resolver!(result);
-      return result;
-    } catch (error) {
-      rejector!(error as any);
-      throw error;
-    } finally {
-      PromiseUtil._activeConsolidators.delete(key);
-    }
+    const promiseResult = new Promise<T>(async (resolve, reject) => {
+      try {
+        const result = await call();
+        resolve(result);
+      } catch (error) {
+        reject(error as any);
+      } finally {
+        PromiseUtil._activeConsolidators.delete(key);
+      }
+    });
+    PromiseUtil._activeConsolidators.set(key, promiseResult);
+    return promiseResult;
   }
 }
