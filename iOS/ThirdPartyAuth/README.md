@@ -37,6 +37,8 @@ If you want to run the sample, you will need to set up an auth0 account and conf
     ITMSAMPLE_AUTH0_DOMAIN
     ITMSAMPLE_AUTH0_AUDIENCE
     ```
+
+    _Note:_ If the value in ITMSAMPLE_TOKEN_SERVER_URL points to your local network, iOS will prompt you for permission to access the local network the first time you run the app. If you do not allow it to do so, iModel downloads will fail.
 1. Follow the instructions in the [Token Server Readme](../../cross-platform/token-server/README.md).
 1. Open ThirdPartyAuth.xcodeproj.
 1. Run.
