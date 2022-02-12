@@ -2,7 +2,7 @@
 * Copyright (c) Bentley Systems, Incorporated. All rights reserved.
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
-import * as http from "http";
+import axios from "axios";
 import * as jwt from "jsonwebtoken";
 import {
   AccessToken,
@@ -40,48 +40,19 @@ export class TokenServerAuthClient implements AuthorizationClient {
     this._tokenServerIdToken = token;
   }
 
-  private fetchAccessToken() {
-    return new Promise<void>((resolve, reject) => {
-      try {
-        // NOTE: This has to run on the backend and the frontend. The http package does that.
-        const request = http.request(this._tokenServerUrl, (response) => {
-          let rawData = "";
-          let rawError: Error | undefined;
-          response.on("data", (data) => {
-            rawData += data;
-          });
-          response.on("error", (error) => {
-            rawError = error;
-            request.abort();
-          });
-          response.on("end", () => {
-            if (response.statusCode !== 200) {
-              reject(new Error(`Error fetching public key: ${response.statusCode}: ${response.statusMessage}`));
-            }
-            else if (rawError) {
-              reject(rawError);
-            }
-            else {
-              this._accessToken = rawData;
-              const tokenJson = jwt.decode(this._accessToken.split(" ")[1]);
-              if (typeof tokenJson === "object" && tokenJson?.exp) {
-                this._expiresAt = new Date(tokenJson.exp * 1000);
-              } else {
-                this._expiresAt = undefined;
-              }
-              resolve();
-            }
-          });
-        });
-        request.setHeader("Authorization", `Bearer ${this.tokenServerIdToken}`);
-        request.on("error", (error) => {
-          reject(error);
-        });
-        request.end();
-      } catch (error) {
-        reject(error);
-      }
+  private async fetchAccessToken() {
+    const response = await axios.get(this._tokenServerUrl, {
+      headers: {
+        "Authorization": `Bearer ${this.tokenServerIdToken}`
+      },
     });
+    this._accessToken = response.data;
+    this._expiresAt = undefined;
+    if (this._accessToken) {
+      const tokenJson = jwt.decode(this._accessToken.split(" ")[1]);
+      if (typeof tokenJson === "object" && tokenJson?.exp)
+        this._expiresAt = new Date(tokenJson.exp * 1000);
+    }
   }
 
   private needsAccessToken() {
