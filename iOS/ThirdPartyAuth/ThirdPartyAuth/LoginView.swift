@@ -35,7 +35,7 @@ struct LoginView: View {
                                 callback(credentials, nil)
                             case .failure(let error):
                                 callback(nil, error)
-                                alertTitle = "Log in Error"
+                                alertTitle = String(localized: "Log in Error")
                                 if let localError = error as? LocalizedError, let errorDescription = localError.errorDescription {
                                     alertMessage = "\(errorDescription)"
                                 } else if let webAuthError = error as? WebAuthError, let errorDescription = webAuthError.errorUserInfo[NSLocalizedDescriptionKey] {

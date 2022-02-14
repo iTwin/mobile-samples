@@ -15,6 +15,8 @@
 		1F1C63A527B1996F00CE8F89 /* ShowTime in Frameworks */ = {isa = PBXBuildFile; productRef = 1F1C63A427B1996F00CE8F89 /* ShowTime */; };
 		1F39289D27B1A88E00150E00 /* AuthModelApplication.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F39289C27B1A88E00150E00 /* AuthModelApplication.swift */; };
 		1F39289F27B1AAB300150E00 /* ModelView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F39289E27B1AAB300150E00 /* ModelView.swift */; };
+		1F6C4FA327BB0E70008EB5D5 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 1F6C4FA527BB0E70008EB5D5 /* Localizable.strings */; };
+		1F6C4FA827BB1444008EB5D5 /* ThirdPartyAuth-InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 1F6C4FAA27BB1444008EB5D5 /* ThirdPartyAuth-InfoPlist.strings */; };
 		1FD9A02027B32D3E00984360 /* ViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1FD9A01F27B32D3E00984360 /* ViewModel.swift */; };
 		C3663E4F279769C100EE6B43 /* ThirdPartyAuthApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3663E4E279769C100EE6B43 /* ThirdPartyAuthApp.swift */; };
 		C3663E51279769C100EE6B43 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3663E50279769C100EE6B43 /* ContentView.swift */; };
@@ -33,6 +35,8 @@
 		1F1C639C27B1972A00CE8F89 /* PrintLogger.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PrintLogger.swift; sourceTree = "<group>"; };
 		1F39289C27B1A88E00150E00 /* AuthModelApplication.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthModelApplication.swift; sourceTree = "<group>"; };
 		1F39289E27B1AAB300150E00 /* ModelView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModelView.swift; sourceTree = "<group>"; };
+		1F6C4FA427BB0E70008EB5D5 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Localizable.strings; sourceTree = "<group>"; };
+		1F6C4FA927BB1444008EB5D5 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = "en.lproj/ThirdPartyAuth-InfoPlist.strings"; sourceTree = "<group>"; };
 		1FD9A01F27B32D3E00984360 /* ViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewModel.swift; sourceTree = "<group>"; };
 		C3663E4B279769C100EE6B43 /* ThirdPartyAuth.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ThirdPartyAuth.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		C3663E4E279769C100EE6B43 /* ThirdPartyAuthApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThirdPartyAuthApp.swift; sourceTree = "<group>"; };
@@ -73,6 +77,8 @@
 				1F0B9BCC27B2EAB400EE9B81 /* mobile-sdk-ios */,
 				1F1C639527B1956500CE8F89 /* iOSSamples.xcconfig */,
 				1F1C639627B1956500CE8F89 /* ITMApplication.xcconfig */,
+				1F6C4FAA27BB1444008EB5D5 /* ThirdPartyAuth-InfoPlist.strings */,
+				1F6C4FA527BB0E70008EB5D5 /* Localizable.strings */,
 				C3663E4D279769C100EE6B43 /* ThirdPartyAuth */,
 				C3663E4C279769C100EE6B43 /* Products */,
 			);
@@ -179,7 +185,9 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				1F6C4FA827BB1444008EB5D5 /* ThirdPartyAuth-InfoPlist.strings in Resources */,
 				C3663E56279769C300EE6B43 /* Preview Assets.xcassets in Resources */,
+				1F6C4FA327BB0E70008EB5D5 /* Localizable.strings in Resources */,
 				C3663E53279769C300EE6B43 /* Assets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -225,6 +233,25 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
+
+/* Begin PBXVariantGroup section */
+		1F6C4FA527BB0E70008EB5D5 /* Localizable.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				1F6C4FA427BB0E70008EB5D5 /* en */,
+			);
+			name = Localizable.strings;
+			sourceTree = "<group>";
+		};
+		1F6C4FAA27BB1444008EB5D5 /* ThirdPartyAuth-InfoPlist.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				1F6C4FA927BB1444008EB5D5 /* en */,
+			);
+			name = "ThirdPartyAuth-InfoPlist.strings";
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
 
 /* Begin XCBuildConfiguration section */
 		C3663E57279769C300EE6B43 /* Debug */ = {
@@ -356,6 +383,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"ThirdPartyAuth/Preview Content\"";
@@ -387,6 +415,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"ThirdPartyAuth/Preview Content\"";
