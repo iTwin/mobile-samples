@@ -13,9 +13,6 @@ struct ContentView: View {
         case .login:
             LoginView(viewModel: viewModel) { credentials, error in
                 viewModel.credentials = credentials
-                if let error = error {
-                    print("error: \(error)")
-                }
             }
         case .model:
             ModelView(viewModel: viewModel)
