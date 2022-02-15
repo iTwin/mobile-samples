@@ -92,6 +92,7 @@ function App() {
   const [iModel, setIModel] = React.useState<IModelConnection>();
   const [initialized, setInitialized] = React.useState(false);
   const [openUrlPath, setOpenUrlPath] = React.useState<string>();
+  const [haveBackButton, setHaveBackButton] = React.useState(false);
 
   const pushActiveInfo = React.useCallback((screen: ActiveScreen, cleanup?: () => void) => {
     // Push the current activeScreen onto the activeStack, along with the cleanup function for the new active screen.
@@ -136,6 +137,7 @@ function App() {
         await Presentation.initialize();
         await MobileUi.initialize(IModelApp.localization);
         await IModelApp.localization.registerNamespace("ReactApp");
+        setHaveBackButton(MobileCore.getUrlSearchParam("haveBackButton") === "YES");
         // await MeasureTools.startup();
         // MeasureToolsFeatureTracking.stop();
 
@@ -244,7 +246,7 @@ function App() {
 
   switch (activeScreen) {
     case ActiveScreen.Home:
-      return <HomeScreen onSelect={handleHomeSelect} />;
+      return <HomeScreen onSelect={handleHomeSelect} showBackButton={haveBackButton} />;
     case ActiveScreen.Snapshots:
       return <SnapshotsScreen onOpen={handleOpen} onBack={handleBack} />;
     case ActiveScreen.Hub:

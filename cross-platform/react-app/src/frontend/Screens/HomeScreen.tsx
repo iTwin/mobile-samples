@@ -3,7 +3,7 @@
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
 import React from "react";
-import { Messenger, MobileCore } from "@itwin/mobile-sdk-core";
+import { Messenger } from "@itwin/mobile-sdk-core";
 import { BackButton } from "@itwin/mobile-ui-react";
 import { Button, i18n, Screen } from "../Exports";
 import "./HomeScreen.scss";
@@ -20,15 +20,15 @@ export enum ActiveScreen {
 export interface HomeScreenProps {
   /// Callback to select another screen.
   onSelect: (screen: ActiveScreen) => void;
+  showBackButton: boolean;
 }
 
 /// React component for Home screen (shown after loading has completed).
 export function HomeScreen(props: HomeScreenProps) {
-  const { onSelect } = props;
+  const { onSelect, showBackButton } = props;
   const homeLabel = React.useMemo(() => i18n("HomeScreen", "Home"), []);
   const snapshotIModelsLabel = React.useMemo(() => i18n("HomeScreen", "SnapshotIModels"), []);
   const hubIModelsLabel = React.useMemo(() => i18n("HomeScreen", "HubIModels"), []);
-  const haveBackButton = React.useMemo(() => MobileCore.getUrlSearchParam("haveBackButton") === "YES", []);
 
   const handleBack = React.useCallback(async () => {
     Messenger.sendMessage("goBack");
@@ -38,7 +38,7 @@ export function HomeScreen(props: HomeScreenProps) {
     <Screen>
       <div className="home-screen">
         <div className="title">
-          {haveBackButton && <BackButton onClick={handleBack} />}
+          {showBackButton && <BackButton onClick={handleBack} />}
           <div className="title-text">{homeLabel}</div>
         </div>
         <div className="list">
