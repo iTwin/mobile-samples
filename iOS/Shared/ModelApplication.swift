@@ -55,14 +55,14 @@ class ModelApplication: ITMApplication {
         viewController.itmNativeUI?.addComponent(DocumentPicker(viewController: viewController, itmMessenger: ITMViewController.application.itmMessenger))
     }
       
-    override func getUrlHashParams() -> String {
-        var hashParams = ""
+    override func getUrlHashParams() -> HashParams {
+        var hashParams = super.getUrlHashParams()
         if let configData = configData {
             if configData.isYes("ITMSAMPLE_DEBUG_I18N") {
-                hashParams += "&debugI18n=YES"
+                hashParams.append(HashParam(name: "debugI18n", value: "YES"))
             }
             if configData.isYes("ITMSAMPLE_LOW_RESOLUTION") {
-                hashParams += "&lowResolution=YES"
+                hashParams.append(HashParam(name: "lowResolution", value: "YES"))
             }
         }
         return hashParams

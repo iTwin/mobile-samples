@@ -106,7 +106,18 @@ export function HubScreen(props: HubScreenProps) {
           else
             setHubStep(HubStep.DownloadIModel);
         }}
-        onError={() => setHubStep(HubStep.Error)}
+        onError={(error) => {
+          if (error.code === "ProjectNotFound") {
+            // The project that was being used before is no longer accessible. This could be due to a
+            // user change, a permissions change (user was removed from the project), or a project
+            // deletion (assuming that's even possible).
+            // Switch to project selection.
+            setHubStep(HubStep.SelectProject);
+          }
+          else {
+            setHubStep(HubStep.Error);
+          }
+        }}
       />;
       const actions: AlertAction[] = [];
       if (haveCachedBriefcase) {
@@ -143,8 +154,11 @@ export function HubScreen(props: HubScreenProps) {
         model={iModel}
         onDownloaded={(model) => {
           setIModel(model);
-          if (model.briefcase)
+          if (model.briefcase) {
             onOpen(model.briefcase.fileName, BriefcaseConnection.openFile(model.briefcase));
+          } else {
+            setHubStep(HubStep.SelectIModel);
+          }
         }}
         onCanceled={() => setHubStep(HubStep.SelectIModel)}
       />;

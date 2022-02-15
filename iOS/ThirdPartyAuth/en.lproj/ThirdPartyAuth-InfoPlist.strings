@@ -1,0 +1,8 @@
+/* Bundle name */
+"CFBundleName" = "ThirdPartyAuth";
+
+/* Description of bim file type */
+"iModel (.bim)" = "iModel (.bim)";
+
+/* Privacy - Location When In Use Usage Description */
+"NSLocationWhenInUseUsageDescription" = "Demonstrate Geolocation Polyfill";

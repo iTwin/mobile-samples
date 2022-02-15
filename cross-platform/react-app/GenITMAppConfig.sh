@@ -28,9 +28,10 @@ fi
 # the ITMApplication, and also optionally indicate that ITMApplication
 # will be developed using the react-scripts debug web server running locally on
 # this computer, instead of being built and installed onto the device.
-if [ "${ITMAPPLICATION_CLIENT_ID}" = "" ]; then
-    echo You must set the ITMAPPLICATION_CLIENT_ID environment variable.
-    echo This goes into iOSSamples.xcconfig, used by the iOS sample Xcode projects.
+if [ "${ITMAPPLICATION_CLIENT_ID}" = "" -a "${ITMSAMPLE_TOKEN_SERVER_URL}" = "" ]; then
+    echo You must set the ITMAPPLICATION_CLIENT_ID or ITMSAMPLE_TOKEN_SERVER_URL
+    echo environment variable. This goes into ITMApplication.xcconfig, used by the iOS
+    echo sample Xcode projects.
     exit 1
 fi
 if [ "${ReleaseMode}" != "YES" ]; then

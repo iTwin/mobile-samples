@@ -5,7 +5,8 @@
 import React from "react";
 import { combineReducers, createStore, Store } from "redux";
 import { IOSApp, IOSAppOpts } from "@itwin/core-mobile/lib/cjs/MobileFrontend";
-import { IModelApp, IModelConnection, SnapshotConnection, ToolAssistanceInstructions } from "@itwin/core-frontend";
+import { AuthorizationClient } from "@itwin/core-common";
+import { IModelApp, IModelConnection, IpcApp, SnapshotConnection, ToolAssistanceInstructions } from "@itwin/core-frontend";
 import { AppNotificationManager, FrameworkReducer, FrameworkState, UiFramework } from "@itwin/appui-react";
 import { Presentation } from "@itwin/presentation-frontend";
 import { ITMAuthorizationClient, Messenger, MobileCore } from "@itwin/mobile-sdk-core";
@@ -13,6 +14,8 @@ import { MobileUi } from "@itwin/mobile-ui-react";
 // import { FeatureTracking as MeasureToolsFeatureTracking, MeasureTools } from "@bentley/measure-tools-react";
 import { ActiveScreen, HomeScreen, HubScreen, LoadingScreen, ModelScreen, presentError, SnapshotsScreen, ToolAssistance } from "./Exports";
 import { getSupportedRpcs } from "../common/rpcs";
+import { TokenServerAuthClient } from "../common/TokenServerAuthClient";
+import { samplesIpcChannel } from "../common/SamplesIpc";
 import "./App.scss";
 
 /// Interface to allow switching from one screen to another.
@@ -40,6 +43,45 @@ class AppToolAssistanceNotificationManager extends AppNotificationManager {
   }
 }
 
+function createAuthorizationClient(): AuthorizationClient {
+  // Only try to use the token server if thirdPartyAuth is "YES". Otherwise users would have
+  // to remove their token server settings from ITMApplication.xcconfig in order to run the
+  // other samples. The ThirdPartyAuth sample sets the thirdPartyAuth has param to "YES".
+  if (MobileCore.getUrlSearchParam("thirdPartyAuth") === "YES") {
+    const tokenServerUrl = MobileCore.getUrlSearchParam("tokenServerUrl");
+    const tokenServerIdToken = MobileCore.getUrlSearchParam("tokenServerIdToken");
+    // With the current ThirdPartyAuth sample, we will always have the ID token if we have the
+    // token server URL, but that is not required in order for this code to work.
+    if (tokenServerUrl) {
+      // Any time the native code refreshes its ID token, it sends the new one using
+      // the "setTokenServerToken" message. Update our ID token when that happens.
+      Messenger.onQuery("setTokenServerToken").setHandler(async (token: string) => {
+        return setTokenServerToken(token);
+      });
+      return new TokenServerAuthClient(tokenServerUrl, tokenServerIdToken);
+    } else {
+      throw new Error("The ThirdPartyAuth sample requires the ITMSAMPLE_TOKEN_SERVER_URL environment variable to be set.");
+    }
+  }
+  return new ITMAuthorizationClient();
+}
+
+async function setTokenServerToken(token: string) {
+  if (IModelApp.authorizationClient instanceof TokenServerAuthClient) {
+    // Update the frontend auth client with the new ID token.
+    IModelApp.authorizationClient.tokenServerIdToken = token;
+    // Update the backend auth client with the new ID token.
+    return IpcApp.callIpcChannel(samplesIpcChannel, "setTokenServerToken", token);
+  }
+}
+
+async function updateTokenServerToken() {
+  const tokenServerIdToken = MobileCore.getUrlSearchParam("tokenServerIdToken");
+  if (tokenServerIdToken) {
+    setTokenServerToken(tokenServerIdToken);
+  }
+}
+
 function App() {
   // Start out on the Loading screen.
   const [activeScreen, setActiveScreen] = React.useState(ActiveScreen.Loading);
@@ -50,6 +92,7 @@ function App() {
   const [iModel, setIModel] = React.useState<IModelConnection>();
   const [initialized, setInitialized] = React.useState(false);
   const [openUrlPath, setOpenUrlPath] = React.useState<string>();
+  const [haveBackButton, setHaveBackButton] = React.useState(false);
 
   const pushActiveInfo = React.useCallback((screen: ActiveScreen, cleanup?: () => void) => {
     // Push the current activeScreen onto the activeStack, along with the cleanup function for the new active screen.
@@ -76,7 +119,7 @@ function App() {
           iModelApp: {
             rpcInterfaces: getSupportedRpcs(),
             notifications: new AppToolAssistanceNotificationManager(),
-            authorizationClient: new ITMAuthorizationClient(),
+            authorizationClient: createAuthorizationClient(),
           },
         }
         const lowResolution = MobileCore.getUrlSearchParam("lowResolution") === "YES";
@@ -89,10 +132,12 @@ function App() {
           };
         }
         await IOSApp.startup(opts);
+        await updateTokenServerToken();
         await UiFramework.initialize(appReduxStore);
         await Presentation.initialize();
         await MobileUi.initialize(IModelApp.localization);
         await IModelApp.localization.registerNamespace("ReactApp");
+        setHaveBackButton(MobileCore.getUrlSearchParam("haveBackButton") === "YES");
         // await MeasureTools.startup();
         // MeasureToolsFeatureTracking.stop();
 
@@ -201,7 +246,7 @@ function App() {
 
   switch (activeScreen) {
     case ActiveScreen.Home:
-      return <HomeScreen onSelect={handleHomeSelect} />;
+      return <HomeScreen onSelect={handleHomeSelect} showBackButton={haveBackButton} />;
     case ActiveScreen.Snapshots:
       return <SnapshotsScreen onOpen={handleOpen} onBack={handleBack} />;
     case ActiveScreen.Hub:

@@ -1,14 +1,42 @@
 #include "ITMApplication.xcconfig"
-// If you get the error "could not find included file 'clientID.xconfig' in search paths",
-// you need to create the clientID.xcconfig file, and populate it with the proper value for the
-// ITMAPPLICATION_CLIENT_ID and ITMAPPLICATION_SCOPE environment variables. It will look like this
-// (without the comment prefix):
+// If you get the error "could not find included file 'ITMApplication.xcconfig' in search paths",
+// you need to create the ITMApplication.xcconfig file, and populate it with proper values. The
+// supported values are all documented here and can be copied into that file, uncommented, and
+// given appropriate values.
+// NOTE: You may have to restart Xcode after creating ITMApplication.xcconfig.
+
+// The following four settings apply to all of the samples except ThirdPartyAuth. The first is
+// required to run those samples. The second is recommended, but does have a reasonable default.
+//
 // ITMAPPLICATION_CLIENT_ID = YOUR-CLIENT-ID-GOES-HERE
 // ITMAPPLICATION_SCOPE = YOUR-SCOPE-GOES-HERE
-// NOTE: You may have to restart Xcode after creating ITMApplication.xcconfig.
 //
-// Set the following setting if you want to connect based on your Mac's IP address instead of
-// your Mac's hostname.
+// Other supported ITMApplication settings:
+// ITMAPPLICATION_ISSUER_URL
+// ITMAPPLICATION_REDIRECT_URI
+
+// The following four settings only apply to the ThirdPartyAuth example.
+//
+// The URL of your token server. Note that $() is used between the two slashes in the URL because
+// Xcode's parsing of this xcconfig file will otherwise treat everything starting at the two
+// slashes as a comment. The $() gets substituted with an empty string at build time.
+// ITMSAMPLE_TOKEN_SERVER_URL = http:/$()/10.0.0.1:3001/getToken
+//
+// The Client ID from Auth0.
+// ITMSAMPLE_AUTH0_CLIENT_ID = YOUR-AUTH0-CLIENT-ID-GOES-HERE
+//
+// The domain from Auth0.
+// ITMSAMPLE_AUTH0_DOMAIN = YOUR-AUTH0-DOMAIN-GOES-HERE
+//
+// The audience from Auth0. Make sure to use /$()/ instead of // (like the URL above).
+// This must match the audience defined in the Auth0 dashboard.
+// Note: The sample value here can probably be left as-is.
+// ITMSAMPLE_AUTH0_AUDIENCE = https:/$()/$(ITMSAMPLE_AUTH0_DOMAIN)/userinfo
+
+// The remaining settings apply to all samples, and are all optional.
+//
+// Set the following setting if you want to connect to the React debug server based on your Mac's
+// IP address instead of your Mac's hostname.
 // ITMAPPLICATION_USE_IP = YES
 //
 // If you set it to use your IP address, and want it to use the IP from a device other than
@@ -20,13 +48,9 @@
 // ITMAPPLICATION_NO_DEBUG_SERVER = YES
 //
 // Set the following setting if you want to enable logging of messages passed between swift and typescript:
-// ITMAPPLICAITON_MESSAGE_LOGGING = YES
+// ITMAPPLICATION_MESSAGE_LOGGING = YES
 // Or to include the data passed with the messages (may contain sensitive data, DO NOT enable this in a release build):
-// ITMAPPLICAITON_FULL_MESSAGE_LOGGING = YES
-//
-// Other supported ITMApplication settings:
-// ITMAPPLICATION_ISSUER_URL
-// ITMAPPLICATION_REDIRECT_URI
+// ITMAPPLICATION_FULL_MESSAGE_LOGGING = YES
 //
 // Set the following setting if you want to put delimiters around the app's localized strings.
 // ITMSAMPLE_DEBUG_I18N = YES

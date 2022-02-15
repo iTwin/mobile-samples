@@ -1,4 +1,29 @@
 {
     "editor.formatOnSave": true,
-    "files.insertFinalNewline": true
+    "files.insertFinalNewline": true,
+    "cSpell.words": [
+        "appui",
+        "browserslist",
+        "bundlename",
+        "ecschema",
+        "hubscreen",
+        "imodel",
+        "imodeljs",
+        "imodels",
+        "ITMAPPLICATION",
+        "ITMSAMPLE",
+        "itwin",
+        "itwinjs",
+        "itwinui",
+        "muic",
+        "orbitgt",
+        "outdir",
+        "Recents",
+        "Rpcs",
+        "ruleset",
+        "signin",
+        "typedoc",
+        "webgl",
+        "xcconfig"
+    ]
 }

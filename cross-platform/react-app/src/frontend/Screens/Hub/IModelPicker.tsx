@@ -119,7 +119,12 @@ export function IModelPicker(props: IModelPickerProps) {
         onLoaded?.(models);
       } catch (error) {
         setIModels([]);
-        presentError("GetIModelsErrorFormat", error, "HubScreen");
+        const anyError = error as any;
+        // Don't show an error message for ProjectNotFound, since the HubScreen will automatically
+        // switch to the project selection screen in that case.
+        if (anyError.code !== "ProjectNotFound") {
+          presentError("GetIModelsErrorFormat", error, "HubScreen");
+        }
         onError?.(error);
       }
       setLoading(false);
