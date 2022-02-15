@@ -4,7 +4,7 @@
 *--------------------------------------------------------------------------------------------*/
 import * as express from "express";
 import * as jwt from "jsonwebtoken";
-import * as https from "https";
+import axios from "axios";
 import { Server as HttpServer } from "http";
 import type { AccessToken } from "@itwin/core-bentley";
 import type { AuthorizationClient } from "@itwin/core-common";
@@ -15,38 +15,15 @@ export class CustomExpressServer {
 
   constructor(private _client: AuthorizationClient, private _auth0Domain: string) { }
 
-  private async getJSON(url: string): Promise<string> {
-    return new Promise((resolve, reject) => {
-      https.get(url, (response) => {
-        let rawData = "";
-        let rawError: Error | undefined;
-        response.on("data", (data) => {
-          rawData += data;
-        });
-        response.on("error", (error) => {
-          rawError = error;
-        });
-        response.on("end", () => {
-          if (response.statusCode !== 200) {
-            reject(new Error(`Error fetching public key: ${response.statusCode}: ${response.statusMessage}`));
-          }
-          else if (rawError) {
-            reject(rawError);
-          }
-          else {
-            resolve(rawData);
-          }
-        });
-      });
-    });
+  private async getJSON(url: string): Promise<any> {
+    return (await axios.get(url)).data;
   }
 
   public async getPublicKey() {
     if (this._publicKey) {
       return this._publicKey;
     }
-    const jsonString = await this.getJSON(`https://${this._auth0Domain}/.well-known/jwks.json`);
-    const jsonData = JSON.parse(jsonString);
+    const jsonData = await this.getJSON(`https://${this._auth0Domain}/.well-known/jwks.json`);
     const keys = jsonData.keys;
     if (Array.isArray(keys) && keys.length > 0) {
       const key = keys[0];
