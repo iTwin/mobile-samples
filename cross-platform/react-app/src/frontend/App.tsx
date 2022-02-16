@@ -18,6 +18,48 @@ import { TokenServerAuthClient } from "../common/TokenServerAuthClient";
 import { samplesIpcChannel } from "../common/SamplesIpc";
 import "./App.scss";
 
+declare global {
+  interface Window {
+    /// Custom field on the window object that stores the settings that get passed via URL hash parameters.
+    itmSampleParams: {
+      lowResolution: boolean,
+      thirdPartyAuth: boolean,
+      haveBackButton: boolean,
+      debugI18n: boolean,
+      tokenServerUrl?: string,
+      tokenServerIdToken?: string,
+    }
+  }
+}
+
+// Initialize all boolean URL has parameters to false. (String parameters default to undefined.)
+window.itmSampleParams = {
+  lowResolution: false,
+  thirdPartyAuth: false,
+  haveBackButton: false,
+  debugI18n: false,
+};
+
+/// Load the given boolean UrlSearchParam into the custom field on the window object.
+function loadBooleanUrlSearchParam(name: "lowResolution" | "thirdPartyAuth" | "haveBackButton" | "debugI18n") {
+  window.itmSampleParams[name] = MobileCore.getUrlSearchParam(name) === "YES";
+}
+
+/// Load the given string UrlSearchParam into the custom field on the window object.
+function loadStringUrlSearchParam(name: "tokenServerUrl" | "tokenServerIdToken") {
+  window.itmSampleParams[name] = MobileCore.getUrlSearchParam(name);
+}
+
+/// Load the values stored in the URL hash params into the custom field on the window object.
+function loadUrlSearchParams() {
+  loadBooleanUrlSearchParam("lowResolution");
+  loadBooleanUrlSearchParam("thirdPartyAuth");
+  loadBooleanUrlSearchParam("haveBackButton");
+  loadBooleanUrlSearchParam("debugI18n");
+  loadStringUrlSearchParam("tokenServerUrl");
+  loadStringUrlSearchParam("tokenServerIdToken");
+}
+
 /// Interface to allow switching from one screen to another.
 interface ActiveInfo {
   /// The active screen represented by this entry in the activeStack.
@@ -47,9 +89,9 @@ function createAuthorizationClient(): AuthorizationClient {
   // Only try to use the token server if thirdPartyAuth is "YES". Otherwise users would have
   // to remove their token server settings from ITMApplication.xcconfig in order to run the
   // other samples. The ThirdPartyAuth sample sets the thirdPartyAuth has param to "YES".
-  if (MobileCore.getUrlSearchParam("thirdPartyAuth") === "YES") {
-    const tokenServerUrl = MobileCore.getUrlSearchParam("tokenServerUrl");
-    const tokenServerIdToken = MobileCore.getUrlSearchParam("tokenServerIdToken");
+  if (window.itmSampleParams.thirdPartyAuth) {
+    const tokenServerUrl = window.itmSampleParams.tokenServerUrl;
+    const tokenServerIdToken = window.itmSampleParams.tokenServerIdToken;
     // With the current ThirdPartyAuth sample, we will always have the ID token if we have the
     // token server URL, but that is not required in order for this code to work.
     if (tokenServerUrl) {
@@ -76,7 +118,7 @@ async function setTokenServerToken(token: string) {
 }
 
 async function updateTokenServerToken() {
-  const tokenServerIdToken = MobileCore.getUrlSearchParam("tokenServerIdToken");
+  const tokenServerIdToken = window.itmSampleParams.tokenServerIdToken;
   if (tokenServerIdToken) {
     setTokenServerToken(tokenServerIdToken);
   }
@@ -115,6 +157,7 @@ function App() {
         // web view when it receives the "loading" message.
         await Messenger.initialize();
         Messenger.sendMessage("loading");
+        loadUrlSearchParams();
         const opts: IOSAppOpts = {
           iModelApp: {
             rpcInterfaces: getSupportedRpcs(),
@@ -122,8 +165,7 @@ function App() {
             authorizationClient: createAuthorizationClient(),
           },
         }
-        const lowResolution = MobileCore.getUrlSearchParam("lowResolution") === "YES";
-        if (lowResolution) {
+        if (window.itmSampleParams.lowResolution) {
           // Improves FPS on really slow devices and iOS simulator.
           // Shader compilation still causes one-time slowness when interacting with model.
           opts.iModelApp!.renderSys = {
@@ -137,7 +179,7 @@ function App() {
         await Presentation.initialize();
         await MobileUi.initialize(IModelApp.localization);
         await IModelApp.localization.registerNamespace("ReactApp");
-        setHaveBackButton(MobileCore.getUrlSearchParam("haveBackButton") === "YES");
+        setHaveBackButton(window.itmSampleParams.haveBackButton);
         // await MeasureTools.startup();
         // MeasureToolsFeatureTracking.stop();
 

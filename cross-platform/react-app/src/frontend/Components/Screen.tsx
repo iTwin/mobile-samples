@@ -5,7 +5,7 @@
 import React from "react";
 import { IModelApp } from "@itwin/core-frontend";
 import { ProgressInfo } from "@itwin/core-frontend/lib/cjs/request/Request";
-import { MobileCore, presentAlert } from "@itwin/mobile-sdk-core";
+import { presentAlert } from "@itwin/mobile-sdk-core";
 import { useTheme } from "@itwin/itwinui-react";
 import { useActiveColorSchemeIsDark } from "@itwin/mobile-ui-react";
 import "./Screen.scss";
@@ -16,19 +16,8 @@ export interface ScreenProps {
   children?: React.ReactNode;
 }
 
-let debugI18n = false;
-let debugI18nChecked = false;
-
-function shouldDebugI18n() {
-  if (!debugI18nChecked) {
-    debugI18n = MobileCore.getUrlSearchParam("debugI18n") === "YES";
-    debugI18nChecked = true;
-  }
-  return debugI18n;
-}
-
 export function i18n(prefix: string, key: string, options?: any) {
-  if (shouldDebugI18n()) {
+  if (window.itmSampleParams.debugI18n) {
     return "=" + IModelApp.localization.getLocalizedStringWithNamespace("ReactApp", `${prefix}.${key}`, options) + "=";
   } else {
     return IModelApp.localization.getLocalizedStringWithNamespace("ReactApp", `${prefix}.${key}`, options);
