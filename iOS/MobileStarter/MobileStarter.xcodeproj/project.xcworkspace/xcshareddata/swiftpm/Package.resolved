@@ -29,21 +29,21 @@
         }
       },
       {
-        "package": "itwin-mobile-ios",
-        "repositoryURL": "https://github.com/iTwin/mobile-ios-package",
+        "package": "itwin-mobile-native-ios",
+        "repositoryURL": "https://github.com/iTwin/mobile-native-ios",
         "state": {
           "branch": null,
-          "revision": "77b45d93a8bc80dba4986183857a0bf8d2b8c6b9",
-          "version": "2.19.31"
+          "revision": "f81411d47827f63f358465a6780dd0f971ff8d44",
+          "version": "2.19.35"
         }
       },
       {
-        "package": "itwin-mobile-sdk",
-        "repositoryURL": "https://github.com/iTwin/mobile-sdk.git",
+        "package": "itwin-mobile-sdk-ios",
+        "repositoryURL": "https://github.com/iTwin/mobile-sdk-ios.git",
         "state": {
           "branch": null,
-          "revision": "9eec2778edb1f19e6230df7169424038c2e939bf",
-          "version": "0.9.9"
+          "revision": "d8bee103c8b2c6dfe4e62aa4d36343a6d26acb04",
+          "version": "0.9.10"
         }
       },
       {
@@ -51,8 +51,8 @@
         "repositoryURL": "https://github.com/mxcl/PromiseKit",
         "state": {
           "branch": null,
-          "revision": "2ff97931d2721ecae9f94d8cbf4cf853a7d79180",
-          "version": "6.16.0"
+          "revision": "93c8d41ce96ed78f36c3948be396d76f3ca3de1b",
+          "version": "6.16.2"
         }
       },
       {
