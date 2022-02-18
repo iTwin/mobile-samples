@@ -5,7 +5,7 @@ The goal of the this token server is to provide an example of how to implement a
 This server holds the client secret created for your application and manages issuing the token to a client-side application that will allow access to the
 the iTwin Platform. This will enforce a secure workflow when implementing the [client credentials workflow](https://developer.bentley.com/apis/overview/authorization/#clientcredentialflow).
 
-> __Important__: It is strongly recommended that this server be placed behind a layer of authorization and/or authentication that fits your workflow and validates the user has access to get the token required. However to simplify the example, this server simply verifies that the request has a valid Auth0 token from the domain specified in the AUTH0_DOMAIN environment variable.
+> __Important__: It is strongly recommended that this server be placed behind a layer of authorization and/or authentication that fits your workflow and validates the user has access to get the token required. However to simplify the example, this server simply verifies that the request has a valid auth0 token from the domain specified in the AUTH0_DOMAIN environment variable. Similarly, the server itself is an http server. Any token server you deploy in the real world would use https.
 
 ## Setup token server
 
