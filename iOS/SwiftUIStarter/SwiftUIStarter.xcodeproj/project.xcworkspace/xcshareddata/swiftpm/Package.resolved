@@ -38,12 +38,12 @@
         }
       },
       {
-        "package": "itwin-mobile-sdk-ios",
+        "package": "itwin-mobile-sdk",
         "repositoryURL": "https://github.com/iTwin/mobile-sdk-ios.git",
         "state": {
           "branch": null,
-          "revision": "3a1e1c79f50005fb62d4eaf73fd71c9cee429603",
-          "version": "0.10.1"
+          "revision": "718af0f3d1b6016bbd48805475bdbe60ed82d39f",
+          "version": "0.10.2"
         }
       },
       {
