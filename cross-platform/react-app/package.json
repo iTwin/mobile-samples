@@ -23,7 +23,7 @@
     "@types/react-dom": "^16.8.4",
     "cpx": "^1.5.0",
     "fibers": "^5.0.0",
-    "node-sass": "^6.0.1",
+    "node-sass": "^7.0.0",
     "null-loader": "^0.1.1",
     "sass": "^1.39.0",
     "typescript": "^4.4.4",
