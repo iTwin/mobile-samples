@@ -30,7 +30,7 @@
 		1FC11161261FC44B00835E6E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		1FE3B33B26D413DA004DD154 /* iOSSamples.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; name = iOSSamples.xcconfig; path = ../iOSSamples.xcconfig; sourceTree = "<group>"; };
 		1FFD587A271DF094005B37DA /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; name = README.md; path = ../README.md; sourceTree = "<group>"; };
-		5FB2050426CF29A500C4DBE1 /* itwin-mobile-sdk-ios */ = {isa = PBXFileReference; lastKnownFileType = folder; name = "itwin-mobile-sdk-ios"; path = "../../../mobile-sdk-ios"; sourceTree = "<group>"; };
+		5FB2050426CF29A500C4DBE1 /* itwin-mobile-sdk */ = {isa = PBXFileReference; lastKnownFileType = folder; name = "itwin-mobile-sdk"; path = "../../../mobile-sdk-ios"; sourceTree = "<group>"; };
 		5FD7518626DD9DCD00DC3060 /* DocumentPicker.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DocumentPicker.swift; sourceTree = "<group>"; };
 		5FD7518726DD9DCD00DC3060 /* ModelApplication.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ModelApplication.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -53,7 +53,7 @@
 				1FFD587A271DF094005B37DA /* README.md */,
 				1FE3B33B26D413DA004DD154 /* iOSSamples.xcconfig */,
 				1F6EB10C26D46210003BA335 /* ITMApplication.xcconfig */,
-				5FB2050426CF29A500C4DBE1 /* itwin-mobile-sdk-ios */,
+				5FB2050426CF29A500C4DBE1 /* itwin-mobile-sdk */,
 				1FC11152261FC44900835E6E /* MobileStarter */,
 				1FC11151261FC44900835E6E /* Products */,
 			);

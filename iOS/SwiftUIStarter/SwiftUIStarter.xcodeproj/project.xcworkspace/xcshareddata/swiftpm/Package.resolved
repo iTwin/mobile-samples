@@ -29,7 +29,7 @@
         }
       },
       {
-        "package": "itwin-mobile-native-ios",
+        "package": "itwin-mobile-native",
         "repositoryURL": "https://github.com/iTwin/mobile-native-ios",
         "state": {
           "branch": null,
@@ -38,7 +38,7 @@
         }
       },
       {
-        "package": "itwin-mobile-sdk-ios",
+        "package": "itwin-mobile-sdk",
         "repositoryURL": "https://github.com/iTwin/mobile-sdk-ios.git",
         "state": {
           "branch": null,

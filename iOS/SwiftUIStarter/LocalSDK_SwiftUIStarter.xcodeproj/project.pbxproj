@@ -20,7 +20,7 @@
 		1F2D7B652742D70700AAB11E /* PrintLogger.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PrintLogger.swift; sourceTree = "<group>"; };
 		1F8215E526D463E600C27387 /* iOSSamples.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; name = iOSSamples.xcconfig; path = ../iOSSamples.xcconfig; sourceTree = "<group>"; };
 		1F8215E626D463E600C27387 /* ITMApplication.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; name = ITMApplication.xcconfig; path = ../ITMApplication.xcconfig; sourceTree = "<group>"; };
-		5FB2050C26D0436400C4DBE1 /* itwin-mobile-sdk-ios */ = {isa = PBXFileReference; lastKnownFileType = folder; name = "itwin-mobile-sdk-ios"; path = "../../../mobile-sdk-ios"; sourceTree = "<group>"; };
+		5FB2050C26D0436400C4DBE1 /* itwin-mobile-sdk */ = {isa = PBXFileReference; lastKnownFileType = folder; name = "itwin-mobile-sdk"; path = "../../../mobile-sdk-ios"; sourceTree = "<group>"; };
 		5FD7517C26DD927400DC3060 /* DocumentPicker.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DocumentPicker.swift; sourceTree = "<group>"; };
 		5FD7517D26DD927400DC3060 /* ModelApplication.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ModelApplication.swift; sourceTree = "<group>"; };
 		5FDD749226CDA9520007FBC6 /* SwiftUIStarter.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SwiftUIStarter.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -58,7 +58,7 @@
 			children = (
 				1F8215E526D463E600C27387 /* iOSSamples.xcconfig */,
 				1F8215E626D463E600C27387 /* ITMApplication.xcconfig */,
-				5FB2050C26D0436400C4DBE1 /* itwin-mobile-sdk-ios */,
+				5FB2050C26D0436400C4DBE1 /* itwin-mobile-sdk */,
 				5FDD749426CDA9520007FBC6 /* SwiftUIStarter */,
 				5FDD749326CDA9520007FBC6 /* Products */,
 			);
