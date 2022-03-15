@@ -1,6 +1,6 @@
 {
   "name": "react-app",
-  "version": "0.10.6",
+  "version": "0.10.7",
   "private": true,
   "homepage": "./",
   "scripts": {
@@ -53,8 +53,8 @@
     "@itwin/imodels-client-management": "1.0.1",
     "@itwin/linear-referencing-backend": "3.0.2",
     "@itwin/linear-referencing-common": "3.0.2",
-    "@itwin/mobile-sdk-core": "0.10.6",
-    "@itwin/mobile-ui-react": "0.10.6",
+    "@itwin/mobile-sdk-core": "0.10.7",
+    "@itwin/mobile-ui-react": "0.10.7",
     "@itwin/presentation-backend": "3.0.2",
     "@itwin/presentation-common": "3.0.2",
     "@itwin/presentation-components": "3.0.2",

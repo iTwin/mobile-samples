@@ -42,8 +42,8 @@
         "repositoryURL": "https://github.com/iTwin/mobile-sdk-ios.git",
         "state": {
           "branch": null,
-          "revision": "5b14618ea4b62c7becb48893e1b029bc4786badc",
-          "version": "0.10.6"
+          "revision": "b264e0e9ae54c9800d339ab25e0242a162f8850c",
+          "version": "0.10.7"
         }
       },
       {
