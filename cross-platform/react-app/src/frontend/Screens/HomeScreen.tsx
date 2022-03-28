@@ -14,7 +14,7 @@ export enum ActiveScreen {
   Snapshots,
   Hub,
   Model,
-};
+}
 
 /// Properties for [[HomeScreen]] React component.
 export interface HomeScreenProps {

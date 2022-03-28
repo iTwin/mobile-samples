@@ -46,6 +46,7 @@ export const ButtonRow = React.forwardRef((props: ButtonRowProps, ref: MutableHt
     </HorizontalScrollableWithFades>
   );
 });
+ButtonRow.displayName = "ButtonRow";
 
 export interface ActiveButtonRowProps extends ButtonRowProps {
   activeIndex?: number;
@@ -60,6 +61,8 @@ export const ActiveButtonRow = React.forwardRef((props: ActiveButtonRowProps, re
 
   return <ButtonRow ref={makeRefHandler(ref, divRef)} {...others} />;
 });
+ActiveButtonRow.displayName = "ActiveButtonRow";
+
 export interface ToolsBottomPanelProps extends BottomPanelProps {
   onToolClick?: () => void;
 }
@@ -123,7 +126,7 @@ export function ToolsBottomPanel(props: ToolsBottomPanelProps) {
           onClick={async () => {
             // Ensure the selectedView is the main viewport otherwise some tools won't execute as the selected view is incompatible.
             // This only applies when an app has more than one viewport, but does no harm.
-            IModelApp.viewManager.setSelectedView(IModelApp.viewManager.getFirstOpenView());
+            IModelApp.viewManager.setSelectedView(IModelApp.viewManager.getFirstOpenView()); // eslint-disable-line @typescript-eslint/no-floating-promises
 
             value.toolItemDef.execute();
             onToolClick?.();

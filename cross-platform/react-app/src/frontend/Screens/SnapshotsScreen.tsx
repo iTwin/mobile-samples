@@ -34,7 +34,7 @@ export function SnapshotsScreen(props: SnapshotsScreenProps) {
 
   // React effect run during component initialization.
   React.useEffect(() => {
-    updateBimDocuments();
+    updateBimDocuments(); // eslint-disable-line @typescript-eslint/no-floating-promises
   }, [updateBimDocuments]);
 
   // Convert the array of paths into an array of [[Button]] components, where each button loads the
@@ -46,9 +46,9 @@ export function SnapshotsScreen(props: SnapshotsScreenProps) {
       key={index}
       onClick={async () => {
         // Open the given snapshot iModel, and then pass it to the onOpen props callback.
-        onOpen(document, SnapshotConnection.openFile(document));
+        onOpen(document, SnapshotConnection.openFile(document)); // eslint-disable-line @typescript-eslint/no-floating-promises
       }}
-      title={documentName} />
+      title={documentName} />;
   });
 
   // Add a button to the beginning of the list to use the OS's file picker to choose a *.bim file.
@@ -59,11 +59,11 @@ export function SnapshotsScreen(props: SnapshotsScreenProps) {
         const document: string = await Messenger.query("chooseDocument");
         if (document.length) {
           // Open the given snapshot iModel, and then pass it to the onOpen props callback.
-          onOpen(document, SnapshotConnection.openFile(document));
+          onOpen(document, SnapshotConnection.openFile(document)); // eslint-disable-line @typescript-eslint/no-floating-promises
         }
       }}
       title={chooseFileLabel}
-    />
+    />,
   );
 
   return (
@@ -78,7 +78,7 @@ export function SnapshotsScreen(props: SnapshotsScreenProps) {
             <NavigationButton
               iconSpec="icon-refresh"
               onClick={() => {
-                updateBimDocuments();
+                updateBimDocuments(); // eslint-disable-line @typescript-eslint/no-floating-promises
               }}
             />
           </div>

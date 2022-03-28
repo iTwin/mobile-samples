@@ -25,6 +25,7 @@ export function InfoBottomPanel(props: InfoBottomPanelProps) {
   return (
     <BottomPanel {...props} className="info-bottom-panel">
       <HeaderTitle label={name} iconSpec="icon-info-hollow" />
+      {/* eslint-disable-next-line jam3/no-sanitizer-with-danger */}
       <div dangerouslySetInnerHTML={{ __html: pathLabel }} />
     </BottomPanel>
   );

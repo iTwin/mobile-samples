@@ -15,7 +15,7 @@ import { AuthorizationClient } from "@itwin/core-common";
 /**
  * AuthorizationClient implementation that communicates with a sample token server. This
  * uses a local ID token as the authorization in the request it makes to the token server.
- * 
+ *
  * Note: This class is instantiated in both the frontend and the backend.
  */
 export class TokenServerAuthClient implements AuthorizationClient {
@@ -43,7 +43,7 @@ export class TokenServerAuthClient implements AuthorizationClient {
   private async fetchAccessToken() {
     const response = await axios.get(this._tokenServerUrl, {
       headers: {
-        "Authorization": `Bearer ${this.tokenServerIdToken}`
+        Authorization: `Bearer ${this.tokenServerIdToken}`,
       },
     });
     this._accessToken = response.data;
@@ -69,7 +69,7 @@ export class TokenServerAuthClient implements AuthorizationClient {
 
   /**
    * Returns an access token from the token server.
-   * 
+   *
    * Note: Once a token is fetched from the token server, that token will be returned
    * repeatedly as long as it isn't due to expire for at least 59 seconds. When it is due
    * to expire, a new token will be fetched. The 59 second figure was chosen due to the
@@ -81,7 +81,7 @@ export class TokenServerAuthClient implements AuthorizationClient {
   public async getAccessToken(): Promise<AccessToken> {
     try {
       if (this.needsAccessToken() && this.tokenServerIdToken) {
-        await PromiseUtil.consolidateCall("TokenServerAuthClient.fetchAccessToken", () => this.fetchAccessToken());
+        await PromiseUtil.consolidateCall("TokenServerAuthClient.fetchAccessToken", async () => this.fetchAccessToken());
       }
       if (!this._accessToken) {
         throw new BentleyError(AuthStatus.Error, "Cannot get access token");

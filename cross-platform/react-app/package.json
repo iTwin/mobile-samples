@@ -14,7 +14,8 @@
     "build:frontend": "NODE_OPTIONS=--max_old_space_size=8192 USE_FAST_SASS=true react-scripts build && npm run copy:assets",
     "build:backend": "tsc -p tsconfig.backend.json && webpack --config ./webpack.config.js --env.outdir=./lib/webpack --env.entry=./lib/backend/main.js --env.bundlename=main",
     "build": "npm run build:frontend && npm run build:backend",
-    "clean": "rimraf build lib"
+    "clean": "rimraf build lib",
+    "lint": "eslint -f visualstudio src/index.tsx \"./src/frontend/**/*.{ts,tsx}\" \"./src/common/**/*.{ts,tsx}\" 1>&2"
   },
   "license": "MIT",
   "author": {
@@ -25,6 +26,7 @@
     "@babel/core": "^7.15.8",
     "@bentley/react-scripts": "4.0.5",
     "@itwin/build-tools": "3.0.2",
+    "@itwin/eslint-plugin": "3.0.2",
     "@types/axios": "^0.14.0",
     "@types/jest": "^26.0.15",
     "@types/jsonwebtoken": "^8.5.8",
@@ -83,10 +85,20 @@
     "typedoc": "^0.21.9"
   },
   "eslintConfig": {
+    "plugins": [
+      "@itwin"
+    ],
     "extends": [
+      "plugin:@itwin/ui",
       "react-app",
       "react-app/jest"
-    ]
+    ],
+    "rules": {
+      "no-console": "off",
+      "@itwin/no-internal-barrel-imports": "off",
+      "jsx-a11y/click-events-have-key-events": "off",
+      "jsx-a11y/no-static-element-interactions": "off"
+    }
   },
   "browserslist": {
     "production": [

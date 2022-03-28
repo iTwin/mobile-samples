@@ -10,8 +10,7 @@ import { IModelApp, NativeApp } from "@itwin/core-frontend";
 import { IModelsClient, MinimalIModel } from "@itwin/imodels-client-management";
 import { AccessTokenAdapter } from "@itwin/imodels-access-frontend";
 import { LocalBriefcaseProps } from "@itwin/core-common";
-import { fileSizeString, presentError, ButtonProps, HubScreenButton, HubScreenButtonListProps, HubScreenButtonList } from "../../Exports";
-import { i18n } from "../../Exports";
+import { ButtonProps, fileSizeString, HubScreenButton, HubScreenButtonList, HubScreenButtonListProps, i18n, presentError } from "../../Exports";
 
 export interface IModelInfo {
   minimalIModel: MinimalIModel;
@@ -21,7 +20,7 @@ export interface IModelInfo {
 interface IModelButtonProps extends Omit<ButtonProps, "title"> {
   modelInfo: IModelInfo;
   onCacheDeleted?: (modelInfo: IModelInfo) => void;
-};
+}
 
 function IModelButton(props: IModelButtonProps) {
   const { modelInfo, onCacheDeleted, ...others } = props;
@@ -51,7 +50,7 @@ function IModelButton(props: IModelButtonProps) {
     {briefcase && <div className="delete-button" onClick={deleteBriefcase}>
       <IconImage iconSpec="icon-delete" />
     </div>}
-  </HubScreenButton>
+  </HubScreenButton>;
 }
 
 interface IModelListProps extends HubScreenButtonListProps {
@@ -77,7 +76,7 @@ async function getIModels(project: Project) {
     authorization: AccessTokenAdapter.toAuthorizationCallback(accessToken),
     urlParams: {
       projectId: project.id,
-    }
+    },
   })) {
     minimalIModels.push(minimalIModel);
   }
@@ -129,7 +128,7 @@ export function IModelPicker(props: IModelPickerProps) {
       }
       setLoading(false);
     };
-    fetchModels();
+    fetchModels(); // eslint-disable-line @typescript-eslint/no-floating-promises
   }, [isMountedRef, onError, onLoaded, project]);
 
   return <IModelList models={iModels} loading={loading} onSelect={onSelect} onCacheDeleted={(model) => {

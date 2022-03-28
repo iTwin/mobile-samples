@@ -22,13 +22,13 @@ declare global {
   interface Window {
     /// Custom field on the window object that stores the settings that get passed via URL hash parameters.
     itmSampleParams: {
-      lowResolution: boolean,
-      thirdPartyAuth: boolean,
-      haveBackButton: boolean,
-      debugI18n: boolean,
-      tokenServerUrl?: string,
-      tokenServerIdToken?: string,
-    }
+      lowResolution: boolean;
+      thirdPartyAuth: boolean;
+      haveBackButton: boolean;
+      debugI18n: boolean;
+      tokenServerUrl?: string;
+      tokenServerIdToken?: string;
+    };
   }
 }
 
@@ -120,7 +120,7 @@ async function setTokenServerToken(token: string) {
 async function updateTokenServerToken() {
   const tokenServerIdToken = window.itmSampleParams.tokenServerIdToken;
   if (tokenServerIdToken) {
-    setTokenServerToken(tokenServerIdToken);
+    setTokenServerToken(tokenServerIdToken); // eslint-disable-line @typescript-eslint/no-floating-promises
   }
 }
 
@@ -142,7 +142,7 @@ function App() {
     // function for the new active screen. The activeScreen variable (set after updating the activeStack)
     // tracks the current active screen.
     setActiveStack((old) => {
-      return [...old, { activeScreen: activeScreen, cleanup }];
+      return [...old, { activeScreen, cleanup }];
     });
     // Set the new screen as active.
     setActiveScreen(screen);
@@ -164,7 +164,7 @@ function App() {
             notifications: new AppToolAssistanceNotificationManager(),
             authorizationClient: createAuthorizationClient(),
           },
-        }
+        };
         if (window.itmSampleParams.lowResolution) {
           // Improves FPS on really slow devices and iOS simulator.
           // Shader compilation still causes one-time slowness when interacting with model.
@@ -190,14 +190,14 @@ function App() {
         pushActiveInfo(ActiveScreen.Home);
         console.log("...Done Initializing.");
       } catch (ex) {
-        console.log("Exception during initialization: " + ex);
+        console.log(`Exception during initialization: ${ex}`);
       }
     };
     // This React hooks runs more than once, despite attempts to prevent that. So use initialized
     // to prevent it from initializing more than once.
     if (!initialized) {
       setInitialized(true);
-      initialize();
+      initialize(); // eslint-disable-line @typescript-eslint/no-floating-promises
     }
   }, [pushActiveInfo, initialized]);
 
@@ -264,7 +264,7 @@ function App() {
           // switched to undefined.
           setOpenUrlPath(modelPath);
         } else {
-          handleOpen(modelPath, SnapshotConnection.openFile(modelPath));
+          handleOpen(modelPath, SnapshotConnection.openFile(modelPath)); // eslint-disable-line @typescript-eslint/no-floating-promises
         }
       });
     }
@@ -275,14 +275,14 @@ function App() {
   React.useEffect(() => {
     if (iModel === undefined && openUrlPath) {
       // Get a local copy of openUrlPath.
-      const modelPath = "" + openUrlPath;
+      const modelPath = `${openUrlPath}`;
       // Clear openUrlPath before doing anything else.
       setOpenUrlPath(undefined);
       const openFunc = async () => {
         // Open the requested snapshot iModel.
-        handleOpen(modelPath, SnapshotConnection.openFile(modelPath));
-      }
-      openFunc();
+        handleOpen(modelPath, SnapshotConnection.openFile(modelPath)); // eslint-disable-line @typescript-eslint/no-floating-promises
+      };
+      openFunc(); // eslint-disable-line @typescript-eslint/no-floating-promises
     }
   }, [iModel, openUrlPath, handleOpen]);
 
@@ -294,7 +294,7 @@ function App() {
     case ActiveScreen.Hub:
       return <HubScreen onOpen={handleOpen} onBack={handleBack} />;
     case ActiveScreen.Model:
-      return <ModelScreen filename={modelFilename} iModel={iModel!} onBack={handleBack} />
+      return <ModelScreen filename={modelFilename} iModel={iModel!} onBack={handleBack} />;
     default:
       return <LoadingScreen />;
   }

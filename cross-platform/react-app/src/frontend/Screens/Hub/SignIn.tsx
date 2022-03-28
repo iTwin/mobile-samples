@@ -36,7 +36,7 @@ export function SignIn(props: SignInProps) {
       }
     };
     setSignedIn(true);
-    signIn();
+    signIn(); // eslint-disable-line @typescript-eslint/no-floating-promises
   }, [isMountedRef, onError, onSignedIn, signedIn]);
 
   return <div className="centered-list">

@@ -15,5 +15,5 @@ export interface ButtonProps extends React.HTMLAttributes<HTMLDivElement> {
 /// Extremely basic text button React component.
 export function Button(props: ButtonProps) {
   const { className, title, children, ...others } = props;
-  return <div className={classnames("Button", className)} {...others}>{title}{children}</div>
+  return <div className={classnames("Button", className)} {...others}>{title}{children}</div>;
 }
