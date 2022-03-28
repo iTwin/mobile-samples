@@ -7,14 +7,14 @@ import { HorizontalPicker, useIsMountedRef } from "@itwin/mobile-ui-react";
 import { Project, ProjectsAccessClient, ProjectsQueryArg, ProjectsQueryFunction, ProjectsSearchableProperty, ProjectsSource } from "@itwin/projects-client";
 import { IModelApp } from "@itwin/core-frontend";
 import { LoadingSpinner } from "@itwin/core-react";
-import { SearchControl, i18n, presentError, ButtonProps, HubScreenButton, HubScreenButtonListProps, HubScreenButtonList } from "../../Exports";
+import { ButtonProps, HubScreenButton, HubScreenButtonList, HubScreenButtonListProps, i18n, presentError, SearchControl } from "../../Exports";
 
 async function getProjects(source = ProjectsSource.All, searchString = "") {
   const client = new ProjectsAccessClient();
   const numToFetch = 100;
   const accessToken = await IModelApp.getAccessToken();
 
-  let queryArgs: ProjectsQueryArg = { pagination: { skip: 0, top: numToFetch } };
+  const queryArgs: ProjectsQueryArg = { pagination: { skip: 0, top: numToFetch } };
   if (source === ProjectsSource.All && searchString.length > 0)
     queryArgs.search = { searchString, propertyName: ProjectsSearchableProperty.Name, exactMatch: false };
   else
@@ -87,7 +87,7 @@ export function ProjectPicker(props: ProjectPickerProps) {
       }
       setLoading(false);
     };
-    fetchProjects();
+    fetchProjects(); // eslint-disable-line @typescript-eslint/no-floating-promises
   }, [isMountedRef, onError, projectSource, search]);
 
   const loadMore = React.useCallback(async () => {
@@ -110,9 +110,9 @@ export function ProjectPicker(props: ProjectPickerProps) {
   }, [isMountedRef, loadingMore, nextFunc, onError, projectSource]);
 
   const onScroll = React.useCallback((element: HTMLElement) => {
-    const atBottom = element.scrollTop > 0 && element.scrollHeight - element.scrollTop <= element.clientHeight
+    const atBottom = element.scrollTop > 0 && element.scrollHeight - element.scrollTop <= element.clientHeight;
     if (atBottom) {
-      loadMore();
+      loadMore(); // eslint-disable-line @typescript-eslint/no-floating-promises
     }
   }, [loadMore]);
 
@@ -120,9 +120,9 @@ export function ProjectPicker(props: ProjectPickerProps) {
     <div className="project-source">
       <HorizontalPicker
         items={projectSourceLabels}
-        selectedIndex={projectSources.findIndex(key => key === projectSource)}
-        onItemSelected={index => setProjectSource(projectSources[index])} />
-      {projectSource === ProjectsSource.All && <SearchControl placeholder={searchLabel} onSearch={searchVal => setSearch(searchVal)} initialValue={search} />}
+        selectedIndex={projectSources.findIndex((key) => key === projectSource)}
+        onItemSelected={(index) => setProjectSource(projectSources[index])} />
+      {projectSource === ProjectsSource.All && <SearchControl placeholder={searchLabel} onSearch={(searchVal) => setSearch(searchVal)} initialValue={search} />}
     </div>
     <ProjectList projects={projects} onSelect={onSelect} onScroll={onScroll} loading={loading}>
       {loadingMore && <LoadingSpinner />}

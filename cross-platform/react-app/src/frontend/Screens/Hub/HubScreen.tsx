@@ -7,7 +7,7 @@ import { AlertAction, ITMAuthorizationClient, MobileCore } from "@itwin/mobile-s
 import { ActionSheetButton, BackButton, useIsMountedRef } from "@itwin/mobile-ui-react";
 import { Project } from "@itwin/projects-client";
 import { BriefcaseConnection, IModelApp, IModelConnection } from "@itwin/core-frontend";
-import { Button, i18n, presentError, Screen, IModelInfo, IModelPicker, IModelDownloader, ProjectPicker, SignIn } from "../../Exports";
+import { Button, i18n, IModelDownloader, IModelInfo, IModelPicker, presentError, ProjectPicker, Screen, SignIn } from "../../Exports";
 import "./HubScreen.scss";
 
 HubScreen.ACTIVE_PROJECT_INFO = "activeProjectInfo";
@@ -15,7 +15,7 @@ HubScreen.ACTIVE_PROJECT_INFO = "activeProjectInfo";
 function getActiveProject() {
   const projectInfoJson = localStorage.getItem(HubScreen.ACTIVE_PROJECT_INFO);
   if (projectInfoJson) {
-    let project = JSON.parse(projectInfoJson);
+    const project = JSON.parse(projectInfoJson);
     if (project.id) {
       // The format of the project object changed in iTwin 3. Since the id field is required, return
       // undefined if our stored project does not have a value for that field.
@@ -32,7 +32,7 @@ function saveActiveProject(project: Project) {
 }
 
 enum HubStep {
-  SignIn,
+  SignIn, // eslint-disable-line @typescript-eslint/no-shadow
   SelectProject,
   SelectIModel,
   DownloadIModel,
@@ -80,7 +80,7 @@ export function HubScreen(props: HubScreenProps) {
           setInitialized(true);
         }}
         onError={() => setHubStep(HubStep.Error)}
-      />
+      />;
       break;
 
     case HubStep.SelectProject:
@@ -98,10 +98,11 @@ export function HubScreen(props: HubScreenProps) {
     case HubStep.SelectIModel:
       if (!project) break;
       stepContent = <IModelPicker project={project}
-        onLoaded={(models) => setHaveCachedBriefcase(models.some(model => model.briefcase !== undefined))}
+        onLoaded={(models) => setHaveCachedBriefcase(models.some((model) => model.briefcase !== undefined))}
         onSelect={(model) => {
           setIModel(model);
           if (model.briefcase)
+            // eslint-disable-next-line @typescript-eslint/no-floating-promises
             onOpen(model.briefcase.fileName, BriefcaseConnection.openFile(model.briefcase));
           else
             setHubStep(HubStep.DownloadIModel);
@@ -113,8 +114,7 @@ export function HubScreen(props: HubScreenProps) {
             // deletion (assuming that's even possible).
             // Switch to project selection.
             setHubStep(HubStep.SelectProject);
-          }
-          else {
+          } else {
             setHubStep(HubStep.Error);
           }
         }}
@@ -136,14 +136,14 @@ export function HubScreen(props: HubScreenProps) {
               presentError("DeleteAllErrorFormat", error, "HubScreen");
               setProject({ ...project });
             }
-          }
+          },
         });
       }
       actions.push({
         name: "changeProject",
         title: changeProjectLabel,
         onSelected: () => setHubStep(HubStep.SelectProject),
-      })
+      });
       moreButton = <ActionSheetButton actions={actions} showStatusBar />;
       break;
 
@@ -155,6 +155,7 @@ export function HubScreen(props: HubScreenProps) {
         onDownloaded={(model) => {
           setIModel(model);
           if (model.briefcase) {
+            // eslint-disable-next-line @typescript-eslint/no-floating-promises
             onOpen(model.briefcase.fileName, BriefcaseConnection.openFile(model.briefcase));
           } else {
             setHubStep(HubStep.SelectIModel);
@@ -176,7 +177,7 @@ export function HubScreen(props: HubScreenProps) {
           }
           onBack();
         }} />
-      </div>
+      </div>;
       break;
   }
 

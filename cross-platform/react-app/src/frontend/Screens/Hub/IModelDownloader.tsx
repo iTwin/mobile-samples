@@ -10,7 +10,7 @@ import { DownloadBriefcaseOptions, NativeApp } from "@itwin/core-frontend";
 import { MinimalIModel } from "@itwin/imodels-client-management";
 import { BentleyError, BriefcaseDownloader, BriefcaseStatus, IModelStatus, LocalBriefcaseProps, SyncMode } from "@itwin/core-common";
 import { ProgressRadial } from "@itwin/itwinui-react";
-import { Button, i18n, presentError, IModelInfo } from "../../Exports";
+import { Button, i18n, IModelInfo, presentError } from "../../Exports";
 
 async function downloadIModel(project: Project, iModel: MinimalIModel, handleProgress: (progress: ProgressInfo) => boolean): Promise<LocalBriefcaseProps | undefined> {
   const opts: DownloadBriefcaseOptions = { syncMode: SyncMode.PullOnly };
@@ -26,7 +26,7 @@ async function downloadIModel(project: Project, iModel: MinimalIModel, handlePro
 
     if (canceled) {
       // If we got here we canceled before the initial return from NativeApp.requestDownloadBriefcase
-      downloader.requestCancel();
+      downloader.requestCancel(); // eslint-disable-line @typescript-eslint/no-floating-promises
       return undefined;
     }
 
@@ -99,7 +99,7 @@ export function IModelDownloader(props: IModelDownloaderProps) {
       onDownloaded({ minimalIModel, briefcase });
     };
     setDownloading(true);
-    fetchIModel();
+    fetchIModel(); // eslint-disable-line @typescript-eslint/no-floating-promises
   }, [downloading, handleProgress, isMountedRef, model.minimalIModel, onDownloaded, project]);
 
   return <div className="centered-list">

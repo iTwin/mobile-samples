@@ -21,7 +21,7 @@ export interface ViewsBottomPanelProps extends ResizableBottomPanelProps {
 }
 
 /** [[ResizableBottomPanel]] React component that allows the user to select any of the views saved in the iModel.
- * 
+ *
  * This is a relatively simple example of a view selector that shows the view thumbnails.
  */
 export function ViewsBottomPanel(props: ViewsBottomPanelProps) {
@@ -37,7 +37,7 @@ export function ViewsBottomPanel(props: ViewsBottomPanelProps) {
     const getThumbnailUrl = (thumbnail: ThumbnailProps | undefined) => {
       if (!thumbnail) return undefined;
       const base64String = base64.fromByteArray(thumbnail.image);
-      return "data:image/" + thumbnail.format + ";base64," + base64String;
+      return `data:image/${thumbnail.format};base64,${base64String}`;
     };
     // This function asynchronously loads the thumbnails for all the views in the current iModel.
     const loadThumbnails = async (viewSpecsParam: IModelConnection.ViewSpec[]) => {
@@ -53,7 +53,7 @@ export function ViewsBottomPanel(props: ViewsBottomPanelProps) {
           } catch (ex) {
             return undefined;
           }
-        }
+        };
         // Get the thumbnail image bytes for the current viewSpec.
         const thumbnail = await getThumbnail(viewSpec.id);
         // Convert the thumbnail bytes into a data: URL string (or undefined if there is not thumbnail).
@@ -88,9 +88,9 @@ export function ViewsBottomPanel(props: ViewsBottomPanelProps) {
       // Display the loaded ViewSpecs with generic view icons.
       setViewSpecs(sortedResult);
       // Load the thumbnails asynchronously, then display them as they are loaded.
-      loadThumbnails(sortedResult);
+      loadThumbnails(sortedResult); // eslint-disable-line @typescript-eslint/no-floating-promises
     };
-    loadViewSpecs();
+    loadViewSpecs(); // eslint-disable-line @typescript-eslint/no-floating-promises
   }, [iModel.views]);
 
   const handleChangeView = React.useCallback((viewSpec: IModelConnection.ViewSpec) => {
@@ -100,7 +100,7 @@ export function ViewsBottomPanel(props: ViewsBottomPanelProps) {
       IModelApp.viewManager.getFirstOpenView()?.changeView(viewState);
       onViewSelected?.();
     };
-    changeView();
+    changeView(); // eslint-disable-line @typescript-eslint/no-floating-promises
   }, [iModel.views, onViewSelected]);
 
   const viewButtons = viewSpecs.map((viewSpec, index) => {
