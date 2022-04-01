@@ -49,6 +49,7 @@ export function ViewsBottomPanel(props: ViewsBottomPanelProps) {
         // undefined.
         const getThumbnail = async (viewSpecId: string) => {
           try {
+            // eslint-disable-next-line deprecation/deprecation
             return await iModel.views.getThumbnail(viewSpecId);
           } catch (ex) {
             return undefined;
