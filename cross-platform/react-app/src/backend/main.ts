@@ -53,10 +53,7 @@ function setupForTokenServer(iModelHost: IModelHostConfiguration) {
   const options: MobileHostOpts = {
     iModelHost,
   };
-  if (haveTokenServer) {
-    // In token server mode, we don't use the mobile auth client at all.
-    options.mobileHost = { noInitializeAuthClient: true };
-  } else {
+  if (!haveTokenServer) {
     const issuerUrl = process.env.ITMAPPLICATION_ISSUER_URL ?? prodIssuerUrl;
     const clientId = process.env.ITMAPPLICATION_CLIENT_ID ?? "<Error>";
     const redirectUri = process.env.ITMAPPLICATION_REDIRECT_URI ?? "imodeljs://app/signin-callback";
