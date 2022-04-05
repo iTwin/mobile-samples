@@ -1,6 +1,6 @@
 {
   "name": "token-server",
-  "version": "0.10.12",
+  "version": "0.10.13",
   "description": "Server-side component to manage providing an access token for the iTwin Platform.",
   "repository": {
     "type": "git",
