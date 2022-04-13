@@ -1,0 +1,1 @@
+../../../../../../../../cross-platform/react-app/lib/webpack/main.js
