@@ -40,7 +40,7 @@ function setupForTokenServer(iModelHost: IModelHostConfiguration) {
   return false;
 }
 
-// tslint:disable-next-line:no-floating-promises
+// eslint-disable-next-line @typescript-eslint/no-floating-promises
 (async () => {
   // Initialize logging
   redirectLoggingToFrontend();

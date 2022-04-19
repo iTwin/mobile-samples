@@ -15,7 +15,7 @@
     "build:backend": "tsc -p tsconfig.backend.json && webpack --config ./webpack.config.js --env.outdir=./lib/webpack --env.entry=./lib/backend/main.js --env.bundlename=main",
     "build": "npm run build:frontend && npm run build:backend",
     "clean": "rimraf build lib",
-    "lint": "eslint -f visualstudio src/index.tsx \"./src/frontend/**/*.{ts,tsx}\" \"./src/common/**/*.{ts,tsx}\" 1>&2"
+    "lint": "eslint -f visualstudio \"./src/**/*.{ts,tsx}\" 1>&2"
   },
   "license": "MIT",
   "author": {
@@ -98,6 +98,12 @@
       "@itwin/no-internal-barrel-imports": "off",
       "jsx-a11y/click-events-have-key-events": "off",
       "jsx-a11y/no-static-element-interactions": "off"
+    },
+    "parserOptions": {
+      "project": [
+        "./tsconfig.json",
+        "./tsconfig.backend.json"
+      ]
     }
   },
   "browserslist": {
