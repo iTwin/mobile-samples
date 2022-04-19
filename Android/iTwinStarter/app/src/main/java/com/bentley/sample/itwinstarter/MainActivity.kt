@@ -80,6 +80,9 @@ class MainActivity : AppCompatActivity() {
                 modelWebViewContainer.addView(webView)
                 current = this@MainActivity
                 nativeUI = ITMNativeUI(this@MainActivity, webView, ModelApplication.coMessenger!!)
+                nativeUI?.let { nativeUI ->
+                    nativeUI.components.add(DocumentPicker(this@MainActivity, webView, ModelApplication.coMessenger!!))
+                }
                 webView.setOnApplyWindowInsetsListener { v, insets ->
                     updateSafeAreas()
                     v.onApplyWindowInsets(insets)
