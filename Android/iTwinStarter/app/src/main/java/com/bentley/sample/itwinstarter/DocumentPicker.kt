@@ -9,7 +9,7 @@ import java.io.File
 
 class DocumentPicker(context: Context, webView: WebView, coMessenger: ITMCoMessenger): ITMComponent(context, webView, coMessenger) {
     init { listener = coMessenger.addQueryListener("chooseDocument") {
-            var bimFile = File(context.filesDir, "ITMApplication/backend/Building Blocks.bim")
+            val bimFile = File(context.filesDir, "ITMApplication/backend/Building Blocks.bim")
             if (bimFile.exists()) {
                 Json.value(bimFile.absolutePath)
             } else {
