@@ -2,7 +2,6 @@ package com.bentley.sample.itwinstarter
 import android.net.Uri
 import com.eclipsesource.json.Json
 import com.github.itwin.mobilesdk.ITMApplication
-import java.io.File
 
 //import com.bentley.itwin.AuthorizationClient
 
@@ -19,12 +18,17 @@ object ModelApplication : ITMApplication(StarterApplication.getContext(), BuildC
         coMessenger?.let { coMessenger ->
             coMessenger.addMessageListener("loading") {}
             coMessenger.addQueryListener("getBimDocuments") {
-                val bimFile = File(appContext.filesDir, "ITMApplication/backend/Building Blocks.bim")
-                if (bimFile.exists()) {
-                    Json.array(bimFile.absolutePath)
-                } else {
-                    Json.array()
+                val result = Json.array()
+                appContext.getExternalFilesDir("BimCache")?.let { cacheDir ->
+                    cacheDir.listFiles { _, filename ->
+                        filename.lowercase().endsWith(".bim")
+                    }?.let { bimFiles ->
+                        for (bimFile in bimFiles) {
+                            result.add(bimFile.path)
+                        }
+                    }
                 }
+                result
             }
         }
     }
