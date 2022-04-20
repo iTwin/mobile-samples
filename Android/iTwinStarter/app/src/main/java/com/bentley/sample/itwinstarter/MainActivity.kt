@@ -9,6 +9,7 @@ import androidx.lifecycle.lifecycleScope
 import android.os.Bundle
 import android.view.*
 import android.webkit.WebView
+import android.widget.FrameLayout
 import androidx.appcompat.app.AlertDialog
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
@@ -61,6 +62,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        DocumentPicker.registerForActivityResult(this)
         requestWindowFeature(Window.FEATURE_NO_TITLE)
         super.onCreate(savedInstanceState)
         setupWebView()
@@ -77,6 +79,7 @@ class MainActivity : AppCompatActivity() {
         MainScope().launch {
             ModelApplication.waitForFrontendInitialize()
             ModelApplication.webView?.let { webView ->
+                (webView.parent as? FrameLayout)?.removeView(webView)
                 modelWebViewContainer.addView(webView)
                 current = this@MainActivity
                 nativeUI = ITMNativeUI(this@MainActivity, webView, ModelApplication.coMessenger!!)
