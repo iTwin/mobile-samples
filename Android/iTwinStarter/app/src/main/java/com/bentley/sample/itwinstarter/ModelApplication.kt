@@ -10,7 +10,7 @@ object ModelApplication : ITMApplication(StarterApplication.getContext(), BuildC
 //    }
 
     init {
-        loadITMAppConfig()
+        finishInit()
     }
 
     override fun openUri(uri: Uri) {
