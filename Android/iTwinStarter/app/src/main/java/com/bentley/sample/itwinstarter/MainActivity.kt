@@ -5,6 +5,7 @@ import android.graphics.Color
 import android.net.Uri
 import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
+import androidx.fragment.app.commit
 import androidx.lifecycle.lifecycleScope
 import android.os.Bundle
 import android.view.*
@@ -15,6 +16,7 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.WindowInsetsControllerCompat
 import com.eclipsesource.json.JsonObject
+import com.github.itwin.mobilesdk.ITMGeolocationFragment
 import com.github.itwin.mobilesdk.ITMNativeUI
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.delay
@@ -23,6 +25,7 @@ import kotlin.system.exitProcess
 
 class MainActivity : AppCompatActivity() {
     private var nativeUI: ITMNativeUI? = null
+    private var geolocationFragment: ITMGeolocationFragment? = null
 
     companion object {
         var current: MainActivity? = null
@@ -79,6 +82,17 @@ class MainActivity : AppCompatActivity() {
         MainScope().launch {
             ModelApplication.waitForFrontendInitialize()
             ModelApplication.webView?.let { webView ->
+                if (savedInstanceState == null) {
+                    ModelApplication.geolocationManager?.let { geolocationManager ->
+                        supportFragmentManager.commit {
+                            setReorderingAllowed(true)
+                            val frag = ITMGeolocationFragment()
+                            add(R.id.model_host_fragment, frag)
+                            frag.setGeolocationManager(geolocationManager)
+                            geolocationFragment = frag
+                        }
+                    }
+                }
                 (webView.parent as? FrameLayout)?.removeView(webView)
                 modelWebViewContainer.addView(webView)
                 current = this@MainActivity
@@ -90,6 +104,18 @@ class MainActivity : AppCompatActivity() {
                 }
             }
         }
+    }
+
+    override fun onDestroy() {
+        current = null
+        nativeUI?.detach()
+        nativeUI = null
+        modelWebViewContainer.removeAllViews()
+        geolocationFragment = null
+        ModelApplication.webView?.setOnApplyWindowInsetsListener(null)
+        ModelApplication.geolocationManager?.stopLocationUpdates()
+        ModelApplication.geolocationManager?.setGeolocationFragment(null)
+        super.onDestroy()
     }
 
     private fun setupWebView() {
