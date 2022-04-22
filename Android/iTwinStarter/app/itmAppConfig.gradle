@@ -1,0 +1,54 @@
+import groovy.json.JsonOutput
+
+static def getLocalIPv4() {
+    def ip4s = []
+    NetworkInterface.getNetworkInterfaces()
+        .findAll { it.isUp() && !it.isLoopback() && !it.isVirtual() }
+        .each {
+            it.getInetAddresses()
+                .findAll { !it.isLoopbackAddress() && it instanceof Inet4Address }
+                .each { ip4s << it }
+        }
+    return ip4s
+}
+
+static def extractProperties(properties, prefix, contents) {
+    for (property in properties) {
+        def key = property.key as String
+        if (key.startsWith(prefix)) {
+            def finalKey = key.toUpperCase().replace('.', '_')
+            contents[finalKey] = property.value
+        }
+    }
+}
+
+task genITMAppConfig {
+    def itmAppConfig = new File("${project.projectDir}/src/main/assets/ITMApplication/ITMAppConfig.json")
+    if (!itmAppConfig.exists()) {
+        itmAppConfig.createNewFile()
+    }
+    Properties properties = new Properties()
+    properties.load(project.rootProject.file('local.properties').newDataInputStream())
+    def useIp = properties.getProperty('itm.use_ip')
+    def reactServerPort = properties.getProperty('itm.react_server_port')
+    if (reactServerPort == null) {
+        reactServerPort = "3000"
+    }
+    Map contents = ["Version":"1.0"]
+    def appHost = ""
+    if (useIp == 'YES') {
+        def ip4s = getLocalIPv4()
+        if (ip4s.size() > 0) {
+            appHost = ip4s[0].toString()
+        }
+    } else {
+        appHost = InetAddress.localHost.hostName
+    }
+    if (appHost.startsWith('/')) {
+        appHost = appHost.substring(1)
+    }
+    contents["ITMAPPLICATION_BASE_URL"] = "http://${appHost}:${reactServerPort}"
+    extractProperties(properties, "itmapplication.", contents)
+    extractProperties(properties, "itmsample.", contents)
+    itmAppConfig.write(JsonOutput.prettyPrint(JsonOutput.toJson(contents)))
+}

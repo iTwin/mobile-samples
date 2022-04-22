@@ -9,6 +9,10 @@ object ModelApplication : ITMApplication(StarterApplication.getContext(), BuildC
 //    override fun getAuthorizationClient(): AuthorizationClient? {
 //    }
 
+    init {
+        loadITMAppConfig()
+    }
+
     override fun openUri(uri: Uri) {
         MainActivity.openUri(uri)
     }

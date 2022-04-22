@@ -46,3 +46,6 @@ dependencies {
     releaseImplementation 'com.github.itwin:mobile-sdk-android:0.9.12'
     debugImplementation 'com.github.itwin:mobile-sdk-android:0.9.12-debug'
 }
+
+apply from: 'itmAppConfig.gradle'
+preBuild.dependsOn genITMAppConfig
