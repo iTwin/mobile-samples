@@ -10,12 +10,10 @@ import androidx.lifecycle.lifecycleScope
 import android.os.Bundle
 import android.view.*
 import android.webkit.WebView
-import android.widget.FrameLayout
 import androidx.appcompat.app.AlertDialog
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.WindowInsetsControllerCompat
-import com.eclipsesource.json.JsonObject
 import com.github.itwin.mobilesdk.ITMGeolocationFragment
 import com.github.itwin.mobilesdk.ITMNativeUI
 import kotlinx.coroutines.MainScope
@@ -93,15 +91,10 @@ class MainActivity : AppCompatActivity() {
                         }
                     }
                 }
-                (webView.parent as? FrameLayout)?.removeView(webView)
-                modelWebViewContainer.addView(webView)
+                ModelApplication.attachWebView(modelWebViewContainer)
                 current = this@MainActivity
                 nativeUI = ITMNativeUI(this@MainActivity, webView, ModelApplication.coMessenger!!)
                 nativeUI?.components?.add(DocumentPicker(this@MainActivity, webView, ModelApplication.coMessenger!!))
-                webView.setOnApplyWindowInsetsListener { v, insets ->
-                    updateSafeAreas()
-                    v.onApplyWindowInsets(insets)
-                }
             }
         }
     }
@@ -135,33 +128,6 @@ class MainActivity : AppCompatActivity() {
                 }
             }
         }
-    }
-
-    private fun updateSafeAreas() {
-        val message = JsonObject()
-        message["left"] = 0
-        message["right"] = 0
-        message["top"] = 0
-        message["bottom"] = 0
-        window.decorView.rootWindowInsets?.let { insets ->
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
-                insets.displayCutout?.let { displayCutoutInsets ->
-                    val density = resources.displayMetrics.density
-                    // We want both sides to have the same safe area.
-                    val sides = Integer.max(
-                        displayCutoutInsets.safeInsetLeft,
-                        displayCutoutInsets.safeInsetRight
-                    ) / density
-                    val top = displayCutoutInsets.safeInsetTop / density
-                    val bottom = displayCutoutInsets.safeInsetBottom / density
-                    message["left"] = sides
-                    message["right"] = sides
-                    message["top"] = top
-                    message["bottom"] = bottom
-                }
-            }
-        }
-        ModelApplication.messenger?.send("muiUpdateSafeAreas", message)
     }
 
     private fun setupFullScreen() {

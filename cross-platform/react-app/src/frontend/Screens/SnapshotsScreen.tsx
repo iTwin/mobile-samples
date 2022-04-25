@@ -67,25 +67,23 @@ export function SnapshotsScreen(props: SnapshotsScreenProps) {
   );
 
   return (
-    <Screen>
-      <div className="snapshots-screen">
-        <div className="title">
-          <div className="back-button">
-            <BackButton onClick={onBack} />
-          </div>
-          <div className="title-text">{selectIModelLabel}</div>
-          <div className="refresh">
-            <NavigationButton
-              iconSpec="icon-refresh"
-              onClick={() => {
-                updateBimDocuments(); // eslint-disable-line @typescript-eslint/no-floating-promises
-              }}
-            />
-          </div>
+    <Screen className="snapshots-screen">
+      <div className="title">
+        <div className="back-button">
+          <BackButton onClick={onBack} />
         </div>
-        <div className="list">
-          <div className="list-items">{bimButtons}</div>
+        <div className="title-text">{selectIModelLabel}</div>
+        <div className="refresh">
+          <NavigationButton
+            iconSpec="icon-refresh"
+            onClick={() => {
+              updateBimDocuments(); // eslint-disable-line @typescript-eslint/no-floating-promises
+            }}
+          />
         </div>
+      </div>
+      <div className="list">
+        <div className="list-items">{bimButtons}</div>
       </div>
     </Screen>
   );

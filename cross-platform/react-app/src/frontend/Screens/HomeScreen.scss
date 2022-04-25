@@ -6,36 +6,8 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  max-height: 100vh;
-  font-size: calc(10px + 2vmin);
 
   .title {
-    width: 100vw;
-    background-color: var(--background-color-2);
-    padding-top: calc(env(safe-area-inset-top) + 5px);
-    padding-left: env(safe-area-inset-left);
-    padding-right: env(safe-area-inset-right);
-    padding-bottom: 4px;
-    min-height: 42px;
-    display: flex;
-    align-items: center;
-    .title-text {
-      margin-left: 10px;
-    }
-  }
-
-  .list {
-    width: 100%;
-    height: 100%;
-    overflow-y: auto;
-    -webkit-overflow-scrolling: touch;  
-    flex: 1 1 auto;
-    padding-bottom: env(safe-area-inset-bottom);
-    .list-items {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-    }
+    min-height: calc(51px + var(--itm-safe-area-top));
   }
 }

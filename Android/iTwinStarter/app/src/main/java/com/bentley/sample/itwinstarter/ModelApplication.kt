@@ -21,7 +21,9 @@ object ModelApplication : ITMApplication(StarterApplication.getContext(), BuildC
         super.setupWebView()
         coMessenger?.let { coMessenger ->
             coMessenger.addMessageListener("loading") {}
-            coMessenger.addMessageListener("didFinishLaunching") {}
+            coMessenger.addMessageListener("didFinishLaunching") {
+                coMessenger.frontendLaunchSucceeded()
+            }
             coMessenger.addQueryListener("getBimDocuments") {
                 val result = Json.array()
                 appContext.getExternalFilesDir("BimCache")?.let { cacheDir ->

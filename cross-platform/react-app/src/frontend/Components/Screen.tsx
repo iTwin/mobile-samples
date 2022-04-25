@@ -3,6 +3,7 @@
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
 import React from "react";
+import classnames from "classnames";
 import { IModelApp } from "@itwin/core-frontend";
 import { ProgressInfo } from "@itwin/core-frontend/lib/cjs/request/Request";
 import { presentAlert } from "@itwin/mobile-sdk-core";
@@ -12,6 +13,7 @@ import "./Screen.scss";
 
 /// Properties for the [[Screen]] React component.
 export interface ScreenProps {
+  className?: string;
   /// The optional children of this full-screen component.
   children?: React.ReactNode;
 }
@@ -77,13 +79,14 @@ export function progressString(progress: ProgressInfo | undefined) {
 }
 
 /// React component for a simple full-screen UI with arbitrary children.
-export function Screen(props?: ScreenProps) {
+export function Screen(props: ScreenProps = {}) {
   const isDark = useActiveColorSchemeIsDark();
+  const { className, children } = props;
 
   // The useTheme hook below does not currently detect theme changes on the fly if "os" is
   // set as the theme.
   useTheme(isDark ? "dark" : "light");
-  return <div className="screen">{props?.children}</div>;
+  return <div className={classnames("screen", className)}>{children}</div>;
 }
 
 export function presentError(formatKey: string, error: any, namespace = "App", showStatusBar = true) {

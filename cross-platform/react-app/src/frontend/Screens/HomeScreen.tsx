@@ -35,17 +35,15 @@ export function HomeScreen(props: HomeScreenProps) {
   }, []);
 
   return (
-    <Screen>
-      <div className="home-screen">
-        <div className="title">
-          {showBackButton && <BackButton onClick={handleBack} />}
-          <div className="title-text">{homeLabel}</div>
-        </div>
-        <div className="list">
-          <div className="list-items">
-            <Button title={snapshotIModelsLabel} onClick={() => onSelect(ActiveScreen.Snapshots)} />
-            <Button title={hubIModelsLabel} onClick={() => onSelect(ActiveScreen.Hub)} />
-          </div>
+    <Screen className="home-screen">
+      <div className="title">
+        {showBackButton && <BackButton onClick={handleBack} />}
+        <div className="title-text">{homeLabel}</div>
+      </div>
+      <div className="list">
+        <div className="list-items">
+          <Button title={snapshotIModelsLabel} onClick={() => onSelect(ActiveScreen.Snapshots)} />
+          <Button title={hubIModelsLabel} onClick={() => onSelect(ActiveScreen.Hub)} />
         </div>
       </div>
     </Screen>

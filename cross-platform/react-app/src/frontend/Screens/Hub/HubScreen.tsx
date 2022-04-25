@@ -182,15 +182,13 @@ export function HubScreen(props: HubScreenProps) {
   }
 
   return (
-    <Screen>
-      <div className="hub-screen">
-        <div className="title">
-          <BackButton onClick={() => hubStep === HubStep.DownloadIModel ? setHubStep(HubStep.SelectIModel) : onBack()} />
-          <div className="title-text">{titleLabels.get(hubStep)}</div>
-          <div className="right-tools-parent">{moreButton}</div>
-        </div>
-        {stepContent}
+    <Screen className="hub-screen">
+      <div className="title">
+        <BackButton onClick={() => hubStep === HubStep.DownloadIModel ? setHubStep(HubStep.SelectIModel) : onBack()} />
+        <div className="title-text">{titleLabels.get(hubStep)}</div>
+        <div className="right-tools-parent">{moreButton}</div>
       </div>
+      {stepContent}
     </Screen >
   );
 }
