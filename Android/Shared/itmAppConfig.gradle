@@ -28,8 +28,14 @@ task genITMAppConfig {
         itmAppConfig.createNewFile()
     }
     Properties properties = new Properties()
-    properties.load(project.rootProject.file('local.properties').newDataInputStream())
+    try {
+        properties.load(project.rootProject.file('../Shared/itwinSamples.properties').newDataInputStream())
+    } catch (IOException ex) {
+        println "Error loading Shared itwinSamples.properties; build might not work. ${ex}"
+    }
+    def debugHost = properties.getProperty('itm.debug_host')
     def useIp = properties.getProperty('itm.use_ip')
+    def debugHostSuffix = properties.getProperty('itm.debug_host_suffix')
     def reactServerPort = properties.getProperty('itm.react_server_port')
     if (reactServerPort == null) {
         reactServerPort = "3000"
@@ -41,11 +47,16 @@ task genITMAppConfig {
         if (ip4s.size() > 0) {
             appHost = ip4s[0].toString()
         }
+    } else if (debugHost != null) {
+        appHost = debugHost
     } else {
         appHost = InetAddress.localHost.hostName
     }
     if (appHost.startsWith('/')) {
         appHost = appHost.substring(1)
+    }
+    if (debugHostSuffix != null) {
+        appHost += debugHostSuffix
     }
     contents["ITMAPPLICATION_BASE_URL"] = "http://${appHost}:${reactServerPort}"
     extractProperties(properties, "itmapplication.", contents)
