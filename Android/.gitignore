@@ -1,0 +1,3 @@
+# Ignore all user dictionaries, but not the project one.
+**/.idea/dictionaries/*
+!**/.idea/dictionaries/itwin_mobile.xml
