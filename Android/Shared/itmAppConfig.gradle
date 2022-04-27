@@ -23,7 +23,7 @@ static def extractProperties(properties, prefix, contents) {
 }
 
 task genITMAppConfig {
-    def itmAppConfig = new File("${project.projectDir}/src/main/assets/ITMApplication/ITMAppConfig.json")
+    def itmAppConfig = new File("${rootDir}/app/src/main/assets/ITMApplication/ITMAppConfig.json")
     if (!itmAppConfig.exists()) {
         itmAppConfig.createNewFile()
     }
