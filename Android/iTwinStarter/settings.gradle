@@ -15,5 +15,5 @@ dependencyResolutionManagement {
 }
 rootProject.name = "iTwin Starter"
 include ':app'
-include ':itwinsamplesshared'
-project(':itwinsamplesshared').projectDir = new File('../Shared')
+include ':itmsamplesshared'
+project(':itmsamplesshared').projectDir = new File('../Shared')

@@ -21,6 +21,9 @@ static def extractProperties(properties, prefix, contents) {
         }
     }
 }
+static def getBoolProperty(properties, propertyName) {
+    return properties.getProperty(propertyName) == 'YES'
+}
 
 task genITMAppConfig {
     def itmAppConfig = new File("${rootDir}/app/src/main/assets/ITMApplication/ITMAppConfig.json")
@@ -29,36 +32,39 @@ task genITMAppConfig {
     }
     Properties properties = new Properties()
     try {
-        properties.load(project.rootProject.file('../Shared/itwinSamples.properties').newDataInputStream())
+        properties.load(project.rootProject.file('../Shared/itmSamples.properties').newDataInputStream())
     } catch (IOException ex) {
-        println "Error loading Shared itwinSamples.properties; build might not work. ${ex}"
+        println "Error loading Shared itmSamples.properties; build might not work. ${ex}"
     }
-    def debugHost = properties.getProperty('itm.debug_host')
-    def useIp = properties.getProperty('itm.use_ip')
-    def debugHostSuffix = properties.getProperty('itm.debug_host_suffix')
-    def reactServerPort = properties.getProperty('itm.react_server_port')
-    if (reactServerPort == null) {
-        reactServerPort = "3000"
-    }
+    def noDebugServer = getBoolProperty(properties, 'itm.no_debug_server')
     Map contents = ["Version":"1.0"]
-    def appHost = ""
-    if (useIp == 'YES') {
-        def ip4s = getLocalIPv4()
-        if (ip4s.size() > 0) {
-            appHost = ip4s[0].toString()
+    if (!noDebugServer) {
+        def debugHost = properties.getProperty('itm.debug_host')
+        def debugUseIp = getBoolProperty(properties, 'itm.debug_use_ip')
+        def debugHostSuffix = properties.getProperty('itm.debug_host_suffix')
+        def debugPort = properties.getProperty('itm.debug_port')
+        if (debugPort == null) {
+            debugPort = "3000"
         }
-    } else if (debugHost != null) {
-        appHost = debugHost
-    } else {
-        appHost = InetAddress.localHost.hostName
+        def appHost = ""
+        if (debugUseIp) {
+            def ip4s = getLocalIPv4()
+            if (ip4s.size() > 0) {
+                appHost = ip4s[0].toString()
+            }
+        } else if (debugHost != null) {
+            appHost = debugHost
+        } else {
+            appHost = InetAddress.localHost.hostName
+        }
+        if (appHost.startsWith('/')) {
+            appHost = appHost.substring(1)
+        }
+        if (debugHostSuffix != null) {
+            appHost += debugHostSuffix
+        }
+        contents["ITMAPPLICATION_BASE_URL"] = "http://${appHost}:${debugPort}"
     }
-    if (appHost.startsWith('/')) {
-        appHost = appHost.substring(1)
-    }
-    if (debugHostSuffix != null) {
-        appHost += debugHostSuffix
-    }
-    contents["ITMAPPLICATION_BASE_URL"] = "http://${appHost}:${reactServerPort}"
     extractProperties(properties, "itmapplication.", contents)
     extractProperties(properties, "itmsample.", contents)
     itmAppConfig.write(JsonOutput.prettyPrint(JsonOutput.toJson(contents)))

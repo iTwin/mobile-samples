@@ -47,4 +47,4 @@ dependencies {
     debugImplementation 'com.github.itwin:mobile-sdk-android:0.9.12-debug'
 }
 
-preBuild.dependsOn ":itwinsamplesshared.genITMAppConfig"
+preBuild.dependsOn ":itmsamplesshared:genITMAppConfig"
