@@ -1,1 +1,1 @@
-apply from: 'itmAppConfig.gradle'
+apply from: 'ITMAppConfig.gradle'

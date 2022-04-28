@@ -32,9 +32,9 @@ task genITMAppConfig {
     }
     Properties properties = new Properties()
     try {
-        properties.load(project.rootProject.file('../Shared/itmSamples.properties').newDataInputStream())
+        properties.load(project.rootProject.file('../Shared/ITMSamples.properties').newDataInputStream())
     } catch (IOException ex) {
-        println "Error loading Shared itmSamples.properties; build might not work. ${ex}"
+        println "Error loading Shared ITMSamples.properties; build might not work. ${ex}"
     }
     def noDebugServer = getBoolProperty(properties, 'itm.no_debug_server')
     Map contents = ["Version":"1.0"]
