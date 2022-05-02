@@ -14,7 +14,9 @@ There are two sample apps, MobileStarter and SwiftUIStarter. The former is a UIK
 
 Each sample app includes an Xcode project with a LocalSDK_ prefix. These Xcode projects are the same as the main ones, with the exception that they refer to a local filesystem copy of mobile-sdk-ios, instead of referring to the mobile-sdk-ios Swift Package on GitHub.
 
-See [iOS/README.md](./iOS/README.md) for instructions on building the samples.
+See [iOS/README.md](./iOS/README.md) for instructions on building the iOS samples.
+
+See [Android/README.md](./Android/README.md) for instructions on building the iOS samples.
 
 ## Sample iModels
 
