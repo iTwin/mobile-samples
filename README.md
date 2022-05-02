@@ -16,7 +16,7 @@ Each sample app includes an Xcode project with a LocalSDK_ prefix. These Xcode p
 
 See [iOS/README.md](./iOS/README.md) for instructions on building the iOS samples.
 
-See [Android/README.md](./Android/README.md) for instructions on building the iOS samples.
+See [Android/README.md](./Android/README.md) for instructions on building the Android samples.
 
 ## Sample iModels
 
