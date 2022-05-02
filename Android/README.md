@@ -16,7 +16,7 @@ Before building the samples, you must configure a Client ID for yourself. To do 
 
     * Do not surround your values with quotes.
 
-    * If you already had a Client ID, browse to your app's page on developer.bently.com. If you just created it, you should already be there.
+    * If you already had a Client ID, browse to your app's page in [my-apps](https://developer.bentley.com/my-apps/). If you just created it, you should already be there.
 
 1. Copy your client ID from the app's page, then replace `YOUR_CLIENT_ID`.
 1. Use the "Copy" button in the Scopes section of the app's page to copy your scopes to the clipboard. Then replace `YOUR_SCOPE`.
