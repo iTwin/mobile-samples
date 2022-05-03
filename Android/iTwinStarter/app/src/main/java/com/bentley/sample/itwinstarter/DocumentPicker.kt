@@ -2,16 +2,14 @@ package com.bentley.sample.itwinstarter
 
 import android.app.Activity
 import android.app.AlertDialog
-import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.provider.OpenableColumns
-import android.webkit.WebView
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import com.eclipsesource.json.Json
 import com.eclipsesource.json.JsonValue
-import com.github.itwin.mobilesdk.ITMCoMessenger
+import com.github.itwin.mobilesdk.ITMNativeUI
 import com.github.itwin.mobilesdk.ITMNativeUIComponent
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch
@@ -22,7 +20,7 @@ import kotlin.coroutines.Continuation
 import kotlin.coroutines.resume
 import kotlin.coroutines.suspendCoroutine
 
-class DocumentPicker(context: Context, webView: WebView, coMessenger: ITMCoMessenger): ITMNativeUIComponent(context, webView, coMessenger) {
+class DocumentPicker(nativeUI: ITMNativeUI): ITMNativeUIComponent(nativeUI) {
     init {
         listener = coMessenger.addQueryListener("chooseDocument", ::handleQuery)
     }

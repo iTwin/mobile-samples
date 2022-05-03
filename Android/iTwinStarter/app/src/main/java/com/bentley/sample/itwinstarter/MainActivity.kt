@@ -94,7 +94,7 @@ class MainActivity : AppCompatActivity() {
                 ModelApplication.attachWebView(modelWebViewContainer)
                 current = this@MainActivity
                 nativeUI = ITMNativeUI(this@MainActivity, webView, ModelApplication.coMessenger!!)
-                nativeUI?.components?.add(DocumentPicker(this@MainActivity, webView, ModelApplication.coMessenger!!))
+                nativeUI?.components?.add(DocumentPicker(nativeUI!!))
             }
         }
     }
