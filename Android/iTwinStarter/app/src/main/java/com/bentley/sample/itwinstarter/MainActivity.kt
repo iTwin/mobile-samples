@@ -76,38 +76,33 @@ class MainActivity : AppCompatActivity() {
         }
 
         setContentView(R.layout.activity_main)
-        ModelApplication.initializeFrontend()
+        ModelApplication.initializeFrontend(this)
         MainScope().launch {
             ModelApplication.waitForFrontendInitialize()
-            ModelApplication.webView?.let { webView ->
-                if (savedInstanceState == null) {
-                    ModelApplication.geolocationManager?.let { geolocationManager ->
-                        supportFragmentManager.commit {
-                            setReorderingAllowed(true)
-                            val frag = ITMGeolocationFragment()
-                            add(R.id.model_host_fragment, frag)
-                            frag.setGeolocationManager(geolocationManager)
-                            geolocationFragment = frag
-                        }
+            if (savedInstanceState == null) {
+                ModelApplication.geolocationManager?.let { geolocationManager ->
+                    supportFragmentManager.commit {
+                        setReorderingAllowed(true)
+                        val frag = ITMGeolocationFragment()
+                        add(R.id.model_host_fragment, frag)
+                        frag.setGeolocationManager(geolocationManager)
+                        geolocationFragment = frag
                     }
                 }
-                ModelApplication.attachWebView(modelWebViewContainer)
-                current = this@MainActivity
-                nativeUI = ITMNativeUI(this@MainActivity, webView, ModelApplication.coMessenger!!)
-                nativeUI?.components?.add(DocumentPicker(nativeUI!!))
             }
+            ModelApplication.attachWebView(modelWebViewContainer)
+            current = this@MainActivity
+            nativeUI = ModelApplication.nativeUI
+            nativeUI?.components?.add(DocumentPicker(nativeUI!!))
         }
     }
 
     override fun onDestroy() {
         current = null
-        nativeUI?.detach()
         nativeUI = null
         modelWebViewContainer.removeAllViews()
         geolocationFragment = null
-        ModelApplication.webView?.setOnApplyWindowInsetsListener(null)
-        ModelApplication.geolocationManager?.stopLocationUpdates()
-        ModelApplication.geolocationManager?.setGeolocationFragment(null)
+        ModelApplication.onActivityDestroy(this)
         super.onDestroy()
     }
 
