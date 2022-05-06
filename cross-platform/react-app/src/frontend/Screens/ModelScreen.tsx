@@ -17,7 +17,7 @@ import {
 import { ViewportComponent } from "@itwin/imodel-components-react";
 import { getCssVariable, IconSpec } from "@itwin/core-react";
 import { viewWithUnifiedSelection } from "@itwin/presentation-components";
-import { AlertAction, presentAlert } from "@itwin/mobile-sdk-core";
+import { ActionSheetGravity, AlertAction, presentAlert } from "@itwin/mobile-sdk-core";
 import { useTheme } from "@itwin/itwinui-react";
 import {
   ActionSheetButton,
@@ -150,7 +150,7 @@ export function ModelScreen(props: ModelScreenProps) {
     }
     return actions;
   };
-  const moreButton = <ActionSheetButton actions={moreActions} showStatusBar />;
+  const moreButton = <ActionSheetButton actions={moreActions} showStatusBar gravity={ActionSheetGravity.BottomRight} />;
   const panels: TabOrPanelDef[] = [
     {
       label: infoLabel,
