@@ -9,7 +9,7 @@ import { AuthorizationClient } from "@itwin/core-common";
 import { IModelApp, IModelConnection, IpcApp, SnapshotConnection, ToolAssistanceInstructions } from "@itwin/core-frontend";
 import { AppNotificationManager, FrameworkReducer, FrameworkState, UiFramework } from "@itwin/appui-react";
 import { Presentation } from "@itwin/presentation-frontend";
-import { ITMAuthorizationClient, Messenger, MobileCore } from "@itwin/mobile-sdk-core";
+import { Messenger, MobileCore } from "@itwin/mobile-sdk-core";
 import { MobileUi } from "@itwin/mobile-ui-react";
 // import { FeatureTracking as MeasureToolsFeatureTracking, MeasureTools } from "@bentley/measure-tools-react";
 import { ActiveScreen, HomeScreen, HubScreen, LoadingScreen, ModelScreen, presentError, SnapshotsScreen, ToolAssistance } from "./Exports";
@@ -85,28 +85,6 @@ class AppToolAssistanceNotificationManager extends AppNotificationManager {
   }
 }
 
-function createAuthorizationClient(): AuthorizationClient {
-  // Only try to use the token server if thirdPartyAuth is "YES". Otherwise users would have
-  // to remove their token server settings from ITMApplication.xcconfig in order to run the
-  // other samples. The ThirdPartyAuth sample sets the thirdPartyAuth has param to "YES".
-  if (window.itmSampleParams.thirdPartyAuth) {
-    const tokenServerUrl = window.itmSampleParams.tokenServerUrl;
-    const tokenServerIdToken = window.itmSampleParams.tokenServerIdToken;
-    // With the current ThirdPartyAuth sample, we will always have the ID token if we have the
-    // token server URL, but that is not required in order for this code to work.
-    if (tokenServerUrl) {
-      // Any time the native code refreshes its ID token, it sends the new one using
-      // the "setTokenServerToken" message. Update our ID token when that happens.
-      Messenger.onQuery("setTokenServerToken").setHandler(async (token: string) => {
-        return setTokenServerToken(token);
-      });
-      return new TokenServerAuthClient(tokenServerUrl, tokenServerIdToken);
-    } else {
-      throw new Error("The ThirdPartyAuth sample requires the ITMSAMPLE_TOKEN_SERVER_URL environment variable to be set.");
-    }
-  }
-  return new ITMAuthorizationClient();
-}
 
 async function setTokenServerToken(token: string) {
   if (IModelApp.authorizationClient instanceof TokenServerAuthClient) {
@@ -161,14 +139,13 @@ function App() {
         const opts: IOSAppOpts = {
           iModelApp: {
             rpcInterfaces: getSupportedRpcs(),
-            notifications: new AppToolAssistanceNotificationManager(),
-            authorizationClient: createAuthorizationClient(),
+            notifications: new AppToolAssistanceNotificationManager()
           },
         };
         if (window.itmSampleParams.lowResolution) {
           // Improves FPS on really slow devices and iOS simulator.
           // Shader compilation still causes one-time slowness when interacting with model.
-          opts.iModelApp!.renderSys = {
+          opts.iModelApp.renderSys = {
             devicePixelRatioOverride: 0.25, // Reduce resolution
             dpiAwareLOD: true, // Reduce tile LOD for low resolution
           };

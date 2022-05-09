@@ -53,13 +53,6 @@ function setupForTokenServer(iModelHost: IModelHostConfiguration) {
   const options: MobileHostOpts = {
     iModelHost,
   };
-  if (!haveTokenServer) {
-    const issuerUrl = process.env.ITMAPPLICATION_ISSUER_URL ?? prodIssuerUrl;
-    const clientId = process.env.ITMAPPLICATION_CLIENT_ID ?? "<Error>";
-    const redirectUri = process.env.ITMAPPLICATION_REDIRECT_URI ?? "imodeljs://app/signin-callback";
-    const scope = process.env.ITMAPPLICATION_SCOPE ?? "email openid profile organization itwinjs";
-    options.mobileHost = { authConfig: { issuerUrl, clientId, redirectUri, scope } };
-  }
   await IOSHost.startup(options);
   if (haveTokenServer) {
     // Even though we don't use the mobile auth client, and asked for it not to be initialized, it
