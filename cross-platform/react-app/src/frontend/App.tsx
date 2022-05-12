@@ -5,7 +5,6 @@
 import React from "react";
 import { combineReducers, createStore, Store } from "redux";
 import { IOSApp, IOSAppOpts } from "@itwin/core-mobile/lib/cjs/MobileFrontend";
-import { AuthorizationClient } from "@itwin/core-common";
 import { IModelApp, IModelConnection, IpcApp, SnapshotConnection, ToolAssistanceInstructions } from "@itwin/core-frontend";
 import { AppNotificationManager, FrameworkReducer, FrameworkState, UiFramework } from "@itwin/appui-react";
 import { Presentation } from "@itwin/presentation-frontend";
@@ -85,7 +84,6 @@ class AppToolAssistanceNotificationManager extends AppNotificationManager {
   }
 }
 
-
 async function setTokenServerToken(token: string) {
   if (IModelApp.authorizationClient instanceof TokenServerAuthClient) {
     // Update the frontend auth client with the new ID token.
@@ -139,13 +137,13 @@ function App() {
         const opts: IOSAppOpts = {
           iModelApp: {
             rpcInterfaces: getSupportedRpcs(),
-            notifications: new AppToolAssistanceNotificationManager()
+            notifications: new AppToolAssistanceNotificationManager(),
           },
         };
         if (window.itmSampleParams.lowResolution) {
           // Improves FPS on really slow devices and iOS simulator.
           // Shader compilation still causes one-time slowness when interacting with model.
-          opts.iModelApp.renderSys = {
+          opts.iModelApp!.renderSys = {
             devicePixelRatioOverride: 0.25, // Reduce resolution
             dpiAwareLOD: true, // Reduce tile LOD for low resolution
           };
