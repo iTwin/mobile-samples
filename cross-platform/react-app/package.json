@@ -11,7 +11,7 @@
   "scripts": {
     "start": "TRANSPILE_DEPS=false DISABLE_TERSER=true USE_FAST_SASS=true BROWSER=none react-scripts start",
     "copy:assets": "cpx \"./node_modules/@itwin/mobile-sdk-core/lib/public/locales/**\" ./build/locales && cpx \"./node_modules/@itwin/mobile-ui-react/lib/public/locales/**\" ./build/locales",
-    "build:frontend": "NODE_OPTIONS=--max_old_space_size=8192 TRANSPILE_DEPS=false DISABLE_TERSER=true USE_FAST_SASS=true react-scripts build && npm run copy:assets",
+    "build:frontend": "cross-env NODE_OPTIONS=--max_old_space_size=8192 TRANSPILE_DEPS=false DISABLE_TERSER=true USE_FAST_SASS=true react-scripts build && npm run copy:assets",
     "build:backend": "tsc -p tsconfig.backend.json && webpack --config ./webpack.config.js --env.outdir=./lib/webpack --env.entry=./lib/backend/main.js --env.bundlename=main",
     "build": "npm run build:frontend && npm run build:backend",
     "clean": "rimraf build lib",
@@ -34,6 +34,7 @@
     "@types/react": "^16.14.17",
     "@types/react-dom": "^16.8.4",
     "cpx": "^1.5.0",
+    "cross-env": "^7.0.3",
     "fibers": "^5.0.0",
     "node-sass": "^7.0.0",
     "null-loader": "^0.1.1",
