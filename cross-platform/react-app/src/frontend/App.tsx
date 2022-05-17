@@ -75,6 +75,7 @@ const rootReducer = combineReducers({
   frameworkState: FrameworkReducer,
 });
 const anyWindow: any = window;
+// eslint-disable-next-line deprecation/deprecation
 const appReduxStore: Store<RootState> = createStore(rootReducer, anyWindow.__REDUX_DEVTOOLS_EXTENSION__ && anyWindow.__REDUX_DEVTOOLS_EXTENSION__());
 
 class AppToolAssistanceNotificationManager extends AppNotificationManager {
