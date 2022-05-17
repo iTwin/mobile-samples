@@ -5,7 +5,6 @@ import android.graphics.Color
 import android.net.Uri
 import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
-import androidx.fragment.app.commit
 import androidx.lifecycle.lifecycleScope
 import android.os.Bundle
 import android.view.*
@@ -14,7 +13,6 @@ import androidx.appcompat.app.AlertDialog
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.WindowInsetsControllerCompat
-import com.github.itwin.mobilesdk.ITMGeolocationFragment
 import com.github.itwin.mobilesdk.ITMNativeUI
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.delay
@@ -23,7 +21,6 @@ import kotlin.system.exitProcess
 
 class MainActivity : AppCompatActivity() {
     private var nativeUI: ITMNativeUI? = null
-    private var geolocationFragment: ITMGeolocationFragment? = null
 
     companion object {
         var current: MainActivity? = null
@@ -76,20 +73,9 @@ class MainActivity : AppCompatActivity() {
         }
 
         setContentView(R.layout.activity_main)
-        ModelApplication.initializeFrontend(this)
+        ModelApplication.initializeFrontend(this, R.id.model_host_fragment)
         MainScope().launch {
             ModelApplication.waitForFrontendInitialize()
-            if (savedInstanceState == null) {
-                ModelApplication.geolocationManager?.let { geolocationManager ->
-                    supportFragmentManager.commit {
-                        setReorderingAllowed(true)
-                        val frag = ITMGeolocationFragment()
-                        add(R.id.model_host_fragment, frag)
-                        frag.setGeolocationManager(geolocationManager)
-                        geolocationFragment = frag
-                    }
-                }
-            }
             ModelApplication.attachWebView(modelWebViewContainer)
             current = this@MainActivity
             nativeUI = ModelApplication.nativeUI
@@ -101,7 +87,6 @@ class MainActivity : AppCompatActivity() {
         current = null
         nativeUI = null
         modelWebViewContainer.removeAllViews()
-        geolocationFragment = null
         ModelApplication.onActivityDestroy(this)
         super.onDestroy()
     }
