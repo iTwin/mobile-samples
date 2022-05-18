@@ -4,6 +4,7 @@
 *--------------------------------------------------------------------------------------------*/
 
 import Foundation
+import IModelJsNative
 import ITwinMobile
 import SystemConfiguration
 
@@ -89,29 +90,35 @@ class AuthModelApplication: ModelApplication {
             }
         }
     }
-
+    
+    /// Gets custom URL hash parameters to be passed when loading the frontend.
+    /// This override adds `haveBackButton=true` to the list or params from super.
+    /// - Returns: The hash params from super, with `haveBackButton=true` added.
     override func getUrlHashParams() -> HashParams {
         var hashParams = super.getUrlHashParams()
-        if let configData = configData {
-            if let tokenServerUrl = configData["ITMSAMPLE_TOKEN_SERVER_URL"] as? String,
-               let tokenServerIdToken = auth0Token {
-                hashParams.append(HashParam(name: "tokenServerUrl", value: tokenServerUrl))
-                hashParams.append(HashParam(name: "tokenServerIdToken", value: tokenServerIdToken))
-                hashParams.append(HashParam(name: "haveBackButton", value: true))
-                hashParams.append(HashParam(name: "thirdPartyAuth", value: true))
-            }
-        }
+        hashParams.append(HashParam(name: "haveBackButton", value: true))
         return hashParams
     }
-
+    
+    /// Loads the app config JSON from the main bundle.
+    /// This override pings the token server if it is a local URL in order to force iOS to ask the user if connecting
+    /// to the local network is OK.
+    /// - Returns: The result from super.
     override func loadITMAppConfig() -> JSON? {
-        var configData = super.loadITMAppConfig() ?? JSON()
-        // Add ITMSAMPLE_THIRD_PARTY_AUTH to configData with value of YES so that it will get
-        // into the environment used by the backend.
-        configData["ITMSAMPLE_THIRD_PARTY_AUTH"] = "YES"
+        let configData = super.loadITMAppConfig() ?? JSON()
         if let tokenServerUrl = configData["ITMSAMPLE_TOKEN_SERVER_URL"] as? String {
             pingTokenServerIfLocal(tokenServerUrl)
         }
         return configData
+    }
+    
+    /// Creates the `AuthorizationClient` to be used for this iTwin Mobile web app.
+    /// - Returns: An instance of TokenServerAuthClient as long as `ITMSAMPLE_TOKEN_SERVER_URL` is present in
+    /// `configData`.
+    override func createAuthClient() -> AuthorizationClient? {
+        if let configData = configData, let tokenServerURLString = configData["ITMSAMPLE_TOKEN_SERVER_URL"] as? String {
+            return TokenServerAuthClient(itmApplication: self, tokenServerURLString: tokenServerURLString, auth0Token: auth0Token)
+        }
+        return super.createAuthClient()
     }
 }

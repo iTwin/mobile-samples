@@ -9,7 +9,7 @@ the iTwin Platform. This will enforce a secure workflow when implementing the [c
 
 ## Setup token server
 
-Use the ITM_TOKEN_SERVER_CLIENT_ID and ITM_TOKEN_SERVER_CLIENT_SECRET created in the [client registration](../README.md#client-registration) to populate the values in the `.env` (or better yet a copy of that renamed to `.env.local`).
+Use the ITM_TOKEN_SERVER_CLIENT_ID and ITM_TOKEN_SERVER_CLIENT_SECRET created in the [client registration](../ClientID.md) to populate the values in the `.env` (or better yet a copy of that renamed to `.env.local`).
 
 Set up an Auth0 domain with auth0.com and put it in the ITM_TOKEN_SERVER_AUTH0_DOMAIN environment variable.
 

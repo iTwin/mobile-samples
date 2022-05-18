@@ -13,6 +13,7 @@
 		1F1C639F27B1972A00CE8F89 /* PrintLogger.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F1C639C27B1972A00CE8F89 /* PrintLogger.swift */; };
 		1F1C63A227B1987A00CE8F89 /* ITwinMobile in Frameworks */ = {isa = PBXBuildFile; productRef = 1F1C63A127B1987A00CE8F89 /* ITwinMobile */; };
 		1F1C63A527B1996F00CE8F89 /* ShowTime in Frameworks */ = {isa = PBXBuildFile; productRef = 1F1C63A427B1996F00CE8F89 /* ShowTime */; };
+		1F3438FB28358A07003F8732 /* TokenServerAuthClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F3438FA28358A06003F8732 /* TokenServerAuthClient.swift */; };
 		1F39289D27B1A88E00150E00 /* AuthModelApplication.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F39289C27B1A88E00150E00 /* AuthModelApplication.swift */; };
 		1F39289F27B1AAB300150E00 /* ModelView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F39289E27B1AAB300150E00 /* ModelView.swift */; };
 		1F6C4FA327BB0E70008EB5D5 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 1F6C4FA527BB0E70008EB5D5 /* Localizable.strings */; };
@@ -33,6 +34,7 @@
 		1F1C639A27B1972A00CE8F89 /* DocumentPicker.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DocumentPicker.swift; sourceTree = "<group>"; };
 		1F1C639B27B1972A00CE8F89 /* ModelApplication.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ModelApplication.swift; sourceTree = "<group>"; };
 		1F1C639C27B1972A00CE8F89 /* PrintLogger.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PrintLogger.swift; sourceTree = "<group>"; };
+		1F3438FA28358A06003F8732 /* TokenServerAuthClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TokenServerAuthClient.swift; sourceTree = "<group>"; };
 		1F39289C27B1A88E00150E00 /* AuthModelApplication.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthModelApplication.swift; sourceTree = "<group>"; };
 		1F39289E27B1AAB300150E00 /* ModelView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModelView.swift; sourceTree = "<group>"; };
 		1F6C4FA427BB0E70008EB5D5 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Localizable.strings; sourceTree = "<group>"; };
@@ -102,6 +104,7 @@
 				1F1C639327AE028F00CE8F89 /* LoginView.swift */,
 				1F39289E27B1AAB300150E00 /* ModelView.swift */,
 				C3663E4E279769C100EE6B43 /* ThirdPartyAuthApp.swift */,
+				1F3438FA28358A06003F8732 /* TokenServerAuthClient.swift */,
 				1FD9A01F27B32D3E00984360 /* ViewModel.swift */,
 				C3663E52279769C300EE6B43 /* Assets.xcassets */,
 				C3663E54279769C300EE6B43 /* Preview Content */,
@@ -221,6 +224,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				1F1C639D27B1972A00CE8F89 /* DocumentPicker.swift in Sources */,
+				1F3438FB28358A07003F8732 /* TokenServerAuthClient.swift in Sources */,
 				1FD9A02027B32D3E00984360 /* ViewModel.swift in Sources */,
 				1F39289D27B1A88E00150E00 /* AuthModelApplication.swift in Sources */,
 				1F1C639427AE028F00CE8F89 /* LoginView.swift in Sources */,

@@ -62,6 +62,7 @@ struct LoginView: View {
                         .clearSession(federated: false) { result in
                             busy = false
                         }
+                    viewModel.logOut()
                 } label: {
                     Label {
                         Text("Log out")
