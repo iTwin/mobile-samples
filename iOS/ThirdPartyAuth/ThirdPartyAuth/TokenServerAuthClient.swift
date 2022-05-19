@@ -7,8 +7,8 @@ import IModelJsNative
 import ITwinMobile
 import JWTDecode
 
-/// An implementation of the AuthorizationClient protocol that communicates with a token server.
-open class TokenServerAuthClient: NSObject, AuthorizationClient {
+/// An ITMAuthorizationClient that communicates with a token server.
+open class TokenServerAuthClient: ITMAuthorizationClient {
     /// The auth0 token used for authentication with the token server.
     private var auth0Token: String? = nil
     /// The URL of the token server
@@ -32,33 +32,9 @@ open class TokenServerAuthClient: NSObject, AuthorizationClient {
         raiseOnAccessTokenChanged()
     }
 
-    /// Calls the onAccessTokenChanged callback, if that callback is set.
-    private func raiseOnAccessTokenChanged() {
-        if let onAccessTokenChanged = self.onAccessTokenChanged {
-            self.getAccessToken() { token, expirationDate, error in
-                if let token = token,
-                   let expirationDate = expirationDate {
-                    onAccessTokenChanged(token, expirationDate)
-                } else {
-                    onAccessTokenChanged(nil, nil)
-                }
-            }
-        }
-    }
-    
-    /// Convenience function to create an `NSError`.
-    /// - Parameters:
-    ///   - domain: The `NSError`'s domain, default `"com.bentley.sample.ThirdPartyAuth"`.
-    ///   - code: The `NSError`'s code, default 200.
-    ///   - reason: The `NSError`'s reason.
-    /// - Returns: An NSError with the given settings.
-    private func error(domain: String = "com.bentley.sample.ThirdPartyAuth", code: Int = 200, reason: String) -> NSError {
-        return NSError(domain: domain, code: code, userInfo: [NSLocalizedFailureReasonErrorKey: reason])
-    }
-    
     /// Main functionality from `AuthorizationClient`. Uses `completion` to communicate the result.
     /// - Parameter completion: The callback to call with the token result.
-    public func getAccessToken(_ completion: @escaping GetAccessTokenCallback) {
+    public override func getAccessToken(_ completion: @escaping GetAccessTokenCallback) {
         guard let auth0Token = auth0Token else {
             completion(nil, nil, nil)
             return
@@ -91,7 +67,4 @@ open class TokenServerAuthClient: NSObject, AuthorizationClient {
         }
         task.resume()
     }
-
-    /// If set, function to call when the token changes, due to sign in, sign out, etc.
-    public var onAccessTokenChanged: AccessTokenChangedCallback?
 }
