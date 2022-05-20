@@ -6,7 +6,8 @@ import React from "react";
 import { Messenger } from "@itwin/mobile-sdk-core";
 import { BackButton, NavigationButton } from "@itwin/mobile-ui-react";
 import { Button, i18n, Screen } from "../Exports";
-import { IModelConnection, SnapshotConnection } from "@itwin/core-frontend";
+import { BriefcaseConnection, IModelConnection, NativeApp, SnapshotConnection } from "@itwin/core-frontend";
+import { LocalBriefcaseProps } from "@itwin/core-common";
 import "./SnapshotsScreen.scss";
 
 /// Properties for the [[SnapshotsScreen]] React component.
@@ -23,6 +24,7 @@ export function SnapshotsScreen(props: SnapshotsScreenProps) {
   const [snapshots, setSnapshots] = React.useState<string[]>([]);
   const chooseFileLabel = React.useMemo(() => i18n("SnapshotsScreen", "ChooseFile"), []);
   const selectIModelLabel = React.useMemo(() => i18n("Shared", "SelectIModel"), []);
+  const [briefcases, setBriefcases] = React.useState<LocalBriefcaseProps[]>([]);
 
   // This function sends a message to the native code requesting an array containing the paths to all
   // the *.bim files in the app's Documents folder. Note that fetching this list should be nearly
@@ -36,6 +38,15 @@ export function SnapshotsScreen(props: SnapshotsScreenProps) {
   React.useEffect(() => {
     updateBimDocuments(); // eslint-disable-line @typescript-eslint/no-floating-promises
   }, [updateBimDocuments]);
+
+  const updateBriefcases = React.useCallback(async () => {
+    const localBriefcases = await NativeApp.getCachedBriefcases();
+    setBriefcases(localBriefcases);
+  }, []);
+
+  React.useEffect(() => {
+    updateBriefcases(); // eslint-disable-line @typescript-eslint/no-floating-promises
+  }, [updateBriefcases]);
 
   // Convert the array of paths into an array of [[Button]] components, where each button loads the
   // corresponding snapshot iModel.
@@ -65,6 +76,17 @@ export function SnapshotsScreen(props: SnapshotsScreenProps) {
       title={chooseFileLabel}
     />,
   );
+
+  bimButtons.push(...briefcases.map((localBriefcase: LocalBriefcaseProps, index: number) => {
+    const name = localBriefcase.iModelId; // TODO: get name from LocalStorage
+    return <Button
+      key={index + bimButtons.length}
+      title={name}
+      onClick={async () => {
+        onOpen(localBriefcase.fileName, BriefcaseConnection.openFile(localBriefcase)); // eslint-disable-line @typescript-eslint/no-floating-promises
+      }}
+    />;
+  }));
 
   return (
     <Screen className="snapshots-screen">

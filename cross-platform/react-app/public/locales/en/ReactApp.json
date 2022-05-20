@@ -16,7 +16,7 @@
   },
   "HomeScreen": {
     "Home": "Home",
-    "SnapshotIModels": "Snapshot iModels",
+    "LocalIModels": "Local iModels",
     "HubIModels": "Hub iModels"
   },
   "SnapshotsScreen": {
