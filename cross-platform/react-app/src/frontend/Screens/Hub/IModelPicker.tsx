@@ -96,10 +96,11 @@ export interface IModelPickerProps {
   onSelect?: (model: IModelInfo) => void;
   onLoaded?: (models: IModelInfo[]) => void;
   onError?: (error: any) => void;
+  onCacheDeleted?: (modelInfo: IModelInfo) => void;
 }
 
 export function IModelPicker(props: IModelPickerProps) {
-  const { project, onSelect, onLoaded, onError } = props;
+  const { project, onSelect, onLoaded, onError, onCacheDeleted } = props;
   const [iModels, setIModels] = React.useState<IModelInfo[]>([]);
   const [loading, setLoading] = React.useState(false);
   const isMountedRef = useIsMountedRef();
@@ -132,6 +133,7 @@ export function IModelPicker(props: IModelPickerProps) {
   }, [isMountedRef, onError, onLoaded, project]);
 
   return <IModelList models={iModels} loading={loading} onSelect={onSelect} onCacheDeleted={(model) => {
+    onCacheDeleted?.(model);
     model.briefcase = undefined;
     setIModels([...iModels]);
   }} />;

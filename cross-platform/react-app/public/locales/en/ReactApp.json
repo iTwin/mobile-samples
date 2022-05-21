@@ -20,7 +20,9 @@
     "HubIModels": "Hub iModels"
   },
   "SnapshotsScreen": {
-    "ChooseFile": "Choose File..."
+    "ChooseFile": "Choose File...",
+    "DeviceDocuments": "Device Documents",
+    "HubDocuments": "Downloaded from iModel Hub"
   },
   "HubScreen": {
     "Connecting": "Connecting...",
