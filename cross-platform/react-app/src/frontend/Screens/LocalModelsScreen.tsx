@@ -86,7 +86,7 @@ export function LocalModelsScreen(props: LocalModelsScreenProps) {
 
   // Add a button for each downloaded hub iModel (cached briefcase).
   const briefcaseButtons = briefcases.map((localBriefcase: LocalBriefcaseProps, index: number) => {
-    const name = ModelNameCache.getModelName(localBriefcase.iModelId) ?? localBriefcase.iModelId;
+    const name = ModelNameCache.get(localBriefcase.iModelId) ?? localBriefcase.iModelId;
     return <Button
       key={index + bimButtons.length}
       title={name}
