@@ -8,25 +8,25 @@ import { BackButton, NavigationButton } from "@itwin/mobile-ui-react";
 import { Button, i18n, ModelNameCache, Screen } from "../Exports";
 import { BriefcaseConnection, IModelConnection, NativeApp, SnapshotConnection } from "@itwin/core-frontend";
 import { LocalBriefcaseProps } from "@itwin/core-common";
-import "./SnapshotsScreen.scss";
+import "./LocalModelsScreen.scss";
 
-/// Properties for the [[SnapshotsScreen]] React component.
-export interface SnapshotsScreenProps {
-  /// Callback called when the user selects a snapshot iModel.
+/// Properties for the [[LocalModelsScreen]] React component.
+export interface LocalModelsScreenProps {
+  /// Callback called when the user selects an iModel.
   onOpen: (filename: string, iModelPromise: Promise<IModelConnection>) => Promise<void>;
   /// Callback called to go back to the previous screen (Home).
   onBack: () => void;
 }
 
-/// React component that displays a list of snapshot iModels stored in the app's Documents folder.
-export function SnapshotsScreen(props: SnapshotsScreenProps) {
+/// React component that displays a list of iModels stored on the device.
+export function LocalModelsScreen(props: LocalModelsScreenProps) {
   const { onOpen, onBack } = props;
   const [snapshots, setSnapshots] = React.useState<string[]>([]);
-  const chooseFileLabel = React.useMemo(() => i18n("SnapshotsScreen", "ChooseFile"), []);
+  const chooseFileLabel = React.useMemo(() => i18n("LocalModelsScreen", "ChooseFile"), []);
   const selectIModelLabel = React.useMemo(() => i18n("Shared", "SelectIModel"), []);
   const [briefcases, setBriefcases] = React.useState<LocalBriefcaseProps[]>([]);
-  const deviceDocumentsLabel = React.useMemo(() => i18n("SnapshotsScreen", "DeviceDocuments"), []);
-  const hubDocumentsLabel = React.useMemo(() => i18n("SnapshotsScreen", "HubDocuments"), []);
+  const deviceDocumentsLabel = React.useMemo(() => i18n("LocalModelsScreen", "DeviceDocuments"), []);
+  const hubDocumentsLabel = React.useMemo(() => i18n("LocalModelsScreen", "HubDocuments"), []);
 
   // This function sends a message to the native code requesting an array containing the paths to all
   // the *.bim files in the app's Documents folder. Note that fetching this list should be nearly
@@ -80,11 +80,11 @@ export function SnapshotsScreen(props: SnapshotsScreenProps) {
   });
 
   if (snapshotButtons.length) {
-    bimButtons.push(<div className="snapshots-divider">{deviceDocumentsLabel}</div>);
+    bimButtons.push(<div className="localmodels-divider">{deviceDocumentsLabel}</div>);
     bimButtons.push(...snapshotButtons);
   }
 
-  // Add a button for each downloaded hub iModel.
+  // Add a button for each downloaded hub iModel (cached briefcase).
   const briefcaseButtons = briefcases.map((localBriefcase: LocalBriefcaseProps, index: number) => {
     const name = ModelNameCache.getModelName(localBriefcase.iModelId) ?? localBriefcase.iModelId;
     return <Button
@@ -98,12 +98,12 @@ export function SnapshotsScreen(props: SnapshotsScreenProps) {
 
   if (briefcaseButtons.length) {
     briefcaseButtons.sort((b1, b2) => b1.props.title.localeCompare(b2.props.title));
-    bimButtons.push(<div className="snapshots-divider">{hubDocumentsLabel}</div>);
+    bimButtons.push(<div className="localmodels-divider">{hubDocumentsLabel}</div>);
     bimButtons.push(...briefcaseButtons);
   }
 
   return (
-    <Screen className="snapshots-screen">
+    <Screen className="localmodels-screen">
       <div className="title">
         <div className="back-button">
           <BackButton onClick={onBack} />

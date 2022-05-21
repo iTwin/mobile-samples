@@ -19,7 +19,7 @@
     "LocalIModels": "Local iModels",
     "HubIModels": "Hub iModels"
   },
-  "SnapshotsScreen": {
+  "LocalModelsScreen": {
     "ChooseFile": "Choose File...",
     "DeviceDocuments": "Device Documents",
     "HubDocuments": "Downloaded from iModel Hub"

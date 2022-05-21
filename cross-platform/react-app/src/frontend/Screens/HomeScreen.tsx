@@ -11,7 +11,7 @@ import "./HomeScreen.scss";
 export enum ActiveScreen {
   Loading,
   Home,
-  Snapshots,
+  LocalModels,
   Hub,
   Model,
 }
@@ -27,7 +27,7 @@ export interface HomeScreenProps {
 export function HomeScreen(props: HomeScreenProps) {
   const { onSelect, showBackButton } = props;
   const homeLabel = React.useMemo(() => i18n("HomeScreen", "Home"), []);
-  const snapshotIModelsLabel = React.useMemo(() => i18n("HomeScreen", "LocalIModels"), []);
+  const localModelsLabel = React.useMemo(() => i18n("HomeScreen", "LocalIModels"), []);
   const hubIModelsLabel = React.useMemo(() => i18n("HomeScreen", "HubIModels"), []);
 
   const handleBack = React.useCallback(async () => {
@@ -42,7 +42,7 @@ export function HomeScreen(props: HomeScreenProps) {
       </div>
       <div className="list">
         <div className="list-items">
-          <Button title={snapshotIModelsLabel} onClick={() => onSelect(ActiveScreen.Snapshots)} />
+          <Button title={localModelsLabel} onClick={() => onSelect(ActiveScreen.LocalModels)} />
           <Button title={hubIModelsLabel} onClick={() => onSelect(ActiveScreen.Hub)} />
         </div>
       </div>
