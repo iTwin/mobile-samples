@@ -118,6 +118,9 @@ export function HubScreen(props: HubScreenProps) {
             setHubStep(HubStep.Error);
           }
         }}
+        onCacheDeleted={(modelInfo) => {
+          ModelNameCache.remove(modelInfo.minimalIModel.id);
+        }}
       />;
       const actions: AlertAction[] = [];
       if (haveCachedBriefcase) {
@@ -127,7 +130,8 @@ export function HubScreen(props: HubScreenProps) {
           onSelected: async () => {
             if (!project) return;
             try {
-              await MobileCore.deleteCachedBriefcases(project.id);
+              const deleted = await MobileCore.deleteCachedBriefcases(project.id);
+              deleted.forEach((briefcase) => ModelNameCache.remove(briefcase.iModelId));
               if (!isMountedRef.current) return;
               setHaveCachedBriefcase(false);
             } catch (error) {
@@ -155,6 +159,7 @@ export function HubScreen(props: HubScreenProps) {
         onDownloaded={(model) => {
           setIModel(model);
           if (model.briefcase) {
+            ModelNameCache.set(model.minimalIModel.id, model.minimalIModel.displayName);
             // eslint-disable-next-line @typescript-eslint/no-floating-promises
             onOpen(model.briefcase.fileName, BriefcaseConnection.openFile(model.briefcase));
           } else {
@@ -184,4 +189,20 @@ export function HubScreen(props: HubScreenProps) {
       {stepContent}
     </Screen >
   );
+}
+
+export class ModelNameCache {
+  private static MODEL_ID_PREFIX = "modelIdToName_";
+
+  public static get(modelId: string) {
+    return localStorage.getItem(this.MODEL_ID_PREFIX + modelId);
+  }
+
+  public static set(modelId: string, modelName: string) {
+    localStorage.setItem(this.MODEL_ID_PREFIX + modelId, modelName);
+  }
+
+  public static remove(modelId: string) {
+    localStorage.removeItem(this.MODEL_ID_PREFIX + modelId);
+  }
 }
