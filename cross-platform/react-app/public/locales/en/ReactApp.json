@@ -16,11 +16,13 @@
   },
   "HomeScreen": {
     "Home": "Home",
-    "SnapshotIModels": "Snapshot iModels",
+    "LocalIModels": "Local iModels",
     "HubIModels": "Hub iModels"
   },
-  "SnapshotsScreen": {
-    "ChooseFile": "Choose File..."
+  "LocalModelsScreen": {
+    "ChooseFile": "Choose File...",
+    "DeviceDocuments": "Device Documents",
+    "HubDocuments": "Downloaded from iModel Hub"
   },
   "HubScreen": {
     "Connecting": "Connecting...",
