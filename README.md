@@ -18,6 +18,8 @@ See [iOS/README.md](./iOS/README.md) for instructions on building the iOS sample
 
 See [Android/README.md](./Android/README.md) for instructions on building the Android samples.
 
+See [OFFLINE.md](./OFFLINE.md) for information about using iModels while offline.
+
 ## Sample iModels
 
 The `Snapshot iModels` directory contains sample snapshot iModels that can be copied into the app on the device. Right now, there is only one sample: `Building Blocks.bim`. On a Windows PC, you can use iTunes to copy the file, and on a Mac you can use Finder. Once it has been copied to the app on the device, it will show up in the Snapshot iModels screen of the app. If you are already on that screen while you copy the file, hit the refresh button in the upper right to refresh the list.
