@@ -8,7 +8,11 @@ import ITwinMobile
 import JWTDecode
 
 /// An ITMAuthorizationClient that communicates with a token server.
-open class TokenServerAuthClient: ITMAuthorizationClient {
+open class TokenServerAuthClient: NSObject, ITMAuthorizationClient {
+    /// Instance for `onAccessTokenChanged` property from the `AuthorizationClient` protocol.
+    public var onAccessTokenChanged: AccessTokenChangedCallback?
+    /// Instance for `errorDomain` property from the `ITMAuthorizationClient` protocol.
+    public let errorDomain = "com.bentley.sample.ThirdPartyAuth"
     /// The auth0 token used for authentication with the token server.
     private var auth0Token: String? = nil
     /// The URL of the token server
@@ -34,7 +38,7 @@ open class TokenServerAuthClient: ITMAuthorizationClient {
 
     /// Main functionality from `AuthorizationClient`. Uses `completion` to communicate the result.
     /// - Parameter completion: The callback to call with the token result.
-    public override func getAccessToken(_ completion: @escaping GetAccessTokenCallback) {
+    public func getAccessToken(_ completion: @escaping GetAccessTokenCallback) {
         guard let auth0Token = auth0Token else {
             completion(nil, nil, nil)
             return
