@@ -114,7 +114,7 @@ function App() {
         if (window.itmSampleParams.lowResolution) {
           // Improves FPS on really slow devices and iOS simulator.
           // Shader compilation still causes one-time slowness when interacting with model.
-          opts.iModelApp.renderSys = {
+          opts.iModelApp!.renderSys = {
             devicePixelRatioOverride: 0.25, // Reduce resolution
             dpiAwareLOD: true, // Reduce tile LOD for low resolution
           };
