@@ -5,17 +5,14 @@
 import React from "react";
 import { combineReducers, createStore, Store } from "redux";
 import { IOSApp, IOSAppOpts } from "@itwin/core-mobile/lib/cjs/MobileFrontend";
-import { AuthorizationClient } from "@itwin/core-common";
-import { IModelApp, IModelConnection, IpcApp, SnapshotConnection, ToolAssistanceInstructions } from "@itwin/core-frontend";
+import { IModelApp, IModelConnection, SnapshotConnection, ToolAssistanceInstructions } from "@itwin/core-frontend";
 import { AppNotificationManager, FrameworkReducer, FrameworkState, UiFramework } from "@itwin/appui-react";
 import { Presentation } from "@itwin/presentation-frontend";
-import { ITMAuthorizationClient, Messenger, MobileCore } from "@itwin/mobile-sdk-core";
+import { Messenger, MobileCore } from "@itwin/mobile-sdk-core";
 import { MobileUi } from "@itwin/mobile-ui-react";
 // import { FeatureTracking as MeasureToolsFeatureTracking, MeasureTools } from "@bentley/measure-tools-react";
 import { ActiveScreen, HomeScreen, HubScreen, LoadingScreen, LocalModelsScreen, ModelScreen, presentError, ToolAssistance } from "./Exports";
 import { getSupportedRpcs } from "../common/rpcs";
-import { TokenServerAuthClient } from "../common/TokenServerAuthClient";
-import { samplesIpcChannel } from "../common/SamplesIpc";
 import "./App.scss";
 
 declare global {
@@ -23,11 +20,8 @@ declare global {
     /// Custom field on the window object that stores the settings that get passed via URL hash parameters.
     itmSampleParams: {
       lowResolution: boolean;
-      thirdPartyAuth: boolean;
       haveBackButton: boolean;
       debugI18n: boolean;
-      tokenServerUrl?: string;
-      tokenServerIdToken?: string;
     };
   }
 }
@@ -35,29 +29,20 @@ declare global {
 // Initialize all boolean URL has parameters to false. (String parameters default to undefined.)
 window.itmSampleParams = {
   lowResolution: false,
-  thirdPartyAuth: false,
   haveBackButton: false,
   debugI18n: false,
 };
 
 /// Load the given boolean UrlSearchParam into the custom field on the window object.
-function loadBooleanUrlSearchParam(name: "lowResolution" | "thirdPartyAuth" | "haveBackButton" | "debugI18n") {
+function loadBooleanUrlSearchParam(name: "lowResolution" | "haveBackButton" | "debugI18n") {
   window.itmSampleParams[name] = MobileCore.getUrlSearchParam(name) === "YES";
-}
-
-/// Load the given string UrlSearchParam into the custom field on the window object.
-function loadStringUrlSearchParam(name: "tokenServerUrl" | "tokenServerIdToken") {
-  window.itmSampleParams[name] = MobileCore.getUrlSearchParam(name);
 }
 
 /// Load the values stored in the URL hash params into the custom field on the window object.
 function loadUrlSearchParams() {
   loadBooleanUrlSearchParam("lowResolution");
-  loadBooleanUrlSearchParam("thirdPartyAuth");
   loadBooleanUrlSearchParam("haveBackButton");
   loadBooleanUrlSearchParam("debugI18n");
-  loadStringUrlSearchParam("tokenServerUrl");
-  loadStringUrlSearchParam("tokenServerIdToken");
 }
 
 /// Interface to allow switching from one screen to another.
@@ -76,51 +61,13 @@ const rootReducer = combineReducers({
   frameworkState: FrameworkReducer,
 });
 const anyWindow: any = window;
+// eslint-disable-next-line deprecation/deprecation
 const appReduxStore: Store<RootState> = createStore(rootReducer, anyWindow.__REDUX_DEVTOOLS_EXTENSION__ && anyWindow.__REDUX_DEVTOOLS_EXTENSION__());
 
 class AppToolAssistanceNotificationManager extends AppNotificationManager {
   public setToolAssistance(instructions: ToolAssistanceInstructions | undefined): void {
     ToolAssistance.onSetToolAssistance.emit(instructions);
     super.setToolAssistance(instructions);
-  }
-}
-
-function createAuthorizationClient(): AuthorizationClient {
-  // Only try to use the token server if thirdPartyAuth is "YES". Otherwise users would have
-  // to remove their token server settings from ITMApplication.xcconfig in order to run the
-  // other samples. The ThirdPartyAuth sample sets the thirdPartyAuth has param to "YES".
-  if (window.itmSampleParams.thirdPartyAuth) {
-    const tokenServerUrl = window.itmSampleParams.tokenServerUrl;
-    const tokenServerIdToken = window.itmSampleParams.tokenServerIdToken;
-    // With the current ThirdPartyAuth sample, we will always have the ID token if we have the
-    // token server URL, but that is not required in order for this code to work.
-    if (tokenServerUrl) {
-      // Any time the native code refreshes its ID token, it sends the new one using
-      // the "setTokenServerToken" message. Update our ID token when that happens.
-      Messenger.onQuery("setTokenServerToken").setHandler(async (token: string) => {
-        return setTokenServerToken(token);
-      });
-      return new TokenServerAuthClient(tokenServerUrl, tokenServerIdToken);
-    } else {
-      throw new Error("The ThirdPartyAuth sample requires the ITMSAMPLE_TOKEN_SERVER_URL environment variable to be set.");
-    }
-  }
-  return new ITMAuthorizationClient();
-}
-
-async function setTokenServerToken(token: string) {
-  if (IModelApp.authorizationClient instanceof TokenServerAuthClient) {
-    // Update the frontend auth client with the new ID token.
-    IModelApp.authorizationClient.tokenServerIdToken = token;
-    // Update the backend auth client with the new ID token.
-    return IpcApp.callIpcChannel(samplesIpcChannel, "setTokenServerToken", token);
-  }
-}
-
-async function updateTokenServerToken() {
-  const tokenServerIdToken = window.itmSampleParams.tokenServerIdToken;
-  if (tokenServerIdToken) {
-    setTokenServerToken(tokenServerIdToken); // eslint-disable-line @typescript-eslint/no-floating-promises
   }
 }
 
@@ -162,7 +109,6 @@ function App() {
           iModelApp: {
             rpcInterfaces: getSupportedRpcs(),
             notifications: new AppToolAssistanceNotificationManager(),
-            authorizationClient: createAuthorizationClient(),
           },
         };
         if (window.itmSampleParams.lowResolution) {
@@ -174,7 +120,6 @@ function App() {
           };
         }
         await IOSApp.startup(opts);
-        await updateTokenServerToken();
         await UiFramework.initialize(appReduxStore);
         await Presentation.initialize();
         await MobileUi.initialize(IModelApp.localization);

@@ -18,7 +18,7 @@ import { ServiceAuthorizationClient } from "@itwin/service-authorization";
   const clientSecret = process.env.ITM_TOKEN_SERVER_CLIENT_SECRET;
   const auth0Domain = process.env.ITM_TOKEN_SERVER_AUTH0_DOMAIN;
   if (!clientId || !clientSecret || !auth0Domain) {
-    throw new Error("ITM_TOKEN_SERVER_CLIENT_ID, ITM_TOKEN_SERVER_CLIENT_SECRET, and\nAUTH0_DOMAIN must be set in the environment!");
+    throw new Error("ITM_TOKEN_SERVER_CLIENT_ID, ITM_TOKEN_SERVER_CLIENT_SECRET, and\nITM_TOKEN_SERVER_AUTH0_DOMAIN must be set in the environment!");
   }
 
   try {
@@ -28,7 +28,7 @@ import { ServiceAuthorizationClient } from "@itwin/service-authorization";
       clientSecret,
       scope: process.env.ITM_TOKEN_SERVER_SCOPE ?? "itwinjs imodelaccess:read realitydata:read imodels:read projects:read",
       authority: process.env.ITM_TOKEN_SERVER_AUTHORITY,
-    }); 
+    });
 
     const server = new CustomExpressServer(authClient, auth0Domain);
 

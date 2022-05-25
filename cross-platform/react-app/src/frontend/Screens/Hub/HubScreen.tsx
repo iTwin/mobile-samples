@@ -3,10 +3,10 @@
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
 import React from "react";
-import { AlertAction, ITMAuthorizationClient, MobileCore } from "@itwin/mobile-sdk-core";
+import { AlertAction, MobileCore } from "@itwin/mobile-sdk-core";
 import { ActionSheetButton, BackButton, useIsMountedRef } from "@itwin/mobile-ui-react";
 import { Project } from "@itwin/projects-client";
-import { BriefcaseConnection, IModelApp, IModelConnection } from "@itwin/core-frontend";
+import { BriefcaseConnection, IModelConnection } from "@itwin/core-frontend";
 import { Button, i18n, IModelDownloader, IModelInfo, IModelPicker, presentError, ProjectPicker, Screen, SignIn } from "../../Exports";
 import "./HubScreen.scss";
 
@@ -173,13 +173,6 @@ export function HubScreen(props: HubScreenProps) {
     case HubStep.Error:
       stepContent = <div className="centered-list">
         <Button title={signOutLabel} onClick={async () => {
-          if (IModelApp.authorizationClient instanceof ITMAuthorizationClient) {
-            try {
-              await IModelApp.authorizationClient.signOut();
-            } catch (error) {
-              console.log(`Error signing out: ${error}`);
-            }
-          }
           onBack();
         }} />
       </div>;

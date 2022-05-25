@@ -1,35 +1,34 @@
 # Token Server
 
-The goal of the this token server is to provide an example of how to implement a two-legged authentication workflow for interacting with the iTwin Platform and configure it for the iTwin Mobile Sample.
+The goal of the this token server is to provide an example of how to implement a two-legged authentication workflow for interacting with the iTwin Platform and configure it for the iTwin Mobile ThirdPartyAuth Sample.
 
 This server holds the client secret created for your application and manages issuing the token to a client-side application that will allow access to the
 the iTwin Platform. This will enforce a secure workflow when implementing the [client credentials workflow](https://developer.bentley.com/apis/overview/authorization/#clientcredentialflow).
 
-> __Important__: It is strongly recommended that this server be placed behind a layer of authorization and/or authentication that fits your workflow and validates the user has access to get the token required. However to simplify the example, this server simply verifies that the request has a valid auth0 token from the domain specified in the AUTH0_DOMAIN environment variable. Similarly, the server itself is an http server. Any token server you deploy in the real world would use https.
+> __Important__: It is strongly recommended that this server be placed behind a layer of authorization and/or authentication that fits your workflow and validates the user has access to get the token required. However, to simplify the example, this server simply verifies that the request has a valid auth0 token from the domain specified in the `ITM_TOKEN_SERVER_AUTH0_DOMAIN` environment variable. Similarly, the server itself is an http server. Any token server you deploy in the real world would use https.
 
-## Setup token server
+## Set up the environment
 
-Use the ITM_TOKEN_SERVER_CLIENT_ID and ITM_TOKEN_SERVER_CLIENT_SECRET created in the [client registration](../README.md#client-registration) to populate the values in the `.env` (or better yet a copy of that renamed to `.env.local`).
+This token server requires certain values to be present in the environment at run-time. While you can set these environment variables before running the server, it is recommended that you instead use a file named .env.local to contain the values. Copy [.env](./.env) to .env.local, and then fill in the values. Fill in `ITM_TOKEN_SERVER_CLIENT_ID` and `ITM_TOKEN_SERVER_CLIENT_SECRET` with the values created during [client registration](../ClientID.md). Set up an auth0 domain with auth0.com and put it in the `ITM_TOKEN_SERVER_AUTH0_DOMAIN` environment variable.
 
-Set up an Auth0 domain with auth0.com and put it in the ITM_TOKEN_SERVER_AUTH0_DOMAIN environment variable.
+## Run
 
-Run,
+Run the following commands from a command prompt/terminal:
 
-- `npm install`
-- `npm run build`
-- `npm start`
-- Note the port the server starts on, that will be used when configuring the Viewer.
-  - The PORT can be configured by setting the `ITM_TOKEN_SERVER_PORT` in the `.env`
+1. `npm install`
+1. `npm run build`
+1. `npm start`
 
-## Setup the iTwin Viewer to use the proxy
+> __Note__: By default the server runs on port 3001. You can configure it to use a different port by setting `ITM_TOKEN_SERVER_PORT` in `.env.local`
 
-To configure the viewer to use the token server, make the following change to the `Viewer` component in [App.tsx](../react-viewer/src/App.tsx):
+## Set up ThirdPartyAuth sample
 
-```jsx
-<Viewer
-  // ... (iModel related information)
-  authClient={myTokenServerAuthClient}
->
-```
+### iOS
 
-If a custom port is defined in setting up the token server, provide the new port using `TOKEN_URL`. The default value is, `http://localhost:3001/getToken`.
+Follow the instructions [here](../../iOS/ThirdPartyAuth/README.md) to configure and run the third party auth sample.
+
+If a custom port is defined for the token server, make sure to use that port in the `ITMSAMPLE_TOKEN_SERVER_URL` value for the sample.
+
+### Android
+
+Forthcoming.

@@ -61,6 +61,13 @@ class ViewModel: ObservableObject {
         Auth0.webAuth(clientId: clientId, domain: domain)
     }
 
+    func logOut() {
+        if let authClient = self.application.authorizationClient as? TokenServerAuthClient {
+            authClient.setAuth0Token(nil)
+        }
+        application.auth0Token = nil
+    }
+
     func refreshIDToken(_ refreshToken: String, _ callback: @escaping LoginView.CredentialsCallback) {
         Auth0
             .authentication(
@@ -104,7 +111,9 @@ class ViewModel: ObservableObject {
                                 if refreshCredentials.refreshToken != nil {
                                     self.refreshToken = refreshCredentials.refreshToken
                                 }
-                                self.application.itmMessenger.query("setTokenServerToken", idToken)
+                                if let authClient = self.application.authorizationClient as? TokenServerAuthClient {
+                                    authClient.setAuth0Token(idToken)
+                                }
                                 self.credentials = refreshCredentials
                             }
                         } else if refreshError != nil {
