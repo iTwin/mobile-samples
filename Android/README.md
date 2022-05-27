@@ -27,11 +27,41 @@ Follow the npm setup instructions [here](../cross-platform/npm.md).
 
 ---
 
+## Setting up Local Maven
+
+You need to install two libraries to local Maven: [iTwin/mobile-native-android](https://github.com/iTwin/mobile-native-android) and [iTwin/mobile-sdk-android](https://github.com/iTwin/mobile-sdk-android).
+
+__Notes:__
+- This section requires you to install the [`gh` CLI](https://cli.github.com/) (GitHub Command Line Interface), and requires you to sign into GitHub with it using `gh auth login`.
+- The instructions should work on macOS, Linux, and Windows. The `./` prefix before `gradlew` can be omitted on Windows.
+- Replace <b>&lt;SDK Dir&gt;</b> in both sections with the directory containing your Android SDK.
+- The `assembleGitHub` task in the `mobile-native-android` build downloads the `iTwinAndroidLibrary.aar` binary library from GitHub.
+- The `publishToMavenLocal` task in both builds installs the library into local Maven. In `mobile-sdk-android`, that will also trigger a compile from the checked out source to first generate the library.
+
+Start with `mobile-native-android`. From the parent directory of this repository, run the following:
+
+<pre>
+git clone https://github.com/iTwin/mobile-native-android
+cd mobile-native-android
+echo sdk.dir=<b>&lt;SDK Dir&gt;</b> &gt local.properties
+./gradlew --no-daemon assembleGitHub publishToMavenLocal
+</pre>
+
+Next is `mobile-sdk-android`. Also from the parent directory of this repository, run the following:
+
+<pre>
+git clone https://github.com/iTwin/mobile-sdk-android
+cd mobile-sdk-android
+echo sdk.dir=<b>&lt;SDK Dir&gt;</b> &gt local.properties
+./gradlew --no-daemon publishToMavenLocal
+</pre>
+
 ## Running the Samples
 
 Once you have performed the above setup, you can build and run the samples.
 
 1. Open the desired sample in Android Studio.
+1. Select whatever JDK you want to use.
 1. Wait for Gradle to download all the dependencies.
 1. Run on either a connected Android device, or an appropriate emulator.
 1. If you get an error dialog that says `Could not connect to React debug server.`, the first thing to try is to uncomment the `itm.debug_use_ip=YES` line in ITMSamples.properties.
