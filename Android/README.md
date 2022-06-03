@@ -27,34 +27,17 @@ Follow the npm setup instructions [here](../cross-platform/npm.md).
 
 ---
 
-## Setting up Local Maven
+## GitHub Packages Maven Setup
 
-You need to install two libraries to local Maven: [iTwin/mobile-native-android](https://github.com/iTwin/mobile-native-android) and [iTwin/mobile-sdk-android](https://github.com/iTwin/mobile-sdk-android).
+To use the published versions of the iTwin Mobile SDK packages, you need to [create a Personal Access Token (PAT) on GitHub](https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/creating-a-personal-access-token) with the `read:packages` scope selected, and then add the following setting to local.properties:
 
-__Notes:__
-- This section requires you to install the [`gh` CLI](https://cli.github.com/) (GitHub Command Line Interface), and requires you to sign into GitHub with it using `gh auth login`.
-- The instructions should work on macOS, Linux, and Windows. The `./` prefix before `gradlew` can be omitted on Windows.
-- Replace <b>&lt;SDK Dir&gt;</b> in both sections with the directory containing your Android SDK.
-- The `assembleGitHub` task in the `mobile-native-android` build downloads the `iTwinAndroidLibrary.aar` binary library from GitHub.
-- The `publishToMavenLocal` task in both builds installs the library into local Maven. In `mobile-sdk-android`, that will also trigger a compile from the checked out source to first generate the library.
+    gpr.key=GITHUB_PAT
 
-Start with `mobile-native-android`. From the parent directory of this repository, run the following:
+Replace `GITHUB_PAT` with the your GitHub PAT.
 
-<pre>
-git clone https://github.com/iTwin/mobile-native-android
-cd mobile-native-android
-echo sdk.dir=<b>&lt;SDK Dir&gt;</b> &gt local.properties
-./gradlew --no-daemon assembleGitHub publishToMavenLocal
-</pre>
+## Local Maven Setup
 
-Next is `mobile-sdk-android`. Also from the parent directory of this repository, run the following:
-
-<pre>
-git clone https://github.com/iTwin/mobile-sdk-android
-cd mobile-sdk-android
-echo sdk.dir=<b>&lt;SDK Dir&gt;</b> &gt local.properties
-./gradlew --no-daemon publishToMavenLocal
-</pre>
+If you want to do local development of `iTwin/mobile-sdk-android`, please follow the instructions in CONTRIBUTING.md in that repository.
 
 ## Running the Samples
 
