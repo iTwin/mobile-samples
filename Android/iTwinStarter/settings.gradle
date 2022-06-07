@@ -19,7 +19,7 @@ dependencyResolutionManagement {
         google()
         mavenCentral()
         maven {
-            url = uri("https://maven.pkg.github.com/itwin/mobile-native-android")
+            url = uri("https://maven.pkg.github.com/itwin/mobile-sdk-android")
             credentials {
                 username = properties.getProperty("gpr.user") ?: System.getenv("USERNAME") ?: "token"
                 password = properties.getProperty("gpr.key") ?: System.getenv("TOKEN")
