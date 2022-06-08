@@ -4,7 +4,7 @@
 import * as React from "react";
 import classnames from "classnames";
 import { CoreTools, ToolItemDef } from "@itwin/appui-react";
-import { IModelApp, ToolSettings, ViewClipClearTool, WalkViewTool } from "@itwin/core-frontend";
+import { IModelApp, IModelConnection, ToolSettings, ViewClipClearTool, WalkViewTool } from "@itwin/core-frontend";
 // import { MeasureToolDefinitions } from "@bentley/measure-tools-react";
 import {
   assignRef,
@@ -23,6 +23,12 @@ import {
 import "./ToolsBottomPanel.scss";
 
 export type ButtonRowProps = React.HTMLAttributes<HTMLDivElement>;
+
+export interface ToolEntry {
+  labelKey: string;
+  icon?: string;
+  toolItemDef: ToolItemDef;
+}
 
 // tslint:disable-next-line: variable-name
 export const ButtonRow = React.forwardRef((props: ButtonRowProps, ref: MutableHtmlDivRefOrFunction) => {
@@ -64,7 +70,12 @@ export const ActiveButtonRow = React.forwardRef((props: ActiveButtonRowProps, re
 ActiveButtonRow.displayName = "ActiveButtonRow";
 
 export interface ToolsBottomPanelProps extends BottomPanelProps {
+  /// The loaded iModel.
+  iModel: IModelConnection;
+
+  /// Optional callback that is called after a tool is selected.
   onToolClick?: () => void;
+  tools?: ToolEntry[];
 }
 
 function viewLookAndMoveCommand() {
@@ -78,9 +89,8 @@ function viewLookAndMoveCommand() {
   });
 }
 
-export function ToolsBottomPanel(props: ToolsBottomPanelProps) {
-  const { onToolClick, ...others } = props;
-  const tools = React.useMemo(() => [
+export function getDefaultTools(): ToolEntry[] {
+  return [
     { labelKey: "ReactApp:ToolsBottomPanel.Select", icon: "icon-gesture-touch", toolItemDef: CoreTools.selectElementCommand },
     // { labelKey: "ReactApp:ToolsBottomPanel.Distance", icon: "icon-measure-distance", toolItemDef: MeasureToolDefinitions.measureDistanceToolCommand },
     // { labelKey: "ReactApp:ToolsBottomPanel.Location", icon: "icon-measure-location", toolItemDef: MeasureToolDefinitions.measureLocationToolCommand },
@@ -95,8 +105,12 @@ export function ToolsBottomPanel(props: ToolsBottomPanelProps) {
     { labelKey: "ReactApp:ToolsBottomPanel.SectionByRange", toolItemDef: CoreTools.sectionByRangeCommandItemDef },
     { labelKey: "ReactApp:ToolsBottomPanel.SectionByShape", toolItemDef: CoreTools.sectionByShapeCommandItemDef },
     { labelKey: "ReactApp:ToolsBottomPanel.ClearSection", icon: "icon-section-clear", toolItemDef: ToolItemDef.getItemDefForTool(ViewClipClearTool) },
-  ], []);
+  ];
+}
 
+export function ToolsBottomPanel(props: ToolsBottomPanelProps) {
+  const defaultTools = React.useMemo(getDefaultTools, []);
+  const { iModel, onToolClick, tools = defaultTools, ...others } = props;
   const activeToolId = useActiveToolId();
   const activeToolIndex = activeToolId !== undefined ? tools.findIndex((tool) => activeToolId === tool.toolItemDef.toolId) : undefined;
   const toolsRowRef = React.useRef<HTMLDivElement>(null);

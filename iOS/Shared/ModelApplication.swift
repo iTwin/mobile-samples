@@ -45,7 +45,7 @@ class ModelApplication: ITMApplication {
             ShowTime.enabled = ShowTime.Enabled.never
         }
     }
-    
+
     /// Called when the `ITMViewController` will appear.
     ///
     /// Adds our DocumentPicker component to the native UI collection.
@@ -54,7 +54,7 @@ class ModelApplication: ITMApplication {
         super.viewWillAppear(viewController: viewController)
         viewController.itmNativeUI?.addComponent(DocumentPicker(viewController: viewController, itmMessenger: ITMViewController.application.itmMessenger))
     }
-      
+
     override func getUrlHashParams() -> HashParams {
         var hashParams = super.getUrlHashParams()
         if let configData = configData {
