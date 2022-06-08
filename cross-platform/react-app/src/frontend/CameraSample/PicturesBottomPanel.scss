@@ -1,0 +1,133 @@
+/*---------------------------------------------------------------------------------------------
+* Copyright (c) Bentley Systems, Incorporated. All rights reserved.
+* See LICENSE.md in the project root for license terms and full copyright notice.
+*--------------------------------------------------------------------------------------------*/
+:root {
+  --picture-view-background-color: #ffffffa0;
+  --picture-view-foreground-color: black;
+}
+
+[preferred-color-scheme = "dark"] {
+  --picture-view-background-color: #000000a0;
+  --picture-view-foreground-color: white;
+}
+
+.pictures-bottom-panel {
+  div {
+    box-sizing: border-box;
+  }
+  .title {
+    font-size: calc(10px + 2vmin);
+    font-weight: bold;
+    width: 100%;
+    padding-top: 0px;
+    padding-bottom: 8px;
+    display: flex;
+    line-height: 24px;
+    .header-right {
+      flex-grow: 1;
+      display: flex;
+      justify-content: flex-end;
+      position: relative;
+      top: -6px;
+    }
+  }
+  .list {
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    padding: 0px 5px;
+    .list-items {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      .list-item {
+        position: relative;
+        width: 200px;
+        max-width: calc(50% - 10px);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: space-between;
+        border-radius: 8px;
+        border: 2px solid var(--picture-view-foreground-color);
+        // padding: 10px;
+        background-color: var(--background-color-2);
+        color: var(--color);
+        text-align: center;
+        overflow: hidden;
+        margin: 5px;
+        div {
+          padding-bottom: 4px;
+        }
+        img {
+          width: 200px;
+          height: 200px;
+          object-fit: cover;
+        }
+        .share-button {
+          position: absolute;
+          left: 0px;
+          top: 4px;
+        }
+        .delete-button {
+          position: absolute;
+          right: 0px;
+          top: 4px;
+        }
+        .select-button {
+          position: absolute;
+          right: 8px;
+          top: 8px;
+          background-color: var(--muic-active);
+          border: 1px solid white;
+          padding-top: 8px;
+          border-radius: 100px;
+          pointer-events: none;
+          max-width: 24px;
+          max-height: 24px;
+        }
+      }
+      .selected {
+        border-color: var(--muic-active);
+        img {
+          filter: brightness(70%);
+        }
+      }
+    .dummy-item {
+        width: 200px;
+        max-width: calc(50% - 10px);
+        padding: 0px;
+        margin: 0px 5px;
+        height: 0px;
+      }
+    }
+  }
+  .mui-panel-header-title {
+    padding-top: 0px;
+  }
+}
+
+.picture-view {
+  pointer-events: auto;
+  position: absolute;
+  box-sizing: border-box;
+  left: 0px;
+  top: 0px;
+  width: 100vw;
+  height: 100vh;
+  padding-left: env(safe-area-inset-left);
+  padding-top: env(safe-area-inset-top);
+  padding-right: env(safe-area-inset-right);
+  padding-bottom: env(safe-area-inset-bottom);
+  background-color: var(--picture-view-background-color);
+  z-index: 101;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  img {
+    max-width: 100%;
+    max-height: 100%;
+    border: 2px solid var(--picture-view-foreground-color);
+    box-sizing: border-box;
+  }
+}

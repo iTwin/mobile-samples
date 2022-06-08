@@ -32,7 +32,21 @@ import {
   useTabsAndStandAlonePanels,
   VisibleBackButton,
 } from "@itwin/mobile-ui-react";
-import { AboutBottomPanel, ElementPropertiesPanel, i18n, InfoBottomPanel, presentError, ToolAssistance, ToolsBottomPanel, ViewsBottomPanel } from "../Exports";
+import {
+  AboutBottomPanel,
+  ElementPropertiesPanel,
+  i18n,
+  InfoBottomPanel,
+  presentError,
+  ToolAssistance,
+  ToolsBottomPanel,
+  ViewsBottomPanel,
+} from "../Exports";
+import {
+  CameraSampleMain,
+  CameraSampleToolsBottomPanel,
+  PicturesBottomPanel,
+} from "../CameraSample/Exports";
 import "./ModelScreen.scss";
 
 // tslint:disable-next-line: variable-name
@@ -57,6 +71,10 @@ export function updateBackgroundColor(viewState: ViewState) {
   displayStyle.backgroundColor = ColorDef.fromString(bgColor);
 }
 
+function getToolsBottomPanelFunction() {
+  return window.itmSampleParams.isCameraSample ? CameraSampleToolsBottomPanel : ToolsBottomPanel;
+}
+
 /// React component showing the iModel and containing UI for interacting with it.
 export function ModelScreen(props: ModelScreenProps) {
   const tabsAndPanelsAPI = useTabsAndStandAlonePanels();
@@ -73,8 +91,10 @@ export function ModelScreen(props: ModelScreenProps) {
   const infoLabel = React.useMemo(() => i18n("ModelScreen", "Info"), []);
   const aboutLabel = React.useMemo(() => i18n("ModelScreen", "About"), []);
   const viewsLabel = React.useMemo(() => i18n("ModelScreen", "Views"), []);
+  const picturesLabel = React.useMemo(() => i18n("ModelScreen", "Pictures"), []);
   const toolsLabel = React.useMemo(() => i18n("ModelScreen", "Tools"), []);
   const elementPropertiesLabel = React.useMemo(() => i18n("ModelScreen", "Properties"), []);
+
   // Any time we do anything asynchronous, we have to check if the component is still mounted,
   // or it can lead to a run-time exception.
   const isMountedRef = useIsMountedRef();
@@ -169,11 +189,12 @@ export function ModelScreen(props: ModelScreenProps) {
     {
       label: toolsLabel,
       isTab: true,
-      popup: <ToolsBottomPanel
-        key="tools"
+      popup: React.createElement(getToolsBottomPanelFunction(), {
+        key: "tools",
+        iModel,
         // Close the Views bottom panel when a view is selected from it.
-        onToolClick={() => { tabsAndPanelsAPI.closeSelectedPanel(); }}
-      />,
+        onToolClick: () => { tabsAndPanelsAPI.closeSelectedPanel(); },
+      }),
     },
     {
       label: viewsLabel,
@@ -199,6 +220,14 @@ export function ModelScreen(props: ModelScreenProps) {
       />,
     },
   ];
+
+  if (window.itmSampleParams.isCameraSample) {
+    panels.push({
+      label: picturesLabel,
+      isTab: true,
+      popup: <PicturesBottomPanel key="pictures" iModel={iModel} />,
+    });
+  }
 
   tabsAndPanelsAPI.setPanels(panels);
 
@@ -263,6 +292,7 @@ export function ModelScreen(props: ModelScreenProps) {
           }
         />
         <ToolAssistance />
+        {window.itmSampleParams.isCameraSample && <CameraSampleMain />}
         {tabsAndPanelsAPI.renderTabBarAndPanels()}
       </MobileUiContent >
     </>
@@ -272,12 +302,14 @@ export function ModelScreen(props: ModelScreenProps) {
 export interface HeaderTitleProps {
   iconSpec?: IconSpec;
   label?: string;
+  moreElements?: React.ReactNode;
 }
 
 export function HeaderTitle(props: HeaderTitleProps) {
-  const { iconSpec, label } = props;
+  const { iconSpec, label, moreElements } = props;
   return <div className="title">
     {iconSpec && <IconImage style={{ display: "inline-block", marginRight: 10 }} iconSpec={iconSpec} />}
     {label}
+    {moreElements}
   </div>;
 }
