@@ -33,7 +33,7 @@ class PlacePhotoMarkerTool extends PlaceMarkerTool {
       await addImageMarker(point, true, iModelId);
     });
     if (!PlacePhotoMarkerTool.prompt)
-      PlacePhotoMarkerTool.prompt = IModelApp.localization.getLocalizedStringWithNamespace("ReactApp", "ToolsBottomPanel.EnterPointPhotoPrompt");
+      PlacePhotoMarkerTool.prompt = IModelApp.localization.getLocalizedStringWithNamespace("ReactApp", "CameraSampleToolsBottomPanel.EnterPointPhotoPrompt");
   }
 }
 
@@ -48,7 +48,7 @@ class PlaceCameraMarkerTool extends PlaceMarkerTool {
       await addImageMarker(point, false, iModelId);
     });
     if (!PlaceCameraMarkerTool.prompt)
-      PlaceCameraMarkerTool.prompt = IModelApp.localization.getLocalizedStringWithNamespace("ReactApp", "ToolsBottomPanel.EnterPointCameraPrompt");
+      PlaceCameraMarkerTool.prompt = IModelApp.localization.getLocalizedStringWithNamespace("ReactApp", "CameraSampleToolsBottomPanel.EnterPointCameraPrompt");
   }
 }
 
@@ -56,8 +56,8 @@ export function CameraSampleToolsBottomPanel(props: ToolsBottomPanelProps) {
   const { iModel } = props;
   const tools = React.useMemo(() => {
     const allTools = getDefaultTools();
-    allTools.splice(1, 0, { labelKey: "ReactApp:ToolsBottomPanel.Camera", icon: "icon-camera", toolItemDef: ToolItemDef.getItemDefForTool(PlaceCameraMarkerTool, undefined, iModel?.iModelId) });
-    allTools.splice(1, 0, { labelKey: "ReactApp:ToolsBottomPanel.Picture", icon: "icon-image", toolItemDef: ToolItemDef.getItemDefForTool(PlacePhotoMarkerTool, undefined, iModel?.iModelId) });
+    allTools.splice(1, 0, { labelKey: "ReactApp:CameraSampleToolsBottomPanel.Camera", icon: "icon-camera", toolItemDef: ToolItemDef.getItemDefForTool(PlaceCameraMarkerTool, undefined, iModel?.iModelId) });
+    allTools.splice(1, 0, { labelKey: "ReactApp:CameraSampleToolsBottomPanel.Picture", icon: "icon-image", toolItemDef: ToolItemDef.getItemDefForTool(PlacePhotoMarkerTool, undefined, iModel?.iModelId) });
     return allTools;
   }, [iModel]);
   const vp = useFirstViewport();

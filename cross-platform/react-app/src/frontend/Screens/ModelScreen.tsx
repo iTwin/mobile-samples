@@ -89,9 +89,9 @@ export function ModelScreen(props: ModelScreenProps) {
   const defaultViewLabel = React.useMemo(() => i18n("ModelScreen", "DefaultView"), []);
   const toggleCameraLabel = React.useMemo(() => i18n("ModelScreen", "ToggleCamera"), []);
   const infoLabel = React.useMemo(() => i18n("ModelScreen", "Info"), []);
-  const aboutLabel = React.useMemo(() => i18n("ModelScreen", "About"), []);
-  const viewsLabel = React.useMemo(() => i18n("ModelScreen", "Views"), []);
-  const picturesLabel = React.useMemo(() => i18n("ModelScreen", "Pictures"), []);
+  const aboutLabel = React.useMemo(() => i18n("AboutBottomPanel", "About"), []);
+  const viewsLabel = React.useMemo(() => i18n("ViewsBottomPanel", "Views"), []);
+  const picturesLabel = React.useMemo(() => i18n("PicturesBottomPanel", "Pictures"), []);
   const toolsLabel = React.useMemo(() => i18n("ModelScreen", "Tools"), []);
   const elementPropertiesLabel = React.useMemo(() => i18n("ModelScreen", "Properties"), []);
 
