@@ -4,6 +4,16 @@
 
 These samples make use of the iTwin [`mobile-sdk-android`](https://github.com/iTwin/mobile-sdk-android) package (which itself uses the iTwin [`mobile-native-android`](https://github.com/iTwin/mobile-native-android/releases) package), as well as the `@itwin/mobile-sdk-core` and `@itwin/mobile-ui-react` npm modules. In order to work properly, all of these things have to be in sync with each other. When new functionality is added to any of the dependent modules, and that new functionality is used in the samples, the samples won't work until the next official release of the dependent modules. That means that there is a very good chance that the main branch __will not work__ at any given time. To avoid problems when using these samples, you should always check out a release tag.
 
+## Windows Development
+
+If you are developing in Windows you must complete the following steps __before__ cloning this repository:
+
+1. Open the Windows settings dialog and enable developer mode. Specific steps can be found [here](https://docs.microsoft.com/en-us/windows/apps/get-started/enable-your-device-for-development).
+1. Configure git to create symlinks by running the following command:
+
+    <pre>git config --global core.symlinks true</pre>
+1. Restart your computer and clone the repository.
+
 ## Client ID Setup
 
 Before building the samples, you must configure a Client ID for yourself. To do so, follow the instructions [here](../cross-platform/ClientID.md).
