@@ -11,9 +11,10 @@ import { Presentation } from "@itwin/presentation-frontend";
 import { Messenger, MobileCore } from "@itwin/mobile-sdk-core";
 import { MobileUi } from "@itwin/mobile-ui-react";
 // import { FeatureTracking as MeasureToolsFeatureTracking, MeasureTools } from "@bentley/measure-tools-react";
-import { ActiveScreen, HomeScreen, HubScreen, LoadingScreen, LocalModelsScreen, ModelScreen, presentError, ToolAssistance } from "./Exports";
+import { ActiveScreen, HomeScreen, HubScreen, LoadingScreen, LocalModelsScreen, ModelScreen, ModelScreenOverrideProps, presentError, ToolAssistance } from "./Exports";
 import { getSupportedRpcs } from "../common/rpcs";
 import "./App.scss";
+import { CameraSampleMain, CameraSampleToolsBottomPanel, PicturesBottomPanel } from "./CameraSample/Exports";
 
 declare global {
   interface Window {
@@ -74,7 +75,7 @@ class AppToolAssistanceNotificationManager extends AppNotificationManager {
   }
 }
 
-function App() {
+export function App(props: ModelScreenOverrideProps) {
   // Start out on the Loading screen.
   const [activeScreen, setActiveScreen] = React.useState(ActiveScreen.Loading);
   // Keep a stack of active screens, so that handleBack can automatically go to the correct place.
@@ -250,10 +251,20 @@ function App() {
     case ActiveScreen.Hub:
       return <HubScreen onOpen={handleOpen} onBack={handleBack} />;
     case ActiveScreen.Model:
-      return <ModelScreen filename={modelFilename} iModel={iModel!} onBack={handleBack} />;
+      return <ModelScreen filename={modelFilename} iModel={iModel!} onBack={handleBack} {...props} />;
     default:
       return <LoadingScreen />;
   }
 }
 
-export default App;
+export function CameraSampleApp() {
+  return <App
+    bottomPanel={CameraSampleToolsBottomPanel}
+    additionalComponents={<CameraSampleMain />}
+    additionalTabs={[{
+      label: "Pictures",
+      isTab: true,
+      popup: <PicturesBottomPanel key="pictures" iModel={iModel!} />,
+    }]}
+  />;
+}
