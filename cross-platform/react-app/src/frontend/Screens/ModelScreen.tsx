@@ -48,23 +48,20 @@ import "./ModelScreen.scss";
 // tslint:disable-next-line: variable-name
 const UnifiedSelectionViewportComponent = viewWithUnifiedSelection(ViewportComponent);
 
-export interface ModelScreenOverrideProps {
-  /// Optional bottom panel override.
-  bottomPanel?: React.FunctionComponent<ToolsBottomPanelProps>;
-  /// Additional components
-  additionalComponents?: React.ReactNode;
-  /// Additional tabs
-  additionalTabs?: TabOrPanelDef[];
-}
-
 /// Properties for the [[ModelScreen]] React component.
-export interface ModelScreenProps extends ModelScreenOverrideProps {
+export interface ModelScreenProps {
   /// The full path to the currently loaded iModel.
   filename: string;
   /// The currently loaded iModel.
   iModel: IModelConnection;
   /// Callback to go back to the previous screen.
   onBack: () => void;
+  /// Optional bottom panel override.
+  bottomPanel?: React.FunctionComponent<ToolsBottomPanelProps>;
+  /// Additional components
+  additionalComponents?: React.ReactNode;
+  /// Additional tabs
+  additionalTabs?: TabOrPanelDef[];
 }
 
 // Set the model background color based on the currently active dark/light color scheme.

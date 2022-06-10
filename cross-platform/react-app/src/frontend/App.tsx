@@ -11,7 +11,7 @@ import { Presentation } from "@itwin/presentation-frontend";
 import { Messenger, MobileCore } from "@itwin/mobile-sdk-core";
 import { MobileUi } from "@itwin/mobile-ui-react";
 // import { FeatureTracking as MeasureToolsFeatureTracking, MeasureTools } from "@bentley/measure-tools-react";
-import { ActiveScreen, HomeScreen, HubScreen, LoadingScreen, LocalModelsScreen, ModelScreen, ModelScreenOverrideProps, presentError, ToolAssistance } from "./Exports";
+import { ActiveScreen, HomeScreen, HubScreen, LoadingScreen, LocalModelsScreen, ModelScreen, presentError, ToolAssistance } from "./Exports";
 import { getSupportedRpcs } from "../common/rpcs";
 import "./App.scss";
 import { CameraSampleMain, CameraSampleToolsBottomPanel, PicturesBottomPanel } from "./CameraSample/Exports";
@@ -23,7 +23,6 @@ declare global {
       lowResolution: boolean;
       haveBackButton: boolean;
       debugI18n: boolean;
-      isCameraSample: boolean;
     };
   }
 }
@@ -33,11 +32,10 @@ window.itmSampleParams = {
   lowResolution: false,
   haveBackButton: false,
   debugI18n: false,
-  isCameraSample: false,
 };
 
 /// Load the given boolean UrlSearchParam into the custom field on the window object.
-function loadBooleanUrlSearchParam(name: "lowResolution" | "haveBackButton" | "debugI18n" | "isCameraSample") {
+function loadBooleanUrlSearchParam(name: "lowResolution" | "haveBackButton" | "debugI18n") {
   window.itmSampleParams[name] = MobileCore.getUrlSearchParam(name) === "YES";
 }
 
@@ -46,7 +44,6 @@ function loadUrlSearchParams() {
   loadBooleanUrlSearchParam("lowResolution");
   loadBooleanUrlSearchParam("haveBackButton");
   loadBooleanUrlSearchParam("debugI18n");
-  loadBooleanUrlSearchParam("isCameraSample");
 }
 
 /// Interface to allow switching from one screen to another.
@@ -75,7 +72,7 @@ class AppToolAssistanceNotificationManager extends AppNotificationManager {
   }
 }
 
-export function App(props: ModelScreenOverrideProps) {
+export function useAppState() {
   // Start out on the Loading screen.
   const [activeScreen, setActiveScreen] = React.useState(ActiveScreen.Loading);
   // Keep a stack of active screens, so that handleBack can automatically go to the correct place.
@@ -243,6 +240,12 @@ export function App(props: ModelScreenOverrideProps) {
     }
   }, [iModel, openUrlPath, handleOpen]);
 
+  return { activeScreen, handleHomeSelect, handleOpen, handleBack, haveBackButton, iModel, modelFilename };
+}
+
+export function App() {
+  const { activeScreen, handleHomeSelect, handleOpen, handleBack, haveBackButton, iModel, modelFilename } = useAppState();
+
   switch (activeScreen) {
     case ActiveScreen.Home:
       return <HomeScreen onSelect={handleHomeSelect} showBackButton={haveBackButton} />;
@@ -251,20 +254,33 @@ export function App(props: ModelScreenOverrideProps) {
     case ActiveScreen.Hub:
       return <HubScreen onOpen={handleOpen} onBack={handleBack} />;
     case ActiveScreen.Model:
-      return <ModelScreen filename={modelFilename} iModel={iModel!} onBack={handleBack} {...props} />;
+      return <ModelScreen filename={modelFilename} iModel={iModel!} onBack={handleBack} />;
     default:
       return <LoadingScreen />;
   }
 }
 
 export function CameraSampleApp() {
-  return <App
-    bottomPanel={CameraSampleToolsBottomPanel}
-    additionalComponents={<CameraSampleMain />}
-    additionalTabs={[{
-      label: "Pictures",
-      isTab: true,
-      popup: <PicturesBottomPanel key="pictures" iModel={iModel!} />,
-    }]}
-  />;
+  const { activeScreen, handleHomeSelect, handleOpen, handleBack, haveBackButton, iModel, modelFilename } = useAppState();
+
+  switch (activeScreen) {
+    case ActiveScreen.Home:
+      return <HomeScreen onSelect={handleHomeSelect} showBackButton={haveBackButton} />;
+    case ActiveScreen.LocalModels:
+      return <LocalModelsScreen onOpen={handleOpen} onBack={handleBack} />;
+    case ActiveScreen.Hub:
+      return <HubScreen onOpen={handleOpen} onBack={handleBack} />;
+    case ActiveScreen.Model:
+      return <ModelScreen filename={modelFilename} iModel={iModel!} onBack={handleBack}
+        bottomPanel={CameraSampleToolsBottomPanel}
+        additionalComponents={<CameraSampleMain />}
+        additionalTabs={[{
+          label: "Pictures",
+          isTab: true,
+          popup: <PicturesBottomPanel key="pictures" iModel={iModel!} />,
+        }]}
+      />;
+    default:
+      return <LoadingScreen />;
+  }
 }
