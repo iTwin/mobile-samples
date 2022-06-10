@@ -69,3 +69,5 @@ task genITMAppConfig {
     extractProperties(properties, "itmsample", contents)
     itmAppConfig.write(JsonOutput.prettyPrint(JsonOutput.toJson(contents)))
 }
+
+genITMAppConfig.dependsOn ":itmsamplesshared:copyITMAssets"
