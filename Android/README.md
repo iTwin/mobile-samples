@@ -35,6 +35,8 @@ To use the published versions of the iTwin Mobile SDK packages, you need to [cre
 
 Replace `GITHUB_PAT` with the your GitHub PAT.
 
+__Note:__ If you a member of the iTwin organization on GitHub, you must authorize your PAT for SSO use. To do that, select "Configure SSO" on the PAT, and authorize the iTwin organization.
+
 ## Local Maven Setup
 
 If you want to do local development of `iTwin/mobile-sdk-android`, please follow the instructions in CONTRIBUTING.md in that repository.
