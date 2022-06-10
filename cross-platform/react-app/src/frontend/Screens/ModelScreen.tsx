@@ -57,7 +57,7 @@ export interface ModelScreenProps {
   /// Callback to go back to the previous screen.
   onBack: () => void;
   /// Optional bottom panel override.
-  bottomPanel?: React.FunctionComponent<ToolsBottomPanelProps>;
+  toolsBottomPanel?: React.FunctionComponent<ToolsBottomPanelProps>;
   /// Additional components
   additionalComponents?: React.ReactNode;
   /// Additional tabs
@@ -76,7 +76,7 @@ export function updateBackgroundColor(viewState: ViewState) {
 /// React component showing the iModel and containing UI for interacting with it.
 export function ModelScreen(props: ModelScreenProps) {
   const tabsAndPanelsAPI = useTabsAndStandAlonePanels();
-  const { filename, iModel, onBack, bottomPanel, additionalComponents, additionalTabs } = props;
+  const { filename, iModel, onBack, toolsBottomPanel, additionalComponents, additionalTabs } = props;
   const [viewState, setViewState] = React.useState<ViewState>();
   const isDark = useActiveColorSchemeIsDark();
   const locationLabel = React.useMemo(() => i18n("ModelScreen", "Location"), []);
@@ -186,7 +186,7 @@ export function ModelScreen(props: ModelScreenProps) {
     {
       label: toolsLabel,
       isTab: true,
-      popup: React.createElement(bottomPanel ?? ToolsBottomPanel,
+      popup: React.createElement(toolsBottomPanel ?? ToolsBottomPanel,
         {
           iModel,
           // Close the Views bottom panel when a view is selected from it.

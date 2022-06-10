@@ -272,7 +272,7 @@ export function CameraSampleApp() {
       return <HubScreen onOpen={handleOpen} onBack={handleBack} />;
     case ActiveScreen.Model:
       return <ModelScreen filename={modelFilename} iModel={iModel!} onBack={handleBack}
-        bottomPanel={CameraSampleToolsBottomPanel}
+        toolsBottomPanel={CameraSampleToolsBottomPanel}
         additionalComponents={<CameraSampleMain />}
         additionalTabs={[{
           label: "Pictures",
