@@ -1,4 +1,9 @@
+/*---------------------------------------------------------------------------------------------
+* Copyright (c) Bentley Systems, Incorporated. All rights reserved.
+* See LICENSE.md in the project root for license terms and full copyright notice.
+*--------------------------------------------------------------------------------------------*/
 package com.bentley.sample.itwinstarter
+
 import android.net.Uri
 import com.eclipsesource.json.Json
 import com.github.itwin.mobilesdk.ITMApplication
