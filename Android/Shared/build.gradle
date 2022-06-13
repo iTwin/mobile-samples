@@ -1,1 +1,2 @@
 apply from: 'ITMAppConfig.gradle'
+apply from: 'ITMAssets.gradle'
