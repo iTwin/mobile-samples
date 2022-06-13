@@ -2,6 +2,8 @@
 * Copyright (c) Bentley Systems, Incorporated. All rights reserved.
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
+import java.nio.file.Files
+import java.nio.file.Paths
 import groovy.json.JsonOutput
 
 static def getLocalIPv4() {
@@ -30,7 +32,10 @@ static def getBoolProperty(properties, propertyName) {
 }
 
 task genITMAppConfig {
-    def itmAppConfig = new File("${rootDir}/app/src/main/assets/ITMApplication/ITMAppConfig.json")
+    def destDir = Paths.get("${rootDir}/app/src/main/assets/ITMApplication")
+    if (!Files.exists(destDir))
+        Files.createDirectories(destDir)
+    def itmAppConfig = new File("${destDir.toString()}/ITMAppConfig.json")
     if (!itmAppConfig.exists()) {
         itmAppConfig.createNewFile()
     }
