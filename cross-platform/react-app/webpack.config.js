@@ -46,10 +46,11 @@ function getConfig(env) {
     // don't really use, but trigger exceptions at run-time in their startup
     // initialization.
     module: {
-      rules: [{
-        test: /formidable\/.*js$/,
-        use: 'null-loader'
-      },
+      rules: [
+	    {
+          test: /formidable(\\|\/).*js$/,
+          use: 'null-loader'
+        },
         // {
         //   test: /backend-itwin-client/,
         //   use: 'null-loader'
