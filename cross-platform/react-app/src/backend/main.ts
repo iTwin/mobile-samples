@@ -31,7 +31,7 @@ export const prodIssuerUrl = "https://ims.bentley.com/";
   };
   await IOSHost.startup(options);
 
-  const backendRoot = process.env.ITMAPPLICATION_BACKEND_ROOT;
+  const backendRoot = path.dirname(process.mainModule!.filename);
   const assetsRoot = backendRoot ? path.join(backendRoot, "assets") : "assets";
   // Initialize presentation-backend
   Presentation.initialize({
