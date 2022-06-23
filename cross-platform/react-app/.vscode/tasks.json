@@ -13,6 +13,16 @@
 		},
 		{
 			"type": "npm",
+			"script": "build:camera",
+			"problemMatcher": [
+				"$eslint-stylish"
+			],
+			"group": "build",
+			"label": "npm: build:camera",
+			"detail": "react-scripts build:camera"
+		},
+		{
+			"type": "npm",
 			"script": "start",
 			"label": "npm run start",
 			"isBackground": true,
@@ -44,6 +54,40 @@
 			"group": {
 				"kind": "build",
 				"isDefault": true
+			}
+		},
+		{
+			"type": "npm",
+			"script": "start:camera",
+			"label": "npm run start:camera",
+			"isBackground": true,
+			"problemMatcher": {
+				"owner": "javascript",
+				"fileLocation": [
+					"relative",
+					"${workspaceFolder}"
+				],
+				"pattern": [
+					{
+						"regexp": "^(\\.[^\\s].*)$",
+						"file": 1
+					},
+					{
+						"regexp": "^\\s+Line\\s+(\\d+):(\\d+):\\s*(.*)$",
+						"line": 1,
+						"column": 2,
+						"message": 3,
+						"loop": true
+					}
+				],
+				"background": {
+					"activeOnStart": true,
+					"beginsPattern": "^Compiling...",
+					"endsPattern": "^Compiled |^Failed to compile"
+				}
+			},
+			"group": {
+				"kind": "build"
 			}
 		}
 	]

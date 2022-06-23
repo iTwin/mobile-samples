@@ -9,4 +9,4 @@ export * from "./PlaceMarkerTool";
 export * from "./PicturesBottomPanel";
 export * from "./Support/ImageCache";
 export * from "./CameraSampleToolsBottomPanel";
-export * from "./CameraSampleMain";
+export * from "./CameraSampleApp";

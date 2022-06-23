@@ -11,7 +11,7 @@ import { Presentation } from "@itwin/presentation-frontend";
 import { Messenger, MobileCore } from "@itwin/mobile-sdk-core";
 import { MobileUi } from "@itwin/mobile-ui-react";
 // import { FeatureTracking as MeasureToolsFeatureTracking, MeasureTools } from "@bentley/measure-tools-react";
-import { ActiveScreen, HomeScreen, HubScreen, LoadingScreen, LocalModelsScreen, ModelScreen, presentError, ToolAssistance } from "./Exports";
+import { ActiveScreen, HomeScreen, HubScreen, LoadingScreen, LocalModelsScreen, ModelScreen, ModelScreenExtensionProps, presentError, ToolAssistance } from "./Exports";
 import { getSupportedRpcs } from "../common/rpcs";
 import "./App.scss";
 
@@ -22,7 +22,6 @@ declare global {
       lowResolution: boolean;
       haveBackButton: boolean;
       debugI18n: boolean;
-      isCameraSample: boolean;
     };
   }
 }
@@ -32,11 +31,10 @@ window.itmSampleParams = {
   lowResolution: false,
   haveBackButton: false,
   debugI18n: false,
-  isCameraSample: false,
 };
 
 /// Load the given boolean UrlSearchParam into the custom field on the window object.
-function loadBooleanUrlSearchParam(name: "lowResolution" | "haveBackButton" | "debugI18n" | "isCameraSample") {
+function loadBooleanUrlSearchParam(name: "lowResolution" | "haveBackButton" | "debugI18n") {
   window.itmSampleParams[name] = MobileCore.getUrlSearchParam(name) === "YES";
 }
 
@@ -45,7 +43,6 @@ function loadUrlSearchParams() {
   loadBooleanUrlSearchParam("lowResolution");
   loadBooleanUrlSearchParam("haveBackButton");
   loadBooleanUrlSearchParam("debugI18n");
-  loadBooleanUrlSearchParam("isCameraSample");
 }
 
 /// Interface to allow switching from one screen to another.
@@ -74,7 +71,7 @@ class AppToolAssistanceNotificationManager extends AppNotificationManager {
   }
 }
 
-function App() {
+function useAppState() {
   // Start out on the Loading screen.
   const [activeScreen, setActiveScreen] = React.useState(ActiveScreen.Loading);
   // Keep a stack of active screens, so that handleBack can automatically go to the correct place.
@@ -242,6 +239,17 @@ function App() {
     }
   }, [iModel, openUrlPath, handleOpen]);
 
+  return { activeScreen, handleHomeSelect, handleOpen, handleBack, haveBackButton, iModel, modelFilename };
+}
+
+export interface AppProps {
+  getModelScreenExtensions?: (iModel: IModelConnection) => ModelScreenExtensionProps;
+}
+
+export function App(props: AppProps) {
+  const { activeScreen, handleHomeSelect, handleOpen, handleBack, haveBackButton, iModel, modelFilename } = useAppState();
+  const { getModelScreenExtensions } = props;
+
   switch (activeScreen) {
     case ActiveScreen.Home:
       return <HomeScreen onSelect={handleHomeSelect} showBackButton={haveBackButton} />;
@@ -250,10 +258,8 @@ function App() {
     case ActiveScreen.Hub:
       return <HubScreen onOpen={handleOpen} onBack={handleBack} />;
     case ActiveScreen.Model:
-      return <ModelScreen filename={modelFilename} iModel={iModel!} onBack={handleBack} />;
+      return <ModelScreen filename={modelFilename} iModel={iModel!} onBack={handleBack} {...props} {...getModelScreenExtensions?.(iModel!)} />;
     default:
       return <LoadingScreen />;
   }
 }
-
-export default App;
