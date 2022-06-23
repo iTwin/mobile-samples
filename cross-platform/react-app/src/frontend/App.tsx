@@ -71,7 +71,7 @@ class AppToolAssistanceNotificationManager extends AppNotificationManager {
   }
 }
 
-export function useAppState() {
+function useAppState() {
   // Start out on the Loading screen.
   const [activeScreen, setActiveScreen] = React.useState(ActiveScreen.Loading);
   // Keep a stack of active screens, so that handleBack can automatically go to the correct place.
