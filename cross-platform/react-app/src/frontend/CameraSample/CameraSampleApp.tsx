@@ -5,7 +5,7 @@
 import * as React from "react";
 import { useUiEvent } from "@itwin/mobile-ui-react";
 import { IModelConnection } from "@itwin/core-frontend";
-import { App, ModelScreenExtensionProps } from "../Exports";
+import { App, i18n, ModelScreenExtensionProps } from "../Exports";
 import {
   CameraSampleToolsBottomPanel,
   ImageMarkerApi,
@@ -24,12 +24,13 @@ function ImageSelectionHandler() {
 }
 
 export function CameraSampleApp() {
+  const picturesLabel = React.useMemo(() => i18n("PicturesBottomPanel", "Pictures"), []);
   return <App getModelScreenExtensions={(iModel: IModelConnection): ModelScreenExtensionProps => {
     return {
       toolsBottomPanel: CameraSampleToolsBottomPanel,
       additionalComponents: <ImageSelectionHandler />,
       additionalTabs: [{
-        label: "Pictures", // TODO: localize
+        label: picturesLabel,
         isTab: true,
         popup: <PicturesBottomPanel key="pictures" iModel={iModel} />,
       }],
