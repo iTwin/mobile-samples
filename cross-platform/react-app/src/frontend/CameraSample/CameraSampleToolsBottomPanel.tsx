@@ -5,9 +5,7 @@
 import * as React from "react";
 import { ToolItemDef } from "@itwin/appui-react";
 import { IModelApp } from "@itwin/core-frontend";
-import {
-  useFirstViewport,
-} from "@itwin/mobile-ui-react";
+import { useFirstViewport } from "@itwin/mobile-ui-react";
 import { getDefaultTools, ToolsBottomPanel, ToolsBottomPanelProps } from "../Exports";
 import {
   ImageCache,

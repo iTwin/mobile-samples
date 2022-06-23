@@ -3,15 +3,17 @@
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
 import * as React from "react";
+import { useUiEvent } from "@itwin/mobile-ui-react";
+import { IModelConnection } from "@itwin/core-frontend";
+import { App, ModelScreenExtensionProps } from "../Exports";
 import {
-  useUiEvent,
-} from "@itwin/mobile-ui-react";
-import {
+  CameraSampleToolsBottomPanel,
   ImageMarkerApi,
+  PicturesBottomPanel,
   PictureView,
-} from "../CameraSample/Exports";
+} from "./Exports";
 
-export function CameraSampleMain() {
+function ImageSelectionHandler() {
   const [selectedPictureUrl, setSelectedPictureUrl] = React.useState<string>();
 
   useUiEvent((url) => setSelectedPictureUrl(url), ImageMarkerApi.onImageSelected);
@@ -19,4 +21,18 @@ export function CameraSampleMain() {
     e.stopPropagation();
     setSelectedPictureUrl(undefined);
   }} /> : null;
+}
+
+export function CameraSampleApp() {
+  return <App getModelScreenExtensions={(iModel: IModelConnection): ModelScreenExtensionProps => {
+    return {
+      toolsBottomPanel: CameraSampleToolsBottomPanel,
+      additionalComponents: <ImageSelectionHandler />,
+      additionalTabs: [{
+        label: "Pictures", // TODO: localize
+        isTab: true,
+        popup: <PicturesBottomPanel key="pictures" iModel={iModel} />,
+      }],
+    };
+  }} />;
 }

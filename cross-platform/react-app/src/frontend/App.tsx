@@ -11,10 +11,9 @@ import { Presentation } from "@itwin/presentation-frontend";
 import { Messenger, MobileCore } from "@itwin/mobile-sdk-core";
 import { MobileUi } from "@itwin/mobile-ui-react";
 // import { FeatureTracking as MeasureToolsFeatureTracking, MeasureTools } from "@bentley/measure-tools-react";
-import { ActiveScreen, HomeScreen, HubScreen, LoadingScreen, LocalModelsScreen, ModelScreen, presentError, ToolAssistance } from "./Exports";
+import { ActiveScreen, HomeScreen, HubScreen, LoadingScreen, LocalModelsScreen, ModelScreen, ModelScreenExtensionProps, presentError, ToolAssistance } from "./Exports";
 import { getSupportedRpcs } from "../common/rpcs";
 import "./App.scss";
-import { CameraSampleMain, CameraSampleToolsBottomPanel, PicturesBottomPanel } from "./CameraSample/Exports";
 
 declare global {
   interface Window {
@@ -243,25 +242,13 @@ export function useAppState() {
   return { activeScreen, handleHomeSelect, handleOpen, handleBack, haveBackButton, iModel, modelFilename };
 }
 
-export function App() {
-  const { activeScreen, handleHomeSelect, handleOpen, handleBack, haveBackButton, iModel, modelFilename } = useAppState();
-
-  switch (activeScreen) {
-    case ActiveScreen.Home:
-      return <HomeScreen onSelect={handleHomeSelect} showBackButton={haveBackButton} />;
-    case ActiveScreen.LocalModels:
-      return <LocalModelsScreen onOpen={handleOpen} onBack={handleBack} />;
-    case ActiveScreen.Hub:
-      return <HubScreen onOpen={handleOpen} onBack={handleBack} />;
-    case ActiveScreen.Model:
-      return <ModelScreen filename={modelFilename} iModel={iModel!} onBack={handleBack} />;
-    default:
-      return <LoadingScreen />;
-  }
+export interface AppProps {
+  getModelScreenExtensions?: (iModel: IModelConnection) => ModelScreenExtensionProps;
 }
 
-export function CameraSampleApp() {
+export function App(props: AppProps) {
   const { activeScreen, handleHomeSelect, handleOpen, handleBack, haveBackButton, iModel, modelFilename } = useAppState();
+  const { getModelScreenExtensions } = props;
 
   switch (activeScreen) {
     case ActiveScreen.Home:
@@ -271,15 +258,7 @@ export function CameraSampleApp() {
     case ActiveScreen.Hub:
       return <HubScreen onOpen={handleOpen} onBack={handleBack} />;
     case ActiveScreen.Model:
-      return <ModelScreen filename={modelFilename} iModel={iModel!} onBack={handleBack}
-        toolsBottomPanel={CameraSampleToolsBottomPanel}
-        additionalComponents={<CameraSampleMain />}
-        additionalTabs={[{
-          label: "Pictures",
-          isTab: true,
-          popup: <PicturesBottomPanel key="pictures" iModel={iModel!} />,
-        }]}
-      />;
+      return <ModelScreen filename={modelFilename} iModel={iModel!} onBack={handleBack} {...props} {...getModelScreenExtensions?.(iModel!)} />;
     default:
       return <LoadingScreen />;
   }

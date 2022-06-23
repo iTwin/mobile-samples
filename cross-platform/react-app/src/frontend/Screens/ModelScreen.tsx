@@ -48,8 +48,17 @@ import "./ModelScreen.scss";
 // tslint:disable-next-line: variable-name
 const UnifiedSelectionViewportComponent = viewWithUnifiedSelection(ViewportComponent);
 
+export interface ModelScreenExtensionProps {
+  /// Optional bottom panel override.
+  toolsBottomPanel?: React.FunctionComponent<ToolsBottomPanelProps>;
+  /// Additional components
+  additionalComponents?: React.ReactNode;
+  /// Additional tabs
+  additionalTabs?: TabOrPanelDef[];
+}
+
 /// Properties for the [[ModelScreen]] React component.
-export interface ModelScreenProps {
+export interface ModelScreenProps extends ModelScreenExtensionProps {
   /// The full path to the currently loaded iModel.
   filename: string;
   /// The currently loaded iModel.
