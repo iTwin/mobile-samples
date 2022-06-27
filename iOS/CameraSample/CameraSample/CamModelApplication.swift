@@ -6,6 +6,8 @@
 import UIKit
 import WebKit
 import ITwinMobile
+import PromiseKit
+import ShowTime
 
 /// Custom subclass of the ModelApplication class. That class is shared by all the samples. This one takes care of the custom behavior
 /// that is specific to this sample.
@@ -16,6 +18,10 @@ class CamModelApplication: ModelApplication {
         registerQueryHandler("getImages", ImageCache.handleGetImages)
         registerQueryHandler("deleteAllImages", ImageCache.handleDeleteAllImages)
         registerQueryHandler("deleteImages", ImageCache.handleDeleteImages)
+        registerQueryHandler("toggleShowTime") { () -> Promise<()> in
+            ShowTime.enabled = ShowTime.enabled == ShowTime.Enabled.never ? ShowTime.Enabled.always : ShowTime.Enabled.never
+            return Promise.value(())
+        }
     }
 
     /// Called when the `ITMViewController` will appear.
