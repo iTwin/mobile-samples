@@ -24,13 +24,12 @@ function ImageSelectionHandler() {
 }
 
 export function CameraSampleApp() {
-  const picturesLabel = React.useMemo(() => i18n("PicturesBottomPanel", "Pictures"), []);
   return <App getModelScreenExtensions={(iModel: IModelConnection): ModelScreenExtensionProps => {
     return {
       toolsBottomPanel: CameraSampleToolsBottomPanel,
       additionalComponents: <ImageSelectionHandler />,
       additionalTabs: [{
-        label: picturesLabel,
+        label: i18n("PicturesBottomPanel", "Pictures"),
         isTab: true,
         popup: <PicturesBottomPanel key="pictures" iModel={iModel} />,
       }],
