@@ -19,8 +19,17 @@ class CamModelApplication: ModelApplication {
         registerQueryHandler("deleteAllImages", ImageCache.handleDeleteAllImages)
         registerQueryHandler("deleteImages", ImageCache.handleDeleteImages)
         registerQueryHandler("toggleShowTime") { () -> Promise<()> in
-            ShowTime.enabled = ShowTime.enabled == ShowTime.Enabled.never ? ShowTime.Enabled.always : ShowTime.Enabled.never
+            ShowTime.enabled = ShowTime.enabled == .never ? .always : .never
             return Promise.value(())
+        }
+        registerQueryHandler("isShowTimeEnabled") { () -> Promise<(Bool)> in
+            return Promise.value(ShowTime.enabled == .always)
+        }
+        registerQueryHandler("showTime") { (params: [String: Any]?) -> Promise<(Bool)> in
+            if let params = params, let state = params["state"] as? Bool {
+                ShowTime.enabled = state ? .always : .never
+            }
+            return Promise.value(ShowTime.enabled == ShowTime.Enabled.always)
         }
     }
 

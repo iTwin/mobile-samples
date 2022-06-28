@@ -17,7 +17,7 @@ import {
 import { ViewportComponent } from "@itwin/imodel-components-react";
 import { getCssVariable, IconSpec } from "@itwin/core-react";
 import { viewWithUnifiedSelection } from "@itwin/presentation-components";
-import { ActionSheetGravity, AlertAction, presentAlert } from "@itwin/mobile-sdk-core";
+import { ActionSheetGravity, AlertAction, Messenger, presentAlert } from "@itwin/mobile-sdk-core";
 import { useTheme } from "@itwin/itwinui-react";
 import {
   ActionSheetButton,
@@ -107,7 +107,7 @@ export function ModelScreen(props: ModelScreenProps) {
   // Passing an arrow function as the actions instead of the array itself allows for the list
   // of actions to be dynamic. In this case, the element properties action is only shown if the
   // selection set is active.
-  const moreActions = () => {
+  const moreActions = async () => {
     const handleShowLocation = () => {
       // Ask for the device's current location, then show the latitude and longitude to the user.
       // Note that this makes use of a Geolocation Polyfill to work around the fact that the web
@@ -142,6 +142,7 @@ export function ModelScreen(props: ModelScreenProps) {
     const handleFitView = () => {
       IModelApp.tools.run(FitViewTool.toolId, IModelApp.viewManager.getFirstOpenView(), true); // eslint-disable-line @typescript-eslint/no-floating-promises
     };
+    const showTimeEnabled = await Messenger.query("showTime");
     const actions: AlertAction[] =
       [
         {
@@ -163,6 +164,13 @@ export function ModelScreen(props: ModelScreenProps) {
           name: "toggleCamera",
           title: toggleCameraLabel,
           onSelected: toggleCamera,
+        },
+        {
+          name: "toggleShowTime",
+          title: showTimeEnabled ? "Hide Touches" : "Show Touches",
+          onSelected: () => {
+            Messenger.sendMessage("showTime", { state: !showTimeEnabled });
+          },
         },
       ];
 
