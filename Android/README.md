@@ -27,7 +27,7 @@ Follow the npm setup instructions [here](../cross-platform/npm.md).
 
 ---
 
-## GitHub Packages Maven Setup
+## GitHub Packages Gradle Registry Setup
 
 To use the published versions of the iTwin Mobile SDK packages, you need to [create a Personal Access Token (PAT) on GitHub](https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/creating-a-personal-access-token) with the `read:packages` scope selected, and then add the following setting to local.properties:
 
