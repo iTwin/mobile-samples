@@ -5,6 +5,7 @@
 package com.bentley.sample.itwinstarter
 
 import android.content.Intent
+import android.content.res.Configuration
 import android.graphics.Color
 import android.net.Uri
 import android.os.Build
@@ -147,5 +148,10 @@ class MainActivity : AppCompatActivity() {
         setupFullScreen()
 //        Messenger.backend.setContextProvider(this)
         super.onResume()
+    }
+
+    override fun onConfigurationChanged(newConfig: Configuration) {
+        super.onConfigurationChanged(newConfig)
+        ModelApplication.applyPreferredColorScheme() // update dark mode
     }
 }
