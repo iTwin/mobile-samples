@@ -25,5 +25,6 @@
         "typedoc",
         "webgl",
         "xcconfig"
-    ]
+    ],
+    "typescript.tsdk": "node_modules/typescript/lib"
 }
