@@ -201,10 +201,9 @@ class DocumentPicker: ITMNativeUIComponent {
     
     /// Initializes with a view controller and messenger.
     /// - Parameters:
-    ///   - viewController: The view controller used to present the document picker.
-    ///   - itmMessenger: The messenger used to handle the
-    override init(viewController: UIViewController, itmMessenger: ITMMessenger) {
-        super.init(viewController: viewController, itmMessenger: itmMessenger)
+    ///   - itmNativeUI: The `ITMNativeUI` used to present the document picker.
+    override init(itmNativeUI: ITMNativeUI) {
+        super.init(itmNativeUI: itmNativeUI)
         queryHandler = itmMessenger.registerQueryHandler("chooseDocument", handleQuery)
     }
     

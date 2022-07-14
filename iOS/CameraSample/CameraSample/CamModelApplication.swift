@@ -25,9 +25,8 @@ class CamModelApplication: ModelApplication {
     override func viewWillAppear(viewController: ITMViewController) {
         super.viewWillAppear(viewController: viewController)
         if let itmNativeUI = viewController.itmNativeUI {
-            let itmMessenger = ITMViewController.application.itmMessenger
-            itmNativeUI.addComponent(ImagePicker(viewController: viewController, itmMessenger: itmMessenger))
-            itmNativeUI.addComponent(ImageSharer(viewController: viewController, itmMessenger: itmMessenger))
+            itmNativeUI.addComponent(ImagePicker(itmNativeUI: itmNativeUI))
+            itmNativeUI.addComponent(ImageSharer(itmNativeUI: itmNativeUI))
         }
     }
 

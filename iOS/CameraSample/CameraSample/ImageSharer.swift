@@ -9,8 +9,8 @@ import ITwinMobile
 
 /// An `ITMNativeUIComponent` subclass for one or more pictures by URL.
 class ImageSharer: ITMNativeUIComponent {
-    override init(viewController: UIViewController, itmMessenger: ITMMessenger) {
-        super.init(viewController: viewController, itmMessenger: itmMessenger)
+    override init(itmNativeUI: ITMNativeUI) {
+        super.init(itmNativeUI: itmNativeUI)
         queryHandler = itmMessenger.registerQueryHandler("shareImages", handleQuery)
     }
     

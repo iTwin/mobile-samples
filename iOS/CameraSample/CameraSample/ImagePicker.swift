@@ -30,8 +30,8 @@ class ImagePicker: ITMNativeUIComponent {
     var presentedResolver: Resolver<String?>?
     /// The iModelId for the active query.
     var iModelId: String?
-    override init(viewController: UIViewController, itmMessenger: ITMMessenger) {
-        super.init(viewController: viewController, itmMessenger: itmMessenger)
+    override init(itmNativeUI: ITMNativeUI) {
+        super.init(itmNativeUI: itmNativeUI)
         queryHandler = itmMessenger.registerQueryHandler("pickImage", handleQuery)
     }
     

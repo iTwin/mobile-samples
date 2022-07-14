@@ -52,7 +52,9 @@ class ModelApplication: ITMApplication {
     /// - Parameter viewController: The view controller.
     override func viewWillAppear(viewController: ITMViewController) {
         super.viewWillAppear(viewController: viewController)
-        viewController.itmNativeUI?.addComponent(DocumentPicker(viewController: viewController, itmMessenger: ITMViewController.application.itmMessenger))
+        if let itmNativeUI = viewController.itmNativeUI {
+            viewController.itmNativeUI?.addComponent(DocumentPicker(itmNativeUI: itmNativeUI))
+        }
     }
 
     override func getUrlHashParams() -> HashParams {
