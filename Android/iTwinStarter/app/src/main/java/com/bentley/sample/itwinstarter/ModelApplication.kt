@@ -8,12 +8,7 @@ import android.net.Uri
 import com.eclipsesource.json.Json
 import com.github.itwin.mobilesdk.ITMApplication
 
-//import com.bentley.itwin.AuthorizationClient
-
 object ModelApplication : ITMApplication(StarterApplication.getContext(), BuildConfig.DEBUG, BuildConfig.DEBUG) {
-//    override fun getAuthorizationClient(): AuthorizationClient? {
-//    }
-
     init {
         finishInit()
     }
