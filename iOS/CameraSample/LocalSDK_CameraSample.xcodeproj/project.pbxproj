@@ -7,11 +7,12 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		1F0978A227593E5200104043 /* ImageCacheSchemeHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F0978A127593E5200104043 /* ImageCacheSchemeHandler.swift */; };
-		1F0978A427593EBE00104043 /* ImageCache.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F0978A327593EBE00104043 /* ImageCache.swift */; };
-		1F0978A627593F6000104043 /* ImageSharer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F0978A527593F6000104043 /* ImageSharer.swift */; };
 		1F2D7B642742D38B00AAB11E /* PrintLogger.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F2D7B632742D38B00AAB11E /* PrintLogger.swift */; };
-		1F5726672744772200C53437 /* ImagePicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F5726662744772200C53437 /* ImagePicker.swift */; };
+		1F91401E288090A800AF39D8 /* ImageSharer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F914019288090A700AF39D8 /* ImageSharer.swift */; };
+		1F91401F288090A800AF39D8 /* ImageCacheSchemeHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F91401A288090A700AF39D8 /* ImageCacheSchemeHandler.swift */; };
+		1F914020288090A800AF39D8 /* ImagePicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F91401B288090A700AF39D8 /* ImagePicker.swift */; };
+		1F914021288090A800AF39D8 /* CamModelApplication.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F91401C288090A700AF39D8 /* CamModelApplication.swift */; };
+		1F914022288090A800AF39D8 /* ImageCache.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F91401D288090A800AF39D8 /* ImageCache.swift */; };
 		1FC11154261FC44900835E6E /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1FC11153261FC44900835E6E /* AppDelegate.swift */; };
 		1FC11156261FC44900835E6E /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1FC11155261FC44900835E6E /* SceneDelegate.swift */; };
 		1FC1115B261FC44900835E6E /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 1FC11159261FC44900835E6E /* Main.storyboard */; };
@@ -24,12 +25,13 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		1F0978A127593E5200104043 /* ImageCacheSchemeHandler.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ImageCacheSchemeHandler.swift; sourceTree = "<group>"; };
-		1F0978A327593EBE00104043 /* ImageCache.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ImageCache.swift; sourceTree = "<group>"; };
-		1F0978A527593F6000104043 /* ImageSharer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ImageSharer.swift; sourceTree = "<group>"; };
 		1F2D7B632742D38B00AAB11E /* PrintLogger.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PrintLogger.swift; sourceTree = "<group>"; };
-		1F5726662744772200C53437 /* ImagePicker.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ImagePicker.swift; sourceTree = "<group>"; };
 		1F6EB10C26D46210003BA335 /* ITMApplication.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; name = ITMApplication.xcconfig; path = ../ITMApplication.xcconfig; sourceTree = "<group>"; };
+		1F914019288090A700AF39D8 /* ImageSharer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ImageSharer.swift; sourceTree = "<group>"; };
+		1F91401A288090A700AF39D8 /* ImageCacheSchemeHandler.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ImageCacheSchemeHandler.swift; sourceTree = "<group>"; };
+		1F91401B288090A700AF39D8 /* ImagePicker.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ImagePicker.swift; sourceTree = "<group>"; };
+		1F91401C288090A700AF39D8 /* CamModelApplication.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CamModelApplication.swift; sourceTree = "<group>"; };
+		1F91401D288090A800AF39D8 /* ImageCache.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ImageCache.swift; sourceTree = "<group>"; };
 		1FC11150261FC44900835E6E /* iTwin CamSample.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "iTwin CamSample.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		1FC11153261FC44900835E6E /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		1FC11155261FC44900835E6E /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -82,6 +84,11 @@
 			children = (
 				5FD7518526DD9DCD00DC3060 /* Shared */,
 				1FC11153261FC44900835E6E /* AppDelegate.swift */,
+				1F91401C288090A700AF39D8 /* CamModelApplication.swift */,
+				1F91401D288090A800AF39D8 /* ImageCache.swift */,
+				1F91401A288090A700AF39D8 /* ImageCacheSchemeHandler.swift */,
+				1F91401B288090A700AF39D8 /* ImagePicker.swift */,
+				1F914019288090A700AF39D8 /* ImageSharer.swift */,
 				1FC11155261FC44900835E6E /* SceneDelegate.swift */,
 				1FC11159261FC44900835E6E /* Main.storyboard */,
 				1FC1115C261FC44B00835E6E /* Assets.xcassets */,
@@ -95,10 +102,6 @@
 			isa = PBXGroup;
 			children = (
 				5FD7518626DD9DCD00DC3060 /* DocumentPicker.swift */,
-				1F0978A327593EBE00104043 /* ImageCache.swift */,
-				1F0978A127593E5200104043 /* ImageCacheSchemeHandler.swift */,
-				1F5726662744772200C53437 /* ImagePicker.swift */,
-				1F0978A527593F6000104043 /* ImageSharer.swift */,
 				5FD7518726DD9DCD00DC3060 /* ModelApplication.swift */,
 				1F2D7B632742D38B00AAB11E /* PrintLogger.swift */,
 			);
@@ -228,14 +231,15 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				1F0978A227593E5200104043 /* ImageCacheSchemeHandler.swift in Sources */,
+				1F91401E288090A800AF39D8 /* ImageSharer.swift in Sources */,
 				1FC11154261FC44900835E6E /* AppDelegate.swift in Sources */,
-				1F0978A427593EBE00104043 /* ImageCache.swift in Sources */,
+				1F914021288090A800AF39D8 /* CamModelApplication.swift in Sources */,
 				5FD7518826DD9DCD00DC3060 /* DocumentPicker.swift in Sources */,
 				5FD7518926DD9DCD00DC3060 /* ModelApplication.swift in Sources */,
-				1F5726672744772200C53437 /* ImagePicker.swift in Sources */,
 				1F2D7B642742D38B00AAB11E /* PrintLogger.swift in Sources */,
-				1F0978A627593F6000104043 /* ImageSharer.swift in Sources */,
+				1F91401F288090A800AF39D8 /* ImageCacheSchemeHandler.swift in Sources */,
+				1F914020288090A800AF39D8 /* ImagePicker.swift in Sources */,
+				1F914022288090A800AF39D8 /* ImageCache.swift in Sources */,
 				1FC11156261FC44900835E6E /* SceneDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
