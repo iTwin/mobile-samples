@@ -10,7 +10,7 @@ import { AppNotificationManager, FrameworkReducer, FrameworkState, UiFramework }
 import { Presentation } from "@itwin/presentation-frontend";
 import { Messenger, MobileCore } from "@itwin/mobile-sdk-core";
 import { MobileUi } from "@itwin/mobile-ui-react";
-// import { FeatureTracking as MeasureToolsFeatureTracking, MeasureTools } from "@bentley/measure-tools-react";
+import { MeasureTools, FeatureTracking as MeasureToolsFeatureTracking } from "@itwin/measure-tools-react";
 import { ActiveScreen, HomeScreen, HubScreen, LoadingScreen, LocalModelsScreen, ModelScreen, ModelScreenExtensionProps, presentError, ToolAssistance } from "./Exports";
 import { getSupportedRpcs } from "../common/rpcs";
 import "./App.scss";
@@ -133,8 +133,8 @@ function useAppState() {
         await MobileUi.initialize(IModelApp.localization);
         await IModelApp.localization.registerNamespace("ReactApp");
         setHaveBackButton(window.itmSampleParams.haveBackButton);
-        // await MeasureTools.startup();
-        // MeasureToolsFeatureTracking.stop();
+        await MeasureTools.startup();
+        MeasureToolsFeatureTracking.stop();
 
         // The following message lets the native side know that it is safe to send app-specific
         // messages from the native code to the TypeScript code.

@@ -68,6 +68,7 @@
     "@itwin/imodels-client-management": "1.0.1",
     "@itwin/linear-referencing-backend": "3.2.4",
     "@itwin/linear-referencing-common": "3.2.4",
+    "@itwin/measure-tools-react": "^0.8.0",
     "@itwin/mobile-sdk-core": "0.10.30",
     "@itwin/mobile-ui-react": "0.10.30",
     "@itwin/presentation-backend": "3.2.4",
