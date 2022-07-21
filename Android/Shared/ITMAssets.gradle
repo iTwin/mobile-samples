@@ -1,3 +1,4 @@
+//file:noinspection GroovyGStringKey
 import java.nio.file.Files
 import java.nio.file.Paths
 import java.nio.file.StandardCopyOption
@@ -22,11 +23,11 @@ task copyITMAssets {
     println "assetsDir ${new File(assetsDir).canonicalPath}"
 
     Map foldersToCopy = [
-        "${reactAppDir}/build" as String: "${assetsDir}/frontend",
-        "${reactAppDir}/lib/webpack" as String: "${assetsDir}/backend",
-        "${reactAppDir}/assets/presentation_rules" as String: "${assetsDir}/backend/assets/presentation_rules",
-        "${reactAppDir}/node_modules/@itwin/presentation-backend/lib/cjs/assets/supplemental-presentation-rules" as String: "${assetsDir}/backend/assets/supplemental_presentation_rules",
-        "${reactAppDir}/node_modules/@itwin/presentation-common/lib/cjs/assets/locales" as String: "${assetsDir}/backend/assets/locales"
+        "${reactAppDir}/build": "${assetsDir}/frontend",
+        "${reactAppDir}/lib/webpack": "${assetsDir}/backend",
+        "${reactAppDir}/assets/presentation_rules": "${assetsDir}/backend/assets/presentation_rules",
+        "${reactAppDir}/node_modules/@itwin/presentation-backend/lib/cjs/assets/supplemental-presentation-rules": "${assetsDir}/backend/assets/supplemental_presentation_rules",
+        "${reactAppDir}/node_modules/@itwin/presentation-common/lib/cjs/assets/locales": "${assetsDir}/backend/assets/locales"
     ]
 
     for (def entry in foldersToCopy)
