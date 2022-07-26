@@ -12,8 +12,8 @@ import {
   ReloadedEvent,
 } from "@itwin/mobile-sdk-core";
 import { DraggableComponent, NavigationButton, ResizableBottomPanel, ResizableBottomPanelProps, ToolButton, useUiEvent } from "@itwin/mobile-ui-react";
-import { HeaderTitle, i18n } from "../Exports";
-import { ImageCache, ImageMarkerApi } from "./Exports";
+import { HeaderTitle } from "../Exports";
+import { CameraSampleAppGetLocalizedString, ImageCache, ImageMarkerApi } from "./Exports";
 
 import "./PicturesBottomPanel.scss";
 
@@ -23,6 +23,10 @@ export interface PicturesBottomPanelProps extends ResizableBottomPanelProps {
   iModel: IModelConnection;
 }
 
+function i18n(key: string) {
+  return CameraSampleAppGetLocalizedString("PicturesBottomPanel", key);
+}
+
 /** [[ResizableBottomPanel]] React component that allows the user to take pictures with the device's camera.
  *
  * Shows the pictures that have been taken for the selected iModel. Allows the user to take more, as well as
@@ -30,15 +34,15 @@ export interface PicturesBottomPanelProps extends ResizableBottomPanelProps {
  */
 export function PicturesBottomPanel(props: PicturesBottomPanelProps) {
   const { iModel, ...otherProps } = props;
-  const picturesLabel = React.useMemo(() => i18n("PicturesBottomPanel", "Pictures"), []);
+  const picturesLabel = React.useMemo(() => i18n("Pictures"), []);
   const reloadedEvent = React.useRef(new ReloadedEvent());
   const [pictureUrls, setPictureUrls] = React.useState<string[]>([]);
-  const deletePictureTitle = React.useMemo(() => i18n("PicturesBottomPanel", "DeletePictureTitle"), []);
-  const deletePictureMessage = React.useMemo(() => i18n("PicturesBottomPanel", "DeletePictureMessage"), []);
-  const deleteAllTitle = React.useMemo(() => i18n("PicturesBottomPanel", "DeleteAllTitle"), []);
-  const deleteAllMessage = React.useMemo(() => i18n("PicturesBottomPanel", "DeleteAllMessage"), []);
-  const deleteSelectedTitle = React.useMemo(() => i18n("PicturesBottomPanel", "DeleteSelectedTitle"), []);
-  const deleteSelectedMessage = React.useMemo(() => i18n("PicturesBottomPanel", "DeleteSelectedMessage"), []);
+  const deletePictureTitle = React.useMemo(() => i18n("DeletePictureTitle"), []);
+  const deletePictureMessage = React.useMemo(() => i18n("DeletePictureMessage"), []);
+  const deleteAllTitle = React.useMemo(() => i18n("DeleteAllTitle"), []);
+  const deleteAllMessage = React.useMemo(() => i18n("DeleteAllMessage"), []);
+  const deleteSelectedTitle = React.useMemo(() => i18n("DeleteSelectedTitle"), []);
+  const deleteSelectedMessage = React.useMemo(() => i18n("DeleteSelectedMessage"), []);
   const [decoratorActive, setDecoratorActive] = React.useState(true);
   const [selectMode, setSelectMode] = React.useState(false);
   const [selectedUrls, setSelectedUrls] = React.useState(new Set<string>());

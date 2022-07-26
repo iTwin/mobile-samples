@@ -71,7 +71,7 @@ class AppToolAssistanceNotificationManager extends AppNotificationManager {
   }
 }
 
-function useAppState() {
+function useAppState(onInitialize?: () => Promise<void>) {
   // Start out on the Loading screen.
   const [activeScreen, setActiveScreen] = React.useState(ActiveScreen.Loading);
   // Keep a stack of active screens, so that handleBack can automatically go to the correct place.
@@ -135,6 +135,7 @@ function useAppState() {
         setHaveBackButton(window.itmSampleParams.haveBackButton);
         await MeasureTools.startup();
         MeasureToolsFeatureTracking.stop();
+        await onInitialize?.();
 
         // The following message lets the native side know that it is safe to send app-specific
         // messages from the native code to the TypeScript code.
@@ -152,7 +153,7 @@ function useAppState() {
       setInitialized(true);
       initialize(); // eslint-disable-line @typescript-eslint/no-floating-promises
     }
-  }, [pushActiveInfo, initialized]);
+  }, [pushActiveInfo, initialized, onInitialize]);
 
   // Callback called by screens after an iModel is loaded.
   const handleOpen = React.useCallback(async (filename: string, newIModelPromise: Promise<IModelConnection>) => {
@@ -244,11 +245,12 @@ function useAppState() {
 
 export interface AppProps {
   getModelScreenExtensions?: (iModel: IModelConnection) => ModelScreenExtensionProps;
+  onInitialize?: () => Promise<void>;
 }
 
 export function App(props: AppProps) {
-  const { activeScreen, handleHomeSelect, handleOpen, handleBack, haveBackButton, iModel, modelFilename } = useAppState();
-  const { getModelScreenExtensions } = props;
+  const { getModelScreenExtensions, onInitialize } = props;
+  const { activeScreen, handleHomeSelect, handleOpen, handleBack, haveBackButton, iModel, modelFilename } = useAppState(onInitialize);
 
   switch (activeScreen) {
     case ActiveScreen.Home:
