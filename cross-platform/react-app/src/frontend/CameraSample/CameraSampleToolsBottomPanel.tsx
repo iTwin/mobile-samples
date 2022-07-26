@@ -8,10 +8,11 @@ import { IModelApp } from "@itwin/core-frontend";
 import { useFirstViewport } from "@itwin/mobile-ui-react";
 import { getDefaultTools, ToolsBottomPanel, ToolsBottomPanelProps } from "../Exports";
 import {
+  CameraSampleAppGetLocalizedString,
   ImageCache,
   ImageMarkerApi,
   PlaceMarkerTool,
-} from "../CameraSample/Exports";
+} from "./Exports";
 import { Point3d } from "@itwin/core-geometry";
 
 const addImageMarker = async (point: Point3d, photoLibrary: boolean, iModelId: string) => {
@@ -31,7 +32,7 @@ class PlacePhotoMarkerTool extends PlaceMarkerTool {
       await addImageMarker(point, true, iModelId);
     });
     if (!PlacePhotoMarkerTool.prompt)
-      PlacePhotoMarkerTool.prompt = IModelApp.localization.getLocalizedStringWithNamespace("ReactApp", "CameraSampleToolsBottomPanel.EnterPointPhotoPrompt");
+      PlacePhotoMarkerTool.prompt = CameraSampleAppGetLocalizedString("CameraSampleToolsBottomPanel", "EnterPointPhotoPrompt");
   }
 }
 
@@ -46,7 +47,7 @@ class PlaceCameraMarkerTool extends PlaceMarkerTool {
       await addImageMarker(point, false, iModelId);
     });
     if (!PlaceCameraMarkerTool.prompt)
-      PlaceCameraMarkerTool.prompt = IModelApp.localization.getLocalizedStringWithNamespace("ReactApp", "CameraSampleToolsBottomPanel.EnterPointCameraPrompt");
+      PlaceCameraMarkerTool.prompt = CameraSampleAppGetLocalizedString("CameraSampleToolsBottomPanel", "EnterPointCameraPrompt");
   }
 }
 
@@ -54,8 +55,8 @@ export function CameraSampleToolsBottomPanel(props: ToolsBottomPanelProps) {
   const { iModel } = props;
   const tools = React.useMemo(() => {
     const allTools = getDefaultTools();
-    allTools.splice(1, 0, { labelKey: "ReactApp:CameraSampleToolsBottomPanel.Camera", icon: "icon-camera", toolItemDef: ToolItemDef.getItemDefForTool(PlaceCameraMarkerTool, undefined, iModel?.iModelId) });
-    allTools.splice(1, 0, { labelKey: "ReactApp:CameraSampleToolsBottomPanel.Picture", icon: "icon-image", toolItemDef: ToolItemDef.getItemDefForTool(PlacePhotoMarkerTool, undefined, iModel?.iModelId) });
+    allTools.splice(1, 0, { labelKey: "CameraSampleApp:CameraSampleToolsBottomPanel.Camera", icon: "icon-camera", toolItemDef: ToolItemDef.getItemDefForTool(PlaceCameraMarkerTool, undefined, iModel?.iModelId) });
+    allTools.splice(1, 0, { labelKey: "CameraSampleApp:CameraSampleToolsBottomPanel.Picture", icon: "icon-image", toolItemDef: ToolItemDef.getItemDefForTool(PlacePhotoMarkerTool, undefined, iModel?.iModelId) });
     return allTools;
   }, [iModel]);
   const vp = useFirstViewport();
@@ -66,9 +67,9 @@ export function CameraSampleToolsBottomPanel(props: ToolsBottomPanelProps) {
 
     // Register tools if they aren't already registered
     if (!IModelApp.tools.find(PlacePhotoMarkerTool.toolId))
-      IModelApp.tools.register(PlacePhotoMarkerTool, "ReactApp");
+      IModelApp.tools.register(PlacePhotoMarkerTool, "CameraSampleApp");
     if (!IModelApp.tools.find(PlaceCameraMarkerTool.toolId))
-      IModelApp.tools.register(PlaceCameraMarkerTool, "ReactApp");
+      IModelApp.tools.register(PlaceCameraMarkerTool, "CameraSampleApp");
 
     ImageMarkerApi.startup(iModel.iModelId);
 

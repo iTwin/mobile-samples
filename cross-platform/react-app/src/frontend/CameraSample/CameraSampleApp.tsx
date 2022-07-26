@@ -4,14 +4,22 @@
 *--------------------------------------------------------------------------------------------*/
 import * as React from "react";
 import { useUiEvent } from "@itwin/mobile-ui-react";
-import { IModelConnection } from "@itwin/core-frontend";
-import { App, i18n, ModelScreenExtensionProps } from "../Exports";
+import { IModelApp, IModelConnection } from "@itwin/core-frontend";
+import { App, ModelScreenExtensionProps } from "../Exports";
 import {
   CameraSampleToolsBottomPanel,
   ImageMarkerApi,
   PicturesBottomPanel,
   PictureView,
 } from "./Exports";
+
+export function CameraSampleAppGetLocalizedString(prefix: string, key: string, options?: any) {
+  if (window.itmSampleParams.debugI18n) {
+    return `=${IModelApp.localization.getLocalizedStringWithNamespace("CameraSampleApp", `${prefix}.${key}`, options)}=`;
+  } else {
+    return IModelApp.localization.getLocalizedStringWithNamespace("CameraSampleApp", `${prefix}.${key}`, options);
+  }
+}
 
 function ImageSelectionHandler() {
   const [selectedPictureUrl, setSelectedPictureUrl] = React.useState<string>();
@@ -24,15 +32,20 @@ function ImageSelectionHandler() {
 }
 
 export function CameraSampleApp() {
-  return <App getModelScreenExtensions={(iModel: IModelConnection): ModelScreenExtensionProps => {
-    return {
-      toolsBottomPanel: CameraSampleToolsBottomPanel,
-      additionalComponents: <ImageSelectionHandler />,
-      additionalTabs: [{
-        label: i18n("PicturesBottomPanel", "Pictures"),
-        isTab: true,
-        popup: <PicturesBottomPanel key="pictures" iModel={iModel} />,
-      }],
-    };
-  }} />;
+  return <App
+    onInitialize={async () => {
+      await IModelApp.localization.registerNamespace("CameraSampleApp");
+    }}
+    getModelScreenExtensions={(iModel: IModelConnection): ModelScreenExtensionProps => {
+      return {
+        toolsBottomPanel: CameraSampleToolsBottomPanel,
+        additionalComponents: <ImageSelectionHandler />,
+        additionalTabs: [{
+          label: CameraSampleAppGetLocalizedString("PicturesBottomPanel", "Pictures"),
+          isTab: true,
+          popup: <PicturesBottomPanel key="pictures" iModel={iModel} />,
+        }],
+      };
+    }}
+  />;
 }
