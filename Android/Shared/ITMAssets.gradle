@@ -19,7 +19,7 @@ static def copyDirectory(srcDir, destDir) {
 task copyITMAssets {
     def reactAppDir = "${projectDir}/../../cross-platform/react-app"
     println "reactAppDir ${new File(reactAppDir).canonicalPath}"
-    def assetsDir = "${projectDir}/../iTwinStarter/app/src/main/assets/ITMApplication"
+    def assetsDir = "${rootDir}/app/src/main/assets/ITMApplication"
     println "assetsDir ${new File(assetsDir).canonicalPath}"
 
     Map foldersToCopy = [
