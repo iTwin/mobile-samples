@@ -95,6 +95,14 @@ export function ModelScreen(props: ModelScreenProps) {
   const fitViewLabel = React.useMemo(() => i18n("ModelScreen", "FitView"), []);
   const defaultViewLabel = React.useMemo(() => i18n("ModelScreen", "DefaultView"), []);
   const toggleCameraLabel = React.useMemo(() => i18n("ModelScreen", "ToggleCamera"), []);
+  const alertDemoLabel = React.useMemo(() => i18n("ModelScreen", "AlertDemo"), []);
+  const oneLabel = React.useMemo(() => i18n("ModelScreen", "One"), []);
+  const twoLabel = React.useMemo(() => i18n("ModelScreen", "Two"), []);
+  const threeLabel = React.useMemo(() => i18n("ModelScreen", "Three"), []);
+  const fourLabel = React.useMemo(() => i18n("ModelScreen", "Four"), []);
+  const fiveLabel = React.useMemo(() => i18n("ModelScreen", "Five"), []);
+  const sixLabel = React.useMemo(() => i18n("ModelScreen", "Six"), []);
+  const youChoseLabel = React.useMemo(() => i18n("ModelScreen", "YouChose"), []);
   const infoLabel = React.useMemo(() => i18n("ModelScreen", "Info"), []);
   const aboutLabel = React.useMemo(() => i18n("AboutBottomPanel", "About"), []);
   const viewsLabel = React.useMemo(() => i18n("ViewsBottomPanel", "Views"), []);
@@ -163,6 +171,53 @@ export function ModelScreen(props: ModelScreenProps) {
           name: "toggleCamera",
           title: toggleCameraLabel,
           onSelected: toggleCamera,
+        },
+        {
+          name: "alertDemo",
+          title: alertDemoLabel,
+          onSelected: async () => {
+            const result = await presentAlert({
+              title: alertDemoLabel,
+              message: "This message is only visible in iOS.",
+              showStatusBar: true,
+              actions: [
+                {
+                  name: oneLabel,
+                  title: oneLabel,
+                },
+                {
+                  name: twoLabel,
+                  title: twoLabel,
+                },
+                {
+                  name: threeLabel,
+                  title: threeLabel,
+                },
+                {
+                  name: fourLabel,
+                  title: fourLabel,
+                },
+                {
+                  name: fiveLabel,
+                  title: fiveLabel,
+                },
+                {
+                  name: sixLabel,
+                  title: sixLabel,
+                },
+              ],
+            });
+            // eslint-disable-next-line @typescript-eslint/no-floating-promises
+            presentAlert({
+              title: youChoseLabel,
+              message: result,
+              showStatusBar: true,
+              actions: [{
+                name: "ok",
+                title: okLabel,
+              }],
+            });
+          },
         },
       ];
 
