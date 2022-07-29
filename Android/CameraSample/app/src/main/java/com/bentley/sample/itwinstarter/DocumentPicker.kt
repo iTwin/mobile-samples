@@ -37,7 +37,7 @@ class DocumentPicker(nativeUI: ITMNativeUI): ITMNativeUIComponent(nativeUI) {
             type = "*/*"
         }
 
-        private fun getFileDisplayName(uri: Uri): String? {
+        fun getFileDisplayName(uri: Uri): String? {
             MainActivity.current!!.contentResolver.query(uri, null, null, null, null, null)?.let { cursor ->
                 if (cursor.moveToFirst()) {
                     val columnIndex = cursor.getColumnIndex(OpenableColumns.DISPLAY_NAME)
@@ -67,7 +67,7 @@ class DocumentPicker(nativeUI: ITMNativeUI): ITMNativeUIComponent(nativeUI) {
             }
         }
 
-        private fun copyDocument(inputStream: InputStream, cacheDir: File, displayName: String): String {
+        fun copyDocument(inputStream: InputStream, cacheDir: File, displayName: String): String {
             if (!cacheDir.exists()) {
                 cacheDir.mkdirs()
             }

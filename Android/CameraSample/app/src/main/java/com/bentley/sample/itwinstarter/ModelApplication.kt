@@ -44,30 +44,12 @@ object ModelApplication : ITMApplication(StarterApplication.getContext(), BuildC
         }
     }
 
-    override fun shouldInterceptRequest(
-        view: WebView,
-        request: WebResourceRequest
-    ): WebResourceResponse? {
+    override fun shouldInterceptRequest(view: WebView, request: WebResourceRequest): WebResourceResponse? {
         val url = request.url
-        if (url != null) {
-            val urlString = url.toString()
-            if (urlString.startsWith("camerasample://", true)) {
-                val path = url.path
-                return WebResourceResponse("image/jpeg", "UTF-8", FileInputStream(path))
-            }
+        if (url.toString().startsWith("${ImagePicker.urlScheme}://", true)) {
+            val path = url.path
+            return WebResourceResponse("image/jpeg", "UTF-8", FileInputStream(path))
         }
         return super.shouldInterceptRequest(view, request)
     }
-
-//    override fun shouldOverrideUrlLoading(view: WebView, request: WebResourceRequest): Boolean {
-//        val url = request.url
-//        if (url != null) {
-//            val urlString = url.toString()
-//            if (!urlString.startsWith("imodeljs://", true) && !urlString.startsWith(frontendBaseUrl, true)) {
-//                openUri(url)
-//                return true
-//            }
-//        }
-//        return super.shouldOverrideUrlLoading(view, request)
-//    }
 }
