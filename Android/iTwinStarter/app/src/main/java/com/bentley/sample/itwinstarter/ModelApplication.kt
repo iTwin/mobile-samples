@@ -20,11 +20,11 @@ object ModelApplication : ITMApplication(StarterApplication.getContext(), BuildC
     override fun setupWebView() {
         super.setupWebView()
         coMessenger?.let { coMessenger ->
-            coMessenger.addMessageListener("loading") {}
-            coMessenger.addMessageListener("didFinishLaunching") {
+            coMessenger.registerMessageHandler("loading") {}
+            coMessenger.registerMessageHandler("didFinishLaunching") {
                 coMessenger.frontendLaunchSucceeded()
             }
-            coMessenger.addQueryListener("getBimDocuments") {
+            coMessenger.registerQueryHandler("getBimDocuments") {
                 val result = Json.array()
                 appContext.getExternalFilesDir("BimCache")?.let { cacheDir ->
                     cacheDir.listFiles { _, filename ->
