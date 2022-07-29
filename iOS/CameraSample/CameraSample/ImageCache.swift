@@ -32,9 +32,9 @@ class ImageCache {
     /// Deletes all the images in the cache for the given iModel.
     /// - Parameter params: Requires an `iModelId` property to specify which iModel to delete images for.
     /// - Returns: A Promise that resolves to Void.
-    static func handleDeleteAllImages(params: [String: Any]) -> Promise<()> {
+    static func handleDeleteAllImages(params: [String: Any]) {
         guard let iModelId = params["iModelId"] as? String, let dirURL = baseURL?.appendingPathComponent(iModelId) else {
-            return Promise.value(())
+            return
         }
         // Delete all the files in the image cache directory for the given iModel.
         let fm = FileManager.default
@@ -45,7 +45,6 @@ class ImageCache {
                 } catch {}
             }
         }
-        return Promise.value(())
     }
     
     private static func deleteImage(urlString: String) {
@@ -59,7 +58,7 @@ class ImageCache {
     /// Deletes a specific image cache image.
     /// - Parameter params: Requires a `urls` property containing a string or array of strings with the image cache URL's to delete.
     /// - Returns: A Promise that resolves to Void.
-    static func handleDeleteImages(params: [String: Any]) -> Promise<()> {
+    static func handleDeleteImages(params: [String: Any]) {
         if let urls = params["urls"] as? [String] {
             for url in urls {
                 deleteImage(urlString: url)
@@ -67,7 +66,6 @@ class ImageCache {
         } else if let urlString = params["urls"] as? String {
             deleteImage(urlString: urlString)
         }
-        return Promise.value(())
     }
     
     /// Convert an image cache URL into a file URL.

@@ -33,9 +33,8 @@ class ViewModel: ObservableObject {
     }
     
     init() {
-        application.registerQueryHandler("goBack") { () -> Promise<()> in
+        application.registerMessageHandler("goBack") {
             self.page = .login
-            return Promise.value(())
         }
     }
     
