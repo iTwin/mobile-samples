@@ -1,4 +1,4 @@
-package com.bentley.sample.itwinstarter
+package com.bentley.sample.camera
 
 import org.junit.Test
 
