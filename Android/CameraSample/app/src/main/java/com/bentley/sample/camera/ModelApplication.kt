@@ -46,7 +46,7 @@ object ModelApplication : ITMApplication(StarterApplication.getContext(), BuildC
 
     override fun shouldInterceptRequest(view: WebView, request: WebResourceRequest): WebResourceResponse? {
         val url = request.url
-        if (url.toString().startsWith("${ImagePicker.urlScheme}://", true)) {
+        if (url.toString().startsWith("${ImagePickerConstants.urlScheme}://", true)) {
             val path = url.path
             return WebResourceResponse("image/jpeg", "UTF-8", FileInputStream(path))
         }

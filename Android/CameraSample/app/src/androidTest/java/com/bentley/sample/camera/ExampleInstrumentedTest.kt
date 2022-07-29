@@ -19,6 +19,6 @@ class ExampleInstrumentedTest {
     fun useAppContext() {
         // Context of the app under test.
         val appContext = InstrumentationRegistry.getInstrumentation().targetContext
-        assertEquals("com.bentley.sample.itwinstarter", appContext.packageName)
+        assertEquals("com.bentley.sample.camera", appContext.packageName)
     }
 }
