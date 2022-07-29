@@ -16,17 +16,14 @@ class ModelApplication: ITMApplication {
     required init() {
         super.init()
         ITMApplication.logger = PrintLogger()
-        registerQueryHandler("didFinishLaunching") { () -> Promise<()> in
+        registerMessageHandler("didFinishLaunching") {
             self.itmMessenger.frontendLaunchSuceeded()
-            return Promise.value(())
         }
-        registerQueryHandler("loading") { () -> Promise<()> in
+        registerMessageHandler("loading") {
             self.webView.isHidden = false
-            return Promise.value(())
         }
-        registerQueryHandler("reload") { () -> Promise<()> in
+        registerMessageHandler("reload") {
             self.webView.reload()
-            return Promise.value(())
         }
         registerQueryHandler("getBimDocuments") { () -> Promise<[String]> in
             if #available(iOS 14.0, *) {

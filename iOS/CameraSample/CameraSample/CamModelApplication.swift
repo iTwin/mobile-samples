@@ -14,8 +14,8 @@ class CamModelApplication: ModelApplication {
     required init() {
         super.init()
         registerQueryHandler("getImages", ImageCache.handleGetImages)
-        registerQueryHandler("deleteAllImages", ImageCache.handleDeleteAllImages)
-        registerQueryHandler("deleteImages", ImageCache.handleDeleteImages)
+        registerMessageHandler("deleteAllImages", ImageCache.handleDeleteAllImages)
+        registerMessageHandler("deleteImages", ImageCache.handleDeleteImages)
     }
 
     /// Called when the `ITMViewController` will appear.
