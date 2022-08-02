@@ -14,6 +14,7 @@ import android.net.Uri
 import android.provider.OpenableColumns
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContract
+import androidx.appcompat.app.AppCompatActivity
 import com.eclipsesource.json.Json
 import com.eclipsesource.json.JsonValue
 import com.github.itwin.mobilesdk.ITMNativeUI
@@ -28,8 +29,8 @@ import kotlin.coroutines.resume
 import kotlin.coroutines.suspendCoroutine
 
 object FileHelper {
-    fun getFileDisplayName(uri: Uri): String? {
-        MainActivity.current!!.contentResolver.query(uri, null, null, null, null, null)?.let { cursor ->
+    fun getFileDisplayName(uri: Uri, contentResolver: ContentResolver): String? {
+        contentResolver.query(uri, null, null, null, null, null)?.let { cursor ->
             if (cursor.moveToFirst()) {
                 val columnIndex = cursor.getColumnIndex(OpenableColumns.DISPLAY_NAME)
                 if (columnIndex >= 0) {
@@ -41,7 +42,7 @@ object FileHelper {
         return null
     }
 
-    fun copyDocument(inputStream: InputStream, dir: File, displayName: String): String {
+    private fun copyFile(inputStream: InputStream, dir: File, displayName: String): String {
         if (!dir.exists()) {
             dir.mkdirs()
         }
@@ -57,23 +58,17 @@ object FileHelper {
         return dstPath
     }
 
-    fun copyDocument(contentResolver: ContentResolver, uri: Uri, cacheDir: File, displayName: String): String? {
+    fun copyToExternalFiles(uri: Uri, destDir: String, context: ContextWrapper): String? {
         var result: String? = null
-        contentResolver.openInputStream(uri)?.let { inputStream ->
-            result = FileHelper.copyDocument(inputStream, cacheDir, displayName)
-            inputStream.close()
-        }
-        return result
-    }
-
-    fun copyDocument(uri: Uri, destDir: String, context: ContextWrapper): String? {
         context.getExternalFilesDir(null)?.let { filesDir ->
-            val cacheDir = File(filesDir, destDir)
-            FileHelper.getFileDisplayName(uri)?.let { displayName ->
-                return FileHelper.copyDocument(context.contentResolver, uri, cacheDir, displayName)
+            getFileDisplayName(uri, context.contentResolver)?.let { displayName ->
+                context.contentResolver.openInputStream(uri)?.let { inputStream ->
+                    result = copyFile(inputStream, File(filesDir, destDir), displayName)
+                    inputStream.close()
+                }
             }
         }
-        return null
+        return result
     }
 }
 
@@ -82,12 +77,16 @@ open class PickUriContract(var destDir: String? = null, private val context: Con
         return Intent()
     }
 
+    open fun isAcceptableUri(uri: Uri): Boolean {
+        return true
+    }
+
     override fun parseResult(resultCode: Int, intent: Intent?): Uri? {
         val uri = intent.takeIf { resultCode == Activity.RESULT_OK }?.data
-        if (uri != null && context != null && urlScheme != null) {
+        if (uri != null && isAcceptableUri(uri) && context != null) {
             destDir?.let { destDir ->
-                FileHelper.copyDocument(uri, destDir, context)?.let { result ->
-                    return Uri.parse("$urlScheme://$result")
+                FileHelper.copyToExternalFiles(uri, destDir, context)?.let { result ->
+                    return Uri.parse(if (urlScheme == null) result else "$urlScheme://$result")
                 }
             }
         }
@@ -95,12 +94,22 @@ open class PickUriContract(var destDir: String? = null, private val context: Con
     }
 }
 
-open class PickDocumentContract : PickUriContract() {
+open class PickDocumentContract(private val context: ContextWrapper?) : PickUriContract("BimCache", context) {
     override fun createIntent(context: Context, input: JsonValue?): Intent {
         return super.createIntent(context, input)
             .setAction(Intent.ACTION_OPEN_DOCUMENT)
             .setType("*/*")
             .addCategory(Intent.CATEGORY_OPENABLE)
+    }
+
+    override fun isAcceptableUri(uri: Uri): Boolean {
+        return isAcceptableBimUri(uri)
+    }
+
+    companion object {
+        fun isAcceptableBimUri(uri: Uri): Boolean {
+            return uri.toString().lowercase().endsWith(".bim")
+        }
     }
 }
 
@@ -113,16 +122,13 @@ class DocumentPicker(nativeUI: ITMNativeUI): ITMNativeUIComponent(nativeUI) {
         private var startForResult: ActivityResultLauncher<JsonValue?>? = null
         private var activeContinuation: Continuation<JsonValue?>? = null
 
-        private suspend fun confirm(): Boolean {
+        private suspend fun showErrorAlert(context: ContextWrapper?): Boolean {
             return suspendCoroutine { continuation ->
-                with(AlertDialog.Builder(MainActivity.current)) {
-                    setTitle("Warning")
-                    setMessage("The file does not appear to be a BIM iModel. Are you sure you want to open it?")
+                with(AlertDialog.Builder(context)) {
+                    setTitle("Error")
+                    setMessage("Only .bim files can be opened.")
                     setCancelable(false)
-                    setNegativeButton("No") { _, _ ->
-                        continuation.resume(false)
-                    }
-                    setPositiveButton("Yes") { _, _ ->
+                    setPositiveButton("OK") { _, _ ->
                         continuation.resume(true)
                     }
                     show()
@@ -130,28 +136,17 @@ class DocumentPicker(nativeUI: ITMNativeUI): ITMNativeUIComponent(nativeUI) {
             }
         }
 
-        fun registerForActivityResult(mainActivity: MainActivity) {
-            startForResult = mainActivity.registerForActivityResult(PickDocumentContract()) { uri ->
-                if (uri != null) {
-                    var skip = false
-                    mainActivity.contentResolver.openInputStream(uri)?.let { inputStream ->
-                        mainActivity.getExternalFilesDir("BimCache")?.let { cacheDir ->
-                            FileHelper.getFileDisplayName(uri)?.let { displayName ->
-                                skip = true
-                                MainScope().launch {
-                                    if (displayName.lowercase().endsWith(".bim") || confirm()) {
-                                        val dstPath = FileHelper.copyDocument(inputStream, cacheDir, displayName)
-                                        activeContinuation?.resumeWith(Result.success(Json.value(dstPath)))
-                                        activeContinuation = null
-                                    }
-                                }
-                            }
-                        }
-                    }
-                    if (!skip) {
+        fun registerForActivityResult(activity: AppCompatActivity) {
+            startForResult = activity.registerForActivityResult(PickDocumentContract(activity)) { uri ->
+                if (uri != null && !PickDocumentContract.isAcceptableBimUri(uri)) {
+                    MainScope().launch {
+                        showErrorAlert(activity)
                         activeContinuation?.resumeWith(Result.success(Json.value("")))
                         activeContinuation = null
                     }
+                } else {
+                    activeContinuation?.resumeWith(Result.success(Json.value(uri?.toString() ?: "")))
+                    activeContinuation = null
                 }
             }
         }

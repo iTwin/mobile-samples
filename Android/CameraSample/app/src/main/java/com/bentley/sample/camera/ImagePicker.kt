@@ -7,15 +7,12 @@ package com.bentley.sample.camera
 import android.content.Context
 import android.content.ContextWrapper
 import android.content.Intent
-import android.net.Uri
 import androidx.activity.result.ActivityResultLauncher
 import androidx.appcompat.app.AppCompatActivity
 import com.eclipsesource.json.Json
 import com.eclipsesource.json.JsonValue
 import com.github.itwin.mobilesdk.ITMNativeUI
 import com.github.itwin.mobilesdk.ITMNativeUIComponent
-import kotlinx.coroutines.MainScope
-import kotlinx.coroutines.launch
 import kotlin.coroutines.Continuation
 import kotlin.coroutines.suspendCoroutine
 
@@ -28,11 +25,11 @@ private class PickIModelImageContract(private val context: ContextWrapper?): Pic
         val obj = input?.asObject()
         if (obj != null) {
             destDir = "images/${obj.getString("iModelId", "unknownModelId")}"
+            // TODO: handle sourceType
         }
         return super.createIntent(context, input)
             .setAction(Intent.ACTION_PICK)
             .setType("image/*")
-//            .putExtra("sourceType", obj?.getString("sourceType", ""))
     }
 }
 
@@ -47,18 +44,8 @@ class ImagePicker(nativeUI: ITMNativeUI): ITMNativeUIComponent(nativeUI) {
 
         fun registerForActivityResult(activity: AppCompatActivity) {
             startForResult = activity.registerForActivityResult(PickIModelImageContract(activity)) { uri ->
-                var skip = false
-                if (uri != null) {
-                    skip = true
-                    MainScope().launch {
-                        activeContinuation?.resumeWith(Result.success(Json.value(uri.toString())))
-                        activeContinuation = null
-                    }
-                }
-                if (!skip) {
-                    activeContinuation?.resumeWith(Result.success(Json.value("")))
-                    activeContinuation = null
-                }
+                activeContinuation?.resumeWith(Result.success(Json.value(uri?.toString() ?: "")))
+                activeContinuation = null
             }
         }
     }
