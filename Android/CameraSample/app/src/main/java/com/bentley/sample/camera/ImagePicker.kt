@@ -7,12 +7,18 @@ package com.bentley.sample.camera
 import android.content.Context
 import android.content.ContextWrapper
 import android.content.Intent
+import android.net.Uri
+import android.provider.MediaStore
 import androidx.activity.result.ActivityResultLauncher
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.FileProvider
 import com.eclipsesource.json.Json
 import com.eclipsesource.json.JsonValue
 import com.github.itwin.mobilesdk.ITMNativeUI
 import com.github.itwin.mobilesdk.ITMNativeUIComponent
+import java.io.File
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
 import kotlin.coroutines.Continuation
 import kotlin.coroutines.suspendCoroutine
 
@@ -21,15 +27,70 @@ object ImagePickerConstants {
 }
 
 private class PickIModelImageContract(private val context: ContextWrapper?): PickUriContract("images", context, ImagePickerConstants.urlScheme) {
+    private var cameraUri: Uri? = null
+
     override fun createIntent(context: Context, input: JsonValue?): Intent {
         val obj = input?.asObject()
-        if (obj != null) {
-            destDir = "images/${obj.getString("iModelId", "unknownModelId")}"
-            // TODO: handle sourceType
+        val camera = obj?.getString("sourceType", "") == "camera"
+        val iModelId = obj?.getString("iModelId", "unknownModelId") ?: "unknownModelId"
+        destDir = "images/$iModelId"
+        cameraUri = if (camera) getCameraUri() else null
+
+        return with(super.createIntent(context, input)) {
+            if (!camera) {
+                action = Intent.ACTION_PICK
+                setType("image/*")
+            } else {
+                action = MediaStore.ACTION_IMAGE_CAPTURE
+                putExtra(MediaStore.EXTRA_OUTPUT, getContentUri(cameraUri))
+            }
         }
-        return super.createIntent(context, input)
-            .setAction(Intent.ACTION_PICK)
-            .setType("image/*")
+    }
+
+    override fun shouldCopyUri(uri: Uri): Boolean {
+        return (cameraUri == null) && super.shouldCopyUri(uri)
+    }
+
+    override fun parseResult(resultCode: Int, intent: Intent?): Uri? {
+        return cameraUri ?: super.parseResult(resultCode, intent)
+    }
+
+    private fun getFormattedDate(): String {
+        return LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH-mm-ss.SSS"))
+    }
+
+    override fun getDisplayName(uri: Uri): String {
+        val strVal = super.getDisplayName(uri)
+        val dotIndex = strVal.lastIndexOf(".")
+        val extension = if (dotIndex > 0) strVal.substring(dotIndex) else ""
+        return getFormattedDate() + extension
+    }
+
+    private fun getCameraUri(): Uri {
+        context?.let { context ->
+            destDir?.let { destDir ->
+                context.getExternalFilesDir(null)?.let { dir ->
+                    val outDir = File(dir, destDir)
+                    outDir.mkdirs()
+                    val formattedDate = getFormattedDate()
+                    val outputFile = File(outDir, "$formattedDate.png")
+                    return Uri.parse("${ImagePickerConstants.urlScheme}://$outputFile")
+                }
+            }
+        }
+        return Uri.EMPTY
+    }
+
+    private fun getContentUri(uri: Uri?): Uri? {
+        context?.let { context ->
+            uri?.let { uri ->
+                uri.path?.let { path ->
+                    val outputFile = File(path)
+                    return FileProvider.getUriForFile(context, "${BuildConfig.APPLICATION_ID}.provider", outputFile)
+                }
+            }
+        }
+        return null
     }
 }
 
