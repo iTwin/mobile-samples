@@ -73,7 +73,7 @@ private class PickIModelImageContract(private val context: ContextWrapper?): Pic
                     val outDir = File(dir, destDir)
                     outDir.mkdirs()
                     val formattedDate = getFormattedDate()
-                    val outputFile = File(outDir, "$formattedDate.png")
+                    val outputFile = File(outDir, "$formattedDate.jpg")
                     return Uri.parse("${ImagePickerConstants.urlScheme}://$outputFile")
                 }
             }
