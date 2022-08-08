@@ -32,6 +32,16 @@ class ModelApplication: ITMApplication {
                 return Promise.value(DocumentHelper.getDocumentsWith(extension: "bim"))
             }
         }
+        registerMessageHandler("deleteTiles") { (params: [String: Any]) -> () in
+            if var briefcaseFileName = params["briefcaseFileName"] as? String {
+                briefcaseFileName.append(".Tiles")
+                do {
+                    try FileManager.default.removeItem(at: URL(fileURLWithPath: briefcaseFileName))
+                } catch {
+                    print("Error deleting tiles: \(error).")
+                }
+            }
+        }
         
         var showtimeEnabled = false
         if let configData = configData {

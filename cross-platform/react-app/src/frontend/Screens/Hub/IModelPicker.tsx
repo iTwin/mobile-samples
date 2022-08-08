@@ -3,7 +3,7 @@
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
 import React from "react";
-import { MobileCore } from "@itwin/mobile-sdk-core";
+import { Messenger, MobileCore } from "@itwin/mobile-sdk-core";
 import { IconImage, useIsMountedRef } from "@itwin/mobile-ui-react";
 import { Project } from "@itwin/projects-client";
 import { IModelApp, NativeApp } from "@itwin/core-frontend";
@@ -46,10 +46,21 @@ function IModelButton(props: IModelButtonProps) {
     }
   }, [briefcase, isMountedRef, modelInfo, onCacheDeleted]);
 
+  const deleteTiles = React.useCallback(async (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
+    e.stopPropagation();
+    if (!briefcase) return;
+    Messenger.sendMessage("deleteTiles", { briefcaseFileName: briefcase.fileName });
+  }, [briefcase]);
+
   return <HubScreenButton title={getTitle()} {...others}>
-    {briefcase && <div className="delete-button" onClick={deleteBriefcase}>
-      <IconImage iconSpec="icon-delete" />
-    </div>}
+    {briefcase && <>
+      <div className="delete-button" onClick={deleteBriefcase}>
+        <IconImage iconSpec="icon-delete" />
+      </div>
+      <div className="delete-button" onClick={deleteTiles}>
+        <IconImage iconSpec="icon-selection-clear" />
+      </div>
+    </>}
   </HubScreenButton>;
 }
 

@@ -391,6 +391,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"ThirdPartyAuth/Preview Content\"";
+				DEVELOPMENT_TEAM = WLDT6Q3PUY;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = "ThirdPartyAuth-Info.plist";
@@ -423,6 +424,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"ThirdPartyAuth/Preview Content\"";
+				DEVELOPMENT_TEAM = WLDT6Q3PUY;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = "ThirdPartyAuth-Info.plist";

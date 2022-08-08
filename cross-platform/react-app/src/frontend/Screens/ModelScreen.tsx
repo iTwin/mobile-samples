@@ -5,9 +5,12 @@
 import React from "react";
 import { ColorDef } from "@itwin/core-common";
 import {
+  BriefcaseConnection,
   FitViewTool,
+  GraphicalEditingScope,
   IModelApp,
   IModelConnection,
+  IpcApp,
   StandardViewId,
   ViewCreator3d,
   ViewCreator3dOptions,
@@ -44,6 +47,7 @@ import {
   ViewsBottomPanel,
 } from "../Exports";
 import "./ModelScreen.scss";
+import { geometryChannel } from "../../common/GeometrySample/GeometryInterface";
 
 // tslint:disable-next-line: variable-name
 const UnifiedSelectionViewportComponent = viewWithUnifiedSelection(ViewportComponent);
@@ -102,7 +106,9 @@ export function ModelScreen(props: ModelScreenProps) {
   const fourLabel = React.useMemo(() => i18n("ModelScreen", "Four"), []);
   const fiveLabel = React.useMemo(() => i18n("ModelScreen", "Five"), []);
   const sixLabel = React.useMemo(() => i18n("ModelScreen", "Six"), []);
+  const addCubeLabel = React.useMemo(() => i18n("ModelScreen", "AddCube"), []);
   const youChoseLabel = React.useMemo(() => i18n("ModelScreen", "YouChose"), []);
+  const cubeAddedLabel = React.useMemo(() => i18n("ModelScreen", "CubeAdded"), []);
   const infoLabel = React.useMemo(() => i18n("ModelScreen", "Info"), []);
   const aboutLabel = React.useMemo(() => i18n("AboutBottomPanel", "About"), []);
   const viewsLabel = React.useMemo(() => i18n("ViewsBottomPanel", "Views"), []);
@@ -217,6 +223,36 @@ export function ModelScreen(props: ModelScreenProps) {
                 title: okLabel,
               }],
             });
+          },
+        },
+        {
+          name: "addCube",
+          title: addCubeLabel,
+          onSelected: async () => {
+            try {
+              const insertionPoint = iModel.projectExtents.center;
+              let editingScope: GraphicalEditingScope | undefined;
+              if (iModel instanceof BriefcaseConnection) {
+                editingScope = await iModel.enterEditingScope();
+              }
+              // Old Building Blocks.bim
+              // await IpcApp.callIpcChannel(geometryChannel, "addCube", iModel.key, "0x19", "0x42", insertionPoint, .1);
+              // Church_STR_JTC.bim
+              await IpcApp.callIpcChannel(geometryChannel, "addCube", iModel.key, "0x16", "0x5f", insertionPoint, 3);
+              await editingScope?.exit();
+              // eslint-disable-next-line @typescript-eslint/no-floating-promises
+              presentAlert({
+                title: youChoseLabel,
+                message: cubeAddedLabel,
+                showStatusBar: true,
+                actions: [{
+                  name: "ok",
+                  title: okLabel,
+                }],
+              });
+            } catch (error) {
+              presentError("AddCubeErrorFormat", error, "ModelScreen");
+            }
           },
         },
       ];

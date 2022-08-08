@@ -47,7 +47,7 @@ function getConfig(env) {
     // initialization.
     module: {
       rules: [
-	    {
+        {
           test: /formidable(\\|\/).*js$/,
           use: 'null-loader'
         },
@@ -106,7 +106,6 @@ function getConfig(env) {
       ]
     },
     externals: {
-      "electron": "electron",
       "fs": "fs",
     },
     stats: {

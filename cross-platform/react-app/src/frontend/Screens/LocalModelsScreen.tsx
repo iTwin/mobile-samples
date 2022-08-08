@@ -91,7 +91,8 @@ export function LocalModelsScreen(props: LocalModelsScreenProps) {
       key={index + bimButtons.length}
       title={name}
       onClick={async () => {
-        onOpen(localBriefcase.fileName, BriefcaseConnection.openFile(localBriefcase)); // eslint-disable-line @typescript-eslint/no-floating-promises
+        // eslint-disable-next-line @typescript-eslint/no-floating-promises
+        onOpen(localBriefcase.fileName, BriefcaseConnection.openFile({ fileName: localBriefcase.fileName, readonly: false }));
       }}
     />;
   });
