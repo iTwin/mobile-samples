@@ -15,7 +15,9 @@
     "copy:camera": "cpx \"./src/frontend/CameraSample/public/locales/**\" ./build/locales",
     "build:frontend": "cross-env NODE_OPTIONS=--max_old_space_size=8192 TRANSPILE_DEPS=false DISABLE_TERSER=true USE_FAST_SASS=true react-scripts build && npm run copy:assets",
     "build:camera": "cross-env REACT_APP_BUILD_TARGET=Camera NODE_OPTIONS=--max_old_space_size=8192 TRANSPILE_DEPS=false DISABLE_TERSER=true USE_FAST_SASS=true react-scripts build && npm run copy:assets && npm run copy:camera",
-    "build:backend": "tsc -p tsconfig.backend.json && webpack --config ./webpack.config.js --env.outdir=./lib/webpack --env.entry=./lib/backend/main.js --env.bundlename=main",
+    "compile:backend": "cross-env tsc -p tsconfig.backend.json",
+    "webpack:backend": "cross-env NODE_OPTIONS=--max_old_space_size=8192 webpack --config ./webpack.config.js --env.outdir=./lib/webpack --env.entry=./lib/backend/main.js --env.bundlename=main",
+    "build:backend": "npm run compile:backend && npm run webpack:backend",
     "build": "npm run build:frontend && npm run build:backend",
     "clean": "rimraf build lib",
     "lint": "eslint -f visualstudio \"./src/**/*.{ts,tsx}\" 1>&2"
