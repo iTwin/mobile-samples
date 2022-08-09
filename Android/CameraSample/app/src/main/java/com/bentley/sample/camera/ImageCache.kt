@@ -4,8 +4,10 @@
 *--------------------------------------------------------------------------------------------*/
 package com.bentley.sample.camera
 
+import android.content.Intent
 import android.net.Uri
 import android.webkit.WebResourceResponse
+import androidx.core.content.FileProvider
 import com.eclipsesource.json.Json
 import com.eclipsesource.json.JsonValue
 import java.io.File
@@ -39,11 +41,17 @@ object ImageCache {
         return Uri.parse(filePath.replace(baseDir, "$urlScheme:/"))
     }
 
+    fun shouldInterceptRequest(url: Uri): WebResourceResponse? {
+        return url.takeIf { url.scheme == urlScheme }?.let {
+            WebResourceResponse("image/jpeg", "UTF-8", FileInputStream(getFilePath(it)))
+        }
+    }
+
     fun handleGetImages(params: JsonValue?): JsonValue? {
         return getIModelId(params)?.let { iModelId ->
             val files = FileHelper.getExternalFiles("images/$iModelId")
             Json.array(*files.map { file ->
-                getCacheUri(file.toString()).toString()
+                getCacheUri(file).toString()
             }.toTypedArray())
         } ?: Json.array()
     }
@@ -60,6 +68,14 @@ object ImageCache {
         return Json.NULL
     }
 
+    private fun tryDeleteFile(fileName: String) {
+        try {
+            getFilePath(Uri.parse(fileName)).takeIf { it.exists() }?.delete()
+        } catch (e: Exception) {
+            println(e.message)
+        }
+    }
+
     fun handleDeleteAllImages(params: JsonValue?): JsonValue? {
         getIModelId(params)?.let { iModelId ->
             File(baseDir, iModelId).deleteRecursively()
@@ -67,18 +83,23 @@ object ImageCache {
         return Json.NULL
     }
 
-    fun shouldInterceptRequest(url: Uri): WebResourceResponse? {
-        return url.takeIf { url.scheme == urlScheme }?.let {
-            WebResourceResponse("image/jpeg", "UTF-8", FileInputStream(getFilePath(it)))
+    fun handleShareImages(params: JsonValue?): JsonValue? {
+        val urls = getObjectValue(params, "urls")?.asArray()?.map {
+            val file = getFilePath(Uri.parse(it.asString()))
+            FileProvider.getUriForFile(ModelApplication.appContext, "${BuildConfig.APPLICATION_ID}.provider", file)
         }
-    }
 
-    private fun tryDeleteFile(fileName: String) {
-        try {
-            getFilePath(Uri.parse(fileName))?.takeIf { it.exists() }?.delete()
-        } catch (e: Exception) {
-            println(e.message)
+        if (urls != null && urls.isNotEmpty()) {
+            MainActivity.current?.let {
+                val shareIntent = Intent().apply {
+                    type = "image/*"
+                    action = Intent.ACTION_SEND_MULTIPLE
+                    putParcelableArrayListExtra(Intent.EXTRA_STREAM, ArrayList(urls))
+                }
+                it.startActivity(Intent.createChooser(shareIntent, null))
+            }
         }
+        return Json.NULL
     }
 
     private fun getObjectValue(params: JsonValue?, name: String): JsonValue? {

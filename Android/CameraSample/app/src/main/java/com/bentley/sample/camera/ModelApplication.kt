@@ -35,6 +35,7 @@ object ModelApplication : ITMApplication(StarterApplication.getContext(), BuildC
             coMessenger.addQueryListener("getImages", ImageCache::handleGetImages)
             coMessenger.addQueryListener("deleteImages", ImageCache::handleDeleteImages)
             coMessenger.addQueryListener("deleteAllImages", ImageCache::handleDeleteAllImages)
+            coMessenger.addQueryListener("shareImages", ImageCache::handleShareImages)
         }
     }
 
