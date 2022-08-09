@@ -35,8 +35,7 @@ open class PickUriContract(var destDir: String? = null) : ActivityResultContract
     }
 
     open fun getDisplayName(uri: Uri): String {
-        val displayName =  FileHelper.getFileDisplayName(uri, context.contentResolver)
-        return displayName ?: "unknownDisplayName"
+        return FileHelper.getFileDisplayName(uri, context.contentResolver) ?: "unknownDisplayName"
     }
 
     override fun parseResult(resultCode: Int, intent: Intent?): Uri? {

@@ -7,8 +7,9 @@ package com.bentley.sample.camera
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
-import android.provider.MediaStore
 import androidx.activity.result.ActivityResultLauncher
+import androidx.activity.result.contract.ActivityResultContract
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.FileProvider
 import com.eclipsesource.json.Json
@@ -16,68 +17,73 @@ import com.eclipsesource.json.JsonValue
 import com.github.itwin.mobilesdk.ITMNativeUI
 import com.github.itwin.mobilesdk.ITMNativeUIComponent
 import java.io.File
-import java.time.LocalDateTime
-import java.time.format.DateTimeFormatter
 import kotlin.coroutines.Continuation
 import kotlin.coroutines.suspendCoroutine
 
 private class PickIModelImageContract: PickUriContract() {
-    private var cameraUri: Uri? = null
-
     override fun createIntent(context: Context, input: JsonValue?): Intent {
-        val obj = input?.asObject()
-        val camera = obj?.getString("sourceType", "") == "camera"
-        val iModelId = obj?.getString("iModelId", "unknownModelId") ?: "unknownModelId"
-        destDir = ImageCache.getDestinationDir(iModelId)
-        cameraUri = if (camera) getCameraUri() else null
+        destDir = ImageCache.getDestinationDir(input)
 
-        return with(super.createIntent(context, input)) {
-            if (!camera) {
-                action = Intent.ACTION_PICK
-                setType("image/*")
-            } else {
-                action = MediaStore.ACTION_IMAGE_CAPTURE
-                putExtra(MediaStore.EXTRA_OUTPUT, getContentUri(cameraUri))
-            }
-        }
-    }
-
-    override fun shouldCopyUri(uri: Uri): Boolean {
-        return (cameraUri == null) && super.shouldCopyUri(uri)
+        return super.createIntent(context, input)
+            .setAction(Intent.ACTION_PICK)
+            .setType("image/*")
     }
 
     override fun parseResult(resultCode: Int, intent: Intent?): Uri? {
-        return cameraUri ?: super.parseResult(resultCode, intent)?.let { uri -> ImageCache.getCacheUri(uri.toString()) }
-    }
-
-    private fun getFormattedDate(): String {
-        return LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH-mm-ss.SSS"))
+        return super.parseResult(resultCode, intent)?.let { ImageCache.getCacheUri(it.toString()) }
     }
 
     override fun getDisplayName(uri: Uri): String {
         val strVal = super.getDisplayName(uri)
         val dotIndex = strVal.lastIndexOf(".")
         val extension = if (dotIndex > 0) strVal.substring(dotIndex) else ""
-        return getFormattedDate() + extension
+        return ImageCache.getDestinationFileName() + extension
+    }
+}
+
+private class CaptureIModelImageContract: ActivityResultContract<JsonValue?, Uri?>() {
+    private var cameraUri: Uri? = null
+    private var takePicture = ActivityResultContracts.TakePicture()
+
+    override fun createIntent(context: Context, input: JsonValue?): Intent {
+        getOutputFile(ImageCache.getDestinationDir(input), context)?.let { outputFile ->
+            val newUri = ImageCache.getCacheUri(outputFile.toString())
+            cameraUri = newUri
+            return takePicture.createIntent(context, getContentUri(outputFile, context))
+        }
+        // if we don't have anywhere to store the photo, just return an empty Intent
+        return Intent()
     }
 
-    private fun getCameraUri(): Uri {
-        destDir?.let { destDir ->
-            context.getExternalFilesDir(null)?.let { dir ->
-                val outDir = File(dir, destDir)
-                outDir.mkdirs()
-                val outputFile = File(outDir, "${getFormattedDate()}.jpg")
-                return ImageCache.getCacheUri(outputFile.toString())
-            }
-        }
-        return Uri.EMPTY
+    override fun parseResult(resultCode: Int, intent: Intent?): Uri? {
+        return cameraUri.takeIf { takePicture.parseResult(resultCode, intent) }
     }
 
-    private fun getContentUri(uri: Uri?): Uri? {
-        uri?.path?.let { path ->
-            return FileProvider.getUriForFile(context, "${BuildConfig.APPLICATION_ID}.provider", File(path))
+    private fun getOutputFile(destDir: String, context: Context): File? {
+        return context.getExternalFilesDir(null)?.let { dir ->
+            val outDir = File(dir, destDir)
+            outDir.mkdirs()
+            return File(outDir, "${ImageCache.getDestinationFileName()}.jpg")
         }
-        return null
+    }
+
+    private fun getContentUri(file: File, context: Context): Uri {
+        return FileProvider.getUriForFile(context, "${BuildConfig.APPLICATION_ID}.provider", file)
+    }
+}
+
+private class PickOrCaptureIModelImageContract: ActivityResultContract<JsonValue?, Uri?>() {
+    var delegateContract: ActivityResultContract<JsonValue?, Uri?>? = null
+
+    override fun createIntent(context: Context, input: JsonValue?): Intent {
+        val camera = input?.asObject()?.getString("sourceType", "") == "camera"
+        val newDelegate = if (camera) CaptureIModelImageContract() else PickIModelImageContract()
+        delegateContract = newDelegate
+        return newDelegate.createIntent(context, input)
+    }
+
+    override fun parseResult(resultCode: Int, intent: Intent?): Uri? {
+        return delegateContract?.parseResult(resultCode, intent)
     }
 }
 
@@ -91,7 +97,7 @@ class ImagePicker(nativeUI: ITMNativeUI): ITMNativeUIComponent(nativeUI) {
         private var activeContinuation: Continuation<JsonValue?>? = null
 
         fun registerForActivityResult(activity: AppCompatActivity) {
-            startForResult = activity.registerForActivityResult(PickIModelImageContract()) { uri ->
+            startForResult = activity.registerForActivityResult(PickOrCaptureIModelImageContract()) { uri ->
                 activeContinuation?.resumeWith(Result.success(Json.value(uri?.toString() ?: "")))
                 activeContinuation = null
             }

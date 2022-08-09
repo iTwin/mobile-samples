@@ -53,8 +53,8 @@ object FileHelper {
         return result
     }
 
-    fun getExternalFiles(dirName: String): Array<out String> {
-        return ModelApplication.appContext.getExternalFilesDir(dirName)?.list() ?: emptyArray()
+    fun getExternalFiles(dirName: String): List<String> {
+        return ModelApplication.appContext.getExternalFilesDir(dirName)?.listFiles()?.map { it.toString() } ?: emptyList()
     }
 
     fun getExternalFiles(dirName: String, extension: String): List<String> {

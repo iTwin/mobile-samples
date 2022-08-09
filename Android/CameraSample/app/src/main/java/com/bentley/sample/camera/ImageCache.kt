@@ -10,6 +10,8 @@ import com.eclipsesource.json.Json
 import com.eclipsesource.json.JsonValue
 import java.io.File
 import java.io.FileInputStream
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
 
 object ImageCache {
     private const val urlScheme = "com.bentley.itms-image-cache"
@@ -18,25 +20,30 @@ object ImageCache {
         ModelApplication.appContext.getExternalFilesDir("images").toString()
     }
 
-    fun getDestinationDir(iModelId: String): String {
+    fun getDestinationDir(input: JsonValue?): String {
+        val iModelId = input?.asObject()?.get("iModelId")?.asString() ?: "unknownModelId"
         return File("images", iModelId).toString()
     }
 
-    private fun getFilePath(cacheUri: Uri): File? {
-        return cacheUri.path?.let { path ->
-            File(baseDir, path)
-        }
+    fun getDestinationFileName(): String {
+        return LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH-mm-ss.SSS"))
+    }
+
+    private fun getFilePath(cacheUri: Uri): File {
+        val uriString = cacheUri.toString().replace("$urlScheme://", "")
+        return File(baseDir, uriString)
     }
 
     fun getCacheUri(filePath: String): Uri {
-        return Uri.parse(filePath.replace(baseDir, "$urlScheme://"))
+        // baseDir doesn't end in a slash, so only replace it with a single slash instead of urlScheme://
+        return Uri.parse(filePath.replace(baseDir, "$urlScheme:/"))
     }
 
     fun handleGetImages(params: JsonValue?): JsonValue? {
         return getIModelId(params)?.let { iModelId ->
             val files = FileHelper.getExternalFiles("images/$iModelId")
-            Json.array(*files.map { filePath ->
-                getCacheUri(filePath).toString()
+            Json.array(*files.map { file ->
+                getCacheUri(file.toString()).toString()
             }.toTypedArray())
         } ?: Json.array()
     }
@@ -57,7 +64,7 @@ object ImageCache {
         getIModelId(params)?.let { iModelId ->
             File(baseDir, iModelId).deleteRecursively()
         }
-        return null
+        return Json.NULL
     }
 
     fun shouldInterceptRequest(url: Uri): WebResourceResponse? {
