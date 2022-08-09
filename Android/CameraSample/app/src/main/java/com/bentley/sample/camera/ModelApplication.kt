@@ -32,9 +32,9 @@ object ModelApplication : ITMApplication(StarterApplication.getContext(), BuildC
                 Json.array(*FileHelper.getExternalFiles("BimCache", ".bim").toTypedArray())
             }
 
-            coMessenger.addQueryListener("getImages") { ImageCache.handleGetImages(it) }
-            coMessenger.addQueryListener("deleteImages") { ImageCache.handleDeleteImages(it) }
-            coMessenger.addQueryListener("deleteAllImages") { ImageCache.handleDeleteAllImages(it) }
+            coMessenger.addQueryListener("getImages", ImageCache::handleGetImages)
+            coMessenger.addQueryListener("deleteImages", ImageCache::handleDeleteImages)
+            coMessenger.addQueryListener("deleteAllImages", ImageCache::handleDeleteAllImages)
         }
     }
 
