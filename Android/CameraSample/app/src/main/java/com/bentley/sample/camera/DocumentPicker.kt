@@ -6,12 +6,10 @@ package com.bentley.sample.camera
 
 import android.app.Activity
 import android.app.AlertDialog
-import android.content.ContentResolver
 import android.content.Context
 import android.content.ContextWrapper
 import android.content.Intent
 import android.net.Uri
-import android.provider.OpenableColumns
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContract
 import androidx.appcompat.app.AppCompatActivity
@@ -21,56 +19,13 @@ import com.github.itwin.mobilesdk.ITMNativeUI
 import com.github.itwin.mobilesdk.ITMNativeUIComponent
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch
-import java.io.File
-import java.io.FileOutputStream
-import java.io.InputStream
 import kotlin.coroutines.Continuation
 import kotlin.coroutines.resume
 import kotlin.coroutines.suspendCoroutine
 
-object FileHelper {
-    fun getFileDisplayName(uri: Uri, contentResolver: ContentResolver): String? {
-        contentResolver.query(uri, null, null, null, null, null)?.let { cursor ->
-            if (cursor.moveToFirst()) {
-                val columnIndex = cursor.getColumnIndex(OpenableColumns.DISPLAY_NAME)
-                if (columnIndex >= 0) {
-                    return cursor.getString(columnIndex)
-                }
-            }
-            cursor.close()
-        }
-        return null
-    }
+open class PickUriContract(var destDir: String? = null) : ActivityResultContract<JsonValue?, Uri?>() {
+    protected val context = ModelApplication.appContext
 
-    private fun copyFile(inputStream: InputStream, dir: File, displayName: String): String {
-        if (!dir.exists()) {
-            dir.mkdirs()
-        }
-        val dstPath = dir.absolutePath + "/" + displayName
-        val outputStream = FileOutputStream(dstPath)
-        val buffer = ByteArray(1024)
-        var length: Int
-        while (inputStream.read(buffer).also { length = it } > 0) {
-            outputStream.write(buffer, 0, length)
-        }
-        outputStream.flush()
-        outputStream.close()
-        return dstPath
-    }
-
-    fun copyToExternalFiles(uri: Uri, destDir: String, displayName: String, context: ContextWrapper): String? {
-        var result: String? = null
-        context.getExternalFilesDir(null)?.let { filesDir ->
-            context.contentResolver.openInputStream(uri)?.let { inputStream ->
-                result = copyFile(inputStream, File(filesDir, destDir), displayName)
-                inputStream.close()
-            }
-        }
-        return result
-    }
-}
-
-open class PickUriContract(var destDir: String? = null, private val context: ContextWrapper? = null, private val urlScheme: String? = null) : ActivityResultContract<JsonValue?, Uri?>() {
     override fun createIntent(context: Context, input: JsonValue?): Intent {
         return Intent()
     }
@@ -80,18 +35,16 @@ open class PickUriContract(var destDir: String? = null, private val context: Con
     }
 
     open fun getDisplayName(uri: Uri): String {
-        var displayName: String? = null
-        if (context != null)
-            displayName =  FileHelper.getFileDisplayName(uri, context.contentResolver)
+        val displayName =  FileHelper.getFileDisplayName(uri, context.contentResolver)
         return displayName ?: "unknownDisplayName"
     }
 
     override fun parseResult(resultCode: Int, intent: Intent?): Uri? {
         val uri = intent?.takeIf { resultCode == Activity.RESULT_OK }?.data
-        if (uri != null && shouldCopyUri(uri) && context != null) {
+        if (uri != null && shouldCopyUri(uri)) {
             destDir?.let { destDir ->
-                FileHelper.copyToExternalFiles(uri, destDir, getDisplayName(uri), context)?.let { result ->
-                    return Uri.parse(if (urlScheme == null) result else "$urlScheme://$result")
+                FileHelper.copyToExternalFiles(uri, destDir, getDisplayName(uri))?.let { result ->
+                    return Uri.parse(result)
                 }
             }
         }
@@ -99,7 +52,7 @@ open class PickUriContract(var destDir: String? = null, private val context: Con
     }
 }
 
-open class PickDocumentContract(private val context: ContextWrapper?) : PickUriContract("BimCache", context) {
+open class PickDocumentContract : PickUriContract("BimCache") {
     override fun createIntent(context: Context, input: JsonValue?): Intent {
         return super.createIntent(context, input)
             .setAction(Intent.ACTION_OPEN_DOCUMENT)
@@ -142,7 +95,7 @@ class DocumentPicker(nativeUI: ITMNativeUI): ITMNativeUIComponent(nativeUI) {
         }
 
         fun registerForActivityResult(activity: AppCompatActivity) {
-            startForResult = activity.registerForActivityResult(PickDocumentContract(activity)) { uri ->
+            startForResult = activity.registerForActivityResult(PickDocumentContract()) { uri ->
                 if (uri != null && !PickDocumentContract.isAcceptableBimUri(uri)) {
                     MainScope().launch {
                         showErrorAlert(activity)

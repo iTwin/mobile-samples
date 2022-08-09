@@ -5,70 +5,80 @@
 package com.bentley.sample.camera
 
 import android.net.Uri
+import android.webkit.WebResourceResponse
 import com.eclipsesource.json.Json
-import com.eclipsesource.json.JsonArray
 import com.eclipsesource.json.JsonValue
 import java.io.File
+import java.io.FileInputStream
 
 object ImageCache {
-    const val urlScheme = "com.bentley.itms-image-cache"
+    private const val urlScheme = "com.bentley.itms-image-cache"
 
-    fun getFilePath(cacheUri: Uri): File? {
+    private val baseDir: String by lazy {
+        ModelApplication.appContext.getExternalFilesDir("images").toString()
+    }
+
+    fun getDestinationDir(iModelId: String): String {
+        return File("images", iModelId).toString()
+    }
+
+    private fun getFilePath(cacheUri: Uri): File? {
         return cacheUri.path?.let { path ->
-            // TODO: only call getExternalFilesDir once and save it as a variable?
-            ModelApplication.appContext.getExternalFilesDir("images")?.let { baseDir ->
-                File(baseDir, path)
-            }
+            File(baseDir, path)
         }
     }
 
+    fun getCacheUri(filePath: String): Uri {
+        return Uri.parse(filePath.replace(baseDir, "$urlScheme://"))
+    }
+
+    fun handleGetImages(params: JsonValue?): JsonValue? {
+        return getIModelId(params)?.let { iModelId ->
+            val files = FileHelper.getExternalFiles("images/$iModelId")
+            Json.array(*files.map { filePath ->
+                getCacheUri(filePath).toString()
+            }.toTypedArray())
+        } ?: Json.array()
+    }
+
     fun handleDeleteImages(params: JsonValue?): JsonValue? {
-        val urls = getObjectValue(params, "urls")
-        if (urls != null) {
-            if (urls.isArray) {
-                urls.asArray().forEach {
-                    if (it.isString) {
-                        tryDeleteFile(it.asString())
-                    }
+        getObjectValue(params, "urls")?.let { urls ->
+            when {
+                urls.isArray -> { urls.asArray().forEach { url ->
+                    url.takeIf { it.isString }?.let { tryDeleteFile(it.asString()) } }
                 }
-            } else if (urls.isString) {
-                tryDeleteFile(urls.asString())
+                urls.isString -> { tryDeleteFile(urls.asString()) }
             }
         }
         return Json.NULL
     }
 
+    fun handleDeleteAllImages(params: JsonValue?): JsonValue? {
+        getIModelId(params)?.let { iModelId ->
+            File(baseDir, iModelId).deleteRecursively()
+        }
+        return null
+    }
+
+    fun shouldInterceptRequest(url: Uri): WebResourceResponse? {
+        return url.takeIf { url.scheme == urlScheme }?.let {
+            WebResourceResponse("image/jpeg", "UTF-8", FileInputStream(getFilePath(it)))
+        }
+    }
+
     private fun tryDeleteFile(fileName: String) {
         try {
-            val filePath = getFilePath(Uri.parse(fileName))
-            if (filePath != null && filePath.exists()) {
-                filePath.delete()
-            }
+            getFilePath(Uri.parse(fileName))?.takeIf { it.exists() }?.delete()
         } catch (e: Exception) {
             println(e.message)
         }
     }
 
-    private fun getIModelId(params: JsonValue?): String? {
-        val objVal = getObjectValue(params, "iModelId")
-        return if (objVal != null && objVal.isString) objVal.asString() else null
-    }
-
     private fun getObjectValue(params: JsonValue?, name: String): JsonValue? {
-        return if (params != null && params.isObject) params.asObject().get(name) else null
+        return params?.takeIf { it.isObject }?.asObject()?.get(name)
     }
 
-    private fun getExternalFiles(dirName: String): Array<String> {
-        return ModelApplication.appContext.getExternalFilesDir(dirName)?.list() ?: emptyArray()
-    }
-
-    private fun getExternalFilesAsJsonArray(dirName: String, extension: String, prefix: String = ""): JsonArray {
-        val result = Json.array()
-        getExternalFiles(dirName).filter { name ->
-            extension.isEmpty() || name.endsWith(extension, true)
-        }.forEach {
-            result.add("$prefix$it")
-        }
-        return result
+    private fun getIModelId(params: JsonValue?): String? {
+        return getObjectValue(params, "iModelId")?.takeIf { it.isString }?.asString()
     }
 }

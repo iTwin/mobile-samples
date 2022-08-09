@@ -5,7 +5,6 @@
 package com.bentley.sample.camera
 
 import android.content.Context
-import android.content.ContextWrapper
 import android.content.Intent
 import android.net.Uri
 import android.provider.MediaStore
@@ -22,18 +21,14 @@ import java.time.format.DateTimeFormatter
 import kotlin.coroutines.Continuation
 import kotlin.coroutines.suspendCoroutine
 
-object ImagePickerConstants {
-    const val urlScheme = "com.bentley.itms-image-cache"
-}
-
-private class PickIModelImageContract(private val context: ContextWrapper?): PickUriContract("images", context, ImagePickerConstants.urlScheme) {
+private class PickIModelImageContract: PickUriContract() {
     private var cameraUri: Uri? = null
 
     override fun createIntent(context: Context, input: JsonValue?): Intent {
         val obj = input?.asObject()
         val camera = obj?.getString("sourceType", "") == "camera"
         val iModelId = obj?.getString("iModelId", "unknownModelId") ?: "unknownModelId"
-        destDir = "images/$iModelId"
+        destDir = ImageCache.getDestinationDir(iModelId)
         cameraUri = if (camera) getCameraUri() else null
 
         return with(super.createIntent(context, input)) {
@@ -52,7 +47,7 @@ private class PickIModelImageContract(private val context: ContextWrapper?): Pic
     }
 
     override fun parseResult(resultCode: Int, intent: Intent?): Uri? {
-        return cameraUri ?: super.parseResult(resultCode, intent)
+        return cameraUri ?: super.parseResult(resultCode, intent)?.let { uri -> ImageCache.getCacheUri(uri.toString()) }
     }
 
     private fun getFormattedDate(): String {
@@ -67,28 +62,20 @@ private class PickIModelImageContract(private val context: ContextWrapper?): Pic
     }
 
     private fun getCameraUri(): Uri {
-        context?.let { context ->
-            destDir?.let { destDir ->
-                context.getExternalFilesDir(null)?.let { dir ->
-                    val outDir = File(dir, destDir)
-                    outDir.mkdirs()
-                    val formattedDate = getFormattedDate()
-                    val outputFile = File(outDir, "$formattedDate.jpg")
-                    return Uri.parse("${ImagePickerConstants.urlScheme}://$outputFile")
-                }
+        destDir?.let { destDir ->
+            context.getExternalFilesDir(null)?.let { dir ->
+                val outDir = File(dir, destDir)
+                outDir.mkdirs()
+                val outputFile = File(outDir, "${getFormattedDate()}.jpg")
+                return ImageCache.getCacheUri(outputFile.toString())
             }
         }
         return Uri.EMPTY
     }
 
     private fun getContentUri(uri: Uri?): Uri? {
-        context?.let { context ->
-            uri?.let { uri ->
-                uri.path?.let { path ->
-                    val outputFile = File(path)
-                    return FileProvider.getUriForFile(context, "${BuildConfig.APPLICATION_ID}.provider", outputFile)
-                }
-            }
+        uri?.path?.let { path ->
+            return FileProvider.getUriForFile(context, "${BuildConfig.APPLICATION_ID}.provider", File(path))
         }
         return null
     }
@@ -104,7 +91,7 @@ class ImagePicker(nativeUI: ITMNativeUI): ITMNativeUIComponent(nativeUI) {
         private var activeContinuation: Continuation<JsonValue?>? = null
 
         fun registerForActivityResult(activity: AppCompatActivity) {
-            startForResult = activity.registerForActivityResult(PickIModelImageContract(activity)) { uri ->
+            startForResult = activity.registerForActivityResult(PickIModelImageContract()) { uri ->
                 activeContinuation?.resumeWith(Result.success(Json.value(uri?.toString() ?: "")))
                 activeContinuation = null
             }
