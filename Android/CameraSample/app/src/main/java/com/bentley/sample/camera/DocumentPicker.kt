@@ -65,7 +65,7 @@ open class PickDocumentContract : PickUriContract("BimCache") {
 
     companion object {
         fun isAcceptableBimUri(uri: Uri): Boolean {
-            return uri.toString().lowercase().endsWith(".bim")
+            return uri.toString().endsWith(".bim", true)
         }
     }
 }
