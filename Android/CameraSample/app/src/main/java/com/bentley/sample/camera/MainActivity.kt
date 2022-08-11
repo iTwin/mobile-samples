@@ -35,6 +35,8 @@ class MainActivity : AppCompatActivity() {
             val browserIntent = Intent(Intent.ACTION_VIEW, uri)
             current?.startActivity(browserIntent)
         }
+
+        lateinit var sampleMobileApplication: SampleMobileApplication
     }
 
     private val modelWebViewContainer: ViewGroup
@@ -79,12 +81,12 @@ class MainActivity : AppCompatActivity() {
         }
 
         setContentView(R.layout.activity_main)
-        ModelApplication.initializeFrontend(this, R.id.model_host_fragment)
+        sampleMobileApplication.initializeFrontend(this, R.id.model_host_fragment)
         MainScope().launch {
-            ModelApplication.waitForFrontendInitialize()
-            ModelApplication.attachWebView(modelWebViewContainer)
+            sampleMobileApplication.waitForFrontendInitialize()
+            sampleMobileApplication.attachWebView(modelWebViewContainer)
             current = this@MainActivity
-            nativeUI = ModelApplication.nativeUI
+            nativeUI = sampleMobileApplication.nativeUI
             nativeUI?.components?.add(DocumentPicker(nativeUI!!))
             nativeUI?.components?.add(ImagePicker(nativeUI!!))
         }
@@ -94,7 +96,7 @@ class MainActivity : AppCompatActivity() {
         current = null
         nativeUI = null
         modelWebViewContainer.removeAllViews()
-        ModelApplication.onActivityDestroy(this)
+        sampleMobileApplication.onActivityDestroy(this)
         super.onDestroy()
     }
 
@@ -154,6 +156,6 @@ class MainActivity : AppCompatActivity() {
 
     override fun onConfigurationChanged(newConfig: Configuration) {
         super.onConfigurationChanged(newConfig)
-        ModelApplication.applyPreferredColorScheme() // update dark mode
+        sampleMobileApplication.applyPreferredColorScheme() // update dark mode
     }
 }

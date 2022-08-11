@@ -5,6 +5,7 @@
 package com.bentley.sample.camera
 
 import android.content.ContentResolver
+import android.content.Context
 import android.net.Uri
 import android.provider.OpenableColumns
 import java.io.File
@@ -41,8 +42,7 @@ object FileHelper {
         return dstPath
     }
 
-    fun copyToExternalFiles(uri: Uri, destDir: String, displayName: String): String? {
-        val context = ModelApplication.appContext
+    fun copyToExternalFiles(context: Context, uri: Uri, destDir: String, displayName: String): String? {
         var result: String? = null
         context.getExternalFilesDir(null)?.let { filesDir ->
             context.contentResolver.openInputStream(uri)?.let { inputStream ->
@@ -53,12 +53,12 @@ object FileHelper {
         return result
     }
 
-    fun getExternalFiles(dirName: String): List<String> {
-        return ModelApplication.appContext.getExternalFilesDir(dirName)?.listFiles()?.map { it.toString() } ?: emptyList()
+    fun getExternalFiles(context: Context, dirName: String): List<String> {
+        return context.getExternalFilesDir(dirName)?.listFiles()?.map { it.toString() } ?: emptyList()
     }
 
-    fun getExternalFiles(dirName: String, extension: String): List<String> {
-        return getExternalFiles(dirName).filter { name ->
+    fun getExternalFiles(context: Context, dirName: String, extension: String): List<String> {
+        return getExternalFiles(context, dirName).filter { name ->
             extension.isEmpty() || name.endsWith(extension, true)
         }
     }

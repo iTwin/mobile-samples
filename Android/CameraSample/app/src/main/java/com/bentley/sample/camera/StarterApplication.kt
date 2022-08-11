@@ -12,6 +12,7 @@ class StarterApplication: Application() {
         super.onCreate()
         appContext = applicationContext
         application = this
+        MainActivity.sampleMobileApplication = CameraMobileApplication
     }
 
     companion object {

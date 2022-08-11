@@ -24,9 +24,10 @@ import kotlin.coroutines.resume
 import kotlin.coroutines.suspendCoroutine
 
 open class PickUriContract(var destDir: String? = null) : ActivityResultContract<JsonValue?, Uri?>() {
-    protected val context = ModelApplication.appContext
+    protected lateinit var context: Context
 
     override fun createIntent(context: Context, input: JsonValue?): Intent {
+        this.context = context
         return Intent()
     }
 
@@ -42,7 +43,7 @@ open class PickUriContract(var destDir: String? = null) : ActivityResultContract
         val uri = intent?.takeIf { resultCode == Activity.RESULT_OK }?.data
         if (uri != null && shouldCopyUri(uri)) {
             destDir?.let { destDir ->
-                FileHelper.copyToExternalFiles(uri, destDir, getDisplayName(uri))?.let { result ->
+                FileHelper.copyToExternalFiles(context, uri, destDir, getDisplayName(uri))?.let { result ->
                     return Uri.parse(result)
                 }
             }
