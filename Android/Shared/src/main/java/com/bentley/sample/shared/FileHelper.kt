@@ -2,7 +2,7 @@
 * Copyright (c) Bentley Systems, Incorporated. All rights reserved.
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
-package com.bentley.sample.camera
+package com.bentley.sample.shared
 
 import android.content.ContentResolver
 import android.content.Context

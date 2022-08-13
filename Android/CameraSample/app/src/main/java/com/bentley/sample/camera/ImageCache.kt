@@ -8,6 +8,7 @@ import android.content.Intent
 import android.net.Uri
 import android.webkit.WebResourceResponse
 import androidx.core.content.FileProvider
+import com.bentley.sample.shared.FileHelper
 import com.eclipsesource.json.Json
 import com.eclipsesource.json.JsonValue
 import java.io.File

@@ -18,6 +18,7 @@ import androidx.appcompat.app.AlertDialog
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.WindowInsetsControllerCompat
+import com.bentley.sample.shared.DocumentPicker
 import com.github.itwin.mobilesdk.ITMNativeUI
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.delay
@@ -156,6 +157,6 @@ class MainActivity : AppCompatActivity() {
 
     override fun onConfigurationChanged(newConfig: Configuration) {
         super.onConfigurationChanged(newConfig)
-        sampleMobileApplication.applyPreferredColorScheme() // update dark mode
+//        sampleMobileApplication.applyPreferredColorScheme() // update dark mode
     }
 }

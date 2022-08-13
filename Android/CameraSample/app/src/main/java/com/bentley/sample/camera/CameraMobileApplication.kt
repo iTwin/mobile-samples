@@ -8,6 +8,7 @@ import android.net.Uri
 import android.webkit.WebResourceRequest
 import android.webkit.WebResourceResponse
 import android.webkit.WebView
+import com.bentley.sample.shared.FileHelper
 import com.eclipsesource.json.Json
 import com.github.itwin.mobilesdk.ITMApplication
 

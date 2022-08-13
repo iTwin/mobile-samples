@@ -12,6 +12,7 @@ import androidx.activity.result.contract.ActivityResultContract
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.FileProvider
+import com.bentley.sample.shared.PickUriContract
 import com.eclipsesource.json.Json
 import com.eclipsesource.json.JsonValue
 import com.github.itwin.mobilesdk.ITMNativeUI

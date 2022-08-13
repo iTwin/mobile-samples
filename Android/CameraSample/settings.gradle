@@ -27,7 +27,7 @@ dependencyResolutionManagement {
         }
     }
 }
-rootProject.name = "iTwin Starter"
+rootProject.name = "Camera Sample"
 include ':app'
 include ':itmsamplesshared'
 project(':itmsamplesshared').projectDir = new File('../Shared')
