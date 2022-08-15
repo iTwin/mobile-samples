@@ -4,36 +4,13 @@
 *--------------------------------------------------------------------------------------------*/
 package com.bentley.sample.camera
 
-import android.net.Uri
 import android.webkit.WebResourceRequest
 import android.webkit.WebResourceResponse
 import android.webkit.WebView
-import com.bentley.sample.shared.FileHelper
-import com.eclipsesource.json.Json
-import com.github.itwin.mobilesdk.ITMApplication
+import com.bentley.sample.shared.MainActivity
+import com.bentley.sample.shared.SampleMobileApplication
 
-// move to Shared
-open class SampleMobileApplication : ITMApplication(StarterApplication.getContext(), BuildConfig.DEBUG, BuildConfig.DEBUG) {
-    override fun openUri(uri: Uri) {
-        MainActivity.openUri(uri)
-    }
-
-    override fun setupWebView() {
-        super.setupWebView()
-        coMessenger?.let { coMessenger ->
-            coMessenger.addMessageListener("loading") {}
-            coMessenger.addMessageListener("didFinishLaunching") {
-                coMessenger.frontendLaunchSucceeded()
-            }
-
-            coMessenger.addQueryListener("getBimDocuments") {
-                Json.array(*FileHelper.getExternalFiles(this.appContext,"BimCache", ".bim").toTypedArray())
-            }
-        }
-    }
-}
-
-object CameraMobileApplication : SampleMobileApplication() {
+object CameraMobileApplication : SampleMobileApplication(CameraApplication.getContext()) {
     init {
         finishInit()
     }
@@ -50,5 +27,17 @@ object CameraMobileApplication : SampleMobileApplication() {
 
     override fun shouldInterceptRequest(view: WebView, request: WebResourceRequest): WebResourceResponse? {
         return ImageCache.shouldInterceptRequest(request.url) ?: super.shouldInterceptRequest(view, request)
+    }
+
+    override fun onCreateActivity(activity: MainActivity) {
+        super.onCreateActivity(activity)
+        ImagePicker.registerForActivityResult(activity)
+    }
+
+    override fun onRegisterNativeUI() {
+        super.onRegisterNativeUI()
+        nativeUI?.let {
+            it.components.add(ImagePicker(it))
+        }
     }
 }

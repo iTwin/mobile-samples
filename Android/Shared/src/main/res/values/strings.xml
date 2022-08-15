@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="alert_message_webview_not_found">Chromium WebView package required to run the app.</string>
+    <string name="alert_title_error">Error</string>
+    <string name="ok">OK</string>
+</resources>

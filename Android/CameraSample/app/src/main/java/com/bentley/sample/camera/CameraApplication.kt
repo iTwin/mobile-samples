@@ -6,8 +6,9 @@ package com.bentley.sample.camera
 
 import android.app.Application
 import android.content.Context
+import com.bentley.sample.shared.MainActivity
 
-class StarterApplication: Application() {
+class CameraApplication: Application() {
     override fun onCreate() {
         super.onCreate()
         appContext = applicationContext

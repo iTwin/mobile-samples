@@ -4,14 +4,12 @@
 *--------------------------------------------------------------------------------------------*/
 package com.bentley.sample.shared
 
-import android.app.Activity
 import android.app.AlertDialog
 import android.content.Context
 import android.content.ContextWrapper
 import android.content.Intent
 import android.net.Uri
 import androidx.activity.result.ActivityResultLauncher
-import androidx.activity.result.contract.ActivityResultContract
 import androidx.appcompat.app.AppCompatActivity
 import com.eclipsesource.json.Json
 import com.eclipsesource.json.JsonValue
@@ -23,55 +21,36 @@ import kotlin.coroutines.Continuation
 import kotlin.coroutines.resume
 import kotlin.coroutines.suspendCoroutine
 
-open class PickUriContract(var destDir: String? = null) : ActivityResultContract<JsonValue?, Uri?>() {
-    protected lateinit var context: Context
+class DocumentPicker(nativeUI: ITMNativeUI): ITMNativeUIComponent(nativeUI) {
+    /**
+     * Lets the user pick .bim documents and copies them to the BimCache external files directory.
+     */
+    private class PickDocumentContract : PickUriContract("BimCache") {
+        override fun createIntent(context: Context, input: JsonValue?): Intent {
+            return super.createIntent(context, input)
+                .setAction(Intent.ACTION_OPEN_DOCUMENT)
+                .setType("*/*")
+                .addCategory(Intent.CATEGORY_OPENABLE)
+        }
 
-    override fun createIntent(context: Context, input: JsonValue?): Intent {
-        this.context = context
-        return Intent()
-    }
+        /**
+         * Only allow copying files that have a .bim extension.
+         */
+        override fun shouldCopyUri(uri: Uri): Boolean {
+            return isAcceptableBimUri(uri)
+        }
 
-    open fun shouldCopyUri(uri: Uri): Boolean {
-        return true
-    }
-
-    open fun getDisplayName(uri: Uri): String {
-        return FileHelper.getFileDisplayName(uri, context.contentResolver) ?: "unknownDisplayName"
-    }
-
-    override fun parseResult(resultCode: Int, intent: Intent?): Uri? {
-        val uri = intent?.takeIf { resultCode == Activity.RESULT_OK }?.data
-        if (uri != null && shouldCopyUri(uri)) {
-            destDir?.let { destDir ->
-                FileHelper.copyToExternalFiles(context, uri, destDir, getDisplayName(uri))?.let { result ->
-                    return Uri.parse(result)
-                }
+        companion object {
+            /**
+             * @param uri Input Uri.
+             * @return true if the uri ends with .bim
+             */
+            fun isAcceptableBimUri(uri: Uri): Boolean {
+                return uri.toString().endsWith(".bim", true)
             }
         }
-        return uri
-    }
-}
-
-open class PickDocumentContract : PickUriContract("BimCache") {
-    override fun createIntent(context: Context, input: JsonValue?): Intent {
-        return super.createIntent(context, input)
-            .setAction(Intent.ACTION_OPEN_DOCUMENT)
-            .setType("*/*")
-            .addCategory(Intent.CATEGORY_OPENABLE)
     }
 
-    override fun shouldCopyUri(uri: Uri): Boolean {
-        return isAcceptableBimUri(uri)
-    }
-
-    companion object {
-        fun isAcceptableBimUri(uri: Uri): Boolean {
-            return uri.toString().endsWith(".bim", true)
-        }
-    }
-}
-
-class DocumentPicker(nativeUI: ITMNativeUI): ITMNativeUIComponent(nativeUI) {
     init {
         listener = coMessenger.addQueryListener("chooseDocument", ::handleQuery)
     }

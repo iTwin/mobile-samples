@@ -1,6 +1,3 @@
 <resources>
     <string name="app_name">Camera Sample</string>
-    <string name="alert_message_webview_not_found">Chromium WebView package required to run the app.</string>
-    <string name="alert_title_error">Error</string>
-    <string name="ok">OK</string>
 </resources>

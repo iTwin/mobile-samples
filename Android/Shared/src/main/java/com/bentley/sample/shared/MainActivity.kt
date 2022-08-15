@@ -2,7 +2,7 @@
 * Copyright (c) Bentley Systems, Incorporated. All rights reserved.
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
-package com.bentley.sample.camera
+package com.bentley.sample.shared
 
 import android.content.Intent
 import android.content.res.Configuration
@@ -18,7 +18,6 @@ import androidx.appcompat.app.AlertDialog
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.WindowInsetsControllerCompat
-import com.bentley.sample.shared.DocumentPicker
 import com.github.itwin.mobilesdk.ITMNativeUI
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.delay
@@ -26,7 +25,7 @@ import kotlinx.coroutines.launch
 import kotlin.system.exitProcess
 
 class MainActivity : AppCompatActivity() {
-    private var nativeUI: ITMNativeUI? = null
+//    private var nativeUI: ITMNativeUI? = null
 
     companion object {
         var current: MainActivity? = null
@@ -68,8 +67,9 @@ class MainActivity : AppCompatActivity() {
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        DocumentPicker.registerForActivityResult(this)
-        ImagePicker.registerForActivityResult(this)
+        sampleMobileApplication.onCreateActivity(this)
+//        DocumentPicker.registerForActivityResult(this)
+//        ImagePicker.registerForActivityResult(this)
         requestWindowFeature(Window.FEATURE_NO_TITLE)
         super.onCreate(savedInstanceState)
         setupWebView()
@@ -87,15 +87,16 @@ class MainActivity : AppCompatActivity() {
             sampleMobileApplication.waitForFrontendInitialize()
             sampleMobileApplication.attachWebView(modelWebViewContainer)
             current = this@MainActivity
-            nativeUI = sampleMobileApplication.nativeUI
-            nativeUI?.components?.add(DocumentPicker(nativeUI!!))
-            nativeUI?.components?.add(ImagePicker(nativeUI!!))
+            sampleMobileApplication.onRegisterNativeUI()
+//            nativeUI = sampleMobileApplication.nativeUI
+//            nativeUI?.components?.add(DocumentPicker(nativeUI!!))
+//            nativeUI?.components?.add(ImagePicker(nativeUI!!))
         }
     }
 
     override fun onDestroy() {
         current = null
-        nativeUI = null
+//        nativeUI = null
         modelWebViewContainer.removeAllViews()
         sampleMobileApplication.onActivityDestroy(this)
         super.onDestroy()

@@ -9,6 +9,7 @@ import android.net.Uri
 import android.webkit.WebResourceResponse
 import androidx.core.content.FileProvider
 import com.bentley.sample.shared.FileHelper
+import com.bentley.sample.shared.MainActivity
 import com.eclipsesource.json.Json
 import com.eclipsesource.json.JsonValue
 import java.io.File
