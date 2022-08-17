@@ -51,12 +51,10 @@ object ImageCache {
     }
 
     fun handleGetImages(params: JsonValue?): JsonValue? {
-        return getIModelId(params)?.let { iModelId ->
-            val files = FileHelper.getExternalFiles(CameraITMApplication.appContext,"images/$iModelId")
-            Json.array(*files.map { file ->
-                getCacheUri(file).toString()
-            }.toTypedArray())
-        } ?: Json.array()
+        val files = FileHelper.getExternalFiles(CameraITMApplication.appContext, getDestinationDir(params))
+        return Json.array(*files.map { file ->
+            getCacheUri(file).toString()
+        }.toTypedArray())
     }
 
     fun handleDeleteImages(params: JsonValue?): JsonValue? {
