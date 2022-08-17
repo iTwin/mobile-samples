@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="alert_message_webview_not_found">Chromium WebView package required to run the app.</string>
+    <string name="alert_title_error">Error</string>
+    <string name="ok">OK</string>
+    <string name="alert_message_only_bim_files">Only .bim files can be opened.</string>
+</resources>
