@@ -2,17 +2,14 @@
 * Copyright (c) Bentley Systems, Incorporated. All rights reserved.
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
-package com.bentley.sample.itwinstarter
+package com.bentley.sample.shared
 
+import android.content.Context
 import android.net.Uri
 import com.eclipsesource.json.Json
 import com.github.itwin.mobilesdk.ITMApplication
 
-object ModelApplication : ITMApplication(StarterApplication.getContext(), BuildConfig.DEBUG, BuildConfig.DEBUG) {
-    init {
-        finishInit()
-    }
-
+open class SampleITMApplication(context: Context, attachWebViewLogger: Boolean, forceExtractBackendAssets: Boolean) : ITMApplication(context, attachWebViewLogger, forceExtractBackendAssets) {
     override fun openUri(uri: Uri) {
         MainActivity.openUri(uri)
     }
@@ -24,19 +21,20 @@ object ModelApplication : ITMApplication(StarterApplication.getContext(), BuildC
             coMessenger.addMessageListener("didFinishLaunching") {
                 coMessenger.frontendLaunchSucceeded()
             }
+
             coMessenger.addQueryListener("getBimDocuments") {
-                val result = Json.array()
-                appContext.getExternalFilesDir("BimCache")?.let { cacheDir ->
-                    cacheDir.listFiles { _, filename ->
-                        filename.lowercase().endsWith(".bim")
-                    }?.let { bimFiles ->
-                        for (bimFile in bimFiles) {
-                            result.add(bimFile.path)
-                        }
-                    }
-                }
-                result
+                Json.array(*FileHelper.getExternalFiles(this.appContext,"BimCache", ".bim").toTypedArray())
             }
+        }
+    }
+
+    open fun onCreateActivity(activity: MainActivity) {
+        DocumentPicker.registerForActivityResult(activity)
+    }
+
+    open fun onRegisterNativeUI() {
+        nativeUI?.let {
+            it.components.add(DocumentPicker(it))
         }
     }
 }

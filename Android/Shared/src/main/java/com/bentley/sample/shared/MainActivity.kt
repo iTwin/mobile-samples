@@ -5,28 +5,24 @@
 package com.bentley.sample.shared
 
 import android.content.Intent
-import android.content.res.Configuration
 import android.graphics.Color
 import android.net.Uri
 import android.os.Build
-import androidx.appcompat.app.AppCompatActivity
-import androidx.lifecycle.lifecycleScope
 import android.os.Bundle
-import android.view.*
+import android.view.ViewGroup
+import android.view.Window
+import android.view.WindowManager
 import android.webkit.WebView
 import androidx.appcompat.app.AlertDialog
-import androidx.core.view.ViewCompat
-import androidx.core.view.WindowInsetsCompat
-import androidx.core.view.WindowInsetsControllerCompat
-import com.github.itwin.mobilesdk.ITMNativeUI
+import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.WindowCompat
+import androidx.core.view.WindowInsetsCompat.Type.systemBars
+import androidx.core.view.WindowInsetsControllerCompat.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
 import kotlinx.coroutines.MainScope
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlin.system.exitProcess
 
 class MainActivity : AppCompatActivity() {
-//    private var nativeUI: ITMNativeUI? = null
-
     companion object {
         var current: MainActivity? = null
             private set
@@ -36,69 +32,33 @@ class MainActivity : AppCompatActivity() {
             current?.startActivity(browserIntent)
         }
 
-        lateinit var sampleMobileApplication: SampleMobileApplication
+        lateinit var sampleITMApplication: SampleITMApplication
     }
 
     private val modelWebViewContainer: ViewGroup
         get() = findViewById(R.id.model_web_view_container)
 
-    @Suppress("DEPRECATION")
-    private fun autoHideStatusBarOld() {
-        // Runs on Android versions less than R
-        window.decorView.setOnSystemUiVisibilityChangeListener { visibility ->
-            if (visibility and View.SYSTEM_UI_FLAG_FULLSCREEN == 0) {
-                lifecycleScope.launch {
-                    delay(2500)
-                    setFullScreenFlags()
-                }
-            }
-        }
-    }
-
-    private fun autoHideStatusBarNew() {
-        // Runs on Android versions R and later
-        val windowInsetsController =
-            ViewCompat.getWindowInsetsController(window.decorView) ?: return
-        // Configure the behavior of the hidden system bars
-        windowInsetsController.systemBarsBehavior =
-            WindowInsetsControllerCompat.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
-        // Hide both the status bar and the navigation bar
-        windowInsetsController.hide(WindowInsetsCompat.Type.systemBars())
-    }
-
     override fun onCreate(savedInstanceState: Bundle?) {
-        sampleMobileApplication.onCreateActivity(this)
-//        DocumentPicker.registerForActivityResult(this)
-//        ImagePicker.registerForActivityResult(this)
+        sampleITMApplication.onCreateActivity(this)
         requestWindowFeature(Window.FEATURE_NO_TITLE)
         super.onCreate(savedInstanceState)
         setupWebView()
         setupFullScreen()
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-            autoHideStatusBarNew()
-        } else {
-            autoHideStatusBarOld()
-        }
-
+        hideSystemBars()
         setContentView(R.layout.activity_main)
-        sampleMobileApplication.initializeFrontend(this, R.id.model_host_fragment)
+        sampleITMApplication.initializeFrontend(this, R.id.model_host_fragment)
         MainScope().launch {
-            sampleMobileApplication.waitForFrontendInitialize()
-            sampleMobileApplication.attachWebView(modelWebViewContainer)
+            sampleITMApplication.waitForFrontendInitialize()
+            sampleITMApplication.attachWebView(modelWebViewContainer)
             current = this@MainActivity
-            sampleMobileApplication.onRegisterNativeUI()
-//            nativeUI = sampleMobileApplication.nativeUI
-//            nativeUI?.components?.add(DocumentPicker(nativeUI!!))
-//            nativeUI?.components?.add(ImagePicker(nativeUI!!))
+            sampleITMApplication.onRegisterNativeUI()
         }
     }
 
     override fun onDestroy() {
         current = null
-//        nativeUI = null
         modelWebViewContainer.removeAllViews()
-        sampleMobileApplication.onActivityDestroy(this)
+        sampleITMApplication.onActivityDestroy(this)
         super.onDestroy()
     }
 
@@ -122,42 +82,25 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun setupFullScreen() {
-        // TODO: Hide again after suitable delay after it has been shown.
-        // Truly full screen
+        // Truly full screen (including camera cutouts)
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
             window.attributes.layoutInDisplayCutoutMode = WindowManager.LayoutParams.LAYOUT_IN_DISPLAY_CUTOUT_MODE_SHORT_EDGES
         }
 
-        setFullScreenFlags()
+        WindowCompat.setDecorFitsSystemWindows(window, false)
         window.statusBarColor = Color.TRANSPARENT
     }
 
-    @Suppress("DEPRECATION")
-    private fun setFullScreenFlagsOld() {
-        // Runs on Android versions less than R
-        window.decorView.systemUiVisibility = (View.SYSTEM_UI_FLAG_FULLSCREEN
-                or View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
-                or View.SYSTEM_UI_FLAG_IMMERSIVE
-                or View.SYSTEM_UI_FLAG_HIDE_NAVIGATION)
-
-    }
-
-    private fun setFullScreenFlags() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-            window.setDecorFitsSystemWindows(false)
-        } else {
-            setFullScreenFlagsOld()
-        }
+    private fun hideSystemBars() {
+        val windowInsetsController = WindowCompat.getInsetsController(window, window.decorView)
+        // Configure the behavior of the hidden system bars
+        windowInsetsController.systemBarsBehavior = BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
+        // Hide both the status bar and the navigation bar
+        windowInsetsController.hide(systemBars())
     }
 
     override fun onResume() {
         setupFullScreen()
-//        Messenger.backend.setContextProvider(this)
         super.onResume()
-    }
-
-    override fun onConfigurationChanged(newConfig: Configuration) {
-        super.onConfigurationChanged(newConfig)
-//        sampleMobileApplication.applyPreferredColorScheme() // update dark mode
     }
 }

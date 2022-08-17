@@ -13,7 +13,7 @@ class CameraApplication: Application() {
         super.onCreate()
         appContext = applicationContext
         application = this
-        MainActivity.sampleMobileApplication = CameraMobileApplication
+        MainActivity.sampleITMApplication = CameraITMApplication
     }
 
     companion object {

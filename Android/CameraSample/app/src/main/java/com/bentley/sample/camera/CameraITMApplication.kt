@@ -8,9 +8,9 @@ import android.webkit.WebResourceRequest
 import android.webkit.WebResourceResponse
 import android.webkit.WebView
 import com.bentley.sample.shared.MainActivity
-import com.bentley.sample.shared.SampleMobileApplication
+import com.bentley.sample.shared.SampleITMApplication
 
-object CameraMobileApplication : SampleMobileApplication(CameraApplication.getContext()) {
+object CameraITMApplication : SampleITMApplication(CameraApplication.getContext(), BuildConfig.DEBUG, BuildConfig.DEBUG) {
     init {
         finishInit()
     }

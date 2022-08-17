@@ -21,7 +21,7 @@ object ImageCache {
     private const val urlScheme = "com.bentley.itms-image-cache"
 
     private val baseDir: String by lazy {
-        CameraMobileApplication.appContext.getExternalFilesDir("images").toString()
+        CameraITMApplication.appContext.getExternalFilesDir("images").toString()
     }
 
     fun getDestinationDir(input: JsonValue?): String {
@@ -51,7 +51,7 @@ object ImageCache {
 
     fun handleGetImages(params: JsonValue?): JsonValue? {
         return getIModelId(params)?.let { iModelId ->
-            val files = FileHelper.getExternalFiles(CameraMobileApplication.appContext,"images/$iModelId")
+            val files = FileHelper.getExternalFiles(CameraITMApplication.appContext,"images/$iModelId")
             Json.array(*files.map { file ->
                 getCacheUri(file).toString()
             }.toTypedArray())
@@ -88,7 +88,7 @@ object ImageCache {
     fun handleShareImages(params: JsonValue?): JsonValue? {
         val urls = getObjectValue(params, "urls")?.asArray()?.map {
             val file = getFilePath(Uri.parse(it.asString()))
-            FileProvider.getUriForFile(CameraMobileApplication.appContext, "${BuildConfig.APPLICATION_ID}.provider", file)
+            FileProvider.getUriForFile(CameraITMApplication.appContext, "${BuildConfig.APPLICATION_ID}.provider", file)
         }
 
         if (urls != null && urls.isNotEmpty()) {
