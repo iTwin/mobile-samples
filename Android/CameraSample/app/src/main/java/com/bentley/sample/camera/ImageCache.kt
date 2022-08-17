@@ -12,6 +12,7 @@ import com.bentley.sample.shared.FileHelper
 import com.bentley.sample.shared.MainActivity
 import com.eclipsesource.json.Json
 import com.eclipsesource.json.JsonValue
+import com.github.itwin.mobilesdk.ITMLogger
 import java.io.File
 import java.io.FileInputStream
 import java.time.LocalDateTime
@@ -74,7 +75,9 @@ object ImageCache {
         try {
             getFilePath(Uri.parse(fileName)).takeIf { it.exists() }?.delete()
         } catch (e: Exception) {
-            println(e.message)
+            e.message?.let {
+                CameraITMApplication.logger.log(ITMLogger.Severity.Error, it)
+            }
         }
     }
 
