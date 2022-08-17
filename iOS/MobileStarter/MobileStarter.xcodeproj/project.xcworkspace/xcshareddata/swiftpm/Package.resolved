@@ -33,8 +33,8 @@
         "repositoryURL": "https://github.com/iTwin/mobile-native-ios",
         "state": {
           "branch": null,
-          "revision": "f87442557b82120a03a047f93401ebfd312e7839",
-          "version": "3.2.12"
+          "revision": "5b264b1f6df1955e05f4da2b9a4f9247562c859c",
+          "version": "3.2.14"
         }
       },
       {
@@ -42,8 +42,8 @@
         "repositoryURL": "https://github.com/iTwin/mobile-sdk-ios.git",
         "state": {
           "branch": null,
-          "revision": "040355dae575c46239c4b5b07d3efbe1001af4d9",
-          "version": "0.10.30"
+          "revision": "aa4ce0928a2b0f0567adb1f8de13390790e8b56e",
+          "version": "0.10.31"
         }
       },
       {
