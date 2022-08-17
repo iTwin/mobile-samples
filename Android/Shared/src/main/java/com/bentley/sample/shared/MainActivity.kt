@@ -22,6 +22,9 @@ import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch
 import kotlin.system.exitProcess
 
+/**
+ * The main activity for the application.
+ */
 class MainActivity : AppCompatActivity() {
     companion object {
         var current: MainActivity? = null

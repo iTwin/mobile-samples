@@ -12,9 +12,9 @@ import androidx.activity.result.contract.ActivityResultContract
 import com.eclipsesource.json.JsonValue
 
 /**
- * An activity contract that takes a JsonValue and returns a Uri.
- * @property destDir - The optional destination external files directory to copy the Uri to.
- * Must be non-null and [shouldCopyUri] must return true for the copying to occur.
+ * An [ActivityResultContract] that takes a JsonValue and returns a Uri.
+ * @property destDir The optional external files directory to copy the Uri to.
+ *                   Must be non-null and [shouldCopyUri] must return true for the copying to occur.
  */
 open class PickUriContract(var destDir: String? = null) : ActivityResultContract<JsonValue?, Uri?>() {
     protected lateinit var context: Context
@@ -22,7 +22,6 @@ open class PickUriContract(var destDir: String? = null) : ActivityResultContract
     /**
      * Gets an empty Intent by default. Sub-classes can override this function to add specifics
      * for the intent they are using.
-     *
      * @param context The context.
      * @param input The optional JsonValue, usually sent from typescript.
      * @return The intent to be used for the activity.
@@ -41,9 +40,8 @@ open class PickUriContract(var destDir: String? = null) : ActivityResultContract
     }
 
     /**
-     * Gets the display name (base name without extension) for the input Uri.
+     * Gets the display name (base name with extension) for the input Uri.
      * By default the context's content resolver is used to get the display name.
-     *
      * @param uri The Uri to get the display name for.
      * @return The display name.
      */
@@ -54,9 +52,8 @@ open class PickUriContract(var destDir: String? = null) : ActivityResultContract
     /**
      * If the resultCode equals RESULT_OK, the chosen Uri is either returned or copied. When
      * copied, a content Uri is returned.
-     *
-     * @param resultCode
-     * @param intent
+     * @param resultCode The result code.
+     * @param intent The intent.
      */
     override fun parseResult(resultCode: Int, intent: Intent?): Uri? {
         val uri = intent?.takeIf { resultCode == Activity.RESULT_OK }?.data

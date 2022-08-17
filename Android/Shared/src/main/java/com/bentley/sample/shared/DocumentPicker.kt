@@ -21,6 +21,9 @@ import kotlin.coroutines.Continuation
 import kotlin.coroutines.resume
 import kotlin.coroutines.suspendCoroutine
 
+/**
+ * Presents a UI for selecting bim documents when the chooseDocument message is sent.
+ */
 class DocumentPicker(nativeUI: ITMNativeUI): ITMNativeUIComponent(nativeUI) {
     /**
      * Lets the user pick .bim documents and copies them to the BimCache external files directory.
@@ -62,10 +65,10 @@ class DocumentPicker(nativeUI: ITMNativeUI): ITMNativeUIComponent(nativeUI) {
         private suspend fun showErrorAlert(context: ContextWrapper?): Boolean {
             return suspendCoroutine { continuation ->
                 with(AlertDialog.Builder(context)) {
-                    setTitle("Error")
-                    setMessage("Only .bim files can be opened.")
+                    setTitle(R.string.alert_title_error)
+                    setMessage(R.string.alert_message_only_bim_files)
                     setCancelable(false)
-                    setPositiveButton("OK") { _, _ ->
+                    setPositiveButton(R.string.ok) { _, _ ->
                         continuation.resume(true)
                     }
                     show()
@@ -73,6 +76,9 @@ class DocumentPicker(nativeUI: ITMNativeUI): ITMNativeUIComponent(nativeUI) {
             }
         }
 
+        /**
+         * Registers a request to start an activity for result using the [PickDocumentContract].
+         */
         fun registerForActivityResult(activity: AppCompatActivity) {
             startForResult = activity.registerForActivityResult(PickDocumentContract()) { uri ->
                 if (uri != null && !PickDocumentContract.isAcceptableBimUri(uri)) {
@@ -89,6 +95,9 @@ class DocumentPicker(nativeUI: ITMNativeUI): ITMNativeUIComponent(nativeUI) {
         }
     }
 
+    /**
+     * Starts the registered activity result request.
+     */
     private suspend fun handleQuery(unused: JsonValue?): JsonValue? {
         return suspendCoroutine { continuation ->
             activeContinuation = continuation
