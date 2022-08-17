@@ -26,7 +26,7 @@ object ImageCache {
     }
 
     fun getDestinationDir(input: JsonValue?): String {
-        val iModelId = input?.asObject()?.get("iModelId")?.asString() ?: "unknownModelId"
+        val iModelId = getIModelId(input) ?: "unknownModelId"
         return File("images", iModelId).toString()
     }
 
