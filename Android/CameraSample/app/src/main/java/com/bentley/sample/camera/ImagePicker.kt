@@ -90,7 +90,7 @@ class ImagePicker(nativeUI: ITMNativeUI): ITMNativeUIComponent(nativeUI) {
     }
 
     init {
-        listener = coMessenger.addQueryListener("pickImage", ::handleQuery)
+        handler = coMessenger.registerQueryHandler("pickImage", ::handleQuery)
     }
 
     companion object {

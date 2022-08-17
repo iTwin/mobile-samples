@@ -5,6 +5,7 @@
 package com.bentley.sample.shared
 
 import android.content.Intent
+import android.content.res.Configuration
 import android.graphics.Color
 import android.net.Uri
 import android.os.Build
@@ -105,5 +106,10 @@ class MainActivity : AppCompatActivity() {
     override fun onResume() {
         setupFullScreen()
         super.onResume()
+    }
+
+    override fun onConfigurationChanged(newConfig: Configuration) {
+        super.onConfigurationChanged(newConfig)
+        sampleITMApplication.applyPreferredColorScheme() // update dark mode
     }
 }

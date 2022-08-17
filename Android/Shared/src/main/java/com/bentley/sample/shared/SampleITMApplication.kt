@@ -27,12 +27,12 @@ open class SampleITMApplication(context: Context, attachWebViewLogger: Boolean, 
     override fun setupWebView() {
         super.setupWebView()
         coMessenger?.let { coMessenger ->
-            coMessenger.addMessageListener("loading") {}
-            coMessenger.addMessageListener("didFinishLaunching") {
+            coMessenger.registerMessageHandler("loading") {}
+            coMessenger.registerMessageHandler("didFinishLaunching") {
                 coMessenger.frontendLaunchSucceeded()
             }
 
-            coMessenger.addQueryListener("getBimDocuments") {
+            coMessenger.registerQueryHandler("getBimDocuments") {
                 Json.array(*FileHelper.getExternalFiles(this.appContext,"BimCache", ".bim").toTypedArray())
             }
         }

@@ -55,7 +55,7 @@ class DocumentPicker(nativeUI: ITMNativeUI): ITMNativeUIComponent(nativeUI) {
     }
 
     init {
-        listener = coMessenger.addQueryListener("chooseDocument", ::handleQuery)
+        handler = coMessenger.registerQueryHandler("chooseDocument", ::handleQuery)
     }
 
     companion object {

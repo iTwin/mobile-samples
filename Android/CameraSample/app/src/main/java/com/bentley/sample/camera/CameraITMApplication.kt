@@ -18,10 +18,10 @@ object CameraITMApplication : SampleITMApplication(CameraApplication.getContext(
     override fun setupWebView() {
         super.setupWebView()
         coMessenger?.let { coMessenger ->
-            coMessenger.addQueryListener("getImages", ImageCache::handleGetImages)
-            coMessenger.addQueryListener("deleteImages", ImageCache::handleDeleteImages)
-            coMessenger.addQueryListener("deleteAllImages", ImageCache::handleDeleteAllImages)
-            coMessenger.addQueryListener("shareImages", ImageCache::handleShareImages)
+            coMessenger.registerQueryHandler("getImages", ImageCache::handleGetImages)
+            coMessenger.registerQueryHandler("deleteImages", ImageCache::handleDeleteImages)
+            coMessenger.registerQueryHandler("deleteAllImages", ImageCache::handleDeleteAllImages)
+            coMessenger.registerQueryHandler("shareImages", ImageCache::handleShareImages)
         }
     }
 
