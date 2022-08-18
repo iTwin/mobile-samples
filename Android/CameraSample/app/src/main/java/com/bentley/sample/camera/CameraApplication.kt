@@ -8,7 +8,13 @@ import android.app.Application
 import android.content.Context
 import com.bentley.sample.shared.MainActivity
 
+/**
+ * [Application] sub-class for this sample.
+ */
 class CameraApplication: Application() {
+    /**
+     * Sets [MainActivity.sampleITMApplication] to [CameraITMApplication] so that our camera-specific message handlers are setup.
+     */
     override fun onCreate() {
         super.onCreate()
         appContext = applicationContext
