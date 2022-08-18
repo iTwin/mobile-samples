@@ -18,38 +18,73 @@ import java.io.FileInputStream
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 
+/**
+ * Functions specific to caching images by iModelId.
+ */
 object ImageCache {
     private const val urlScheme = "com.bentley.itms-image-cache"
 
+    /**
+     * The base directory for cached images.
+     */
     private val baseDir: String by lazy {
         CameraITMApplication.appContext.getExternalFilesDir("images").toString()
     }
 
+    /**
+     * Gets the destination directory for the input parameters.
+     * @param input The input parameters, expects an object with iModelId string member.
+     * @return The file path of the destination directory.
+     */
     fun getDestinationDir(input: JsonValue?): String {
         val iModelId = getIModelId(input) ?: "unknownModelId"
         return File("images", iModelId).toString()
     }
 
+    /**
+     * Gets a unique file name root based on the current date and time.
+     * @return The generated file name.
+     */
     fun getDestinationFileName(): String {
         return LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH-mm-ss.SSS"))
     }
 
+    /**
+     * Gets the file path for a cache Uri.
+     * @param cacheUri The cache Uri.
+     * @return The full path to the image file.
+     */
     private fun getFilePath(cacheUri: Uri): File {
         val uriString = cacheUri.toString().replace("$urlScheme://", "")
         return File(baseDir, uriString)
     }
 
+    /**
+     * Gets a cache Uri for a file path.
+     * @param filePath The file path.
+     * @return The cache Uri.
+     */
     fun getCacheUri(filePath: String): Uri {
         // baseDir doesn't end in a slash, so only replace it with a single slash instead of urlScheme://
         return Uri.parse(filePath.replace(baseDir, "$urlScheme:/"))
     }
 
-    fun shouldInterceptRequest(url: Uri): WebResourceResponse? {
-        return url.takeIf { url.scheme == urlScheme }?.let {
+    /**
+     * Intercepts image cache uri's.
+     * @param uri The uri to possibly intercept.
+     * @return The image contents if the uri is an image cache uri, null otherwise.
+     */
+    fun shouldInterceptRequest(uri: Uri): WebResourceResponse? {
+        return uri.takeIf { uri.scheme == urlScheme }?.let {
             WebResourceResponse("image/jpeg", "UTF-8", FileInputStream(getFilePath(it)))
         }
     }
 
+    /**
+     * Gets all the image files cached for a given iModelId.
+     * @param params The input parameters, expects an object with an iModelId member.
+     * @return A Json array of cached images uri's, may be empty.
+     */
     fun handleGetImages(params: JsonValue?): JsonValue? {
         val files = FileHelper.getExternalFiles(CameraITMApplication.appContext, getDestinationDir(params))
         return Json.array(*files.map { file ->
@@ -57,6 +92,11 @@ object ImageCache {
         }.toTypedArray())
     }
 
+    /**
+     * Deletes cached images for a given iModelId.
+     * @param params The input parameters, expects an object with a url member.
+     * @return [Json.NULL] always.
+     */
     fun handleDeleteImages(params: JsonValue?): JsonValue? {
         getObjectValue(params, "urls")?.let { urls ->
             when {
@@ -69,6 +109,10 @@ object ImageCache {
         return Json.NULL
     }
 
+    /**
+     * Attempts to delete a cached file, catching an exceptions.
+     * @param fileName An image cache Uri as a string.
+     */
     private fun tryDeleteFile(fileName: String) {
         try {
             getFilePath(Uri.parse(fileName)).takeIf { it.exists() }?.delete()
@@ -79,6 +123,11 @@ object ImageCache {
         }
     }
 
+    /**
+     * Deletes all cached images for a given iModelId.
+     * @param params The input parameters, expects an object with an iModelId member.
+     * @return [Json.NULL] always.
+     */
     fun handleDeleteAllImages(params: JsonValue?): JsonValue? {
         getIModelId(params)?.let { iModelId ->
             File(baseDir, iModelId).deleteRecursively()
@@ -86,6 +135,11 @@ object ImageCache {
         return Json.NULL
     }
 
+    /**
+     * Shares one or more cached images using the standard Android share sheet.
+     * @param params The input parameters, expects an object with a url member.
+     * @return [Json.NULL] always.
+     */
     fun handleShareImages(params: JsonValue?): JsonValue? {
         val urls = getObjectValue(params, "urls")?.asArray()?.map {
             val file = getFilePath(Uri.parse(it.asString()))
@@ -105,10 +159,21 @@ object ImageCache {
         return Json.NULL
     }
 
-    private fun getObjectValue(params: JsonValue?, name: String): JsonValue? {
+    /**
+     * Gets the object value for the input parameters.
+     * @param params Input parameters.
+     * @param name Name of object to get.
+     * @return The object value if [params] is a Json object, could be null.
+     */
+    fun getObjectValue(params: JsonValue?, name: String): JsonValue? {
         return params?.takeIf { it.isObject }?.asObject()?.get(name)
     }
 
+    /**
+     * Gets the iModelId value.
+     * @param params The input parameters, expects it to be a Json object with an iModelId string property.
+     * @return The iModelId or null.
+     */
     private fun getIModelId(params: JsonValue?): String? {
         return getObjectValue(params, "iModelId")?.takeIf { it.isString }?.asString()
     }

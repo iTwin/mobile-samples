@@ -11,12 +11,14 @@ import android.net.Uri
 import androidx.activity.result.contract.ActivityResultContract
 import com.eclipsesource.json.JsonValue
 
+typealias PickUriContractType = ActivityResultContract<JsonValue?, Uri?>
+
 /**
  * An [ActivityResultContract] that takes a JsonValue and returns a Uri.
  * @property destDir The optional external files directory to copy the Uri to.
  *                   Must be non-null and [shouldCopyUri] must return true for the copying to occur.
  */
-open class PickUriContract(var destDir: String? = null) : ActivityResultContract<JsonValue?, Uri?>() {
+open class PickUriContract(var destDir: String? = null) : PickUriContractType() {
     protected lateinit var context: Context
 
     /**
