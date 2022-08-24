@@ -32,7 +32,7 @@
             android:name="com.bentley.sample.shared.MainActivity"
             android:exported="true"
             android:label="@string/app_name"
-            android:theme="@style/Theme.ThirdPartyAuth">
+            android:theme="@style/Theme.AppCompat.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
             </intent-filter>
