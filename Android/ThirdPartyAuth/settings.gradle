@@ -31,4 +31,3 @@ rootProject.name = "Third-Party Auth"
 include ':app'
 include ':itmsamplesshared'
 project(':itmsamplesshared').projectDir = new File('../Shared')
-include ':itmsamplesshared'

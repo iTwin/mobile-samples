@@ -16,23 +16,23 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import com.bentley.sample.thirdpartyauth.ui.theme.ThirdPartyAuthTheme
 
-class MainActivity : ComponentActivity() {
+class LoginActivity : ComponentActivity() {
 
     lateinit var resourceHelper: ResourceHelper
 
-    lateinit var authViewModel: AuthViewModel
+    lateinit var loginViewModel: LoginViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         resourceHelper = ResourceHelper(application)
-        authViewModel = AuthViewModel(resourceHelper)
+        loginViewModel = LoginViewModel(resourceHelper)
 
         setContent {
             ThirdPartyAuthTheme {
                 // A surface container using the 'background' color from the theme
                 Surface(modifier = Modifier.fillMaxSize(), color = MaterialTheme.colors.background) {
-                    Main(authViewModel)
+                    LoginView(loginViewModel)
                 }
             }
         }
@@ -41,7 +41,7 @@ class MainActivity : ComponentActivity() {
 }
 
 @Composable
-fun Main(vm: AuthViewModel) {
+fun LoginView(vm: LoginViewModel) {
 
     val displayText by vm.displayText.observeAsState("")
     val thirdPartyToken by vm.auth0Token.observeAsState()
@@ -52,9 +52,6 @@ fun Main(vm: AuthViewModel) {
 
         Button(onClick = { vm.loginToAuth0(context) }, enabled = thirdPartyToken == null) {
             Text ("Login")
-        }
-        Button(onClick = { vm.fetchBentleyToken() }, enabled = thirdPartyToken != null && tokenServerToken == null) {
-            Text ("Get Bentley Token")
         }
         Text(displayText)
     }
@@ -70,11 +67,11 @@ fun DefaultPreview() {
         }
     }
 
-    val previewVm = AuthViewModel(previewResourceHelper())
+    val previewVm = LoginViewModel(previewResourceHelper())
 
     ThirdPartyAuthTheme {
         Surface(modifier = Modifier.fillMaxSize(), color = MaterialTheme.colors.background) {
-            Main(previewVm)
+            LoginView(previewVm)
         }
     }
 }
