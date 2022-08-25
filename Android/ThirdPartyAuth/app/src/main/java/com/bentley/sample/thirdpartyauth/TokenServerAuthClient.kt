@@ -17,7 +17,7 @@ class TokenServerAuthClient(tokenServerUrl: String, auth0Token: String) : Author
 
 	var bentleyToken: String? = null
 
-	suspend fun fetchBentleyToken(): String {
+	private suspend fun fetchBentleyToken(): String {
 		val service = Retrofit.Builder()
 			.baseUrl(tokenServerUrl)
 			.build()
@@ -33,7 +33,7 @@ class TokenServerAuthClient(tokenServerUrl: String, auth0Token: String) : Author
 			CoroutineScope(Dispatchers.IO).launch {
 				try {
 					bentleyToken = fetchBentleyToken()
-					val jwt2 = JWT(bentleyToken!!)
+					val jwt2 = JWT(bentleyToken!!.substring("Bearer ".length))
 					val exp = jwt2.getClaim("exp").asString()!!
 					notifyAccessTokenChanged(bentleyToken, exp)
 					tokenAction?.resolve(bentleyToken, exp)

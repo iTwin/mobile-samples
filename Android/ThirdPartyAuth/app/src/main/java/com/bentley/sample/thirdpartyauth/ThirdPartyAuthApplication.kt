@@ -14,21 +14,11 @@ class ThirdPartyAuthApplication: Application() {
 	 */
 	override fun onCreate() {
 		super.onCreate()
-		appContext = applicationContext
-		application = this
 		loginViewModel = LoginViewModel(ResourceHelper(this))
 	}
 
 	fun initITMApp(authClient: AuthorizationClient) {
-		MainActivity.sampleITMApplication = ThirdPartyAuthITMApplication(authClient)
+		MainActivity.sampleITMApplication = ThirdPartyAuthITMApplication(this, authClient)
 	}
 
-	companion object {
-		private lateinit var appContext: Context
-		private lateinit var application: Application
-
-		fun getContext() : Context {
-			return appContext
-		}
-	}
 }
