@@ -1,3 +1,4 @@
 <resources>
 	<string name="app_name">ThirdPartyAuth</string>
+	<string name="ITMSAMPLE_AUTH0_SCHEME">com.bentley.sample.thirdpartyauth</string>
 </resources>
