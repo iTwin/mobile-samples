@@ -11,22 +11,21 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.bentley.sample.thirdpartyauth.ui.theme.ThirdPartyAuthTheme
 
 class LoginActivity : ComponentActivity() {
-
-    lateinit var resourceHelper: ResourceHelper
 
     lateinit var loginViewModel: LoginViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
-        resourceHelper = ResourceHelper(application)
-        loginViewModel = LoginViewModel(resourceHelper)
+        loginViewModel = (application as ThirdPartyAuthApplication).loginViewModel
 
         setContent {
             ThirdPartyAuthTheme {
@@ -38,20 +37,26 @@ class LoginActivity : ComponentActivity() {
         }
     }
 
+    override fun onStart() {
+        super.onStart()
+        loginViewModel.displayText.value = ""
+    }
+
 }
 
 @Composable
 fun LoginView(vm: LoginViewModel) {
 
     val displayText by vm.displayText.observeAsState("")
-    val thirdPartyToken by vm.auth0Token.observeAsState()
-    val tokenServerToken by vm.bentleyToken.observeAsState()
 
-    Column {
+    Column(horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.Center) {
         val context = LocalContext.current
 
-        Button(onClick = { vm.loginToAuth0(context) }, enabled = thirdPartyToken == null) {
-            Text ("Login")
+        Button(
+            onClick = { vm.loginToAuth0(context) },
+            modifier = Modifier.size(150.dp, 65.dp)
+        ) {
+            Text ("Login", fontSize = 25.sp)
         }
         Text(displayText)
     }
@@ -61,13 +66,13 @@ fun LoginView(vm: LoginViewModel) {
 @Composable
 fun DefaultPreview() {
     val context = LocalContext.current
-    class previewResourceHelper: IResourceHelper {
+    class PreviewResourceHelper: IResourceHelper {
         override fun getString(id: Int): String {
             return context.getString(id)
         }
     }
 
-    val previewVm = LoginViewModel(previewResourceHelper())
+    val previewVm = LoginViewModel(PreviewResourceHelper())
 
     ThirdPartyAuthTheme {
         Surface(modifier = Modifier.fillMaxSize(), color = MaterialTheme.colors.background) {
