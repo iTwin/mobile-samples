@@ -14,9 +14,9 @@ class TokenServerAuthClient(val tokenServerUrl: String, var auth0Token: String) 
     
     private suspend fun fetchBentleyToken(): String {
         val service = Retrofit.Builder()
-                .baseUrl(tokenServerUrl)
-                .build()
-                .create(TokenService::class.java)
+            .baseUrl(tokenServerUrl)
+            .build()
+            .create(TokenService::class.java)
         
         val response = service.getToken("Bearer $auth0Token")
         return response.string()

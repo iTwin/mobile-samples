@@ -58,8 +58,8 @@ fun LoginView(vm: LoginViewModel) {
         val context = LocalContext.current
         
         Button(
-                onClick = { vm.loginToAuth0(context) },
-                modifier = Modifier.size(150.dp, 65.dp)
+            onClick = { vm.loginToAuth0(context) },
+            modifier = Modifier.size(150.dp, 65.dp)
         ) {
             Text(stringResource(R.string.login), fontSize = 25.sp)
         }
