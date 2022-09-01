@@ -5,7 +5,7 @@ import retrofit2.http.GET
 import retrofit2.http.Header
 
 interface TokenService {
-	@GET("/getToken")
-	suspend fun getToken(@Header("Authorization") authorization: String): ResponseBody
-
+    @GET("/getToken")
+    suspend fun getToken(@Header("Authorization") authorization: String): ResponseBody
+    
 }
