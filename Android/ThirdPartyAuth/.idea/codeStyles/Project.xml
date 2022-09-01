@@ -130,9 +130,6 @@
       <option name="EXTENDS_LIST_WRAP" value="0" />
       <option name="METHOD_CALL_CHAIN_WRAP" value="0" />
       <option name="ASSIGNMENT_WRAP" value="0" />
-      <indentOptions>
-        <option name="KEEP_INDENTS_ON_EMPTY_LINES" value="true" />
-      </indentOptions>
     </codeStyleSettings>
   </code_scheme>
 </component>

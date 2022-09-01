@@ -9,19 +9,19 @@ import kotlinx.coroutines.launch
 import retrofit2.Retrofit
 
 class TokenServerAuthClient(val tokenServerUrl: String, var auth0Token: String) : AuthorizationClient() {
-    
+
     var bentleyToken: String? = null
-    
+
     private suspend fun fetchBentleyToken(): String {
         val service = Retrofit.Builder()
             .baseUrl(tokenServerUrl)
             .build()
             .create(TokenService::class.java)
-        
+
         val response = service.getToken("Bearer $auth0Token")
         return response.string()
     }
-    
+
     override fun getAccessToken(tokenAction: AuthTokenCompletionAction?) {
         val jwt: JWT? = if (bentleyToken == null) null else JWT(bentleyToken!!)
         if (jwt == null || jwt.isExpired(30)) {

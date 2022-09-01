@@ -13,16 +13,16 @@ object ThirdPartyAuthITMApplication : SampleITMApplication(
             field = token
             createAuthorizationClient()
         }
-    
+
     init {
         finishInit()
     }
-    
+
     override fun createAuthorizationClient(): AuthorizationClient? {
         return if (auth0Token == null) null else TokenServerAuthClient(
             ThirdPartyAuthApplication.getContext().getString(R.string.ITMSAMPLE_TOKEN_SERVER_URL),
             auth0Token!!
         )
     }
-    
+
 }

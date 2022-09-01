@@ -5,10 +5,10 @@ import android.content.Context
 import com.bentley.sample.shared.MainActivity
 
 class ThirdPartyAuthApplication : Application() {
-    
+
     lateinit var loginViewModel: LoginViewModel
         private set
-    
+
     /**
      * Sets [MainActivity.sampleITMApplication] to [ThirdPartyAuthITMApplication] so that our auth handler is setup.
      */
@@ -20,10 +20,10 @@ class ThirdPartyAuthApplication : Application() {
             ThirdPartyAuthITMApplication.auth0Token = auth0Token
         }
     }
-    
+
     companion object {
         private lateinit var appContext: Context
-        
+
         fun getContext(): Context {
             return appContext
         }

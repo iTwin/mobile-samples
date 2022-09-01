@@ -25,13 +25,13 @@ import androidx.compose.ui.unit.sp
 import com.bentley.sample.thirdpartyauth.ui.theme.ThirdPartyAuthTheme
 
 class LoginActivity : ComponentActivity() {
-    
+
     lateinit var loginViewModel: LoginViewModel
-    
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         loginViewModel = (application as ThirdPartyAuthApplication).loginViewModel
-        
+
         setContent {
             ThirdPartyAuthTheme {
                 // A surface container using the 'background' color from the theme
@@ -41,22 +41,22 @@ class LoginActivity : ComponentActivity() {
             }
         }
     }
-    
+
     override fun onStart() {
         super.onStart()
         loginViewModel.displayText.value = ""
     }
-    
+
 }
 
 @Composable
 fun LoginView(vm: LoginViewModel) {
-    
+
     val displayText by vm.displayText.observeAsState("")
-    
+
     Column(horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.Center) {
         val context = LocalContext.current
-        
+
         Button(
             onClick = { vm.loginToAuth0(context) },
             modifier = Modifier.size(150.dp, 65.dp)
@@ -71,19 +71,19 @@ fun LoginView(vm: LoginViewModel) {
 @Composable
 fun DefaultPreview() {
     val context = LocalContext.current
-    
+
     class PreviewResourceHelper : IResourceHelper {
         override fun getString(id: Int): String {
             return context.getString(id)
         }
-        
+
         override fun getString(id: Int, vararg formatArgs: Any): String {
             return context.getString(id, formatArgs)
         }
     }
-    
+
     val previewVm = LoginViewModel(PreviewResourceHelper())
-    
+
     ThirdPartyAuthTheme {
         Surface(modifier = Modifier.fillMaxSize(), color = MaterialTheme.colors.background) {
             LoginView(previewVm)

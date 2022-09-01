@@ -17,15 +17,15 @@ class LoginViewModel(
 ) : ViewModel() {
     /** Used to lookup string resources */
     private val _resourceHelper = resourceHelper
-    
+
     /** Authorization client to login to Auth0 */
     private var _auth0Client: Auth0 = Auth0(
         resourceHelper.getString(R.string.ITMSAMPLE_AUTH0_CLIENT_ID), // from ITMSamples.properties
         resourceHelper.getString(R.string.ITMSAMPLE_AUTH0_DOMAIN) // from ITMSamples.properties
     )
-    
+
     var displayText: MutableLiveData<String> = MutableLiveData("")
-    
+
     fun loginToAuth0(context: Context) {
         displayText.value = _resourceHelper.getString(R.string.login_to_auth0)
         WebAuthProvider.login(_auth0Client)
@@ -38,7 +38,7 @@ class LoginViewModel(
                 override fun onFailure(error: AuthenticationException) {
                     displayText.value = _resourceHelper.getString(R.string.auth0_login_error, error.localizedMessage)
                 }
-                
+
                 // Called when authentication completed successfully
                 override fun onSuccess(result: Credentials) {
                     // Get the access token from the credentials object.

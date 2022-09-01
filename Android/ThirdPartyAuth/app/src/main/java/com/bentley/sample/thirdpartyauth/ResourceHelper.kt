@@ -11,7 +11,7 @@ interface IResourceHelper {
      * @param id the id of the string resource
      */
     fun getString(id: Int): String
-    
+
     fun getString(id: Int, vararg formatArgs: Any): String
 }
 
@@ -19,15 +19,15 @@ interface IResourceHelper {
  * An Android implementation of IResourceHelper that loads values using the Android Application Context
  */
 class ResourceHelper(context: Application) : IResourceHelper {
-    
+
     private val _context: Application = context
-    
+
     override fun getString(id: Int): String {
         return _context.getString(id)
     }
-    
+
     override fun getString(id: Int, vararg formatArgs: Any): String {
         return _context.getString(id, formatArgs)
     }
-    
+
 }
