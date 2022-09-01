@@ -11,6 +11,8 @@ interface IResourceHelper {
      * @param id the id of the string resource
      */
     fun getString(id: Int): String
+    
+    fun getString(id: Int, vararg formatArgs: Any): String
 }
 
 /**
@@ -22,6 +24,10 @@ class ResourceHelper(context: Application) : IResourceHelper {
     
     override fun getString(id: Int): String {
         return _context.getString(id)
+    }
+    
+    override fun getString(id: Int, vararg formatArgs: Any): String {
+        return _context.getString(id, formatArgs)
     }
     
 }

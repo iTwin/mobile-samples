@@ -39,7 +39,7 @@ If you want to run the sample, you will need to set up an auth0 account and conf
     ```
 1. Add `itmsample.token_server_url` to the ITMSamples.properties file so the sample app knows where to find the token server. The initital value `http://10.0.2.2:3001` should work from an emulator, but will need to be adjusted if running from a device.
 1. Follow the instructions in the [Token Server Readme](../../cross-platform/token-server/README.md).
-1. Open the ThirdPartyAuth folder (where this README.MD file resides) in Android Studio.
+1. Open the ThirdPartyAuth folder (where this README.md file resides) in Android Studio.
 1. Sync project with gradle files, build, and run.
 1. Hit Log in
 1. Select "Sign up" and create an account.

@@ -1,4 +1,8 @@
 <resources>
     <string name="app_name">ThirdPartyAuth</string>
     <string name="ITMSAMPLE_AUTH0_SCHEME">com.bentley.sample.thirdpartyauth</string>
+    <string name="login">Login</string>
+    <string name="login_to_auth0">Logging into Auth0...</string>
+    <string name="auth0_login_error">Something went wrong receiving token from auth0: %1$s</string>
+    <string name="auth0_login_success">Received token from auth0. Starting application...</string>
 </resources>

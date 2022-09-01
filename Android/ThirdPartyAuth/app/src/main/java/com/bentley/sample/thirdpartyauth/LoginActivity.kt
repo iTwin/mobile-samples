@@ -18,6 +18,7 @@ import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -60,7 +61,7 @@ fun LoginView(vm: LoginViewModel) {
                 onClick = { vm.loginToAuth0(context) },
                 modifier = Modifier.size(150.dp, 65.dp)
         ) {
-            Text("Login", fontSize = 25.sp)
+            Text(stringResource(R.string.login), fontSize = 25.sp)
         }
         Text(displayText)
     }
@@ -74,6 +75,10 @@ fun DefaultPreview() {
     class PreviewResourceHelper : IResourceHelper {
         override fun getString(id: Int): String {
             return context.getString(id)
+        }
+        
+        override fun getString(id: Int, vararg formatArgs: Any): String {
+            return context.getString(id, formatArgs)
         }
     }
     
