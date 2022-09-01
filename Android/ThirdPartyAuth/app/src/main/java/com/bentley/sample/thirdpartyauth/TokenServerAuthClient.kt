@@ -8,11 +8,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import retrofit2.Retrofit
 
-class TokenServerAuthClient(tokenServerUrl: String, auth0Token: String) : AuthorizationClient() {
-    
-    var auth0Token: String = auth0Token
-    
-    val tokenServerUrl: String = tokenServerUrl
+class TokenServerAuthClient(val tokenServerUrl: String, var auth0Token: String) : AuthorizationClient() {
     
     var bentleyToken: String? = null
     
@@ -22,13 +18,13 @@ class TokenServerAuthClient(tokenServerUrl: String, auth0Token: String) : Author
                 .build()
                 .create(TokenService::class.java)
         
-        val response = service.getToken("Bearer ${auth0Token}")
+        val response = service.getToken("Bearer $auth0Token")
         return response.string()
     }
     
     override fun getAccessToken(tokenAction: AuthTokenCompletionAction?) {
-        var jwt: JWT? = if (bentleyToken == null) null else JWT(bentleyToken!!)
-        if (jwt == null || jwt.isExpired(0)) {
+        val jwt: JWT? = if (bentleyToken == null) null else JWT(bentleyToken!!)
+        if (jwt == null || jwt.isExpired(30)) {
             CoroutineScope(Dispatchers.IO).launch {
                 try {
                     bentleyToken = fetchBentleyToken()

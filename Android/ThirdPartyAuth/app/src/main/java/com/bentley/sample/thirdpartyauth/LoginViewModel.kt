@@ -13,11 +13,10 @@ import com.bentley.sample.shared.MainActivity
 
 class LoginViewModel(
         resourceHelper: IResourceHelper,
-        onAuth0TokenUpdated: (auth0Token: String) -> Unit = {},
+        var onAuth0TokenUpdated: (auth0Token: String) -> Unit = {},
 ) : ViewModel() {
     /** Used to lookup string resources */
     private val _resourceHelper = resourceHelper
-    var onAuth0TokenUpdated = onAuth0TokenUpdated
     
     /** Authorization client to login to Auth0 */
     private var _auth0Client: Auth0 = Auth0(
@@ -36,14 +35,14 @@ class LoginViewModel(
                 // Launch the authentication passing the callback where the results will be received
                 .start(context, object : Callback<Credentials, AuthenticationException> {
                     // Called when there is an authentication failure
-                    override fun onFailure(exception: AuthenticationException) {
-                        displayText.value = "Something went wrong receiving token from auth0: ${exception.localizedMessage}"
+                    override fun onFailure(error: AuthenticationException) {
+                        displayText.value = "Something went wrong receiving token from auth0: ${error.localizedMessage}"
                     }
                     
                     // Called when authentication completed successfully
-                    override fun onSuccess(credentials: Credentials) {
+                    override fun onSuccess(result: Credentials) {
                         // Get the access token from the credentials object.
-                        val auth0Token = credentials.accessToken
+                        val auth0Token = result.accessToken
                         displayText.value = "Received token from auth0. Starting application..."
                         onAuth0TokenUpdated(auth0Token)
                         // start the main activity with the auth token
