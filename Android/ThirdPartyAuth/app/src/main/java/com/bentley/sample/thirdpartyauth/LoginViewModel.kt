@@ -36,7 +36,7 @@ class LoginViewModel(
             .start(context, object : Callback<Credentials, AuthenticationException> {
                 // Called when there is an authentication failure
                 override fun onFailure(error: AuthenticationException) {
-                    displayText.value = _resourceHelper.getString(R.string.auth0_login_error, error.localizedMessage)
+                    displayText.value = _resourceHelper.getString(R.string.auth0_login_error, error.localizedMessage ?: "")
                 }
 
                 // Called when authentication completed successfully
