@@ -9,7 +9,7 @@ If you want to run the ThirdPartyAuth samples, you will need to set up an auth0 
 1. Return an iTwin service access token based on your authentication of the user.
 
 ## Setup
-1. Create an client on [auth0](https://auth0.com/).
+1. Create a client on [auth0](https://auth0.com/).
 1. From the auth0 dashboard, select the drop-down in the top left and then select "Create tenant".
 1. Create a tenant name that you will be using for the third party auth sample. The other settings should be good with their default values (auto Region and Environment Tag of Development).
 1. Hit Create.
