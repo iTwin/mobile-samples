@@ -31,4 +31,4 @@ If a custom port is defined for the token server, make sure to use that port in 
 
 ### Android
 
-Follow the instructions [here](../../Android/ThirdPartyAuth/README.MD) to configure and run the third party auth sample.
+Follow the instructions [here](../../Android/ThirdPartyAuth/README.md) to configure and run the third party auth sample.
