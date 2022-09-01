@@ -27,18 +27,8 @@ static def extractProperties(properties, prefix, contents) {
         }
     }
 }
-static def getBoolProperty(properties, propertyName) {
-    return properties.getProperty(propertyName) == 'YES'
-}
 
-task genITMAppConfig {
-    def destDir = Paths.get("${rootDir}/app/src/main/assets/ITMApplication")
-    if (!Files.exists(destDir))
-        Files.createDirectories(destDir)
-    def itmAppConfig = new File("${destDir.toString()}/ITMAppConfig.json")
-    if (!itmAppConfig.exists()) {
-        itmAppConfig.createNewFile()
-    }
+static def readITMAppConfig (project) {
     Properties properties = new Properties()
     try {
         properties.load(project.rootProject.file('../Shared/ITMSamples.properties').newDataInputStream())
@@ -76,6 +66,34 @@ task genITMAppConfig {
     }
     extractProperties(properties, "itmapplication", contents)
     extractProperties(properties, "itmsample", contents)
+    return contents
+}
+
+static def getBoolProperty(properties, propertyName) {
+    return properties.getProperty(propertyName) == 'YES'
+}
+
+def addITMAppConfigToResource(buildConfig) {
+    def properties = readITMAppConfig(project)
+    for(def prop in properties) {
+        println "$prop.key: $prop.value"
+        buildConfig.resValue("string", prop.key, prop.value)
+    }
+}
+
+ext {
+    addITMAppConfigToResource = this.&addITMAppConfigToResource
+}
+
+task genITMAppConfig {
+    def destDir = Paths.get("${project.rootDir}/app/src/main/assets/ITMApplication")
+    if (!Files.exists(destDir))
+        Files.createDirectories(destDir)
+    def itmAppConfig = new File("${destDir.toString()}/ITMAppConfig.json")
+    if (!itmAppConfig.exists()) {
+        itmAppConfig.createNewFile()
+    }
+    def contents = readITMAppConfig(project)
     itmAppConfig.write(JsonOutput.prettyPrint(JsonOutput.toJson(contents)))
 }
 
