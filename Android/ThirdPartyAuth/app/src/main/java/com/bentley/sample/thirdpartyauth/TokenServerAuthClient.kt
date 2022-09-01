@@ -8,9 +8,9 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import retrofit2.Retrofit
 
-class TokenServerAuthClient(val tokenServerUrl: String, var auth0Token: String) : AuthorizationClient() {
+class TokenServerAuthClient(private val tokenServerUrl: String, private var auth0Token: String) : AuthorizationClient() {
 
-    var bentleyToken: String? = null
+    private var bentleyToken: String? = null
 
     private suspend fun fetchBentleyToken(): String {
         val service = Retrofit.Builder()

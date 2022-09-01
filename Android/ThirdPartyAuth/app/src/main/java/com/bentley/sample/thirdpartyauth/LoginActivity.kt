@@ -26,7 +26,7 @@ import com.bentley.sample.thirdpartyauth.ui.theme.ThirdPartyAuthTheme
 
 class LoginActivity : ComponentActivity() {
 
-    lateinit var loginViewModel: LoginViewModel
+    private lateinit var loginViewModel: LoginViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
