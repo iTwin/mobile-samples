@@ -16,8 +16,8 @@ class ThirdPartyAuthApplication : Application() {
         super.onCreate()
         appContext = applicationContext
         MainActivity.sampleITMApplication = ThirdPartyAuthITMApplication
-        loginViewModel = LoginViewModel(ResourceHelper(this)) { auth0Token ->
-            ThirdPartyAuthITMApplication.auth0Token = auth0Token
+        loginViewModel = LoginViewModel(ResourceHelper(this)) { credentialsManager ->
+            ThirdPartyAuthITMApplication.auth0CredentialsManager = credentialsManager
         }
     }
 
