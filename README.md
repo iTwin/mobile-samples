@@ -8,11 +8,22 @@ This is pre-release software and provided as-is.
 
 ## About this Repository
 
-This repository contains sample iOS apps that make use of the iTwin Mobile SDK.
+This repository contains sample Android and iOS apps that make use of the iTwin Mobile SDK.
 
-There are two sample apps, MobileStarter and SwiftUIStarter. The former is a UIKit app, and the later is a SwiftUI app. Both contain a full-screen WKWebView to host the iTwin content, and make use of the same TypeScript code running inside that WKWebView.
+There are four iOS sample apps:
 
-Each sample app includes an Xcode project with a LocalSDK\_ prefix. These Xcode projects are the same as the main ones, with the exception that they refer to a local filesystem copy of mobile-sdk-ios, instead of referring to the mobile-sdk-ios Swift Package on GitHub.
+- **MobileStarter** is a UIKit app containing a full-screen WKWebView running Typescript code to host the iTwin content.
+- **SwiftUIStarter** is a SwiftUI app that similarly runs a WKWebView to host the iTwin content.
+- **CameraSample** demonstrates how to make calls to native iOS code to take or select a picture.
+- **ThirdPartyAuth** demonstrates how to use a third party for user authentication.
+
+Each iOS sample app includes an Xcode project with a LocalSDK\_ prefix. These Xcode projects are the same as the main ones, with the exception that they refer to a local filesystem copy of mobile-sdk-ios, instead of referring to the mobile-sdk-ios Swift Package on GitHub.
+
+There are three Android sample apps:
+
+- **iTwinStarter** is an app containing an Android webview running TypeScript code to host the iTwin content.
+- **CameraSample** demonstrates how to make calls to native Android code to take or select a picture.
+- **ThirdPartyAuth** demonstrates how to use a third party for user authentication.
 
 See [iOS/README.md](./iOS/README.md) for instructions on building the iOS samples.
 
