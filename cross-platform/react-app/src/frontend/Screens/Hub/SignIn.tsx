@@ -2,10 +2,10 @@
 * Copyright (c) Bentley Systems, Incorporated. All rights reserved.
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
-import React from "react";
-import { useIsMountedRef } from "@itwin/mobile-ui-react";
 import { IModelApp } from "@itwin/core-frontend";
 import { LoadingSpinner } from "@itwin/core-react";
+import { useIsMountedRef } from "@itwin/mobile-ui-react";
+import React from "react";
 import { Button, i18n, presentError } from "../../Exports";
 
 export interface SignInProps {
