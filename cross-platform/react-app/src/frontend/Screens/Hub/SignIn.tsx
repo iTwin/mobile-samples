@@ -16,11 +16,14 @@ export interface SignInProps {
 
 export function SignIn(props: SignInProps) {
   const { onBack, onError, onSignedIn } = props;
+  const [signedIn, setSignedIn] = React.useState(false);
   const cancelLabel = React.useMemo(() => i18n("HubScreen", "Cancel"), []);
   const connectingLabel = React.useMemo(() => i18n("HubScreen", "Connecting"), []);
   const isMountedRef = useIsMountedRef();
 
   React.useEffect(() => {
+    if (signedIn)
+      return;
     const signIn = async () => {
       try {
         await IModelApp.authorizationClient?.getAccessToken();
@@ -32,8 +35,9 @@ export function SignIn(props: SignInProps) {
         onError();
       }
     };
+    setSignedIn(true);
     signIn(); // eslint-disable-line @typescript-eslint/no-floating-promises
-  }, [isMountedRef, onError, onSignedIn]);
+  }, [isMountedRef, onError, onSignedIn, signedIn]);
 
   return <div className="centered-list">
     {connectingLabel}
