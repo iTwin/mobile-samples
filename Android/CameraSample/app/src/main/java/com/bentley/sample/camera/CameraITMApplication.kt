@@ -23,12 +23,10 @@ object CameraITMApplication : SampleITMApplication(CameraApplication.getContext(
      */
     override fun setupWebView() {
         super.setupWebView()
-        coMessenger?.let { coMessenger ->
-            coMessenger.registerQueryHandler("getImages", ImageCache::handleGetImages)
-            coMessenger.registerQueryHandler("deleteImages", ImageCache::handleDeleteImages)
-            coMessenger.registerQueryHandler("deleteAllImages", ImageCache::handleDeleteAllImages)
-            coMessenger.registerQueryHandler("shareImages", ImageCache::handleShareImages)
-        }
+        coMessenger.registerQueryHandler("getImages", ImageCache::handleGetImages)
+        coMessenger.registerQueryHandler("deleteImages", ImageCache::handleDeleteImages)
+        coMessenger.registerQueryHandler("deleteAllImages", ImageCache::handleDeleteAllImages)
+        coMessenger.registerQueryHandler("shareImages", ImageCache::handleShareImages)
     }
 
     /**
