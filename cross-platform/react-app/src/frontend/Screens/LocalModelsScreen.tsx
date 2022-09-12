@@ -80,7 +80,7 @@ export function LocalModelsScreen(props: LocalModelsScreenProps) {
   });
 
   if (snapshotButtons.length) {
-    bimButtons.push(<div className="localmodels-divider">{deviceDocumentsLabel}</div>);
+    bimButtons.push(<div key="snapshots" className="localmodels-divider">{deviceDocumentsLabel}</div>);
     bimButtons.push(...snapshotButtons);
   }
 
@@ -98,7 +98,7 @@ export function LocalModelsScreen(props: LocalModelsScreenProps) {
 
   if (briefcaseButtons.length) {
     briefcaseButtons.sort((b1, b2) => b1.props.title.localeCompare(b2.props.title));
-    bimButtons.push(<div className="localmodels-divider">{hubDocumentsLabel}</div>);
+    bimButtons.push(<div key="briefcases" className="localmodels-divider">{hubDocumentsLabel}</div>);
     bimButtons.push(...briefcaseButtons);
   }
 
