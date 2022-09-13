@@ -150,77 +150,75 @@ export function ModelScreen(props: ModelScreenProps) {
     const handleFitView = () => {
       IModelApp.tools.run(FitViewTool.toolId, IModelApp.viewManager.getFirstOpenView(), true); // eslint-disable-line @typescript-eslint/no-floating-promises
     };
-    const actions: AlertAction[] =
-      [
-        {
-          name: "location",
-          title: showCurrentLocationLabel,
-          onSelected: handleShowLocation,
+    const actions: AlertAction[] = [
+      {
+        name: "location",
+        title: showCurrentLocationLabel,
+        onSelected: handleShowLocation,
+      },
+      {
+        name: "fitView",
+        title: fitViewLabel,
+        onSelected: handleFitView,
+      },
+      {
+        name: "defaultView",
+        title: defaultViewLabel,
+        onSelected: applyDefaultView,
+      },
+      {
+        name: "toggleCamera",
+        title: toggleCameraLabel,
+        onSelected: toggleCamera,
+      },
+      {
+        name: "alertDemo",
+        title: alertDemoLabel,
+        onSelected: async () => {
+          const result = await presentAlert({
+            title: alertDemoLabel,
+            message: "This message is only visible in iOS.",
+            showStatusBar: true,
+            actions: [
+              {
+                name: oneLabel,
+                title: oneLabel,
+              },
+              {
+                name: twoLabel,
+                title: twoLabel,
+              },
+              {
+                name: threeLabel,
+                title: threeLabel,
+              },
+              {
+                name: fourLabel,
+                title: fourLabel,
+              },
+              {
+                name: fiveLabel,
+                title: fiveLabel,
+              },
+              {
+                name: sixLabel,
+                title: sixLabel,
+              },
+            ],
+          });
+          // eslint-disable-next-line @typescript-eslint/no-floating-promises
+          presentAlert({
+            title: youChoseLabel,
+            message: result,
+            showStatusBar: true,
+            actions: [{
+              name: "ok",
+              title: okLabel,
+            }],
+          });
         },
-        {
-          name: "fitView",
-          title: fitViewLabel,
-          onSelected: handleFitView,
-        },
-        {
-          name: "defaultView",
-          title: defaultViewLabel,
-          onSelected: applyDefaultView,
-        },
-        {
-          name: "toggleCamera",
-          title: toggleCameraLabel,
-          onSelected: toggleCamera,
-        },
-        {
-          name: "alertDemo",
-          title: alertDemoLabel,
-          onSelected: async () => {
-            const result = await presentAlert({
-              title: alertDemoLabel,
-              message: "This message is only visible in iOS.",
-              showStatusBar: true,
-              actions: [
-                {
-                  name: oneLabel,
-                  title: oneLabel,
-                },
-                {
-                  name: twoLabel,
-                  title: twoLabel,
-                },
-                {
-                  name: threeLabel,
-                  title: threeLabel,
-                },
-                {
-                  name: fourLabel,
-                  title: fourLabel,
-                },
-                {
-                  name: fiveLabel,
-                  title: fiveLabel,
-                },
-                {
-                  name: sixLabel,
-                  title: sixLabel,
-                },
-              ],
-            });
-            // eslint-disable-next-line @typescript-eslint/no-floating-promises
-            presentAlert({
-              title: youChoseLabel,
-              message: result,
-              showStatusBar: true,
-              actions: [{
-                name: "ok",
-                title: okLabel,
-              }],
-            });
-          },
-        },
-      ];
-
+      },
+    ];
     if (IModelApp.viewManager.getFirstOpenView()?.view.iModel.selectionSet.isActive) {
       actions.push(
         {
