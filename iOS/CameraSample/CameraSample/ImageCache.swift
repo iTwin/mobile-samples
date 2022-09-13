@@ -3,7 +3,6 @@
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
 
-import PromiseKit
 import UIKit
 import ITwinMobile
 
@@ -11,10 +10,10 @@ import ITwinMobile
 class ImageCache {
     /// Get all the images for a given iModel
     /// - Parameter params: Requires an `iModelId` property to specify which iModel to get images for.
-    /// - Returns: A Promise that resolves to an array of image cache URLs for all the images in the cache for the given iModel
-    static func handleGetImages(params: [String: Any]) -> Promise<[String]> {
+    /// - Returns: An array of image cache URLs for all the images in the cache for the given iModel
+    static func handleGetImages(params: [String: Any]) -> [String] {
         guard let iModelId = params["iModelId"] as? String, let dirURL = baseURL?.appendingPathComponent(iModelId) else {
-            return Promise.value([])
+            return []
         }
         let fm = FileManager.default
         var results: [String] = []
@@ -26,12 +25,11 @@ class ImageCache {
                 results.append("\(prefix)\(urlString.lastPathComponent)")
             }
         }
-        return Promise.value(results)
+        return results
     }
     
     /// Deletes all the images in the cache for the given iModel.
     /// - Parameter params: Requires an `iModelId` property to specify which iModel to delete images for.
-    /// - Returns: A Promise that resolves to Void.
     static func handleDeleteAllImages(params: [String: Any]) {
         guard let iModelId = params["iModelId"] as? String, let dirURL = baseURL?.appendingPathComponent(iModelId) else {
             return
@@ -57,7 +55,6 @@ class ImageCache {
     
     /// Deletes a specific image cache image.
     /// - Parameter params: Requires a `urls` property containing a string or array of strings with the image cache URL's to delete.
-    /// - Returns: A Promise that resolves to Void.
     static func handleDeleteImages(params: [String: Any]) {
         if let urls = params["urls"] as? [String] {
             for url in urls {

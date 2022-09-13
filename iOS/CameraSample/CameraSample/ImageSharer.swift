@@ -3,7 +3,6 @@
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
 
-import PromiseKit
 import UIKit
 import ITwinMobile
 
@@ -32,7 +31,6 @@ class ImageSharer: ITMNativeUIComponent {
     /// - Parameter params: The input params from JavaScript. This must contain a `urls` array string property.
     /// It can optionally also contain a `sourceRect` proprty that indicates the screen component this share action
     /// corresponds with. It is expected to be a javascript object with the same properties in ITMRect.
-    /// - Returns: An empty promise.
     func handleQuery(params: [String: Any]) {
         if let urls = params["urls"] as? [String],
            let vc = self.viewController {

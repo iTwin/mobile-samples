@@ -6,8 +6,17 @@
         "repositoryURL": "https://github.com/openid/AppAuth-iOS.git",
         "state": {
           "branch": null,
-          "revision": "01131d68346c8ae552961c768d583c715fbe1410",
-          "version": "1.4.0"
+          "revision": "3d36a58a2b736f7bc499453e996a704929b25080",
+          "version": "1.6.0"
+        }
+      },
+      {
+        "package": "AsyncLocationKit",
+        "repositoryURL": "https://github.com/AsyncSwift/AsyncLocationKit.git",
+        "state": {
+          "branch": null,
+          "revision": "973a0a5ee72b7d714dedf8aeee54fb91638fdf82",
+          "version": "1.0.5"
         }
       },
       {
@@ -17,24 +26,6 @@
           "branch": null,
           "revision": "e7feca5a575fe0ac074c14407bdb92e868a31f37",
           "version": "1.38.0"
-        }
-      },
-      {
-        "package": "PMKCoreLocation",
-        "repositoryURL": "https://github.com/fallingspirit/CoreLocation",
-        "state": {
-          "branch": null,
-          "revision": "0d7f0e88f3f56a82a79553af651c2dea0f69bbcf",
-          "version": "3.1.2"
-        }
-      },
-      {
-        "package": "PMKFoundation",
-        "repositoryURL": "https://github.com/PromiseKit/Foundation.git",
-        "state": {
-          "branch": null,
-          "revision": "985f17fa69ee0e5b7eb3ff9be87ffc4e05fc0927",
-          "version": "3.4.0"
         }
       },
       {
@@ -53,15 +44,6 @@
           "branch": null,
           "revision": "5b264b1f6df1955e05f4da2b9a4f9247562c859c",
           "version": "3.2.14"
-        }
-      },
-      {
-        "package": "PromiseKit",
-        "repositoryURL": "https://github.com/mxcl/PromiseKit",
-        "state": {
-          "branch": null,
-          "revision": "7b07b214dacecb22ca4b680531c7e981d52483f9",
-          "version": "6.16.3"
         }
       },
       {

@@ -5,7 +5,6 @@
 
 import Foundation
 import Auth0
-import PromiseKit
 import JWTDecode
 
 enum Page {
