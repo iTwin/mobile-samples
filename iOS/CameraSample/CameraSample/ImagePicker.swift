@@ -83,11 +83,11 @@ class ImagePicker: ITMNativeUIComponent {
                 return nil
             }
         } else {
+            // Note: On iOS 14 and above, photo library access isn't required, because PHPickerViewController
+            // runs in a separate process and only returns the picked image to the app.
             if #unavailable(iOS 14), ITMDevicePermissionsHelper.isPhotoLibraryDenied {
                 // The user has previously denied photo library access to this app. Show a dialog that states
                 // this, and allows the user to open iOS Settings to change the setting.
-                // Note: On iOS 14 and above, photo library access isn't required, because PHPickerViewController
-                // runs in a separate process and only returns the picked image to the app.
                 DispatchQueue.main.async {
                     ITMDevicePermissionsHelper.openPhotoCaptureAccessAccessDialog()
                 }
