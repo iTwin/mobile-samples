@@ -193,6 +193,7 @@ class DocumentHelper {
 }
 
 /// An `ITMNativeUIComponent` sub-class that displays a document picker.
+@MainActor
 class DocumentPicker: ITMNativeUIComponent {
     private var coordinator: DocumentPickerCoordinator!
     
@@ -210,11 +211,9 @@ class DocumentPicker: ITMNativeUIComponent {
     private func handleQuery() async throws -> String {
         if let viewController = viewController {
             return await withCheckedContinuation { continuation in
-                DispatchQueue.main.async {
-                    self.coordinator = DocumentPickerCoordinator(continuation)
-                    let controller = self.makeUIViewController(coordinator: self.coordinator)
-                    viewController.present(controller, animated: true)
-                }
+                coordinator = DocumentPickerCoordinator(continuation)
+                let controller = makeUIViewController(coordinator: coordinator)
+                viewController.present(controller, animated: true)
             }
         } else {
             throw ITMError(json: ["message": "No view controller"])
