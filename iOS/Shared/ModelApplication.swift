@@ -19,13 +19,13 @@ class ModelApplication: ITMApplication {
             self.itmMessenger.frontendLaunchSuceeded()
         }
         registerMessageHandler("loading") {
-            DispatchQueue.main.sync {
+            await MainActor.run {
                 self.webView.isHidden = false
             }
         }
         registerMessageHandler("reload") {
-            DispatchQueue.main.sync {
-                self.webView.reload()
+            await MainActor.run {
+                _ = self.webView.reload()
             }
         }
         registerQueryHandler("getBimDocuments") { () -> [String] in
