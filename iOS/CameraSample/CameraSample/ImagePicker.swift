@@ -77,9 +77,7 @@ class ImagePicker: ITMNativeUIComponent {
             if ITMDevicePermissionsHelper.isVideoCaptureDenied {
                 // The user has previously denied camera access to this app. Show a dialog that states
                 // this, and allows the user to open iOS Settings to change the setting.
-                DispatchQueue.main.async {
-                    ITMDevicePermissionsHelper.openPhotoCaptureAccessAccessDialog()
-                }
+                await ITMDevicePermissionsHelper.openPhotoCaptureAccessAccessDialog()
                 return nil
             }
         } else {
@@ -88,9 +86,7 @@ class ImagePicker: ITMNativeUIComponent {
             if #unavailable(iOS 14), ITMDevicePermissionsHelper.isPhotoLibraryDenied {
                 // The user has previously denied photo library access to this app. Show a dialog that states
                 // this, and allows the user to open iOS Settings to change the setting.
-                DispatchQueue.main.async {
-                    ITMDevicePermissionsHelper.openPhotoCaptureAccessAccessDialog()
-                }
+                await ITMDevicePermissionsHelper.openPhotoCaptureAccessAccessDialog()
                 return nil
             }
         }
