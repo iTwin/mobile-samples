@@ -24,7 +24,7 @@ class ImageSharer: ITMNativeUIComponent {
             popover.sourceView = vc.view
             popover.sourceRect = sourceRect
         }
-        vc.present(shareActivity, animated: true, completion: nil)
+        vc.present(shareActivity, animated: true)
     }
     
     /// Handles the shareImages message.

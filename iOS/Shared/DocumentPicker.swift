@@ -42,7 +42,7 @@ extension ITMApplication {
             }))
         }
         
-        ITMApplication.topViewController?.present(alert, animated: true, completion: nil)
+        ITMApplication.topViewController?.present(alert, animated: true)
     }
     
     /// Shows a modal alert dialog by calling `showAlert`, asynchronously returning the result.
@@ -213,7 +213,7 @@ class DocumentPicker: ITMNativeUIComponent {
                 DispatchQueue.main.async {
                     self.coordinator = DocumentPickerCoordinator(continuation)
                     let controller = self.makeUIViewController(coordinator: self.coordinator)
-                    viewController.present(controller, animated: true, completion: nil)
+                    viewController.present(controller, animated: true)
                 }
             }
         } else {

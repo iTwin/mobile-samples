@@ -99,7 +99,7 @@ class ImagePicker: ITMNativeUIComponent {
             DispatchQueue.main.async {
                 let picker = self.createPicker(params: params)
                 picker.modalPresentationStyle = .fullScreen
-                viewController.present(picker, animated: true, completion: nil)
+                viewController.present(picker, animated: true)
             }
         }
     }
@@ -197,7 +197,7 @@ extension ImagePicker: PHPickerViewControllerDelegate {
                     } else {
                         print("Error loading image!");
                     }
-                } catch let error {
+                } catch {
                     print("async loadItem failed: \(error)")
                 }
             }
@@ -208,7 +208,7 @@ extension ImagePicker: PHPickerViewControllerDelegate {
                         do {
                             let image = try await item.loadItem(forTypeIdentifier: String(describing: UIImage.self)) as? UIImage
                             self.pick(picker, imageURL: nil, image: image, metadata: nil)
-                        } catch let error {
+                        } catch {
                             self.resume(throwing: error, picker: picker)
                         }
                     }
