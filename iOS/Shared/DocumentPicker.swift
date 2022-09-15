@@ -52,7 +52,7 @@ extension ITMApplication {
     ///   - cancelLabel: The optional label for the cancel button. If nil, "Cancel" will be used.
     ///   - okLabel: The optional label for the OK button. If nil, "OK" will be used.
     /// - Returns: A boolean value when the user presses a button: OK (true) or Cancel (false).
-    @discardableResult static func asyncAlert(title: String? = nil, message: String, cancelLabel: String? = nil, okLabel: String? = nil) async -> Bool {
+    @discardableResult static func showAlert(title: String? = nil, message: String, cancelLabel: String? = nil, okLabel: String? = nil) async -> Bool {
         return await withCheckedContinuation { continuation in
             ITMApplication.showAlert(title: title, message: message,
                 cancelButton: AlertButtonParams(label: cancelLabel) {
@@ -131,7 +131,7 @@ class DocumentHelper {
             return
         }
     
-        if await !ITMApplication.asyncAlert(
+        if await !ITMApplication.showAlert(
             title: "Warning",
             message: "\(url.lastPathComponent) already exists in the application's documents. Do you want to replace it?",
             cancelLabel: "No",
