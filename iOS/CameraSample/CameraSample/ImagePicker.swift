@@ -68,6 +68,7 @@ class ImagePicker: ITMNativeUIComponent {
     /// - Parameter params: The input params from JavaScript. This must contain an `iModelId` string property.
     /// - Returns: A URL to the captured image. Note that this URL uses a custom URL scheme to allow the image to be
     ///            loaded from the WKWebView.
+    @MainActor
     private func handleQuery(params: [String: Any]) async throws -> String? {
         guard let viewController = viewController, let iModelId = params["iModelId"] as? String else {
             throw ITMError()
@@ -77,7 +78,7 @@ class ImagePicker: ITMNativeUIComponent {
             if ITMDevicePermissionsHelper.isVideoCaptureDenied {
                 // The user has previously denied camera access to this app. Show a dialog that states
                 // this, and allows the user to open iOS Settings to change the setting.
-                await ITMDevicePermissionsHelper.openPhotoCaptureAccessAccessDialog()
+                ITMDevicePermissionsHelper.openPhotoCaptureAccessAccessDialog()
                 return nil
             }
         } else {
@@ -86,17 +87,15 @@ class ImagePicker: ITMNativeUIComponent {
             if #unavailable(iOS 14), ITMDevicePermissionsHelper.isPhotoLibraryDenied {
                 // The user has previously denied photo library access to this app. Show a dialog that states
                 // this, and allows the user to open iOS Settings to change the setting.
-                await ITMDevicePermissionsHelper.openPhotoCaptureAccessAccessDialog()
+                ITMDevicePermissionsHelper.openPhotoCaptureAccessAccessDialog()
                 return nil
             }
         }
         return try await withCheckedThrowingContinuation { continuation in
             self.continuation = continuation
-            DispatchQueue.main.async {
-                let picker = self.createPicker(params: params)
-                picker.modalPresentationStyle = .fullScreen
-                viewController.present(picker, animated: true)
-            }
+            let picker = self.createPicker(params: params)
+            picker.modalPresentationStyle = .fullScreen
+            viewController.present(picker, animated: true)
         }
     }
     
@@ -184,45 +183,24 @@ extension ImagePicker: PHPickerViewControllerDelegate {
             // We only allow one item to be picked, so there will either be 0 or 1, and 0 was handled above.
             let item = itemProviders[0]
             // loadFileRepresentation creates a file with metadata.
-            Task {
-                do {
-                    let url = try await item.loadItem(forTypeIdentifier: "public.image") as! URL
-                    let data = try Data(contentsOf: url)
-                    if let image = UIImage(data: data) {
-                        print("Image loaded: \(image)")
-                    } else {
-                        print("Error loading image!");
-                    }
-                } catch {
-                    print("async loadItem failed: \(error)")
-                }
-            }
             item.loadFileRepresentation(forTypeIdentifier: "public.image") { (url, error) in
                 if error != nil {
                     // If loadFileRepresentation fails, try to create a UIImage from the item.
-                    Task {
-                        do {
-                            let image = try await item.loadItem(forTypeIdentifier: String(describing: UIImage.self)) as? UIImage
-                            self.pick(picker, imageURL: nil, image: image, metadata: nil)
-                        } catch {
-                            self.resume(throwing: error, picker: picker)
+                    if item.canLoadObject(ofClass: UIImage.self) {
+                        item.loadObject(ofClass: UIImage.self) { (image, error) in
+                            if let error = error {
+                                self.resume(throwing: error, picker: picker)
+                            } else {
+                                if let image = image as? UIImage {
+                                    self.pick(picker, imageURL: nil, image: image, metadata: nil)
+                                } else {
+                                    self.resume(throwing: ITMError(json: ["message": "Error picking image"]), picker: picker)
+                                }
+                            }
                         }
+                    } else {
+                        self.resume(throwing: ITMError(json: ["message": "Error picking image"]), picker: picker)
                     }
-//                    if item.canLoadObject(ofClass: UIImage.self) {
-//                        item.loadObject(ofClass: UIImage.self) { (image, error) in
-//                            if let error = error {
-//                                self.resume(throwing: error, picker: picker)
-//                            } else {
-//                                if let image = image as? UIImage {
-//                                    self.pick(picker, imageURL: nil, image: image, metadata: nil)
-//                                } else {
-//                                    self.resume(throwing: ITMError(json: ["message": "Error picking image"]), picker: picker)
-//                                }
-//                            }
-//                        }
-//                    } else {
-//                        self.resume(throwing: ITMError(json: ["message": "Error picking image"]), picker: picker)
-//                    }
                 } else {
                     self.pick(picker, imageURL: url, image: nil, metadata: nil)
                 }
