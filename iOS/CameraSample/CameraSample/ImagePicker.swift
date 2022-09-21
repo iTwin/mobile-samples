@@ -44,7 +44,7 @@ class ImagePicker: ITMNativeUIComponent {
     /// Creates a "picker". When in camera mode, this will always return a UIImagePickerController. However, when in photoLibrary
     /// mode, this will return a PHPickerViewController in iOS 14 and later, and a UIImagePickerController in iOS 13.
     private func createPicker(params: [String: Any]) -> UIViewController {
-        let useCamera = self.useCamera(params: params)
+        let useCamera = useCamera(params: params)
         if !useCamera, #available(iOS 14, *) {
             // Note: configuration.selectionLimit defaults to 1, which is what we want.
             var configuration = PHPickerConfiguration()
@@ -74,7 +74,7 @@ class ImagePicker: ITMNativeUIComponent {
             throw ITMError()
         }
         self.iModelId = iModelId
-        if self.useCamera(params: params) {
+        if useCamera(params: params) {
             if ITMDevicePermissionsHelper.isVideoCaptureDenied {
                 // The user has previously denied camera access to this app. Show a dialog that states
                 // this, and allows the user to open iOS Settings to change the setting.
@@ -93,7 +93,7 @@ class ImagePicker: ITMNativeUIComponent {
         }
         return try await withCheckedThrowingContinuation { continuation in
             self.continuation = continuation
-            let picker = self.createPicker(params: params)
+            let picker = createPicker(params: params)
             picker.modalPresentationStyle = .fullScreen
             viewController.present(picker, animated: true)
         }
