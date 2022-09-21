@@ -3,10 +3,10 @@
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
 
-import PromiseKit
 import UIKit
 import ITwinMobile
 import WebKit
+import PhotosUI
 
 /// A `UIImagePickerController` subclass that supports landscape.
 ///
@@ -24,86 +24,104 @@ class ImagePickerFix: UIImagePickerController {
 
 /// An `ITMNativeUIComponent` subclass for taking a picture with the camera.
 class ImagePicker: ITMNativeUIComponent {
-    /// The promise for the active query.
-    var presentedPromise: Promise<String?>?
-    /// The resolver for the active query.
-    var presentedResolver: Resolver<String?>?
+    /// The continuation for the active query.
+    var continuation: CheckedContinuation<String?, Error>?
     /// The iModelId for the active query.
     var iModelId: String?
     override init(itmNativeUI: ITMNativeUI) {
         super.init(itmNativeUI: itmNativeUI)
         queryHandler = itmMessenger.registerQueryHandler("pickImage", handleQuery)
     }
-    
-    /// Handles the "pickImage" query.
-    ///
-    /// This shows the camera UI and returns a promise that when fulfilled will contain a URL using a custom scheme that
-    /// resolves to the image taken by the camera.
-    /// - Parameter params: The input params from JavaScript. This must contain an `iModelId` string property.
-    /// - Returns: A `Promise` object that when fulfilled will contain a URL to the captured image. Note that this URL
-    /// uses a custom URL scheme to allow the image to be loaded from the WKWebView.
-    private func handleQuery(params: [String: Any]) -> Promise<String?> {
-        (presentedPromise, presentedResolver) = Promise<String?>.pending()
-        let presentedPromise = presentedPromise!
-        let presentedResolver = presentedResolver!
-        guard let viewController = viewController else {
-            presentedResolver.reject(ITMError())
-            return presentedPromise
-        }
-        iModelId = params["iModelId"] as? String
-        if iModelId == nil {
-            presentedResolver.reject(ITMError())
-            return presentedPromise
-        }
-        if ITMDevicePermissionsHelper.isPhotoCaptureDenied {
-            // The user has previously denined camera access to this app. Show a dialog that states
-            // this, and allows the user to open iOS Settings to change the setting.
-            ITMDevicePermissionsHelper.openPhotoCaptureAccessAccessDialog()
-            presentedResolver.fulfill(nil)
-            return presentedPromise
-        }
-        let picker = ImagePickerFix()
-        picker.modalPresentationStyle = .fullScreen
+
+    private func useCamera(params: [String: Any]) -> Bool {
         let sourceType = params["sourceType"] as? String
         if sourceType != "photoLibrary" {
-            picker.sourceType = .camera
+            return true
         }
-        picker.delegate = self
-        viewController.present(picker, animated: true, completion: nil)
-        return presentedPromise
+        return false
     }
-}
 
-/// `UIImagePickerController`'s delgate must implement these protocols.
-///
-/// Everything in `UINavigationControllerDelegate` is optional, and we don't need to implement any of those methods.
-///
-/// This extension implements the `UIImagePickerControllerDelegate` methods that handle picking and image and canceling.
-extension ImagePicker: UIImagePickerControllerDelegate, UINavigationControllerDelegate {
-    /// Called when the user cancels picture taking.
+    /// Creates a "picker". When in camera mode, this will always return a UIImagePickerController. However, when in photoLibrary
+    /// mode, this will return a PHPickerViewController in iOS 14 and later, and a UIImagePickerController in iOS 13.
+    private func createPicker(params: [String: Any]) -> UIViewController {
+        let useCamera = useCamera(params: params)
+        if !useCamera, #available(iOS 14, *) {
+            // Note: configuration.selectionLimit defaults to 1, which is what we want.
+            var configuration = PHPickerConfiguration()
+            configuration.filter = .any(of: [.images])
+            let picker = PHPickerViewController(configuration: configuration)
+            picker.delegate = self
+            return picker
+        } else {
+            let picker = ImagePickerFix()
+            if useCamera {
+                picker.sourceType = .camera
+            }
+            picker.delegate = self
+            return picker
+        }
+    }
+
+    /// Handles the "pickImage" query.
     ///
-    /// Fulfills the `Promise` with nil.
-    /// - Parameter picker: The controller object managing the image picker interface.
-    func imagePickerControllerDidCancel(_ picker: UIImagePickerController) {
-        presentedResolver?.fulfill(nil)
-        picker.dismiss(animated: true, completion: nil)
+    /// This shows the camera UI and returns a URL using a custom scheme that resolves to the image taken by the camera.
+    /// - Parameter params: The input params from JavaScript. This must contain an `iModelId` string property.
+    /// - Returns: A URL to the captured image. Note that this URL uses a custom URL scheme to allow the image to be
+    ///            loaded from the WKWebView.
+    @MainActor
+    private func handleQuery(params: [String: Any]) async throws -> String? {
+        guard let viewController = viewController, let iModelId = params["iModelId"] as? String else {
+            throw ITMError()
+        }
+        self.iModelId = iModelId
+        if useCamera(params: params) {
+            if ITMDevicePermissionsHelper.isVideoCaptureDenied {
+                // The user has previously denied camera access to this app. Show a dialog that states
+                // this, and allows the user to open iOS Settings to change the setting.
+                ITMDevicePermissionsHelper.openPhotoCaptureAccessAccessDialog()
+                return nil
+            }
+        } else {
+            // Note: On iOS 14 and above, photo library access isn't required, because PHPickerViewController
+            // runs in a separate process and only returns the picked image to the app.
+            if #unavailable(iOS 14), ITMDevicePermissionsHelper.isPhotoLibraryDenied {
+                // The user has previously denied photo library access to this app. Show a dialog that states
+                // this, and allows the user to open iOS Settings to change the setting.
+                ITMDevicePermissionsHelper.openPhotoCaptureAccessAccessDialog()
+                return nil
+            }
+        }
+        return try await withCheckedThrowingContinuation { continuation in
+            self.continuation = continuation
+            let picker = createPicker(params: params)
+            picker.modalPresentationStyle = .fullScreen
+            viewController.present(picker, animated: true)
+        }
     }
     
-    /// Called after the user takes a picture.
-    ///
-    /// Writes the image to the app's cache and fulfills the promise with a custom URL scheme URL referencing the file.
-    ///
-    /// If there is any kind of error, rejects the promise.
-    /// - Parameters:
-    ///   - picker: The controller object managing the image picker interface.
-    ///   - info: A dictionary containing the original image and the edited image.
-    func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey: Any]) {
-        let imageUrl = info[UIImagePickerController.InfoKey.imageURL] as? URL
-        let image = info[UIImagePickerController.InfoKey.originalImage] as? UIImage
-        if imageUrl == nil, image == nil {
-            presentedResolver?.fulfill(nil)
-            picker.dismiss(animated: true, completion: nil)
-            return
+    /// Convenience function that dismisses the picker, calls `resume(returning:)` on ``continuation``, and resets
+    /// ``continuation`` to nil.
+    private func resume(returning value: String?, picker: UIViewController) {
+        DispatchQueue.main.async {
+            picker.dismiss(animated: true)
+        }
+        continuation?.resume(returning: value)
+        continuation = nil
+    }
+    
+    /// Convenience function that dismisses the picker, calls `resume(throwing:)` on ``continuation``, and resets
+    /// ``continuation`` to nil.
+    private func resume(throwing error: Error, picker: UIViewController) {
+        DispatchQueue.main.async {
+            picker.dismiss(animated: true)
+        }
+        continuation?.resume(throwing: error)
+        continuation = nil
+    }
+    
+    private func pick(_ picker: UIViewController, imageURL: URL?, image: UIImage?, metadata: NSDictionary?) {
+        if imageURL == nil, image == nil {
+            resume(returning: nil, picker: picker)
         }
         let dateFmt = DateFormatter()
         dateFmt.dateFormat = "yyyy-MM-dd HH-mm-ss.SSS"
@@ -122,30 +140,100 @@ extension ImagePicker: UIImagePickerControllerDelegate, UINavigationControllerDe
             // If the original file in the photo library was HEIC, the URL will be for a local JPEG copy. If the original file
             // in the photo library was a PNG or JPEG, the URL will be the exact original file. If we get a URL, simply copy
             // it to our cache.
-            if let imageUrl = imageUrl {
+            if let imageURL = imageURL {
                 do {
                     // It has been reported that using moveItem here doesn't work in all versions of iOS.
-                    try fm.moveItem(at: imageUrl, to: fileUrl)
+                    try fm.moveItem(at: imageURL, to: fileUrl)
                 } catch {
                     // If moveItem fails, fall back to copyItem. Note that if copyItem fails here, it will jump to the
-                    // catch block below, which rejects the promise.
-                    try fm.copyItem(at: imageUrl, to: fileUrl)
+                    // catch block below, which resumes the continuation throwing the error.
+                    try fm.copyItem(at: imageURL, to: fileUrl)
                 }
             } else if let image = image {
                 // Write the UIImage to the given filename.
-                try ImageCache.writeImage(image, to: fileUrl, with: info[.mediaMetadata] as? NSDictionary)
+                try ImageCache.writeImage(image, to: fileUrl, with: metadata)
             }
-            // Fulfill the promise with a custom URL scheme URL of the form:
+            // Resume the continuation returning a custom URL scheme URL of the form:
             // com.bentley.itms-image-cache://<iModelId>/<filename>
             // The custom ImageCacheSchemeHandler will convert that back into a file URL and then load that file.
             // Note: the absolute file URL is converted to an NSString to maintain any encoded characters, instead
             // of using lastPathComponent directly on fileUrl. Even though we're fulfilling a string, that string
             // represents a URL.
-            presentedResolver?.fulfill("\(ImageCacheSchemeHandler.urlScheme)://\(iModelId)/\(NSString(string: fileUrl.absoluteString).lastPathComponent)")
+            resume(returning: "\(ImageCacheSchemeHandler.urlScheme)://\(iModelId)/\(NSString(string: fileUrl.absoluteString).lastPathComponent)", picker: picker)
         } catch {
-            // If anything went wrong above, reject the promise.
-            presentedResolver?.reject(error)
+            // If anything went wrong above, resume the continuation throwing the error.
+            resume(throwing: error, picker: picker)
         }
-        picker.dismiss(animated: true, completion: nil)
+    }
+}
+
+/// `PHPickerViewController`'s delgate must implement this protocol.
+@available(iOS 14, *)
+extension ImagePicker: PHPickerViewControllerDelegate {
+    /// Called when the user picks an image from the photo library or cancels picking.
+    /// - Parameters:
+    ///   - picker: The currently presented picker view controller.
+    ///   - results: The results of the user’s selections.
+    func picker(_ picker: PHPickerViewController, didFinishPicking results: [PHPickerResult]) {
+        let itemProviders = results.map(\.itemProvider)
+        if itemProviders.isEmpty {
+            // User canceled.
+            resume(returning: nil, picker: picker)
+        } else {
+            // We only allow one item to be picked, so there will either be 0 or 1, and 0 was handled above.
+            let item = itemProviders[0]
+            // loadFileRepresentation creates a file with metadata.
+            item.loadFileRepresentation(forTypeIdentifier: "public.image") { (url, error) in
+                if error != nil {
+                    // If loadFileRepresentation fails, try to create a UIImage from the item.
+                    if item.canLoadObject(ofClass: UIImage.self) {
+                        item.loadObject(ofClass: UIImage.self) { (image, error) in
+                            if let error = error {
+                                self.resume(throwing: error, picker: picker)
+                            } else {
+                                if let image = image as? UIImage {
+                                    self.pick(picker, imageURL: nil, image: image, metadata: nil)
+                                } else {
+                                    self.resume(throwing: ITMError(json: ["message": "Error picking image"]), picker: picker)
+                                }
+                            }
+                        }
+                    } else {
+                        self.resume(throwing: ITMError(json: ["message": "Error picking image"]), picker: picker)
+                    }
+                } else {
+                    self.pick(picker, imageURL: url, image: nil, metadata: nil)
+                }
+            }
+        }
+    }
+}
+
+/// `UIImagePickerController`'s delgate must implement these protocols.
+///
+/// Everything in `UINavigationControllerDelegate` is optional, and we don't need to implement any of those methods.
+///
+/// This extension implements the `UIImagePickerControllerDelegate` methods that handle picking and image and canceling.
+extension ImagePicker: UIImagePickerControllerDelegate, UINavigationControllerDelegate {
+    /// Called when the user cancels picture taking.
+    ///
+    /// Resumes the continuation returning nil.
+    /// - Parameter picker: The controller object managing the image picker interface.
+    func imagePickerControllerDidCancel(_ picker: UIImagePickerController) {
+        resume(returning: nil, picker: picker)
+    }
+    
+    /// Called after the user takes a picture.
+    ///
+    /// Writes the image to the app's cache and resumes the continuation returning a custom URL scheme URL referencing the file.
+    ///
+    /// If there is any kind of error, resumes the continuation throwing the error.
+    /// - Parameters:
+    ///   - picker: The controller object managing the image picker interface.
+    ///   - info: A dictionary containing the original image and the edited image.
+    func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey: Any]) {
+        let imageURL = info[UIImagePickerController.InfoKey.imageURL] as? URL
+        let image = info[UIImagePickerController.InfoKey.originalImage] as? UIImage
+        pick(picker, imageURL: imageURL, image: image, metadata: info[.mediaMetadata] as? NSDictionary)
     }
 }

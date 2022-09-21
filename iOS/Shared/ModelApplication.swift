@@ -6,7 +6,6 @@
 import UIKit
 import WebKit
 import ITwinMobile
-import PromiseKit
 import UniformTypeIdentifiers
 import ShowTime
 
@@ -20,16 +19,20 @@ class ModelApplication: ITMApplication {
             self.itmMessenger.frontendLaunchSuceeded()
         }
         registerMessageHandler("loading") {
-            self.webView.isHidden = false
+            await MainActor.run {
+                self.webView.isHidden = false
+            }
         }
         registerMessageHandler("reload") {
-            self.webView.reload()
+            await MainActor.run {
+                _ = self.webView.reload()
+            }
         }
-        registerQueryHandler("getBimDocuments") { () -> Promise<[String]> in
+        registerQueryHandler("getBimDocuments") { () -> [String] in
             if #available(iOS 14.0, *) {
-                return Promise.value(DocumentHelper.getDocumentsWith(extension: UTType.bim_iModel.preferredFilenameExtension!))
+                return DocumentHelper.getDocumentsWith(extension: UTType.bim_iModel.preferredFilenameExtension!)
             } else {
-                return Promise.value(DocumentHelper.getDocumentsWith(extension: "bim"))
+                return DocumentHelper.getDocumentsWith(extension: "bim")
             }
         }
         

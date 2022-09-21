@@ -5,7 +5,6 @@
 
 import UIKit
 import ITwinMobile
-import PromiseKit
 import UniformTypeIdentifiers
 
 @available(iOS 14.0, *)
@@ -43,26 +42,26 @@ extension ITMApplication {
             }))
         }
         
-        ITMApplication.topViewController?.present(alert, animated: true, completion: nil)
+        ITMApplication.topViewController?.present(alert, animated: true)
     }
     
-    /// Shows a modal alert dialog by calling `showAlert`, returning a boolean promise.
+    /// Shows a modal alert dialog by calling `showAlert`, asynchronously returning the result.
     /// - Parameters:
     ///   - title: The optional title shown at the top of the dialog.
     ///   - message: The message shown in the dialog.
     ///   - cancelLabel: The optional label for the cancel button. If nil, "Cancel" will be used.
     ///   - okLabel: The optional label for the OK button. If nil, "OK" will be used.
-    /// - Returns: A boolean promise that is fulfilled when the user presses a button: OK (true) or Cancel (false).
-    @discardableResult static func awaitAlert(title: String? = nil, message: String, cancelLabel: String? = nil, okLabel: String? = nil) -> Promise<Bool> {
-        let (promise, resolver) = Promise<Bool>.pending()
-        ITMApplication.showAlert(title: title, message: message,
-            cancelButton: AlertButtonParams(label: cancelLabel) {
-                resolver.fulfill(false)
-            },
-            okButton: AlertButtonParams(label: okLabel) {
-                resolver.fulfill(true)
-            })
-        return promise
+    /// - Returns: A boolean value when the user presses a button: OK (true) or Cancel (false).
+    @discardableResult static func showAlert(title: String? = nil, message: String, cancelLabel: String? = nil, okLabel: String? = nil) async -> Bool {
+        return await withCheckedContinuation { continuation in
+            ITMApplication.showAlert(title: title, message: message,
+                cancelButton: AlertButtonParams(label: cancelLabel) {
+                    continuation.resume(returning: false)
+                },
+                okButton: AlertButtonParams(label: okLabel) {
+                    continuation.resume(returning: true)
+                })
+        }
     }
 }
 
@@ -126,76 +125,75 @@ class DocumentHelper {
     
     /// Prompts the user to replace the file if it already exists.
     /// - Parameter url: The file to check.
-    /// - Throws: If the file exists and the user agrees to delete the file, but the removal fails.
-    /// - Returns: The input url as a promise so this function call can be chained with other promises.
-    public static func promptToReplaceFile(_ url: URL) throws -> Promise<URL> {
+    /// - Throws: If the file exists and the user agrees to delete the file, but the removal fails, or if the user rejects deleting the file.
+    public static func promptToReplaceFile(_ url: URL) async throws {
         if !FileManager.default.fileExists(atPath: url.path) {
-            return Promise.value(url)
+            return
         }
-        
-        return ITMApplication.awaitAlert(
-                title: "Warning",
-                message: "\(url.lastPathComponent) already exists in the application's documents. Do you want to replace it?")
-        .then { (okPressed) -> Promise<URL> in
-            if !okPressed {
-                throw ITMError()
-            }
-            try FileManager.default.removeItem(at: url)
-            return Promise.value(url)
+    
+        if await !ITMApplication.showAlert(
+            title: "Warning",
+            message: "\(url.lastPathComponent) already exists in the application's documents. Do you want to replace it?",
+            cancelLabel: "No",
+            okLabel: "Yes") {
+            throw ITMError()
         }
+        try FileManager.default.removeItem(at: url)
     }
     
     /// Copies the input file into the documents directory, possibly prompting the user to replace the file
     /// if it already exists.
     /// - Parameter srcUrl: The file to copy.
-    /// - Returns: A promise fullfilled with the path to the copied file, or an empty string if it is not replaced by the user or an error occurs.
-    public static func copyExternalFileIntoDocumentsWithPrompt(_ srcUrl: URL) -> Promise<String> {
-        return firstly {
-            try promptToReplaceFile(try getDocumentsDestinationUrl(srcUrl))
-        }.then { destUrl -> Promise<String> in
+    /// - Returns: The path to the copied file, or an empty string if it is not replaced by the user or an error occurs.
+    public static func copyExternalFileIntoDocumentsWithPrompt(_ srcUrl: URL) async -> String {
+        do {
+            let destUrl = try getDocumentsDestinationUrl(srcUrl)
+            try await promptToReplaceFile(destUrl)
             try copyExternalFile(srcUrl: srcUrl, destUrl: destUrl)
-            return Promise.value(destUrl.path)
-        }.recover { _ in
-            Promise.value("")
+            return destUrl.path
+        } catch {
+            return ""
         }
     }
     
     /// Moves the input file to the documents directory.
     /// - Parameter srcUrl: The file to move.
-    /// - Returns: A promise fullfilled with the path to the moved file, or an empty string if it is not replaced by the user or an error occurs.
-    public static func moveInboxFileIntoDocumentsWithPrompt(_ srcUrl: URL) -> Promise<String> {
-        return firstly {
-            try promptToReplaceFile(try getDocumentsDestinationUrl(srcUrl))
-        }.then { destUrl -> Promise<String> in
+    /// - Returns: The path to the moved file, or an empty string if it is not replaced by the user or an error occurs.
+    public static func moveInboxFileIntoDocumentsWithPrompt(_ srcUrl: URL) async -> String {
+        do {
+            let destUrl = try getDocumentsDestinationUrl(srcUrl)
+            try await promptToReplaceFile(destUrl)
             try FileManager.default.moveItem(at: srcUrl, to: destUrl)
-            return Promise.value(destUrl.path)
-        }.recover { _ in
-            Promise.value("")
+            return destUrl.path
+        } catch {
+            return ""
         }
     }
-    
+
     /// Opens the given Inbox file by copying it to the documents directory and sending a message to the web view.
     /// - Parameters:
     ///   - url: The file to copy and open.
     ///   - messenger: Optional messenger instance.
     ///   - query: Optional query message to send.
     public static func openInboxUrl(_ url: URL, messenger: ITMMessenger = ITMViewController.application.itmMessenger, query: String = "openModel") {
-        _ = moveInboxFileIntoDocumentsWithPrompt(url).done { path in
-            if !path.isEmpty {
-                messenger.query(query, path)
-            } else {
-                // Try to remove the file from the Inbox if the move failed or the user cancelled
-                do {
+        Task {
+            let path = await moveInboxFileIntoDocumentsWithPrompt(url)
+            do {
+                if !path.isEmpty {
+                    try await messenger.query(query, path)
+                } else {
+                    // Try to remove the file from the Inbox if the move failed or the user cancelled
                     try FileManager.default.removeItem(at: url)
-                } catch {
-                    // do nothing
                 }
+            } catch {
+                // Ignore
             }
         }
     }
 }
 
 /// An `ITMNativeUIComponent` sub-class that displays a document picker.
+@MainActor
 class DocumentPicker: ITMNativeUIComponent {
     private var coordinator: DocumentPickerCoordinator!
     
@@ -208,17 +206,18 @@ class DocumentPicker: ITMNativeUIComponent {
     }
     
     /// The query handler for the "chooseDocument" query.
-    /// - Returns: A promise that will be fulfilled with the path to the file in the documents directory.
-    private func handleQuery() -> Promise<String> {
-        let (promise, resolver) = Promise<String>.pending()
+    /// - Throws: Throws if there is a problem.
+    /// - Returns: The path to the file in the documents directory.
+    private func handleQuery() async throws -> String {
         if let viewController = viewController {
-            coordinator = DocumentPickerCoordinator(resolver)
-            let controller = makeUIViewController(coordinator: coordinator)
-            viewController.present(controller, animated: true, completion: nil)
+            return await withCheckedContinuation { continuation in
+                coordinator = DocumentPickerCoordinator(continuation)
+                let controller = makeUIViewController(coordinator: coordinator)
+                viewController.present(controller, animated: true)
+            }
         } else {
-            resolver.reject(ITMError())
+            throw ITMError(json: ["message": "No view controller"])
         }
-        return promise
     }
     
     /// Creates the `UIDocumentPickerViewController` that will be presented to the user.
@@ -239,32 +238,33 @@ class DocumentPicker: ITMNativeUIComponent {
     
     /// Nested class that implements the `UIDocumentPickerDelegate` protocol.
     class DocumentPickerCoordinator: NSObject, UIDocumentPickerDelegate {
-        var resolver: Resolver<String>
+        let continuation: CheckedContinuation<String, Never>
         
-        /// Initializes with the given promise resolver.
-        /// - Parameter resolver: The resolver used when the user picks a file or cancels.
-        init(_ resolver: Resolver<String>) {
-            self.resolver = resolver
+        /// Initializes with the given async continuation.
+        /// - Parameter continuation: The continuation used when the user picks a file or cancels.
+        init(_ continuation: CheckedContinuation<String, Never>) {
+            self.continuation = continuation
         }
         
         /// Called when the user selects a file.
         ///
-        /// Copies the file into the documents directory and resolves the promise with the file's path.
+        /// Copies the file into the documents directory and resumes the continuation with the file's path.
         /// - Parameters:
         ///   - controller: The parent controller.
         ///   - urls: Picked file(s).
         func documentPicker(_ controller: UIDocumentPickerViewController, didPickDocumentsAt urls: [URL]) {
-            _ = DocumentHelper.copyExternalFileIntoDocumentsWithPrompt(urls[0]).done { path in
-                self.resolver.fulfill(path)
+            Task {
+                let path = await DocumentHelper.copyExternalFileIntoDocumentsWithPrompt(urls[0])
+                self.continuation.resume(returning: path)
             }
         }
         
         /// Called when the document picker is dismissed via the cancel button.
         ///
-        /// Resolves the promise with an empty string.
+        /// Resumes the continuation with an empty string.
         /// - Parameter controller: The paren controller.
         func documentPickerWasCancelled(_ controller: UIDocumentPickerViewController) {
-            resolver.fulfill("")
+            self.continuation.resume(returning: "")
         }
     }
 }
