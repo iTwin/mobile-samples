@@ -29,6 +29,7 @@ extension ITMApplication {
     ///   - message: The message shown in the dialog.
     ///   - cancelButton: The optional parameters for the Cancel button. If nil, a cancel button will not be added. If the label is not specified, "Cancel" will be used.
     ///   - okButton: The optional parameters for the OK button. If nil or the label is nil, "OK" will be used.
+    @MainActor
     static func showAlert(title: String? = nil, message: String, cancelButton: AlertButtonParams? = nil, okButton: AlertButtonParams? = nil) {
         let alert = UIAlertController(title: title, message: message, preferredStyle: UIAlertController.Style.alert)
         
@@ -52,6 +53,7 @@ extension ITMApplication {
     ///   - cancelLabel: The optional label for the cancel button. If nil, "Cancel" will be used.
     ///   - okLabel: The optional label for the OK button. If nil, "OK" will be used.
     /// - Returns: A boolean value when the user presses a button: OK (true) or Cancel (false).
+    @MainActor
     @discardableResult static func showAlert(title: String? = nil, message: String, cancelLabel: String? = nil, okLabel: String? = nil) async -> Bool {
         return await withCheckedContinuation { continuation in
             ITMApplication.showAlert(title: title, message: message,
