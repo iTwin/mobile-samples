@@ -15,13 +15,13 @@ class ModelApplication: ITMApplication {
     required init() {
         super.init()
         ITMApplication.logger = PrintLogger()
-        registerMessageHandler("didFinishLaunching") {
+        registerQueryHandler("didFinishLaunching") {
             self.itmMessenger.frontendLaunchSuceeded()
         }
-        registerMessageHandler("loading") {
+        registerQueryHandler("loading") {
             self.webView.isHidden = false
         }
-        registerMessageHandler("reload") {
+        registerQueryHandler("reload") {
             self.webView.reload()
         }
         registerQueryHandler("getBimDocuments") { () -> [String] in

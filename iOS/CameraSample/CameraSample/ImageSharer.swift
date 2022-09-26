@@ -10,7 +10,7 @@ import ITwinMobile
 class ImageSharer: ITMNativeUIComponent {
     override init(itmNativeUI: ITMNativeUI) {
         super.init(itmNativeUI: itmNativeUI)
-        queryHandler = itmMessenger.registerMessageHandler("shareImages", handleQuery)
+        queryHandler = itmMessenger.registerQueryHandler("shareImages", handleQuery)
     }
     
     /// Simple wrapper for sharing anything via the `UIActivityViewController`.
