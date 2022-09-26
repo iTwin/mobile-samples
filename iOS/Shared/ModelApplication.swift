@@ -19,14 +19,10 @@ class ModelApplication: ITMApplication {
             self.itmMessenger.frontendLaunchSuceeded()
         }
         registerMessageHandler("loading") {
-            await MainActor.run {
-                self.webView.isHidden = false
-            }
+            self.webView.isHidden = false
         }
         registerMessageHandler("reload") {
-            await MainActor.run {
-                _ = self.webView.reload()
-            }
+            self.webView.reload()
         }
         registerQueryHandler("getBimDocuments") { () -> [String] in
             if #available(iOS 14.0, *) {
