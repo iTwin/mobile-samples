@@ -47,7 +47,7 @@ function getConfig(env) {
     // initialization.
     module: {
       rules: [
-	    {
+        {
           test: /formidable(\\|\/).*js$/,
           use: 'null-loader'
         },
@@ -117,6 +117,8 @@ function getConfig(env) {
       console: false,
       process: false,
       Buffer: true,
+      __dirname: false,
+      __filename: false,
     },
     plugins: [
       new webpack.DefinePlugin({ "global.GENTLY": false, "process.version": "'v10.9.0'" }),
