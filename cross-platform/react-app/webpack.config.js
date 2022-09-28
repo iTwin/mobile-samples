@@ -46,6 +46,10 @@ function getConfig(env) {
     // don't really use, but trigger exceptions at run-time in their startup
     // initialization.
     module: {
+      // don't parse @bentley/imodeljs-native/NativeLibrary.js,
+      // we don't need to pull in the Native here as it gets loaded by the runtime
+      // via (process as any)._linkedBinding("iModelJsNative")
+      noParse: [/NativeLibrary.js$/],
       rules: [
         {
           test: /formidable(\\|\/).*js$/,
