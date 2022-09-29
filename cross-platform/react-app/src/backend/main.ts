@@ -5,7 +5,7 @@
 import * as path from "path";
 import { Presentation, PresentationManagerMode } from "@itwin/presentation-backend";
 import { LogFunction, Logger, LoggingMetaData, LogLevel } from "@itwin/core-bentley";
-import { IOSHost, MobileHostOpts } from "@itwin/core-mobile/lib/cjs/MobileBackend";
+import { MobileHost, MobileHostOpts } from "@itwin/core-mobile/lib/cjs/MobileBackend";
 import { getSupportedRpcs } from "../common/rpcs";
 import { IModelHostConfiguration, IpcHost } from "@itwin/core-backend";
 import { BackendIModelsAccess } from "@itwin/imodels-access-backend";
@@ -29,7 +29,7 @@ export const prodIssuerUrl = "https://ims.bentley.com/";
   const options: MobileHostOpts = {
     iModelHost,
   };
-  await IOSHost.startup(options);
+  await MobileHost.startup(options);
 
   const backendRoot = path.dirname(process.mainModule!.filename);
   const assetsRoot = backendRoot ? path.join(backendRoot, "assets") : "assets";

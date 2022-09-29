@@ -4,7 +4,7 @@
 *--------------------------------------------------------------------------------------------*/
 import React from "react";
 import { combineReducers, createStore, Store } from "redux";
-import { IOSApp, IOSAppOpts } from "@itwin/core-mobile/lib/cjs/MobileFrontend";
+import { MobileApp, MobileAppOpts } from "@itwin/core-mobile/lib/cjs/MobileFrontend";
 import { IModelApp, IModelConnection, SnapshotConnection, ToolAssistanceInstructions } from "@itwin/core-frontend";
 import { AppNotificationManager, FrameworkReducer, FrameworkState, UiFramework } from "@itwin/appui-react";
 import { Presentation } from "@itwin/presentation-frontend";
@@ -105,7 +105,7 @@ function useAppState(onInitialize?: () => Promise<void>) {
         await Messenger.initialize();
         Messenger.sendMessage("loading");
         loadUrlSearchParams();
-        const opts: IOSAppOpts = {
+        const opts: MobileAppOpts = {
           iModelApp: {
             rpcInterfaces: getSupportedRpcs(),
             notifications: new AppToolAssistanceNotificationManager(),
@@ -127,7 +127,7 @@ function useAppState(onInitialize?: () => Promise<void>) {
             dpiAwareLOD: true, // Reduce tile LOD for low resolution
           };
         }
-        await IOSApp.startup(opts);
+        await MobileApp.startup(opts);
         await UiFramework.initialize(appReduxStore);
         await Presentation.initialize();
         await MobileUi.initialize(IModelApp.localization);

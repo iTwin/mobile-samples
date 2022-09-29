@@ -46,8 +46,12 @@ function getConfig(env) {
     // don't really use, but trigger exceptions at run-time in their startup
     // initialization.
     module: {
+      // don't parse @bentley/imodeljs-native/NativeLibrary.js,
+      // we don't need to pull in the Native here as it gets loaded by the runtime
+      // via (process as any)._linkedBinding("iModelJsNative")
+      noParse: [/NativeLibrary.js$/],
       rules: [
-	    {
+        {
           test: /formidable(\\|\/).*js$/,
           use: 'null-loader'
         },
@@ -117,6 +121,8 @@ function getConfig(env) {
       console: false,
       process: false,
       Buffer: true,
+      __dirname: false,
+      __filename: false,
     },
     plugins: [
       new webpack.DefinePlugin({ "global.GENTLY": false, "process.version": "'v10.9.0'" }),
