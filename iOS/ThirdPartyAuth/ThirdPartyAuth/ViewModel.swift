@@ -32,7 +32,7 @@ class ViewModel: ObservableObject {
     }
     
     init() {
-        application.registerMessageHandler("goBack") {
+        application.registerQueryHandler("goBack") {
             self.page = .login
         }
     }
