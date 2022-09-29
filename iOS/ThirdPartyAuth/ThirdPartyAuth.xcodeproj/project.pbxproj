@@ -16,6 +16,7 @@
 		1F39289D27B1A88E00150E00 /* AuthModelApplication.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F39289C27B1A88E00150E00 /* AuthModelApplication.swift */; };
 		1F39289F27B1AAB300150E00 /* ModelView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F39289E27B1AAB300150E00 /* ModelView.swift */; };
 		1F7A834627C57FEC00DEFFA9 /* ViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F7A834527C57FEC00DEFFA9 /* ViewModel.swift */; };
+		1FBE84B728E61C8D00A11E28 /* TokenServerAuthClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1FBE84B628E61C8D00A11E28 /* TokenServerAuthClient.swift */; };
 		C3663E4F279769C100EE6B43 /* ThirdPartyAuthApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3663E4E279769C100EE6B43 /* ThirdPartyAuthApp.swift */; };
 		C3663E51279769C100EE6B43 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3663E50279769C100EE6B43 /* ContentView.swift */; };
 		C3663E53279769C300EE6B43 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = C3663E52279769C300EE6B43 /* Assets.xcassets */; };
@@ -33,6 +34,7 @@
 		1F39289C27B1A88E00150E00 /* AuthModelApplication.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthModelApplication.swift; sourceTree = "<group>"; };
 		1F39289E27B1AAB300150E00 /* ModelView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModelView.swift; sourceTree = "<group>"; };
 		1F7A834527C57FEC00DEFFA9 /* ViewModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ViewModel.swift; sourceTree = "<group>"; };
+		1FBE84B628E61C8D00A11E28 /* TokenServerAuthClient.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TokenServerAuthClient.swift; sourceTree = "<group>"; };
 		C3663E4B279769C100EE6B43 /* ThirdPartyAuth.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ThirdPartyAuth.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		C3663E4E279769C100EE6B43 /* ThirdPartyAuthApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThirdPartyAuthApp.swift; sourceTree = "<group>"; };
 		C3663E50279769C100EE6B43 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
@@ -94,6 +96,7 @@
 				1F1C639327AE028F00CE8F89 /* LoginView.swift */,
 				1F39289E27B1AAB300150E00 /* ModelView.swift */,
 				C3663E4E279769C100EE6B43 /* ThirdPartyAuthApp.swift */,
+				1FBE84B628E61C8D00A11E28 /* TokenServerAuthClient.swift */,
 				1F7A834527C57FEC00DEFFA9 /* ViewModel.swift */,
 				C3663E52279769C300EE6B43 /* Assets.xcassets */,
 				C3663E54279769C300EE6B43 /* Preview Content */,
@@ -212,6 +215,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				1F1C639D27B1972A00CE8F89 /* DocumentPicker.swift in Sources */,
+				1FBE84B728E61C8D00A11E28 /* TokenServerAuthClient.swift in Sources */,
 				1F7A834627C57FEC00DEFFA9 /* ViewModel.swift in Sources */,
 				1F39289D27B1A88E00150E00 /* AuthModelApplication.swift in Sources */,
 				1F1C639427AE028F00CE8F89 /* LoginView.swift in Sources */,
