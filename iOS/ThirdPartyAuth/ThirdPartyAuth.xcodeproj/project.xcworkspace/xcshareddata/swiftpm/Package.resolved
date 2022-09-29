@@ -1,106 +1,86 @@
 {
-  "object": {
-    "pins": [
-      {
-        "package": "AppAuth",
-        "repositoryURL": "https://github.com/openid/AppAuth-iOS.git",
-        "state": {
-          "branch": null,
-          "revision": "01131d68346c8ae552961c768d583c715fbe1410",
-          "version": "1.4.0"
-        }
-      },
-      {
-        "package": "Auth0",
-        "repositoryURL": "https://github.com/auth0/Auth0.swift.git",
-        "state": {
-          "branch": null,
-          "revision": "e7feca5a575fe0ac074c14407bdb92e868a31f37",
-          "version": "1.38.0"
-        }
-      },
-      {
-        "package": "PMKCoreLocation",
-        "repositoryURL": "https://github.com/fallingspirit/CoreLocation",
-        "state": {
-          "branch": null,
-          "revision": "0d7f0e88f3f56a82a79553af651c2dea0f69bbcf",
-          "version": "3.1.2"
-        }
-      },
-      {
-        "package": "PMKFoundation",
-        "repositoryURL": "https://github.com/PromiseKit/Foundation.git",
-        "state": {
-          "branch": null,
-          "revision": "985f17fa69ee0e5b7eb3ff9be87ffc4e05fc0927",
-          "version": "3.4.0"
-        }
-      },
-      {
-        "package": "JWTDecode",
-        "repositoryURL": "https://github.com/auth0/JWTDecode.swift.git",
-        "state": {
-          "branch": null,
-          "revision": "3cd207fb9e943b6168a117baa3936c823204c2dc",
-          "version": "2.6.3"
-        }
-      },
-      {
-        "package": "itwin-mobile-native",
-        "repositoryURL": "https://github.com/iTwin/mobile-native-ios",
-        "state": {
-          "branch": null,
-          "revision": "2a6d69a5fa5188c01582873fc454de2580cc509f",
-          "version": "3.3.16"
-        }
-      },
-      {
-        "package": "itwin-mobile-sdk",
-        "repositoryURL": "https://github.com/iTwin/mobile-sdk-ios.git",
-        "state": {
-          "branch": null,
-          "revision": "9325cce695d5e9ab060f42fca67316624f0db034",
-          "version": "0.10.32"
-        }
-      },
-      {
-        "package": "PromiseKit",
-        "repositoryURL": "https://github.com/mxcl/PromiseKit",
-        "state": {
-          "branch": null,
-          "revision": "7b07b214dacecb22ca4b680531c7e981d52483f9",
-          "version": "6.16.3"
-        }
-      },
-      {
-        "package": "Reachability",
-        "repositoryURL": "https://github.com/ashleymills/Reachability.swift",
-        "state": {
-          "branch": null,
-          "revision": "c01bbdf2d633cf049ae1ed1a68a2020a8bda32e2",
-          "version": "5.1.0"
-        }
-      },
-      {
-        "package": "ShowTime",
-        "repositoryURL": "https://github.com/KaneCheshire/ShowTime.git",
-        "state": {
-          "branch": "main",
-          "revision": "f4e976931fc5f9b7a7d011f40c62a250c4ff53ab",
-          "version": null
-        }
-      },
-      {
-        "package": "SimpleKeychain",
-        "repositoryURL": "https://github.com/auth0/SimpleKeychain.git",
-        "state": {
-          "branch": null,
-          "revision": "b355c569efcd409e252ccbb500d9fc2713b4d64d",
-          "version": "0.12.5"
-        }
+  "pins" : [
+    {
+      "identity" : "appauth-ios",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/openid/AppAuth-iOS.git",
+      "state" : {
+        "revision" : "3d36a58a2b736f7bc499453e996a704929b25080",
+        "version" : "1.6.0"
       }
-    ]
-  },
-  "version": 1
+    },
+    {
+      "identity" : "asynclocationkit",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/AsyncSwift/AsyncLocationKit.git",
+      "state" : {
+        "revision" : "c4f0e716894699507c87a16ff961397a0d0db8ad",
+        "version" : "1.5.1"
+      }
+    },
+    {
+      "identity" : "auth0.swift",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/auth0/Auth0.swift.git",
+      "state" : {
+        "revision" : "e7feca5a575fe0ac074c14407bdb92e868a31f37",
+        "version" : "1.38.0"
+      }
+    },
+    {
+      "identity" : "jwtdecode.swift",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/auth0/JWTDecode.swift.git",
+      "state" : {
+        "revision" : "3cd207fb9e943b6168a117baa3936c823204c2dc",
+        "version" : "2.6.3"
+      }
+    },
+    {
+      "identity" : "mobile-native-ios",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/iTwin/mobile-native-ios",
+      "state" : {
+        "revision" : "2a6d69a5fa5188c01582873fc454de2580cc509f",
+        "version" : "3.3.16"
+      }
+    },
+    {
+      "identity" : "mobile-sdk-ios",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/iTwin/mobile-sdk-ios.git",
+      "state" : {
+        "revision" : "9325cce695d5e9ab060f42fca67316624f0db034",
+        "version" : "0.10.32"
+      }
+    },
+    {
+      "identity" : "reachability.swift",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/ashleymills/Reachability.swift",
+      "state" : {
+        "revision" : "c01bbdf2d633cf049ae1ed1a68a2020a8bda32e2",
+        "version" : "5.1.0"
+      }
+    },
+    {
+      "identity" : "showtime",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/KaneCheshire/ShowTime.git",
+      "state" : {
+        "branch" : "main",
+        "revision" : "f4e976931fc5f9b7a7d011f40c62a250c4ff53ab"
+      }
+    },
+    {
+      "identity" : "simplekeychain",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/auth0/SimpleKeychain.git",
+      "state" : {
+        "revision" : "b355c569efcd409e252ccbb500d9fc2713b4d64d",
+        "version" : "0.12.5"
+      }
+    }
+  ],
+  "version" : 2
 }
