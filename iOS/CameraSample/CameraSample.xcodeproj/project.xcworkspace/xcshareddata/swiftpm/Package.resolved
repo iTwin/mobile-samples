@@ -1,79 +1,59 @@
 {
-  "object": {
-    "pins": [
-      {
-        "package": "AppAuth",
-        "repositoryURL": "https://github.com/openid/AppAuth-iOS.git",
-        "state": {
-          "branch": null,
-          "revision": "01131d68346c8ae552961c768d583c715fbe1410",
-          "version": "1.4.0"
-        }
-      },
-      {
-        "package": "PMKCoreLocation",
-        "repositoryURL": "https://github.com/fallingspirit/CoreLocation",
-        "state": {
-          "branch": null,
-          "revision": "0d7f0e88f3f56a82a79553af651c2dea0f69bbcf",
-          "version": "3.1.2"
-        }
-      },
-      {
-        "package": "PMKFoundation",
-        "repositoryURL": "https://github.com/PromiseKit/Foundation.git",
-        "state": {
-          "branch": null,
-          "revision": "985f17fa69ee0e5b7eb3ff9be87ffc4e05fc0927",
-          "version": "3.4.0"
-        }
-      },
-      {
-        "package": "itwin-mobile-native",
-        "repositoryURL": "https://github.com/iTwin/mobile-native-ios",
-        "state": {
-          "branch": null,
-          "revision": "b1c80e3e7f930ffc33945d6854808426d91e1fec",
-          "version": "3.2.10"
-        }
-      },
-      {
-        "package": "itwin-mobile-sdk",
-        "repositoryURL": "https://github.com/iTwin/mobile-sdk-ios.git",
-        "state": {
-          "branch": null,
-          "revision": "37dbf0524e0c184b96d08ea7c1fac2ad2c0a0b2a",
-          "version": "0.10.26"
-        }
-      },
-      {
-        "package": "PromiseKit",
-        "repositoryURL": "https://github.com/mxcl/PromiseKit",
-        "state": {
-          "branch": null,
-          "revision": "93c8d41ce96ed78f36c3948be396d76f3ca3de1b",
-          "version": "6.16.2"
-        }
-      },
-      {
-        "package": "Reachability",
-        "repositoryURL": "https://github.com/ashleymills/Reachability.swift",
-        "state": {
-          "branch": null,
-          "revision": "c01bbdf2d633cf049ae1ed1a68a2020a8bda32e2",
-          "version": "5.1.0"
-        }
-      },
-      {
-        "package": "ShowTime",
-        "repositoryURL": "https://github.com/KaneCheshire/ShowTime.git",
-        "state": {
-          "branch": null,
-          "revision": "f4e976931fc5f9b7a7d011f40c62a250c4ff53ab",
-          "version": "2.5.3"
-        }
+  "pins" : [
+    {
+      "identity" : "appauth-ios",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/openid/AppAuth-iOS.git",
+      "state" : {
+        "revision" : "3d36a58a2b736f7bc499453e996a704929b25080",
+        "version" : "1.6.0"
       }
-    ]
-  },
-  "version": 1
+    },
+    {
+      "identity" : "asynclocationkit",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/AsyncSwift/AsyncLocationKit.git",
+      "state" : {
+        "revision" : "c4f0e716894699507c87a16ff961397a0d0db8ad",
+        "version" : "1.5.1"
+      }
+    },
+    {
+      "identity" : "mobile-native-ios",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/iTwin/mobile-native-ios",
+      "state" : {
+        "revision" : "2a6d69a5fa5188c01582873fc454de2580cc509f",
+        "version" : "3.3.16"
+      }
+    },
+    {
+      "identity" : "mobile-sdk-ios",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/iTwin/mobile-sdk-ios.git",
+      "state" : {
+        "revision" : "9325cce695d5e9ab060f42fca67316624f0db034",
+        "version" : "0.10.32"
+      }
+    },
+    {
+      "identity" : "reachability.swift",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/ashleymills/Reachability.swift",
+      "state" : {
+        "revision" : "c01bbdf2d633cf049ae1ed1a68a2020a8bda32e2",
+        "version" : "5.1.0"
+      }
+    },
+    {
+      "identity" : "showtime",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/KaneCheshire/ShowTime.git",
+      "state" : {
+        "revision" : "f4e976931fc5f9b7a7d011f40c62a250c4ff53ab",
+        "version" : "2.5.3"
+      }
+    }
+  ],
+  "version" : 2
 }
