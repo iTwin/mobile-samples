@@ -6,7 +6,20 @@ These samples make use of the iTwin [`mobile-sdk-android`](https://github.com/iT
 
 ## Client ID Setup
 
-Before building the samples, you must configure a Client ID for yourself. To do so, follow the instructions [here](../cross-platform/ClientID.md).
+Before running any samples, you must configure a Client ID for yourself. To do so, follow the instructions [here](../cross-platform/ClientID.md).
+
+### Android-specific Client IDs
+
+For the Android samples, you need to create a custom redirect URI for each one that you want to run. To do that:
+
+1. Go to <https://developer.bentley.com/my-apps/>.
+1. Select the application that you created above.
+1. Hit the `+` to the right of the last Redirect URI.
+1. Enter the sample-specific redirect URI. The URIs are:
+    * iTwinStarter: `com.bentley.sample.itwinstarter://app/signin-callback`
+    * CameraSample: `com.bentley.sample.camera://app/signin-callback`
+    * ThirdPartyAuth: `com.bentley.sample.thirdpartyauth://app/signin-callback`
+1. Hit `Save`.
 
 ## ITMSamples.properties Setup
 
