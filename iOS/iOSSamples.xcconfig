@@ -7,7 +7,7 @@
 
 // If you us Xcode to select your development team, it will update the project.pbxproj file for
 // your Xcode project. That modification will tell you the value to use for YOUR_DEVELOPMENT_TEAM
-// for the following value. Once you set this value, you can rever the changes to project.pbproj,
+// for the following value. Once you set this value, you can revert the changes to project.pbproj,
 // and things will still build correctly.
 // DEVELOPMENT_TEAM = YOUR_DEVELOPMENT_TEAM
 
