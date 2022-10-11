@@ -18,7 +18,7 @@ typealias PickUriContractType = ActivityResultContract<JsonValue?, Uri?>
  * @property destDir The optional external files directory to copy the Uri to.
  *                   Must be non-null and [shouldCopyUri] must return true for the copying to occur.
  */
-open class PickUriContract(var destDir: String? = null) : PickUriContractType() {
+open class PickUriContract(@Suppress("MemberVisibilityCanBePrivate") var destDir: String? = null) : PickUriContractType() {
     protected lateinit var context: Context
 
     /**
