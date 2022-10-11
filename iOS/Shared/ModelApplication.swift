@@ -25,11 +25,7 @@ class ModelApplication: ITMApplication {
             self.webView.reload()
         }
         registerQueryHandler("getBimDocuments") { () -> [String] in
-            if #available(iOS 14.0, *) {
-                return DocumentHelper.getDocumentsWith(extension: UTType.bim_iModel.preferredFilenameExtension!)
-            } else {
-                return DocumentHelper.getDocumentsWith(extension: "bim")
-            }
+            return DocumentHelper.getBimDocuments()
         }
         
         var showtimeEnabled = false

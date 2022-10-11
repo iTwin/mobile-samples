@@ -93,6 +93,16 @@ class DocumentHelper {
         }
         return []
     }
+    
+    /// Gets `*.bim` files in the documents directory.
+    /// - Returns: An array of file paths to the found documents, could be empty if none found.
+    public static func getBimDocuments() -> [String] {
+        if #available(iOS 14.0, *) {
+            return DocumentHelper.getDocumentsWith(extension: UTType.bim_iModel.preferredFilenameExtension!)
+        } else {
+            return DocumentHelper.getDocumentsWith(extension: "bim")
+        }
+    }
 
     /// Formulates a `URL` in the app's documents directory for the given source file.
     /// - Parameter srcUrl: The source URL that we will be opening/copying to this application.
