@@ -16,7 +16,7 @@ class ModelApplication: ITMApplication {
         super.init()
         ITMApplication.logger = PrintLogger()
         registerQueryHandler("didFinishLaunching") {
-            self.itmMessenger.frontendLaunchSuceeded()
+            self.itmMessenger.frontendLaunchSucceeded()
         }
         registerQueryHandler("loading") {
             self.webView.isHidden = false
