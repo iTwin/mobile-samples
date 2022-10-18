@@ -8,7 +8,7 @@ import Auth0
 
 struct LoginView: View {
     @ObservedObject var viewModel: ViewModel
-    typealias CredentialsCallback = (_ credentials: Credentials?, _ error: Error?) -> ()
+    typealias CredentialsCallback = (_ credentials: Credentials?, _ error: Error?) -> Void
     var callback: CredentialsCallback
     @State private var showingAlert = false
     @State private var alertTitle = ""
