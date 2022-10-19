@@ -74,22 +74,18 @@ class DocumentHelper {
     /// - Returns: An array of file paths to the found documents, could be empty if none found.
     public static func getDocumentsWith(extension matchExtension: String) -> [String] {
         let fm = FileManager.default
-        let lcMatchExtension = matchExtension.lowercased()
         let documentsDirs = NSSearchPathForDirectoriesInDomains(.documentDirectory, .userDomainMask, true)
         if documentsDirs.count < 1 {
             return []
         }
         let documentsDir = documentsDirs[0]
         if let allDocuments = try? fm.contentsOfDirectory(atPath: documentsDir) {
-            var bimDocuments: [String] = []
             let nsDocumentsDir = NSString(string: documentsDir)
-            for document in allDocuments {
-                let ext = NSString(string: document).pathExtension
-                if ext.lowercased() == lcMatchExtension {
-                    bimDocuments.append(nsDocumentsDir.appendingPathComponent(document))
-                }
-            }
-            return bimDocuments
+            return Array(allDocuments
+                .lazy
+                .filter { NSString(string: $0).pathExtension.caseInsensitiveCompare(matchExtension) == .orderedSame }
+                .map { nsDocumentsDir.appendingPathComponent($0) }
+            )
         }
         return []
     }
