@@ -64,6 +64,9 @@ static def readITMAppConfig (project) {
         }
         contents["ITMAPPLICATION_BASE_URL"] = "http://${appHost}:${debugPort}"
     }
+    if (project.parent.hasProperty("redirect_uri_scheme")) {
+        contents['ITMAPPLICATION_REDIRECT_URI'] = "${project.parent.redirect_uri_scheme}://app/signin-callback"
+    }
     extractProperties(properties, "itmapplication", contents)
     extractProperties(properties, "itmsample", contents)
     return contents

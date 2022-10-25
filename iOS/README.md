@@ -44,6 +44,7 @@ __Note:__ The samples cannot currently be built for or run on the iOS Simulator 
 1. Select the only entry under TARGETS.
 1. Select the Signing & Capabilities tab.
 1. Select your team from the Team popup menu.
+1. Use `git diff` to see the team ID value that was added to project.pbxproj after the above change, and then set the `DEVELOPMENT_TEAM` value in ITMApplication.xcconfig to contain that value. You can then revert the change to project.pbxproj.
 1. Run.
 1. If you get an error dialog that says `Could not connect to React debug server.`, the first thing to try is to uncomment the `ITMAPPLICATION_USE_IP = YES` line in iOSSamples.xcconfig.
 1. Once a sample is installed on your device, you can use Finder to copy a Snapshot iModel to the device if you want to open local snapshot models in the sample:

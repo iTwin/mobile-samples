@@ -3,18 +3,20 @@ plugins {
     id 'org.jetbrains.kotlin.android'
 }
 
+project.parent.ext.redirect_uri_scheme = "com.bentley.sample.camera"
+
 android {
-    compileSdk 32
+    compileSdk 33
 
     defaultConfig {
         applicationId "com.bentley.sample.camera"
         minSdk 24
-        targetSdk 32
+        targetSdk 33
         versionCode 1
         versionName "1.0"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
-        manifestPlaceholders = ['appAuthRedirectScheme': 'imodeljs']
+        manifestPlaceholders = ['appAuthRedirectScheme': "${project.parent.redirect_uri_scheme}"]
     }
 
     buildTypes {
@@ -37,19 +39,18 @@ android {
 
 dependencies {
 
-    implementation 'androidx.core:core-ktx:1.8.0'
-    implementation 'androidx.appcompat:appcompat:1.5.0'
+    implementation 'androidx.core:core-ktx:1.9.0'
+    implementation 'androidx.appcompat:appcompat:1.5.1'
     implementation 'com.google.android.material:material:1.6.1'
     implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
     implementation "androidx.lifecycle:lifecycle-runtime-ktx:2.5.1"
-    implementation "androidx.activity:activity-ktx:1.5.1"
+    implementation "androidx.activity:activity-ktx:1.6.0"
     implementation 'com.eclipsesource.minimal-json:minimal-json:0.9.5'
     implementation project(path: ':itmsamplesshared')
     testImplementation 'junit:junit:4.13.2'
     androidTestImplementation 'androidx.test.ext:junit:1.1.3'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.4.0'
-    releaseImplementation 'com.github.itwin:mobile-sdk-android:0.10.31'
-    debugImplementation 'com.github.itwin:mobile-sdk-android:0.10.31-debug'
+    implementation 'com.github.itwin:mobile-sdk-android:0.10.32'
 }
 
 preBuild.dependsOn ":itmsamplesshared:genITMAppConfig"

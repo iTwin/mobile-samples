@@ -3,13 +3,15 @@ plugins {
     id 'org.jetbrains.kotlin.android'
 }
 
+project.parent.ext.redirect_uri_scheme = "com.bentley.sample.thirdpartyauth"
+
 android {
-    compileSdk 32
+    compileSdk 33
 
     defaultConfig {
-        applicationId "com.bentley.sample.ThirdPartyAuth"
+        applicationId "com.bentley.sample.thirdpartyauth"
         minSdk 24
-        targetSdk 32
+        targetSdk 33
         versionCode 1
         versionName "1.0"
 
@@ -18,7 +20,7 @@ android {
             useSupportLibrary true
         }
         manifestPlaceholders = [
-                'appAuthRedirectScheme': 'imodeljs',
+                'appAuthRedirectScheme': "${project.parent.redirect_uri_scheme}",
                 'auth0Domain'          : '@string/ITMSAMPLE_AUTH0_DOMAIN',
                 'auth0Scheme'          : '@string/ITMSAMPLE_AUTH0_SCHEME'
         ]
@@ -52,15 +54,15 @@ android {
 }
 
 dependencies {
-    implementation 'androidx.appcompat:appcompat:1.5.0'
-    implementation 'androidx.core:core-ktx:1.7.0'
+    implementation 'androidx.appcompat:appcompat:1.5.1'
+    implementation 'androidx.core:core-ktx:1.9.0'
     implementation "androidx.compose.ui:ui:$compose_version"
     implementation "androidx.compose.material:material:$compose_version"
     implementation "androidx.compose.ui:ui-tooling-preview:$compose_version"
     implementation "androidx.compose.runtime:runtime-livedata:$compose_version"
     implementation 'androidx.lifecycle:lifecycle-runtime-ktx:2.5.1'
     implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.5.1'
-    implementation 'androidx.activity:activity-compose:1.5.1'
+    implementation 'androidx.activity:activity-compose:1.6.0'
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:1.6.4"
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.4")
     implementation 'com.squareup.retrofit2:retrofit:2.9.0'
@@ -75,7 +77,7 @@ dependencies {
     implementation 'com.auth0.android:auth0:2.8.0'
     implementation 'com.auth0.android:jwtdecode:2.0.1'
 
-    implementation 'com.github.itwin:mobile-sdk-android:0.10.31'
+    implementation 'com.github.itwin:mobile-sdk-android:0.10.32'
 }
 
 apply from: "$rootDir/../Shared/ITMAppConfig.gradle"
