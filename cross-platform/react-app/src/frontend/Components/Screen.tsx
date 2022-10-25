@@ -91,7 +91,6 @@ export function Screen(props: ScreenProps = {}) {
 
 export function presentError(formatKey: string, error: any, namespace = "App", showStatusBar = true) {
   const errorMessage = (error instanceof Error) ? error.message : error;
-  // eslint-disable-next-line @typescript-eslint/no-floating-promises
   presentAlert({
     title: i18n("Shared", "Error"),
     message: i18n(namespace, formatKey, { error: errorMessage }),

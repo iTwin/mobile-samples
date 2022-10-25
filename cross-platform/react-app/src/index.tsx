@@ -26,5 +26,4 @@ async function render() {
   );
 }
 
-// eslint-disable-next-line @typescript-eslint/no-floating-promises
 render();

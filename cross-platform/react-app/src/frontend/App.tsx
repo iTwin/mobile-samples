@@ -61,7 +61,6 @@ const rootReducer = combineReducers({
   frameworkState: FrameworkReducer,
 });
 const anyWindow: any = window;
-// eslint-disable-next-line deprecation/deprecation
 const appReduxStore: Store<RootState> = createStore(rootReducer, anyWindow.__REDUX_DEVTOOLS_EXTENSION__ && anyWindow.__REDUX_DEVTOOLS_EXTENSION__());
 
 class AppToolAssistanceNotificationManager extends AppNotificationManager {
@@ -121,7 +120,6 @@ function useAppState(onInitialize?: () => Promise<void>) {
           // states that the ! is unnecessary. Since it keeps breaking the build for no reason,
           // I am including the !, and adding an eslint comment to disable the associated warning.
           // I am 99% sure that a TypeScript compiler bug is causing this inconsistent behavior.
-          // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion
           opts.iModelApp!.renderSys = {
             devicePixelRatioOverride: 0.25, // Reduce resolution
             dpiAwareLOD: true, // Reduce tile LOD for low resolution
@@ -151,7 +149,7 @@ function useAppState(onInitialize?: () => Promise<void>) {
     // to prevent it from initializing more than once.
     if (!initialized) {
       setInitialized(true);
-      initialize(); // eslint-disable-line @typescript-eslint/no-floating-promises
+      initialize();
     }
   }, [pushActiveInfo, initialized, onInitialize]);
 
@@ -218,7 +216,7 @@ function useAppState(onInitialize?: () => Promise<void>) {
           // switched to undefined.
           setOpenUrlPath(modelPath);
         } else {
-          handleOpen(modelPath, SnapshotConnection.openFile(modelPath)); // eslint-disable-line @typescript-eslint/no-floating-promises
+          handleOpen(modelPath, SnapshotConnection.openFile(modelPath));
         }
       });
     }
@@ -234,9 +232,9 @@ function useAppState(onInitialize?: () => Promise<void>) {
       setOpenUrlPath(undefined);
       const openFunc = async () => {
         // Open the requested snapshot iModel.
-        handleOpen(modelPath, SnapshotConnection.openFile(modelPath)); // eslint-disable-line @typescript-eslint/no-floating-promises
+        handleOpen(modelPath, SnapshotConnection.openFile(modelPath));
       };
-      openFunc(); // eslint-disable-line @typescript-eslint/no-floating-promises
+      openFunc();
     }
   }, [iModel, openUrlPath, handleOpen]);
 

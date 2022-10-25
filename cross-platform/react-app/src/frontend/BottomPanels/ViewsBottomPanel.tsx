@@ -49,7 +49,6 @@ export function ViewsBottomPanel(props: ViewsBottomPanelProps) {
         // undefined.
         const getThumbnail = async (viewSpecId: string) => {
           try {
-            // eslint-disable-next-line deprecation/deprecation
             return await iModel.views.getThumbnail(viewSpecId);
           } catch (ex) {
             return undefined;
@@ -89,9 +88,9 @@ export function ViewsBottomPanel(props: ViewsBottomPanelProps) {
       // Display the loaded ViewSpecs with generic view icons.
       setViewSpecs(sortedResult);
       // Load the thumbnails asynchronously, then display them as they are loaded.
-      loadThumbnails(sortedResult); // eslint-disable-line @typescript-eslint/no-floating-promises
+      loadThumbnails(sortedResult);
     };
-    loadViewSpecs(); // eslint-disable-line @typescript-eslint/no-floating-promises
+    loadViewSpecs();
   }, [iModel.views]);
 
   const handleChangeView = React.useCallback((viewSpec: IModelConnection.ViewSpec) => {
@@ -101,7 +100,7 @@ export function ViewsBottomPanel(props: ViewsBottomPanelProps) {
       IModelApp.viewManager.getFirstOpenView()?.changeView(viewState);
       onViewSelected?.();
     };
-    changeView(); // eslint-disable-line @typescript-eslint/no-floating-promises
+    changeView();
   }, [iModel.views, onViewSelected]);
 
   const viewButtons = viewSpecs.map((viewSpec, index) => {

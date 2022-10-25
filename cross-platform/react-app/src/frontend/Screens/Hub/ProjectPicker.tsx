@@ -87,7 +87,7 @@ export function ProjectPicker(props: ProjectPickerProps) {
       }
       setLoading(false);
     };
-    fetchProjects(); // eslint-disable-line @typescript-eslint/no-floating-promises
+    fetchProjects();
   }, [isMountedRef, onError, projectSource, search]);
 
   const loadMore = React.useCallback(async () => {
@@ -112,7 +112,7 @@ export function ProjectPicker(props: ProjectPickerProps) {
   const onScroll = React.useCallback((element: HTMLElement) => {
     const atBottom = element.scrollTop > 0 && element.scrollHeight - element.scrollTop <= element.clientHeight;
     if (atBottom) {
-      loadMore(); // eslint-disable-line @typescript-eslint/no-floating-promises
+      loadMore();
     }
   }, [loadMore]);
 

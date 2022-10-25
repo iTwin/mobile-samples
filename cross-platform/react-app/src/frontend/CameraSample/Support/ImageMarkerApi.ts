@@ -384,7 +384,7 @@ export class ImageMarkerApi {
     this._decorator?.clearMarkers();
     const locations = ImageLocations.getLocations(iModelId);
     for (const [url, location] of locations) {
-      this.addMarker(location, url); // eslint-disable-line @typescript-eslint/no-floating-promises
+      this.addMarker(location, url);
     }
   }
 

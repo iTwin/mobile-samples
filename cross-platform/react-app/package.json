@@ -66,9 +66,9 @@
     "@itwin/core-react": "3.3.5",
     "@itwin/ecschema-metadata": "3.3.5",
     "@itwin/imodel-components-react": "3.3.5",
-    "@itwin/imodels-access-backend": "1.0.1",
-    "@itwin/imodels-access-frontend": "1.0.1",
-    "@itwin/imodels-client-management": "1.0.1",
+    "@itwin/imodels-access-backend": "2.2.0",
+    "@itwin/imodels-access-frontend": "2.2.0",
+    "@itwin/imodels-client-management": "2.2.0",
     "@itwin/linear-referencing-backend": "3.3.5",
     "@itwin/linear-referencing-common": "3.3.5",
     "@itwin/measure-tools-react": "^0.8.0",
@@ -95,12 +95,7 @@
     "plugins": [
       "@itwin"
     ],
-    "extends": [
-      "plugin:@itwin/ui",
-      "plugin:@itwin/itwinjs-recommended",
-      "react-app",
-      "react-app/jest"
-    ],
+    "extends": [],
     "rules": {
       "no-console": "off",
       "@itwin/no-internal-barrel-imports": "off",

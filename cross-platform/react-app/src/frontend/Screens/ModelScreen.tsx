@@ -123,7 +123,6 @@ export function ModelScreen(props: ModelScreenProps) {
       navigator.geolocation.getCurrentPosition((position: GeolocationPosition) => {
         const latitude = position.coords.latitude;
         const longitude = position.coords.longitude;
-        // eslint-disable-next-line @typescript-eslint/no-floating-promises
         presentAlert({
           title: locationLabel,
           message: i18n("ModelScreen", "LocationFormat", { latitude, longitude }),
@@ -135,7 +134,6 @@ export function ModelScreen(props: ModelScreenProps) {
         });
       }, (positionError: GeolocationPositionError) => {
         const error = positionError.message;
-        // eslint-disable-next-line @typescript-eslint/no-floating-promises
         presentAlert({
           title: errorLabel,
           message: i18n("ModelScreen", "LocationErrorFormat", { error }),
@@ -148,7 +146,7 @@ export function ModelScreen(props: ModelScreenProps) {
       });
     };
     const handleFitView = () => {
-      IModelApp.tools.run(FitViewTool.toolId, IModelApp.viewManager.getFirstOpenView(), true); // eslint-disable-line @typescript-eslint/no-floating-promises
+      IModelApp.tools.run(FitViewTool.toolId, IModelApp.viewManager.getFirstOpenView(), true);
     };
     const actions: AlertAction[] = [
       {
@@ -206,7 +204,6 @@ export function ModelScreen(props: ModelScreenProps) {
               },
             ],
           });
-          // eslint-disable-next-line @typescript-eslint/no-floating-promises
           presentAlert({
             title: youChoseLabel,
             message: result,
@@ -311,12 +308,12 @@ export function ModelScreen(props: ModelScreenProps) {
   }, [iModel, isMountedRef]);
 
   const toggleCamera = React.useCallback(() => {
-    IModelApp.tools.run(ViewToggleCameraTool.toolId, IModelApp.viewManager.getFirstOpenView()); // eslint-disable-line @typescript-eslint/no-floating-promises
+    IModelApp.tools.run(ViewToggleCameraTool.toolId, IModelApp.viewManager.getFirstOpenView());
   }, []);
 
   // Effect to apply the default view state after component is loaded.
   React.useEffect(() => {
-    applyDefaultView(); // eslint-disable-line @typescript-eslint/no-floating-promises
+    applyDefaultView();
   }, [applyDefaultView]);
 
   // The useTheme hook below does not currently detect theme changes on the fly if "os" is

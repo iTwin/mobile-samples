@@ -17,7 +17,6 @@ import { BackendIModelsAccess } from "@itwin/imodels-access-backend";
 export const qaIssuerUrl = "https://qa-ims.bentley.com/";
 export const prodIssuerUrl = "https://ims.bentley.com/";
 
-// eslint-disable-next-line @typescript-eslint/no-floating-promises
 (async () => {
   // Initialize logging
   redirectLoggingToFrontend();

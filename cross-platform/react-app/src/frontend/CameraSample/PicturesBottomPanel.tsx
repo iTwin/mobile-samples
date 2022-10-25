@@ -59,7 +59,7 @@ export function PicturesBottomPanel(props: PicturesBottomPanelProps) {
   }, [iModel]);
 
   React.useEffect(() => {
-    reload(); // eslint-disable-line @typescript-eslint/no-floating-promises
+    reload();
   }, [reload]);
 
   useUiEvent(async () => reload(), ImageMarkerApi.onMarkerAdded);
@@ -94,7 +94,7 @@ export function PicturesBottomPanel(props: PicturesBottomPanelProps) {
           className="share-button"
           iconSpec={getShareIcon()}
           onClick={(e) => {
-            ImageCache.shareImages([pictureUrl], e.currentTarget.parentElement?.getBoundingClientRect()); // eslint-disable-line @typescript-eslint/no-floating-promises
+            ImageCache.shareImages([pictureUrl], e.currentTarget.parentElement?.getBoundingClientRect());
           }}
         />}
         {!selectMode && <NavigationButton
@@ -103,7 +103,7 @@ export function PicturesBottomPanel(props: PicturesBottomPanelProps) {
           onClick={async () => {
             if (await presentYesNoAlert(deletePictureTitle, deletePictureMessage, true)) {
               await ImageCache.deleteImages([pictureUrl]);
-              reload(); // eslint-disable-line @typescript-eslint/no-floating-promises
+              reload();
             }
           }}
         />}
@@ -132,12 +132,12 @@ export function PicturesBottomPanel(props: PicturesBottomPanelProps) {
       {!selectMode && <>
         <ToolButton iconSpec={"icon-camera"} onClick={async () => {
           if (await ImageCache.pickImage(iModel.iModelId)) {
-            reload(); // eslint-disable-line @typescript-eslint/no-floating-promises
+            reload();
           }
         }} />
         <ToolButton iconSpec={"icon-image"} onClick={async () => {
           if (await ImageCache.pickImage(iModel.iModelId, true)) {
-            reload(); // eslint-disable-line @typescript-eslint/no-floating-promises
+            reload();
           }
         }} />
         <NavigationButton iconSpec="icon-visibility" noShadow
@@ -156,7 +156,7 @@ export function PicturesBottomPanel(props: PicturesBottomPanelProps) {
         }} />
         <ToolButton iconSpec={getShareIcon()} enabled={selectedUrls.size > 0}
           onClick={(e) => {
-            ImageCache.shareImages(Array.from(selectedUrls), e.currentTarget.getBoundingClientRect()); // eslint-disable-line @typescript-eslint/no-floating-promises
+            ImageCache.shareImages(Array.from(selectedUrls), e.currentTarget.getBoundingClientRect());
           }} />
         <ToolButton
           iconSpec={"icon-delete"}
@@ -165,10 +165,10 @@ export function PicturesBottomPanel(props: PicturesBottomPanelProps) {
             const all = pictureUrls.length === selectedUrls.size;
             if (all && await presentYesNoAlert(deleteAllTitle, deleteAllMessage, true)) {
               await ImageCache.deleteAllImages(iModel.iModelId);
-              reload(); // eslint-disable-line @typescript-eslint/no-floating-promises
+              reload();
             } else if (!all && await presentYesNoAlert(deleteSelectedTitle, deleteSelectedMessage, true)) {
               await ImageCache.deleteImages(Array.from(selectedUrls));
-              reload(); // eslint-disable-line @typescript-eslint/no-floating-promises
+              reload();
             }
           }}
         />
