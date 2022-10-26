@@ -29,7 +29,7 @@
   },
   "devDependencies": {
     "@babel/core": "^7.15.8",
-    "@bentley/react-scripts": "4.0.7",
+    "@bentley/react-scripts": "5.0.1",
     "@itwin/build-tools": "3.3.5",
     "@itwin/eslint-plugin": "3.3.5",
     "@types/axios": "^0.14.0",
