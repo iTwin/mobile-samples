@@ -11,7 +11,8 @@
 // and things will still build correctly.
 // DEVELOPMENT_TEAM = YOUR_DEVELOPMENT_TEAM
 
-// Set the following setting to enable checking for forward progress in all threads.
+// Set the following setting to enable checking for forward progress in all threads. This will
+// let the Xcode debugger detect deadlocks, particularly with respect to using Swift Concurrency.
 // LIBDISPATCH_COOPERATIVE_POOL_STRICT = 1
 
 // The following four settings apply to all of the samples except ThirdPartyAuth. The first is
