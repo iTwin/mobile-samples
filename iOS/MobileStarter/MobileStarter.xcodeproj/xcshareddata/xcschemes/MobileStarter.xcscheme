@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Scheme
-   LastUpgradeVersion = "1250"
+   LastUpgradeVersion = "1400"
    version = "1.3">
    <BuildAction
       parallelizeBuildables = "YES"
@@ -17,7 +17,7 @@
                BlueprintIdentifier = "1FC1114F261FC44900835E6E"
                BuildableName = "iTwin Starter.app"
                BlueprintName = "MobileStarter"
-               ReferencedContainer = "container:LocalSDK_MobileStarter.xcodeproj">
+               ReferencedContainer = "container:MobileStarter.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
       </BuildActionEntries>
@@ -47,7 +47,7 @@
             BlueprintIdentifier = "1FC1114F261FC44900835E6E"
             BuildableName = "iTwin Starter.app"
             BlueprintName = "MobileStarter"
-            ReferencedContainer = "container:LocalSDK_MobileStarter.xcodeproj">
+            ReferencedContainer = "container:MobileStarter.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
       <EnvironmentVariables>
@@ -71,7 +71,7 @@
             BlueprintIdentifier = "1FC1114F261FC44900835E6E"
             BuildableName = "iTwin Starter.app"
             BlueprintName = "MobileStarter"
-            ReferencedContainer = "container:LocalSDK_MobileStarter.xcodeproj">
+            ReferencedContainer = "container:MobileStarter.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
    </ProfileAction>
