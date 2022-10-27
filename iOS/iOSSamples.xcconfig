@@ -11,6 +11,9 @@
 // and things will still build correctly.
 // DEVELOPMENT_TEAM = YOUR_DEVELOPMENT_TEAM
 
+// Set the following setting to enable checking for forward progress in all threads.
+// LIBDISPATCH_COOPERATIVE_POOL_STRICT = 1
+
 // The following four settings apply to all of the samples except ThirdPartyAuth. The first is
 // required to run those samples. The second is recommended, but does have a reasonable default.
 //
