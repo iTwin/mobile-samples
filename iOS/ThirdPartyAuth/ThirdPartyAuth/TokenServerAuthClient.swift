@@ -47,28 +47,23 @@ open class TokenServerAuthClient: NSObject, ITMAuthorizationClient {
             completion(nil, nil, nil)
             return
         }
-        let session = URLSession(configuration: URLSessionConfiguration.default)
-        var request = URLRequest(url: tokenServerURL)
-        request.httpMethod = "GET"
-        request.setValue("Bearer \(auth0Token)", forHTTPHeaderField: "Authorization")
-        let task = session.dataTask(with: request) { (data, response, error) in
-            if let error = error {
+        Task {
+            do {
+                var request = URLRequest(url: tokenServerURL)
+                request.httpMethod = "GET"
+                request.setValue("Bearer \(auth0Token)", forHTTPHeaderField: "Authorization")
+                let (data, _) = try await URLSession.shared.data(for: request)
+                let token = String(decoding: data, as: UTF8.self)
+                let expiresAt: Date?
+                if let jwt = try? decode(jwt: token.components(separatedBy: " ")[1]) {
+                    expiresAt = jwt.expiresAt
+                } else {
+                    expiresAt = nil
+                }
+                completion(token, expiresAt, nil)
+            } catch {
                 completion(nil, nil, error)
-                return
             }
-            guard let data = data else {
-                completion(nil, nil, self.error(reason: "No response from token server."))
-                return
-            }
-            let token = String(decoding: data, as: UTF8.self)
-            let expiresAt: Date?
-            if let jwt = try? decode(jwt: token.components(separatedBy: " ")[1]) {
-                expiresAt = jwt.expiresAt
-            } else {
-                expiresAt = nil
-            }
-            completion(token, expiresAt, nil)
         }
-        task.resume()
     }
 }
