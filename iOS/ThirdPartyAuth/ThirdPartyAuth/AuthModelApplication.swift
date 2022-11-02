@@ -74,10 +74,8 @@ class AuthModelApplication: ModelApplication {
     func pingTokenServerIfLocal(_ tokenServerUrl: String) {
         if let url = URL(string: tokenServerUrl) {
             if isURLLocal(url) {
-                var request = URLRequest(url: url)
-                request.httpMethod = "GET"
-                let session = URLSession(configuration: URLSessionConfiguration.default)
-                let task = session.dataTask(with: request) { (_, _, _) in
+                Task {
+                    let _ = try? await URLSession.shared.data(from: url)
                     // The only reason we're making this connection is to trigger the iOS
                     // permissions dialog requesting permission to access the local network.
                     // We will completely ignore the result. Either there is an error (which
@@ -86,7 +84,6 @@ class AuthModelApplication: ModelApplication {
                     // we are unauthorized, since we didn't include authorization in our
                     // URLRequest.
                 }
-                task.resume()
             }
         }
     }
