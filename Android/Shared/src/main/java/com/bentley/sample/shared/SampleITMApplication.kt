@@ -53,14 +53,14 @@ open class SampleITMApplication(context: Context, attachWebViewLogger: Boolean, 
     }
 
     /**
-     * Notifies the IModelHost that the app has paused.
+     * Notifies the IModelJsHost that the app has paused.
      */
     fun onPause() {
         this.host?.onPause()
     }
 
     /**
-     * Notifies the IModelHost that the app has resumed.
+     * Notifies the IModelJsHost that the app has resumed.
      */
     fun onResume() {
         this.host?.onResume()
