@@ -27,7 +27,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		1F0B9BCC27B2EAB400EE9B81 /* mobile-sdk-ios */ = {isa = PBXFileReference; lastKnownFileType = wrapper; name = "mobile-sdk-ios"; path = "../../../mobile-sdk-ios"; sourceTree = "<group>"; };
+		1F0B9BCC27B2EAB400EE9B81 /* itwin-mobile-sdk-ios */ = {isa = PBXFileReference; lastKnownFileType = wrapper; name = "itwin-mobile-sdk-ios"; path = "../../../mobile-sdk-ios"; sourceTree = "<group>"; };
 		1F1C639327AE028F00CE8F89 /* LoginView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginView.swift; sourceTree = "<group>"; };
 		1F1C639527B1956500CE8F89 /* iOSSamples.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; name = iOSSamples.xcconfig; path = ../iOSSamples.xcconfig; sourceTree = "<group>"; };
 		1F1C639627B1956500CE8F89 /* ITMApplication.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; name = ITMApplication.xcconfig; path = ../ITMApplication.xcconfig; sourceTree = "<group>"; };
@@ -76,7 +76,7 @@
 		C3663E42279769C100EE6B43 = {
 			isa = PBXGroup;
 			children = (
-				1F0B9BCC27B2EAB400EE9B81 /* mobile-sdk-ios */,
+				1F0B9BCC27B2EAB400EE9B81 /* itwin-mobile-sdk-ios */,
 				1F1C639527B1956500CE8F89 /* iOSSamples.xcconfig */,
 				1F1C639627B1956500CE8F89 /* ITMApplication.xcconfig */,
 				1F6C4FAA27BB1444008EB5D5 /* ThirdPartyAuth-InfoPlist.strings */,
