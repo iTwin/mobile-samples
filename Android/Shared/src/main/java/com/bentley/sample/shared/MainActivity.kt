@@ -103,7 +103,13 @@ class MainActivity : AppCompatActivity() {
         windowInsetsController.hide(systemBars())
     }
 
+    override fun onPause() {
+        sampleITMApplication.onPause()
+        super.onPause()
+    }
+
     override fun onResume() {
+        sampleITMApplication.onResume()
         setupFullScreen()
         super.onResume()
     }

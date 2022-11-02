@@ -51,4 +51,18 @@ open class SampleITMApplication(context: Context, attachWebViewLogger: Boolean, 
             it.components.add(DocumentPicker(it))
         }
     }
+
+    /**
+     * Notifies the IModelHost that the app has paused.
+     */
+    fun onPause() {
+        this.host?.onPause()
+    }
+
+    /**
+     * Notifies the IModelHost that the app has resumed.
+     */
+    fun onResume() {
+        this.host?.onResume()
+    }
 }
