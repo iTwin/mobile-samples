@@ -32,7 +32,7 @@ open class SampleITMApplication(context: Context, attachWebViewLogger: Boolean, 
         }
 
         coMessenger.registerQueryHandler("getBimDocuments") {
-            Json.array(*FileHelper.getExternalFiles(this.appContext,"BimCache", ".bim").toTypedArray())
+            Json.array(*this.appContext.getExternalFiles("BimCache", ".bim").toTypedArray())
         }
     }
 

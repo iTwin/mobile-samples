@@ -42,16 +42,6 @@ open class PickUriContract(@Suppress("MemberVisibilityCanBePrivate") var destDir
     }
 
     /**
-     * Gets the display name (base name with extension) for the input Uri.
-     * By default the context's content resolver is used to get the display name.
-     * @param uri The Uri to get the display name for.
-     * @return The display name.
-     */
-    open fun getDisplayName(uri: Uri): String {
-        return FileHelper.getFileDisplayName(uri, context.contentResolver) ?: "unknownDisplayName"
-    }
-
-    /**
      * If the resultCode equals RESULT_OK, the chosen Uri is either returned or copied. When
      * copied, a content Uri is returned.
      * @param resultCode The result code.
@@ -61,7 +51,7 @@ open class PickUriContract(@Suppress("MemberVisibilityCanBePrivate") var destDir
         val uri = intent?.takeIf { resultCode == Activity.RESULT_OK }?.data
         if (uri != null && shouldCopyUri(uri)) {
             destDir?.let { destDir ->
-                FileHelper.copyToExternalFiles(context, uri, destDir, getDisplayName(uri))?.let { result ->
+                context.copyToExternalFiles(uri, destDir)?.let { result ->
                     return Uri.parse(result)
                 }
             }
