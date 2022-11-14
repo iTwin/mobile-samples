@@ -82,4 +82,4 @@ dependencies {
 
 apply from: "$rootDir/../Shared/ITMAppConfig.gradle"
 addITMAppConfigToResource(android.defaultConfig) // make configuration accessible in native code
-preBuild.dependsOn ":itmsamplesshared:genITMAppConfig"
+preBuild.dependsOn(":itmsamplesshared:genITMAppConfig", ":itmsamplesshared:copyITMAssets")
