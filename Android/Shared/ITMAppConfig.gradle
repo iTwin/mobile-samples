@@ -89,7 +89,6 @@ ext {
 }
 
 task genITMAppConfig {
-    dependsOn ":itmsamplesshared:copyITMAssets"
     doLast {
         def destDir = Paths.get("${project.rootDir}/app/src/main/assets/ITMApplication")
         if (!Files.exists(destDir))

@@ -53,4 +53,4 @@ dependencies {
     implementation 'com.github.itwin:mobile-sdk-android:0.10.32'
 }
 
-preBuild.dependsOn ":itmsamplesshared:genITMAppConfig"
+preBuild.dependsOn(":itmsamplesshared:genITMAppConfig", ":itmsamplesshared:copyITMAssets")
