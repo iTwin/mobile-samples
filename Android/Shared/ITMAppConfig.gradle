@@ -89,15 +89,16 @@ ext {
 }
 
 task genITMAppConfig {
-    def destDir = Paths.get("${project.rootDir}/app/src/main/assets/ITMApplication")
-    if (!Files.exists(destDir))
-        Files.createDirectories(destDir)
-    def itmAppConfig = new File("${destDir.toString()}/ITMAppConfig.json")
-    if (!itmAppConfig.exists()) {
-        itmAppConfig.createNewFile()
+    dependsOn ":itmsamplesshared:copyITMAssets"
+    doLast {
+        def destDir = Paths.get("${project.rootDir}/app/src/main/assets/ITMApplication")
+        if (!Files.exists(destDir))
+            Files.createDirectories(destDir)
+        def itmAppConfig = new File("${destDir.toString()}/ITMAppConfig.json")
+        if (!itmAppConfig.exists()) {
+            itmAppConfig.createNewFile()
+        }
+        def contents = readITMAppConfig(project)
+        itmAppConfig.write(JsonOutput.prettyPrint(JsonOutput.toJson(contents)))
     }
-    def contents = readITMAppConfig(project)
-    itmAppConfig.write(JsonOutput.prettyPrint(JsonOutput.toJson(contents)))
 }
-
-genITMAppConfig.dependsOn ":itmsamplesshared:copyITMAssets"

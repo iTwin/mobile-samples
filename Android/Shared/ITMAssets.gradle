@@ -17,19 +17,21 @@ static def copyDirectory(srcDir, destDir) {
 }
 
 task copyITMAssets {
-    def reactAppDir = "${projectDir}/../../cross-platform/react-app"
-    println "reactAppDir ${new File(reactAppDir).canonicalPath}"
-    def assetsDir = "${rootDir}/app/src/main/assets/ITMApplication"
-    println "assetsDir ${new File(assetsDir).canonicalPath}"
+    doLast {
+        def reactAppDir = "${projectDir}/../../cross-platform/react-app"
+        println "reactAppDir ${new File(reactAppDir).canonicalPath}"
+        def assetsDir = "${rootDir}/app/src/main/assets/ITMApplication"
+        println "assetsDir ${new File(assetsDir).canonicalPath}"
 
-    Map foldersToCopy = [
-        "${reactAppDir}/build": "${assetsDir}/frontend",
-        "${reactAppDir}/lib/webpack": "${assetsDir}/backend",
-        "${reactAppDir}/assets": "${assetsDir}/backend/assets",
-        "${reactAppDir}/node_modules/@itwin/presentation-backend/lib/cjs/assets/supplemental-presentation-rules": "${assetsDir}/backend/assets/supplemental_presentation_rules",
-        "${reactAppDir}/node_modules/@itwin/presentation-common/lib/cjs/assets/locales": "${assetsDir}/backend/assets/locales"
-    ]
+        Map foldersToCopy = [
+                "${reactAppDir}/build": "${assetsDir}/frontend",
+                "${reactAppDir}/lib/webpack": "${assetsDir}/backend",
+                "${reactAppDir}/assets": "${assetsDir}/backend/assets",
+                "${reactAppDir}/node_modules/@itwin/presentation-backend/lib/cjs/assets/supplemental-presentation-rules": "${assetsDir}/backend/assets/supplemental_presentation_rules",
+                "${reactAppDir}/node_modules/@itwin/presentation-common/lib/cjs/assets/locales": "${assetsDir}/backend/assets/locales"
+        ]
 
-    for (def entry in foldersToCopy)
-        copyDirectory(Paths.get(entry.key), Paths.get(entry.value))
+        for (def entry in foldersToCopy)
+            copyDirectory(Paths.get(entry.key), Paths.get(entry.value))
+    }
 }
