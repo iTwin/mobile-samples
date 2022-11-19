@@ -42,6 +42,7 @@ export function HomeScreen(props: HomeScreenProps) {
       </div>
       <div className="list">
         <div className="list-items">
+          <img src="http://127.0.0.1:3011/8/207/98" alt="Map Tile" />
           <Button title={localModelsLabel} onClick={() => onSelect(ActiveScreen.LocalModels)} />
           <Button title={hubIModelsLabel} onClick={() => onSelect(ActiveScreen.Hub)} />
         </div>
