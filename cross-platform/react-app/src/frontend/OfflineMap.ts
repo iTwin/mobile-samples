@@ -3,27 +3,28 @@
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
 import { BeUiEvent } from "@itwin/core-bentley";
-import { NotificationHandler } from "@itwin/core-frontend";
-import { offlineMapNotifications, OfflineMapNotifications, OfflineMapRpcInterface } from "../common/OfflineMap";
+import { OfflineMapRpcInterface } from "../common/OfflineMap";
 
-export class OfflineMapNotifyHandler extends NotificationHandler implements OfflineMapNotifications {
-  public get channelName() { return offlineMapNotifications; }
-  public static port: number | undefined;
-  public static onPortChanged = new BeUiEvent<number | undefined>();
+export class OfflineMapPort {
+  public static value: number | undefined;
+  public static onChanged = new BeUiEvent<number | undefined>();
 
-  constructor() {
-    super();
-    console.log("OfflineMapNotifyHandler constructor");
-    this.initPort(); // eslint-disable-line @typescript-eslint/no-floating-promises
+  public static initialize() {
+    this.updatePort(); // eslint-disable-line @typescript-eslint/no-floating-promises
+    // Since the MobileApp.onEnterForeground event does not work right now, we will instead
+    // wait for the document's URL hash to change. This happens when iTwin reconnects to a
+    // new port after returning to the foreground.
+    window.addEventListener("hashchange", () => {
+      setTimeout(async () => {
+        await this.updatePort();
+      }, 0);
+    });
   }
 
-  private async initPort() {
-    this.notifyPort(await OfflineMapRpcInterface.getClient().getPort());
-  }
-
-  public notifyPort(port: number | undefined) {
+  private static async updatePort() {
+    const port = await OfflineMapRpcInterface.getClient().getPort();
+    OfflineMapPort.value = port;
+    OfflineMapPort.onChanged.raiseEvent(port);
     console.log(`Offline map port set to ${port}`);
-    OfflineMapNotifyHandler.port = port;
-    OfflineMapNotifyHandler.onPortChanged.raiseEvent(port);
   }
 }

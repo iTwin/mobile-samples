@@ -4,8 +4,6 @@
 *--------------------------------------------------------------------------------------------*/
 import { RpcInterface, RpcManager } from "@itwin/core-common";
 
-export const offlineMapNotifications = "offlineMap-notify";
-
 export abstract class OfflineMapRpcInterface extends RpcInterface {
   public static readonly interfaceName = "OfflineMapInterface";
   public static interfaceVersion = "1.0.0";
@@ -25,8 +23,4 @@ export abstract class OfflineMapRpcInterface extends RpcInterface {
   public async getPort(): Promise<number | undefined> {
     return this.forward(arguments);
   }
-}
-
-export interface OfflineMapNotifications {
-  notifyPort: (port: number | undefined) => void;
 }

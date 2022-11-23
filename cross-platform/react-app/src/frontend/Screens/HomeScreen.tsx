@@ -6,8 +6,9 @@ import React from "react";
 import { Messenger } from "@itwin/mobile-sdk-core";
 import { BackButton, useBeEvent } from "@itwin/mobile-ui-react";
 import { Button, i18n, Screen } from "../Exports";
+import { OfflineMapPort } from "../OfflineMap";
+
 import "./HomeScreen.scss";
-import { OfflineMapNotifyHandler } from "../OfflineMap";
 
 export enum ActiveScreen {
   Loading,
@@ -30,7 +31,7 @@ export function HomeScreen(props: HomeScreenProps) {
   const homeLabel = React.useMemo(() => i18n("HomeScreen", "Home"), []);
   const localModelsLabel = React.useMemo(() => i18n("HomeScreen", "LocalIModels"), []);
   const hubIModelsLabel = React.useMemo(() => i18n("HomeScreen", "HubIModels"), []);
-  const [mapTilePort, setMapTilePort] = React.useState(OfflineMapNotifyHandler.port);
+  const [mapTilePort, setMapTilePort] = React.useState(OfflineMapPort.value);
 
   const handleBack = React.useCallback(async () => {
     Messenger.sendMessage("goBack");
@@ -38,7 +39,7 @@ export function HomeScreen(props: HomeScreenProps) {
 
   useBeEvent((port: number | undefined) => {
     setMapTilePort(port);
-  }, OfflineMapNotifyHandler.onPortChanged);
+  }, OfflineMapPort.onChanged);
 
   return (
     <Screen className="home-screen">
