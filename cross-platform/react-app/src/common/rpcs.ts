@@ -4,6 +4,7 @@
 *--------------------------------------------------------------------------------------------*/
 import { PresentationRpcInterface } from "@itwin/presentation-common";
 import { IModelReadRpcInterface, IModelTileRpcInterface, RpcInterfaceDefinition, SnapshotIModelRpcInterface } from "@itwin/core-common";
+import { OfflineMapRpcInterface } from "./OfflineMap";
 
 /**
  * Returns a list of RPCs supported by this application. This particular list is probably a minimum
@@ -15,5 +16,6 @@ export function getSupportedRpcs(): RpcInterfaceDefinition[] {
     IModelTileRpcInterface,
     PresentationRpcInterface,
     SnapshotIModelRpcInterface,
+    OfflineMapRpcInterface,
   ];
 }

@@ -14,6 +14,7 @@ import { MeasureTools, FeatureTracking as MeasureToolsFeatureTracking } from "@i
 import { ActiveScreen, HomeScreen, HubScreen, LoadingScreen, LocalModelsScreen, ModelScreen, ModelScreenExtensionProps, presentError, ToolAssistance } from "./Exports";
 import { getSupportedRpcs } from "../common/rpcs";
 import "./App.scss";
+import { OfflineMapNotifyHandler } from "./OfflineMap";
 
 declare global {
   interface Window {
@@ -135,6 +136,7 @@ function useAppState(onInitialize?: () => Promise<void>) {
         setHaveBackButton(window.itmSampleParams.haveBackButton);
         await MeasureTools.startup();
         MeasureToolsFeatureTracking.stop();
+        OfflineMapNotifyHandler.register();
         await onInitialize?.();
 
         // The following message lets the native side know that it is safe to send app-specific

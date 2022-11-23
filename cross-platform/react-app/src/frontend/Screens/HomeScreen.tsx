@@ -4,9 +4,10 @@
 *--------------------------------------------------------------------------------------------*/
 import React from "react";
 import { Messenger } from "@itwin/mobile-sdk-core";
-import { BackButton } from "@itwin/mobile-ui-react";
+import { BackButton, useBeEvent } from "@itwin/mobile-ui-react";
 import { Button, i18n, Screen } from "../Exports";
 import "./HomeScreen.scss";
+import { OfflineMapNotifyHandler } from "../OfflineMap";
 
 export enum ActiveScreen {
   Loading,
@@ -29,10 +30,15 @@ export function HomeScreen(props: HomeScreenProps) {
   const homeLabel = React.useMemo(() => i18n("HomeScreen", "Home"), []);
   const localModelsLabel = React.useMemo(() => i18n("HomeScreen", "LocalIModels"), []);
   const hubIModelsLabel = React.useMemo(() => i18n("HomeScreen", "HubIModels"), []);
+  const [mapTilePort, setMapTilePort] = React.useState(OfflineMapNotifyHandler.port);
 
   const handleBack = React.useCallback(async () => {
     Messenger.sendMessage("goBack");
   }, []);
+
+  useBeEvent((port: number | undefined) => {
+    setMapTilePort(port);
+  }, OfflineMapNotifyHandler.onPortChanged);
 
   return (
     <Screen className="home-screen">
@@ -42,7 +48,7 @@ export function HomeScreen(props: HomeScreenProps) {
       </div>
       <div className="list">
         <div className="list-items">
-          <img src="http://127.0.0.1:3011/8/207/98" alt="Map Tile" />
+          {mapTilePort !== undefined && <img src={`http://127.0.0.1:${mapTilePort}/8/207/98`} alt="Map Tile" />}
           <Button title={localModelsLabel} onClick={() => onSelect(ActiveScreen.LocalModels)} />
           <Button title={hubIModelsLabel} onClick={() => onSelect(ActiveScreen.Hub)} />
         </div>

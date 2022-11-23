@@ -9,6 +9,7 @@ import { MobileHost, MobileHostOpts } from "@itwin/core-mobile/lib/cjs/MobileBac
 import { getSupportedRpcs } from "../common/rpcs";
 import { IModelHostConfiguration, IpcHost } from "@itwin/core-backend";
 import { BackendIModelsAccess } from "@itwin/imodels-access-backend";
+import { OfflineMap, OfflineMapRpcImpl } from "./OfflineMap";
 import { startOfflineMapServer, stopOfflineMapServer } from "@itwin/offline-map";
 
 // This is the file that generates main.js, which is loaded by the backend into a Google V8 JavaScript
@@ -49,12 +50,25 @@ export const prodIssuerUrl = "https://ims.bentley.com/";
   const rpcs = getSupportedRpcs();
   // Do initialize
   init(rpcs);
+  OfflineMapRpcImpl.register();
+  // eslint-disable-next-line @typescript-eslint/no-floating-promises
   startOfflineMapServer();
   MobileHost.onEnterBackground.addListener(() => {
     stopOfflineMapServer();
+    // The following message doesn't actually make it through. I believe that this code
+    // executes after the connection between the frontend and the backend has already
+    // closed due to the app entering the backend.
+    OfflineMap.notifyFrontend("notifyPort", undefined);
   });
-  MobileHost.onEnterForeground.addListener(() => {
-    startOfflineMapServer();
+  MobileHost.onEnterForeground.addListener(async () => {
+    // This listener gets called before the frontend has been reconnected to the backend
+    // after the app has entered the foreground. Because of that, any message sent to
+    // the frontend will not be received. For now, waiting for 1000ms before sending
+    // the message gives the frontend time to reconnect to the backend.
+    setTimeout(async () => {
+      const port = await startOfflineMapServer();
+      OfflineMap.notifyFrontend("notifyPort", port);
+    }, 1000);
   });
 })();
 
