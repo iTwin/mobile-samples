@@ -3,7 +3,7 @@
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
 import { BeUiEvent } from "@itwin/core-bentley";
-import { OfflineMapRpcInterface } from "../common/OfflineMap";
+import { OfflineMapRpcInterface } from "../common/OfflineMapRpcInterface";
 
 export class OfflineMapPort {
   public static value: number | undefined;

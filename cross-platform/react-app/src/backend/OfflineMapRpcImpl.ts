@@ -3,7 +3,7 @@
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
 import { RpcInterface, RpcManager } from "@itwin/core-common";
-import { OfflineMapRpcInterface } from "../common/OfflineMap";
+import { OfflineMapRpcInterface } from "../common/OfflineMapRpcInterface";
 import { getOfflineMapServerPort, startOfflineMapServer, stopOfflineMapServer } from "@itwin/offline-map";
 
 export class OfflineMapRpcImpl extends RpcInterface implements OfflineMapRpcInterface {

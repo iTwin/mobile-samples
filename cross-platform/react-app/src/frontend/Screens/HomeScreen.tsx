@@ -6,7 +6,7 @@ import React from "react";
 import { Messenger } from "@itwin/mobile-sdk-core";
 import { BackButton, useBeEvent } from "@itwin/mobile-ui-react";
 import { Button, i18n, Screen } from "../Exports";
-import { OfflineMapPort } from "../OfflineMap";
+import { OfflineMapPort } from "../OfflineMapPort";
 
 import "./HomeScreen.scss";
 

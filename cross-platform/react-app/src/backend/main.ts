@@ -9,7 +9,7 @@ import { MobileHost, MobileHostOpts } from "@itwin/core-mobile/lib/cjs/MobileBac
 import { getSupportedRpcs } from "../common/rpcs";
 import { IModelHostConfiguration, IpcHost } from "@itwin/core-backend";
 import { BackendIModelsAccess } from "@itwin/imodels-access-backend";
-import { OfflineMapRpcImpl } from "./OfflineMap";
+import { OfflineMapRpcImpl } from "./OfflineMapRpcImpl";
 import { startOfflineMapServer, stopOfflineMapServer } from "@itwin/offline-map";
 
 // This is the file that generates main.js, which is loaded by the backend into a Google V8 JavaScript

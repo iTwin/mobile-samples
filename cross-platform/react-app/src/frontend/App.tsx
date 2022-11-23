@@ -13,7 +13,7 @@ import { MobileUi } from "@itwin/mobile-ui-react";
 import { MeasureTools, FeatureTracking as MeasureToolsFeatureTracking } from "@itwin/measure-tools-react";
 import { ActiveScreen, HomeScreen, HubScreen, LoadingScreen, LocalModelsScreen, ModelScreen, ModelScreenExtensionProps, presentError, ToolAssistance } from "./Exports";
 import { getSupportedRpcs } from "../common/rpcs";
-import { OfflineMapPort } from "./OfflineMap";
+import { OfflineMapPort } from "./OfflineMapPort";
 
 import "./App.scss";
 
