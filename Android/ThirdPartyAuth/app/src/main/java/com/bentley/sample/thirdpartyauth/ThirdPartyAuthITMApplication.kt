@@ -1,5 +1,6 @@
 package com.bentley.sample.thirdpartyauth
 
+import androidx.fragment.app.FragmentActivity
 import com.auth0.android.authentication.storage.CredentialsManager
 import com.bentley.itwin.AuthorizationClient
 import com.bentley.sample.shared.SampleITMApplication
@@ -10,20 +11,14 @@ object ThirdPartyAuthITMApplication : SampleITMApplication(
     BuildConfig.DEBUG
 ) {
     var auth0CredentialsManager: CredentialsManager? = null
-        set(token) {
-            field = token
-            createAuthorizationClient()
-        }
 
     init {
         finishInit()
     }
 
-    override fun createAuthorizationClient(): AuthorizationClient? {
-        return if (auth0CredentialsManager == null) null else TokenServerAuthClient(
-            ThirdPartyAuthApplication.getContext().getString(R.string.ITMSAMPLE_TOKEN_SERVER_URL),
-            auth0CredentialsManager!!
-        )
+    override fun createAuthorizationClient(fragmentActivity: FragmentActivity): AuthorizationClient? {
+        return auth0CredentialsManager?.let {
+            TokenServerAuthClient(fragmentActivity.getString(R.string.ITMSAMPLE_TOKEN_SERVER_URL), it)
+        }
     }
-
 }
