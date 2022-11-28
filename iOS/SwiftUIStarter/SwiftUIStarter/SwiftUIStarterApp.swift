@@ -10,6 +10,11 @@ import ITwinMobile
 struct SwiftUIStarterApp: App {
     private var application = ModelApplication()
     
+    init() {
+        // Allow a Chrome debugger to be attached to the backend
+        ITMViewController.allowInspectBackend = true
+    }
+
     var body: some Scene {
         return WindowGroup {
             ITMSwiftUIContentView(application: application)

@@ -23,6 +23,9 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         // Delay the automatic loading of the frontend and backend to account for problem when
         // that happens before the application's first willEnterForeground.
         ITMViewController.delayedAutoLoad = true
+
+        // Allow a Chrome debugger to be attached to the backend
+        ITMViewController.allowInspectBackend = true
     }
 
     func scene(_ scene: UIScene, openURLContexts URLContexts: Set<UIOpenURLContext>) {

@@ -200,6 +200,7 @@
 /* Begin PBXShellScriptBuildPhase section */
 		1F1C63A827B19C3E00CE8F89 /* Copy web app assets */ = {
 			isa = PBXShellScriptBuildPhase;
+			alwaysOutOfDate = 1;
 			buildActionMask = 2147483647;
 			files = (
 			);
