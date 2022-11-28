@@ -49,7 +49,7 @@ class MainActivity : AppCompatActivity() {
         setupFullScreen()
         hideSystemBars()
         setContentView(R.layout.activity_main)
-        sampleITMApplication.initializeFrontend(this, R.id.model_host_fragment)
+        sampleITMApplication.initializeFrontend(this, R.id.model_host_fragment, true)
         MainScope().launch {
             sampleITMApplication.waitForFrontendInitialize()
             sampleITMApplication.attachWebView(modelWebViewContainer)
