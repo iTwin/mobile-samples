@@ -10,7 +10,6 @@ import ITwinMobile
 class ActivityTimer {
     private let startTime = Date()
     private var checkpoints: [ (String, Date) ] = []
-    private var startupCheckpoint = Date()
     private var nameTitle: String
     private var maxStartupNameLen: Int
     
