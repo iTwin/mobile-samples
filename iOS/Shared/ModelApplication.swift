@@ -16,13 +16,12 @@ class ModelApplication: ITMApplication {
     /// Registers query handlers.
     required init() {
         super.init()
+        startupTimer.enabled = self.configData?.isYes("ITMSAMPLE_LOG_STARTUP_TIMES") ?? false
         ITMApplication.logger = PrintLogger()
         registerQueryHandler("didFinishLaunching") {
             self.itmMessenger.frontendLaunchSucceeded()
             self.startupTimer.addCheckpoint(name: "Launch total")
-            if self.configData?.isYes("ITMSAMPLE_LOG_STARTUP_TIMES") == true {
-                self.startupTimer.logTimes(title: "STARTUP TIMES")
-            }
+            self.startupTimer.logTimes(title: "STARTUP TIMES")
         }
         registerQueryHandler("loading") {
             self.webView.isHidden = false

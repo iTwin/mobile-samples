@@ -8,6 +8,7 @@ import ITwinMobile
 
 /// Utility to record the timestamp of checkpoints and then log how long all the checkpoints took.
 class ActivityTimer {
+    public var enabled = true
     private let startTime = Date()
     private var checkpoints: [ (String, Date) ] = []
     private var nameTitle: String
@@ -23,6 +24,7 @@ class ActivityTimer {
     /// Add a checkpoint
     /// - Parameter name: The name of the checkpoint
     func addCheckpoint(name: String) {
+        guard enabled else { return }
         checkpoints.append((name, Date()))
         maxStartupNameLen = max(name.count, maxStartupNameLen)
     }
@@ -30,6 +32,7 @@ class ActivityTimer {
     /// Log the time of all checkpoints in ASCII table format.
     /// - Parameter title: Title to be printed before the checkpoints table.
     func logTimes(title: String) {
+        guard enabled else { return }
         guard !checkpoints.isEmpty else {
             ITMApplication.logger.log(.info, "\(title):\nNO CHECKPOINTS.")
             return
