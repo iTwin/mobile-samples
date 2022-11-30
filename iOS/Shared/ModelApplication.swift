@@ -11,15 +11,21 @@ import ShowTime
 
 /// This app's `ITMApplication` sub-class that handles the messages coming from the web view.
 class ModelApplication: ITMApplication {
+    private let startupTimer = ActivityTimer()
+
     /// Registers query handlers.
     required init() {
         super.init()
+        startupTimer.enabled = self.configData?.isYes("ITMSAMPLE_LOG_STARTUP_TIMES") ?? false
         ITMApplication.logger = PrintLogger()
         registerQueryHandler("didFinishLaunching") {
             self.itmMessenger.frontendLaunchSucceeded()
+            self.startupTimer.addCheckpoint(name: "Launch total")
+            self.startupTimer.logTimes(title: "STARTUP TIMES")
         }
         registerQueryHandler("loading") {
             self.webView.isHidden = false
+            self.startupTimer.addCheckpoint(name: "Webview load")
         }
         registerQueryHandler("reload") {
             self.webView.reload()
@@ -35,6 +41,24 @@ class ModelApplication: ITMApplication {
         }
         if !showtimeEnabled {
             ShowTime.enabled = ShowTime.Enabled.never
+        }
+    }
+
+    override func loadBackend(_ allowInspectBackend: Bool) {
+        startupTimer.addCheckpoint(name: "Before backend load")
+        super.loadBackend(allowInspectBackend)
+        Task {
+            await backendLoaded
+            startupTimer.addCheckpoint(name: "After backend load")
+        }
+    }
+
+    override func loadFrontend() {
+        startupTimer.addCheckpoint(name: "Before frontend load")
+        super.loadFrontend()
+        Task {
+            await frontendLoaded
+            startupTimer.addCheckpoint(name: "After frontend load")
         }
     }
 

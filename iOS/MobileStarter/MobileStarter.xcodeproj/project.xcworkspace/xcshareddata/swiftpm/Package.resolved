@@ -14,8 +14,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/AsyncSwift/AsyncLocationKit.git",
       "state" : {
-        "revision" : "c4f0e716894699507c87a16ff961397a0d0db8ad",
-        "version" : "1.5.1"
+        "revision" : "485a6e173d7f73fc7aeb120501810d3310e905be",
+        "version" : "1.5.6"
       }
     },
     {
@@ -23,8 +23,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/iTwin/mobile-native-ios",
       "state" : {
-        "revision" : "2a6d69a5fa5188c01582873fc454de2580cc509f",
-        "version" : "3.3.16"
+        "revision" : "291d4352743fdf1f3ca83173808cde24c0d1e6f3",
+        "version" : "3.4.21"
       }
     },
     {
@@ -32,8 +32,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/iTwin/mobile-sdk-ios.git",
       "state" : {
-        "revision" : "9325cce695d5e9ab060f42fca67316624f0db034",
-        "version" : "0.10.32"
+        "revision" : "f12cc66aeed8f3319ca2704f95a92b38bad4c85d",
+        "version" : "0.10.35"
       }
     },
     {
