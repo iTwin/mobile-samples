@@ -44,16 +44,16 @@ class ActivityTimer {
 
             """
         var lastTime = startTime
-        for time in checkpoints {
+        for checkpoint in checkpoints {
             let row = [
-                time.0.padding(toLength: maxStartupNameLen, withPad: " ", startingAt: 0),
-                "\(dateFormatter.string(from: time.1))",
-                String(format: "%.3f", time.1.timeIntervalSince(lastTime)),
-                String(format: "%.3f", time.1.timeIntervalSince(self.startTime))
+                checkpoint.0.padding(toLength: maxStartupNameLen, withPad: " ", startingAt: 0),
+                "\(dateFormatter.string(from: checkpoint.1))",
+                String(format: "%.3f", checkpoint.1.timeIntervalSince(lastTime)),
+                String(format: "%.3f", checkpoint.1.timeIntervalSince(self.startTime))
             ]
             message.append(row.joined(separator: "  | "))
             message.append("\n")
-            lastTime = time.1
+            lastTime = checkpoint.1
         }
         ITMApplication.logger.log(.info, message)
     }
