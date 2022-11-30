@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		1F2D7B6A2742D97700AAB11E /* PrintLogger.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F2D7B692742D97700AAB11E /* PrintLogger.swift */; };
 		1F4692CD276C0AED00480CED /* ShowTime in Frameworks */ = {isa = PBXBuildFile; productRef = 1F4692CC276C0AED00480CED /* ShowTime */; };
+		1FE23C0B2937E5DA00D08DF9 /* ActivityTimer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1FE23C0A2937E5DA00D08DF9 /* ActivityTimer.swift */; };
 		5FB2050826D03B2600C4DBE1 /* ITwinMobile in Frameworks */ = {isa = PBXBuildFile; productRef = 5FB2050726D03B2600C4DBE1 /* ITwinMobile */; };
 		5FD7518326DD9D4C00DC3060 /* DocumentPicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5FD7518126DD9D4C00DC3060 /* DocumentPicker.swift */; };
 		5FD7518426DD9D4C00DC3060 /* ModelApplication.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5FD7518226DD9D4C00DC3060 /* ModelApplication.swift */; };
@@ -21,6 +22,7 @@
 		1F2D7B692742D97700AAB11E /* PrintLogger.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PrintLogger.swift; sourceTree = "<group>"; };
 		1F56529626D4651B002C7260 /* iOSSamples.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; name = iOSSamples.xcconfig; path = ../iOSSamples.xcconfig; sourceTree = "<group>"; };
 		1F56529726D4651B002C7260 /* ITMApplication.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; name = ITMApplication.xcconfig; path = ../ITMApplication.xcconfig; sourceTree = "<group>"; };
+		1FE23C0A2937E5DA00D08DF9 /* ActivityTimer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ActivityTimer.swift; sourceTree = "<group>"; };
 		5FD7518126DD9D4C00DC3060 /* DocumentPicker.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DocumentPicker.swift; sourceTree = "<group>"; };
 		5FD7518226DD9D4C00DC3060 /* ModelApplication.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ModelApplication.swift; sourceTree = "<group>"; };
 		5FDD749226CDA9520007FBC6 /* SwiftUIStarter.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SwiftUIStarter.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -46,6 +48,7 @@
 		5FD7518026DD9D4C00DC3060 /* Shared */ = {
 			isa = PBXGroup;
 			children = (
+				1FE23C0A2937E5DA00D08DF9 /* ActivityTimer.swift */,
 				5FD7518126DD9D4C00DC3060 /* DocumentPicker.swift */,
 				5FD7518226DD9D4C00DC3060 /* ModelApplication.swift */,
 				1F2D7B692742D97700AAB11E /* PrintLogger.swift */,
@@ -192,6 +195,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				1FE23C0B2937E5DA00D08DF9 /* ActivityTimer.swift in Sources */,
 				5FD7518426DD9D4C00DC3060 /* ModelApplication.swift in Sources */,
 				1F2D7B6A2742D97700AAB11E /* PrintLogger.swift in Sources */,
 				5FD7518326DD9D4C00DC3060 /* DocumentPicker.swift in Sources */,
