@@ -9,7 +9,7 @@ import groovy.json.JsonOutput
 static def getLocalIPv4() {
     def ip4s = []
     NetworkInterface.getNetworkInterfaces()
-        .findAll { it.isUp() && !it.isLoopback() && !it.isVirtual() }
+        .findAll { it.isUp() && !it.isLoopback() && !it.isVirtual() && !it.isPointToPoint() }
         .each {
             it.getInetAddresses()
                 .findAll { !it.isLoopbackAddress() && it instanceof Inet4Address }
