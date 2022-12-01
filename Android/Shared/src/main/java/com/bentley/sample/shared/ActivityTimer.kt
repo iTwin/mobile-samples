@@ -34,8 +34,7 @@ class ActivityTimer(private val nameTitle: String = "ACTIVITY") {
      * @return A string representing the elapsed time between the two dates
      */
     private fun timeDelta(start: Date, end: Date): String {
-        val delta = end.time - start.time
-        return "${delta / 1000}.${(delta % 1000).toString().padStart(3, '0')}"
+        return String.format("%.3f", (end.time - start.time).toDouble() / 1000.0)
     }
 
     /**
