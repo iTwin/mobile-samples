@@ -250,6 +250,7 @@ export function ModelScreen(props: ModelScreenProps) {
       isTab: true,
       popup: React.createElement(toolsBottomPanel ?? ToolsBottomPanel,
         {
+          key: "tools",
           iModel,
           // Close the Views bottom panel when a view is selected from it.
           onToolClick: () => { tabsAndPanelsAPI.closeSelectedPanel(); },
