@@ -15,9 +15,9 @@ import {
 
 export function CameraSampleAppGetLocalizedString(prefix: string, key: string, options?: any) {
   if (window.itmSampleParams.debugI18n) {
-    return `=${IModelApp.localization.getLocalizedStringWithNamespace("CameraSampleApp", `${prefix}.${key}`, options)}=`;
+    return `=${IModelApp.localization.getLocalizedString(`CameraSampleApp:${prefix}.${key}`, options)}=`;
   } else {
-    return IModelApp.localization.getLocalizedStringWithNamespace("CameraSampleApp", `${prefix}.${key}`, options);
+    return IModelApp.localization.getLocalizedString(`CameraSampleApp:${prefix}.${key}`, options);
   }
 }
 
