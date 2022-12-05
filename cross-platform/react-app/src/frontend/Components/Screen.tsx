@@ -20,9 +20,9 @@ export interface ScreenProps {
 
 export function i18n(prefix: string, key: string, options?: any) {
   if (window.itmSampleParams.debugI18n) {
-    return `=${IModelApp.localization.getLocalizedStringWithNamespace("ReactApp", `${prefix}.${key}`, options)}=`;
+    return `=${IModelApp.localization.getLocalizedString(`ReactApp:${prefix}.${key}`, options)}=`;
   } else {
-    return IModelApp.localization.getLocalizedStringWithNamespace("ReactApp", `${prefix}.${key}`, options);
+    return IModelApp.localization.getLocalizedString(`ReactApp:${prefix}.${key}`, options);
   }
 }
 
