@@ -17,6 +17,7 @@ class ModelApplication: ITMApplication {
     required init() {
         super.init()
         startupTimer.enabled = self.configData?.isYes("ITMSAMPLE_LOG_STARTUP_TIMES") ?? false
+        startupTimer.useJSON = self.configData?.isYes("ITMSAMPLE_LOG_STARTUP_TIMES_JSON") ?? false
         ITMApplication.logger = PrintLogger()
         registerQueryHandler("didFinishLaunching") {
             self.itmMessenger.frontendLaunchSucceeded()

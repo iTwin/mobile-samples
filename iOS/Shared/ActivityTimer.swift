@@ -5,10 +5,12 @@
 
 import Foundation
 import ITwinMobile
+import UIKit
 
 /// Utility to record the timestamp of checkpoints and then log how long all the checkpoints took.
 class ActivityTimer {
     public var enabled = true
+    public var useJSON = false
     private var nameTitle: String
     private let startTime = Date()
     private var checkpoints: [ (String, Date) ] = []
@@ -64,6 +66,7 @@ class ActivityTimer {
         let lineRow = [String](repeating: "-", count: maxLengths.count)
         var lastTime = startTime
         var rows: [[String]] = []
+        var jsonCheckpoints: [JSON] = []
         for checkpoint in checkpoints {
             let row = [
                 checkpoint.0,
@@ -71,18 +74,58 @@ class ActivityTimer {
                 timeDelta(lastTime, checkpoint.1),
                 timeDelta(startTime, checkpoint.1)
             ]
+            jsonCheckpoints.append([
+                "action": row[0],
+                "timestamp": row[1],
+                "step": row[2],
+                "total": row[3],
+            ])
             for i in maxLengths.indices {
                 maxLengths[i] = max(maxLengths[i], row[i].count)
             }
             rows.append(row)
             lastTime = checkpoint.1
         }
-        var message = "\(title):\n"
-        message += buildRow(row: headerRow)
-        message += buildRow(row: lineRow, separator: "--+-", pad: "-")
-        for row in rows {
-            message += buildRow(row: row)
+        if useJSON {
+            let device = UIDevice.current
+            let processInfo = ProcessInfo.processInfo
+            let json: JSON = [
+                "checkpoints": jsonCheckpoints,
+                "device": [
+                    "cpuCores": processInfo.activeProcessorCount,
+                    "memory": processInfo.physicalMemory,
+                    "model": device.model,
+                    "modelID": UIDevice.modelID,
+                    "modelIDRefURL": "https://www.theiphonewiki.com/wiki/Models",
+                    "systemName": device.systemName,
+                    "systemVersion": device.systemVersion,
+                ],
+                "timestamp": ISO8601DateFormatter().string(from: Date()),
+                "title": title,
+            ]
+            if let data = try? JSONSerialization.data(withJSONObject: json, options: [.prettyPrinted, .sortedKeys, .withoutEscapingSlashes]),
+               let jsonString = String(data: data, encoding: .utf8) {
+                ITMApplication.logger.log(.info, jsonString)
+            }
+        } else {
+            var message = "\(title):\n"
+            message += "DEVICE MODELID: \(UIDevice.modelID) (see https://www.theiphonewiki.com/wiki/Models)\n"
+            message += buildRow(row: headerRow)
+            message += buildRow(row: lineRow, separator: "--+-", pad: "-")
+            for row in rows {
+                message += buildRow(row: row)
+            }
+            ITMApplication.logger.log(.info, message)
         }
-        ITMApplication.logger.log(.info, message)
+    }
+}
+
+public extension UIDevice {
+    static var modelID: String {
+        get {
+            var systemInfo = utsname()
+            uname(&systemInfo)
+            return String(bytes: Data(bytes: &systemInfo.machine, count: Int(_SYS_NAMELEN)), encoding: .ascii)!.trimmingCharacters(in: .controlCharacters)
+        }
     }
 }

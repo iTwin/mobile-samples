@@ -22,7 +22,8 @@ open class SampleITMApplication(context: Context, attachWebViewLogger: Boolean, 
 
     override fun finishInit() {
         super.finishInit()
-        startupTimer.enabled = configData?.isYes("ITMSAMPLE_LOG_STARTUP_TIMES") ?: true
+        startupTimer.enabled = configData?.isYes("ITMSAMPLE_LOG_STARTUP_TIMES") ?: false
+        startupTimer.useJSON = configData?.isYes("ITMSAMPLE_LOG_STARTUP_TIMES_JSON") ?: false
     }
 
     /**
@@ -43,7 +44,7 @@ open class SampleITMApplication(context: Context, attachWebViewLogger: Boolean, 
         coMessenger.registerMessageHandler("didFinishLaunching") {
             coMessenger.frontendLaunchSucceeded()
             startupTimer.addCheckpoint("Launch total")
-            startupTimer.logTimes(logger,"STARTUP TIMES")
+            startupTimer.logTimes(logger, appContext, "STARTUP TIMES")
         }
 
         coMessenger.registerQueryHandler("getBimDocuments") {
