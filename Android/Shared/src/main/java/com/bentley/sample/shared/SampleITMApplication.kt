@@ -8,7 +8,9 @@ import android.content.Context
 import android.net.Uri
 import androidx.fragment.app.FragmentActivity
 import com.eclipsesource.json.Json
+import com.eclipsesource.json.JsonValue
 import com.github.itwin.mobilesdk.ITMApplication
+import com.github.itwin.mobilesdk.jsonvalue.getOptionalString
 import com.github.itwin.mobilesdk.jsonvalue.isYes
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch
@@ -41,8 +43,13 @@ open class SampleITMApplication(context: Context, attachWebViewLogger: Boolean, 
         coMessenger.registerMessageHandler("loading") {
             startupTimer.addCheckpoint("Webview load")
         }
-        coMessenger.registerMessageHandler("didFinishLaunching") {
+        coMessenger.registerMessageHandler("didFinishLaunching") { value: JsonValue? ->
+            val params = value!!.asObject()
+            params.getOptionalString("iTwinVersion")?.let { iTwinVersion ->
+                startupTimer.iTwinVersion = iTwinVersion
+            }
             coMessenger.frontendLaunchSucceeded()
+            startupTimer.usingRemoteServer = usingRemoteServer
             startupTimer.addCheckpoint("Launch total")
             startupTimer.logTimes(logger, appContext, "STARTUP TIMES")
         }

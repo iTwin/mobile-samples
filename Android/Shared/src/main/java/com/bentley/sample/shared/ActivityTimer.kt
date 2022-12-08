@@ -10,6 +10,7 @@ import android.os.Build
 import com.eclipsesource.json.JsonArray
 import com.eclipsesource.json.WriterConfig
 import com.github.itwin.mobilesdk.ITMLogger
+import com.github.itwin.mobilesdk.epochMillisToISO8601
 import com.github.itwin.mobilesdk.jsonvalue.jsonOf
 import java.lang.Integer.max
 import java.text.SimpleDateFormat
@@ -23,6 +24,8 @@ import java.util.*
 class ActivityTimer(private val nameTitle: String = "ACTIVITY") {
     var enabled = true
     var useJSON = false
+    var iTwinVersion = "<Unknown>"
+    var usingRemoteServer = false
     private val startTime = Date()
     private var checkpoints: Array<Pair<String, Date>> = emptyArray()
     private val maxLengths: Array<Int> = Array(4) { 0 }
@@ -42,8 +45,12 @@ class ActivityTimer(private val nameTitle: String = "ACTIVITY") {
      * @param end: The end date for the elapsed time
      * @return A string representing the elapsed time between the two dates
      */
-    private fun timeDelta(start: Date, end: Date): String {
-        return String.format("%.3f", (end.time - start.time).toDouble() / 1000.0)
+    private fun timeDeltaString(start: Date, end: Date): String {
+        return String.format("%.3f", timeDelta(start, end))
+    }
+
+    private fun timeDelta(start: Date, end: Date): Double {
+        return (end.time - start.time).toDouble() / 1000.0
     }
 
     /**
@@ -85,14 +92,14 @@ class ActivityTimer(private val nameTitle: String = "ACTIVITY") {
             val row = arrayOf(
                 checkpoint.first,
                 timeFormat.format(checkpoint.second),
-                timeDelta(lastTime, checkpoint.second),
-                timeDelta(startTime, checkpoint.second),
+                timeDeltaString(lastTime, checkpoint.second),
+                timeDeltaString(startTime, checkpoint.second),
             )
             jsonCheckpoints.add(jsonOf(mapOf(
                 "action" to row[0],
-                "timestamp" to row[1],
-                "step" to row[2],
-                "total" to row[3],
+                "timestamp" to checkpoint.second.time.epochMillisToISO8601(),
+                "step" to timeDelta(lastTime, checkpoint.second),
+                "total" to timeDelta(startTime, checkpoint.second),
             )))
             for (i in maxLengths.indices) {
                 maxLengths[i] = max(maxLengths[i], row[i].length)
@@ -100,6 +107,7 @@ class ActivityTimer(private val nameTitle: String = "ACTIVITY") {
             rows += row
             lastTime = checkpoint.second
         }
+        var message = "${title}:\n"
         if (useJSON) {
             val actManager = appContext.getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager
             val memInfo = ActivityManager.MemoryInfo()
@@ -115,18 +123,20 @@ class ActivityTimer(private val nameTitle: String = "ACTIVITY") {
                     "systemName" to "Android",
                     "systemVersion" to "API ${Build.VERSION.SDK_INT}",
                 ),
-                "timestamp" to Date().toString(),
+                "iTwinVersion" to iTwinVersion,
+                "timestamp" to Date().time.epochMillisToISO8601(),
                 "title" to title,
+                "totalTime" to timeDelta(startTime, lastTime),
+                "usingRemoteServer" to usingRemoteServer
             ))
-            logger.log(ITMLogger.Severity.Info, json.toString(WriterConfig.PRETTY_PRINT))
+            message += json.toString(WriterConfig.PRETTY_PRINT)
         } else {
-            var message = "${title}:\n"
             message += buildRow(headerRow)
             message += buildRow(lineRow, "--+-", '-')
             for (row in rows) {
                 message += buildRow(row)
             }
-            logger.log(ITMLogger.Severity.Info, message)
         }
+        logger.log(ITMLogger.Severity.Info, message)
     }
 }

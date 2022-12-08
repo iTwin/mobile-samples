@@ -11,6 +11,8 @@ import UIKit
 class ActivityTimer {
     public var enabled = true
     public var useJSON = false
+    public var iTwinVersion = "<Unknown>"
+    public var usingRemoteServer = false
     private var nameTitle: String
     private let startTime = Date()
     private var checkpoints: [ (String, Date) ] = []
@@ -61,6 +63,9 @@ class ActivityTimer {
         }
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = "HH:mm:ss.SSS"
+        let isoDateFormatter = DateFormatter()
+        isoDateFormatter.timeZone = TimeZone(identifier: "UTC")
+        isoDateFormatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'"
         let headerRow = [ nameTitle, "START", "STEP", "TOTAL" ]
         maxLengths = headerRow.map { $0.count }
         let lineRow = [String](repeating: "-", count: maxLengths.count)
@@ -76,9 +81,9 @@ class ActivityTimer {
             ]
             jsonCheckpoints.append([
                 "action": row[0],
-                "timestamp": row[1],
-                "step": row[2],
-                "total": row[3],
+                "timestamp": isoDateFormatter.string(from: checkpoint.1),
+                "step": checkpoint.1.timeIntervalSince(lastTime),
+                "total": checkpoint.1.timeIntervalSince(startTime),
             ])
             for i in maxLengths.indices {
                 maxLengths[i] = max(maxLengths[i], row[i].count)
@@ -86,6 +91,7 @@ class ActivityTimer {
             rows.append(row)
             lastTime = checkpoint.1
         }
+        var message = "\(title):\n"
         if useJSON {
             let device = UIDevice.current
             let processInfo = ProcessInfo.processInfo
@@ -100,23 +106,26 @@ class ActivityTimer {
                     "systemName": device.systemName,
                     "systemVersion": device.systemVersion,
                 ],
-                "timestamp": ISO8601DateFormatter().string(from: Date()),
+                "iTwinVersion": iTwinVersion,
+                "timestamp": isoDateFormatter.string(from: Date()),
+                "totalTime": lastTime.timeIntervalSince(startTime),
                 "title": title,
+                "usingRemoteServer": usingRemoteServer,
             ]
-            if let data = try? JSONSerialization.data(withJSONObject: json, options: [.prettyPrinted, .sortedKeys, .withoutEscapingSlashes]),
-               let jsonString = String(data: data, encoding: .utf8) {
-                ITMApplication.logger.log(.info, jsonString)
+            guard let data = try? JSONSerialization.data(withJSONObject: json, options: [.prettyPrinted, .sortedKeys, .withoutEscapingSlashes]),
+                  let jsonString = String(data: data, encoding: .utf8) else {
+                return
             }
+            message += jsonString
         } else {
-            var message = "\(title):\n"
             message += "DEVICE MODELID: \(UIDevice.modelID) (see https://www.theiphonewiki.com/wiki/Models)\n"
             message += buildRow(row: headerRow)
             message += buildRow(row: lineRow, separator: "--+-", pad: "-")
             for row in rows {
                 message += buildRow(row: row)
             }
-            ITMApplication.logger.log(.info, message)
         }
+        ITMApplication.logger.log(.info, message)
     }
 }
 
