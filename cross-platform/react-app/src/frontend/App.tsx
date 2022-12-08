@@ -5,7 +5,7 @@
 import React from "react";
 import { combineReducers, createStore, Store } from "redux";
 import { MobileApp, MobileAppOpts } from "@itwin/core-mobile/lib/cjs/MobileFrontend";
-import { IModelApp, IModelConnection, SnapshotConnection, ToolAssistanceInstructions } from "@itwin/core-frontend";
+import { IModelApp, IModelConnection, ITWINJS_CORE_VERSION, SnapshotConnection, ToolAssistanceInstructions } from "@itwin/core-frontend";
 import { AppNotificationManager, FrameworkReducer, FrameworkState, UiFramework } from "@itwin/appui-react";
 import { Presentation } from "@itwin/presentation-frontend";
 import { Messenger, MobileCore } from "@itwin/mobile-sdk-core";
@@ -139,7 +139,7 @@ function useAppState(onInitialize?: () => Promise<void>) {
 
         // The following message lets the native side know that it is safe to send app-specific
         // messages from the native code to the TypeScript code.
-        Messenger.sendMessage("didFinishLaunching");
+        Messenger.sendMessage("didFinishLaunching", { iTwinVersion: ITWINJS_CORE_VERSION });
         // Switch from the Loading screen to the Home screen.
         pushActiveInfo(ActiveScreen.Home);
         console.log("...Done Initializing.");

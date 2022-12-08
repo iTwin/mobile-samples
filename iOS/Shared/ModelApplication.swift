@@ -17,9 +17,14 @@ class ModelApplication: ITMApplication {
     required init() {
         super.init()
         startupTimer.enabled = self.configData?.isYes("ITMSAMPLE_LOG_STARTUP_TIMES") ?? false
+        startupTimer.useJSON = self.configData?.isYes("ITMSAMPLE_LOG_STARTUP_TIMES_JSON") ?? false
         ITMApplication.logger = PrintLogger()
-        registerQueryHandler("didFinishLaunching") {
+        registerQueryHandler("didFinishLaunching") { (params: [String: Any]) -> Void in
+            if let iTwinVersion = params["iTwinVersion"] as? String {
+                self.startupTimer.iTwinVersion = iTwinVersion
+            }
             self.itmMessenger.frontendLaunchSucceeded()
+            self.startupTimer.usingRemoteServer = self.usingRemoteServer
             self.startupTimer.addCheckpoint(name: "Launch total")
             self.startupTimer.logTimes(title: "STARTUP TIMES")
         }
