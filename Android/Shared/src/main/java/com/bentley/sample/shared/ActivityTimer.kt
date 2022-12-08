@@ -70,6 +70,7 @@ class ActivityTimer(private val nameTitle: String = "ACTIVITY") {
     /**
      * Log the time of all checkpoints in ASCII table format.
      * @param logger: The [ITMLogger] to use to log the times
+     * @param appContext: The application's [Context]
      * @param title: Title to be printed before the checkpoints table
      */
     fun logTimes(logger: ITMLogger, appContext: Context, title: String) {
