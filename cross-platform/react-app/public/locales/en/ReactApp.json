@@ -67,7 +67,11 @@
     "Info": "Info",
     "Properties": "Properties",
     "Tools": "Tools",
-    "ApplyDefaultViewErrorFormat": "Error applying default view: {{- error}}"
+    "ApplyDefaultViewErrorFormat": "Error applying default view: {{- error}}",
+    "ChangeAppearance": "Change Appearance",
+    "Light": "Light",
+    "Dark": "Dark",
+    "Automatic": "Automatic"
   },
   "AboutBottomPanel": {
     "About": "About",
