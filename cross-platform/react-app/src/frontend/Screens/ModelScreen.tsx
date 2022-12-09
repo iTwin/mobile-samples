@@ -25,6 +25,7 @@ import {
   MobileUi,
   MobileUiContent,
   NavigationPanel,
+  PreferredColorScheme,
   TabOrPanelDef,
   useActiveColorSchemeIsDark,
   useBeEvent,
@@ -108,6 +109,10 @@ export function ModelScreen(props: ModelScreenProps) {
   const viewsLabel = React.useMemo(() => i18n("ViewsBottomPanel", "Views"), []);
   const toolsLabel = React.useMemo(() => i18n("ModelScreen", "Tools"), []);
   const elementPropertiesLabel = React.useMemo(() => i18n("ModelScreen", "Properties"), []);
+  const changeAppearanceLabel = React.useMemo(() => i18n("ModelScreen", "ChangeAppearance"), []);
+  const lightLabel = React.useMemo(() => i18n("ModelScreen", "Light"), []);
+  const darkLabel = React.useMemo(() => i18n("ModelScreen", "Dark"), []);
+  const automaticLabel = React.useMemo(() => i18n("ModelScreen", "Automatic"), []);
 
   // Any time we do anything asynchronous, we have to check if the component is still mounted,
   // or it can lead to a run-time exception.
@@ -170,6 +175,31 @@ export function ModelScreen(props: ModelScreenProps) {
         name: "toggleCamera",
         title: toggleCameraLabel,
         onSelected: toggleCamera,
+      },
+      {
+        name: "appearance",
+        title: changeAppearanceLabel,
+        onSelected: async () => {
+          const result = await presentAlert({
+            title: changeAppearanceLabel,
+            actions: [
+              { name: automaticLabel, title: automaticLabel },
+              { name: lightLabel, title: lightLabel },
+              { name: darkLabel, title: darkLabel },
+            ],
+          });
+          switch (result) {
+            case lightLabel:
+              MobileUi.preferredColorScheme = PreferredColorScheme.Light;
+              break;
+            case darkLabel:
+              MobileUi.preferredColorScheme = PreferredColorScheme.Dark;
+              break;
+            case automaticLabel:
+              MobileUi.preferredColorScheme = PreferredColorScheme.Automatic;
+              break;
+          }
+        },
       },
       {
         name: "alertDemo",
