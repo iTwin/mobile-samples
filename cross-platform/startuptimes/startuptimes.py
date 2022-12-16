@@ -51,7 +51,7 @@ def elapsed_string(value):
 
     return f'{value_string(value)}s'
 
-def asciitable(data: Records, columns: ColumnDefs, formatters: Formatters | None = None) -> str:
+def asciitable(data: Records, column_defs: ColumnDefs, formatters: Formatters | None = None) -> str:
     '''
     Creates an ASCII table containing data, which is a sequence of dict values.
 
@@ -63,7 +63,12 @@ def asciitable(data: Records, columns: ColumnDefs, formatters: Formatters | None
     column title. Otherwise, the key is used as the column title.
     '''
 
-    def format_row(row: list, max_lengths: list[int], separator = ' | ', pad = ' ') -> str:
+    def format_row(
+        row: list,
+        max_lengths: list[int],
+        formatters: Formatters | None = None,
+        separator = ' | ',
+        pad = ' ') -> str:
         '''
         Formats the values in row and produces a string where each column in row
         has a length determined by the corresponding entry in max_lengths, with
@@ -89,43 +94,34 @@ def asciitable(data: Records, columns: ColumnDefs, formatters: Formatters | None
             map_args.append(formatters)
         return separator.join(map(*map_args)) + '\n'
 
-    def column_key(header):
-        if isinstance(header, tuple):
-            return header[0]
-        else:
-            return header
-
-    def column_title(header):
-        if isinstance(header, tuple):
-            return header[1]
-        else:
-            return header
-
     # Beginning of asciitable().
-    if len(data) == 0 or len(columns) == 0:
+    if len(data) == 0 or len(column_defs) == 0:
         return ''
 
+    for i, column_def in enumerate(column_defs):
+        if not isinstance(column_def, tuple):
+            column_defs[i] = (column_def, column_def)
     max_lengths = []
     header_row = []
     line_row = []
-    for column in columns:
-        title = column_title(column)
+    for column_def in column_defs:
+        title = column_def[1]
         max_lengths.append(len(title))
         header_row.append(title)
         line_row.append('-')
     data_values = []
     for row in data:
         row_values = []
-        for column in columns:
-            row_values.append(row[column_key(column)])
+        for column_def in column_defs:
+            row_values.append(row[column_def[0]])
         data_values.append(row_values)
         for i, length in enumerate(max_lengths):
             max_lengths[i] = max(length, len(value_string(row_values[i])))
     result = ''
     result = result + format_row(header_row, max_lengths)
-    result = result + format_row(line_row, max_lengths, '-+-', '-')
+    result = result + format_row(line_row, max_lengths, None, '-+-', '-')
     for row_values in data_values:
-        result = result + format_row(row_values, max_lengths)
+        result = result + format_row(row_values, max_lengths, formatters)
     return result
 
 def check_for_table(db: sqlite3.Connection, table_name: str) -> bool:
@@ -451,7 +447,7 @@ def report_command(db: sqlite3.Connection, _) -> None:
         report_rows.append(gen_report_row(db, { 'iTwinVersion': row[0], 'deviceID': row[1] }))
     columns = [
         ('modelID', 'Device'),
-        ('iTwinVersion', 'iTwin Version'),
+        'iTwinVersion',
         ('averageTime', 'Average Time'),
         ('samples', 'Samples')
     ]
