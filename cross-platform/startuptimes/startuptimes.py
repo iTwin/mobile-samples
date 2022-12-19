@@ -249,7 +249,7 @@ def create_insert_sql(table_name: str, record: Record) -> str:
     sql = 'INSERT INTO ' + table_name + '('
     sql += ', '.join(column_names)
     sql += ') VALUES ('
-    sql += ', '.join(map(lambda value: f':{value}', column_names))
+    sql += ', '.join(map(lambda column_name: f':{column_name}', column_names))
     sql += ');'
     # sql should now be of the following form:
     # INSERT INTO TableName(column1, column2, ...) VALUES (:column1, :column2, ...);
@@ -274,7 +274,7 @@ def insert_records(db: sqlite3.Connection, table_name: str, records: list[Record
     '''
 
     if len(records) == 0:
-        return None
+        return
     sql = create_insert_sql(table_name, records[0])
     cur = db.cursor()
     cur.executemany(sql, records)
@@ -283,17 +283,19 @@ def insert_records(db: sqlite3.Connection, table_name: str, records: list[Record
 def find_device_id(db: sqlite3.Connection, device: Record) -> int:
     '''
     Looks for `device` in `db` and returns its id if it is found. Otherwise,
-    adds `device` to `db`.
+    adds `device` to `db` and returns the id of the newly created record.
 
     Returns the id of the matching device entry.
     '''
 
     cur = db.cursor()
-    sql = '''SELECT id FROM Device
-        WHERE cpuCores = :cpuCores
-        AND memory = :memory
-        AND modelID = :modelID
-        AND systemVersion = :systemVersion'''
+    sql = '''
+        SELECT id FROM Device
+            WHERE cpuCores = :cpuCores
+            AND memory = :memory
+            AND modelID = :modelID
+            AND systemVersion = :systemVersion
+    '''
     cur.execute(sql, device)
     row = cur.fetchone()
     if row is not None:
@@ -441,8 +443,10 @@ def report_command(db: sqlite3.Connection, _) -> None:
 
     cur = db.cursor()
     report_rows = []
-    sql = '''SELECT DISTINCT iTwinVersion, deviceID, modelID FROM Entry, Device
-        WHERE Entry.deviceID = Device.id ORDER BY modelID'''
+    sql = '''
+        SELECT DISTINCT iTwinVersion, deviceID, modelID FROM Entry, Device
+            WHERE Entry.deviceID = Device.id ORDER BY modelID
+    '''
     for row in cur.execute(sql):
         report_rows.append(gen_report_row(db, { 'iTwinVersion': row[0], 'deviceID': row[1] }))
     columns = [
