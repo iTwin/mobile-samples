@@ -17,6 +17,7 @@ import sys
 import textwrap
 from typing import Any, Callable, Sequence, TextIO, Union
 from io import TextIOWrapper
+from functools import partial
 
 Record = dict[str, Any]
 Records = Sequence[Record]
@@ -26,47 +27,78 @@ ColumnDefs = Sequence[ColumnDef]
 Formatters = Sequence[Callable[[Any], str] | None]
 SQLiteDescription = tuple[tuple[str, None, None, None, None, None, None], ...] | Any
 
-def value_string(value: Any) -> str:
+class ASCIITable:
     '''
-    Converts `value` into a string and returns it.
-
-    For all types except float, this simply creates a string. For float
-    values, this creates a string with 3 decimal places.
+    Object for generating an ASCII table.
     '''
 
-    if isinstance(value, str):
-        return value
-    elif isinstance(value, float):
-        return f'{value:.3f}'
-    else:
+    __data: Records
+    __column_defs: ColumnDefs
+    __formatters: Formatters | None
+    __max_lengths: list[int]
+
+    def __init__(
+        self,
+        data: Records,
+        column_defs: ColumnDefs,
+        formatters: Formatters | None = None
+    ) -> None:
+        '''
+        Creates an ASCII table containing data, which is a sequence of dict values.
+
+        Each value in `columns` must be either a `str` value or a tuple of two
+        `str` values. If it is a `str`, the value is used as a key. If it is a
+        tuple, the first element of the tuple is used as a key. Either way, the key
+        is used to look up values in each `Record` in `data`. If the value in
+        `columns` is a tuple, then the second element of the tuple is used as the
+        column title. Otherwise, the key is used as the column title.
+        '''
+
+        self.__data = data
+        self.__column_defs = column_defs
+        self.__formatters = formatters
+
+    @staticmethod
+    def __value_string(value: Any) -> str:
+        '''
+        Converts `value` into a string and returns it.
+
+        For all types except float, this simply creates a string. For float
+        values, this creates a string with 3 decimal places.
+        '''
+
+        if isinstance(value, str):
+            return value
+        if isinstance(value, float):
+            return f'{value:.3f}'
         return str(value)
 
-def elapsed_string(value):
-    '''
-    Converts `value` into a string with an 's' suffix and returns it.
+    @staticmethod
+    def elapsed_string(value):
+        '''
+        Converts `value` into a string with an 's' suffix and returns it.
 
-    Uses `value_string()` to convert the value into a string, then adds the 's'
-    suffix.
-    '''
+        Uses `value_string()` to convert the value into a string, then adds the 's'
+        suffix.
+        '''
 
-    return f'{value_string(value)}s'
+        return f'{ASCIITable.__value_string(value)}s'
 
-def asciitable(data: Records, column_defs: ColumnDefs, formatters: Formatters | None = None) -> str:
-    '''
-    Creates an ASCII table containing data, which is a sequence of dict values.
+    def __format_value(self, pad, value, max_length, formatter = None) -> str:
+        if formatter is not None:
+            short_string = formatter(value)
+        else:
+            short_string = ASCIITable.__value_string(value)
+        if isinstance(value, (int, float)):
+            just = short_string.rjust
+        else:
+            just = short_string.ljust
+        return just(max_length, pad)
 
-    Each value in `columns` must be either a `str` value or a tuple of two
-    `str` values. If it is a `str`, the value is used as a key. If it is a
-    tuple, the first element of the tuple is used as a key. Either way, the key
-    is used to look up values in each `Record` in `data`. If the value in
-    `columns` is a tuple, then the second element of the tuple is used as the
-    column title. Otherwise, the key is used as the column title.
-    '''
-
-    def format_row(
+    def __format_row(
+        self,
         row: list,
-        max_lengths: list[int],
-        formatters: Formatters | None = None,
+        use_formatters = False,
         separator = ' | ',
         pad = ' ') -> str:
         '''
@@ -78,310 +110,334 @@ def asciitable(data: Records, column_defs: ColumnDefs, formatters: Formatters | 
         Returns a string representation of row, with a line feed on the end.
         '''
 
-        def format_value(value, max_length, formatter = None) -> str:
-            if formatter is not None:
-                short_string = formatter(value)
-            else:
-                short_string = value_string(value)
-            if isinstance(value, int) or isinstance(value, float):
-                just = short_string.rjust
-            else:
-                just = short_string.ljust
-            return just(max_length, pad)
-
-        map_args = [ format_value, row, max_lengths ]
-        if formatters is not None:
-            map_args.append(formatters)
+        map_args = [ partial(self.__format_value, pad), row, self.__max_lengths ]
+        if use_formatters and self.__formatters is not None:
+            map_args.append(self.__formatters)
         return separator.join(map(*map_args)) + '\n'
 
-    # Beginning of asciitable().
-    if len(data) == 0 or len(column_defs) == 0:
-        return ''
+    def __str__(self) -> str:
+        '''
+        Creates an ASCII table based on parameters to the constuctor.
+        '''
 
-    for i, column_def in enumerate(column_defs):
-        if not isinstance(column_def, tuple):
-            column_defs[i] = (column_def, column_def)
-    max_lengths = []
-    header_row = []
-    line_row = []
-    for column_def in column_defs:
-        title = column_def[1]
-        max_lengths.append(len(title))
-        header_row.append(title)
-        line_row.append('-')
-    data_values = []
-    for row in data:
-        row_values = []
-        for column_def in column_defs:
-            row_values.append(row[column_def[0]])
-        data_values.append(row_values)
-        for i, length in enumerate(max_lengths):
-            max_lengths[i] = max(length, len(value_string(row_values[i])))
-    result = ''
-    result = result + format_row(header_row, max_lengths)
-    result = result + format_row(line_row, max_lengths, None, '-+-', '-')
-    for row_values in data_values:
-        result = result + format_row(row_values, max_lengths, formatters)
-    return result
+        if len(self.__data) == 0 or len(self.__column_defs) == 0:
+            return ''
 
-def check_for_table(db: sqlite3.Connection, table_name: str) -> bool:
+        for i, column_def in enumerate(self.__column_defs):
+            if not isinstance(column_def, tuple):
+                self.__column_defs[i] = (column_def, column_def)
+        header_row = [column_def[1] for column_def in self.__column_defs]
+        self.__max_lengths = list(map(len, header_row))
+        line_row = len(self.__column_defs) * ['']
+        data_values = []
+        for row in self.__data:
+            row_values = []
+            for (key, _) in self.__column_defs:
+                row_values.append(row[key])
+            data_values.append(row_values)
+            for i, length in enumerate(self.__max_lengths):
+                self.__max_lengths[i] = max(length, len(ASCIITable.__value_string(row_values[i])))
+        result = ''
+        result = result + self.__format_row(header_row)
+        result = result + self.__format_row(line_row, False, '-+-', '-')
+        for row_values in data_values:
+            result = result + self.__format_row(row_values, self.__formatters is not None)
+        return result
+
+class StartupTimesDB:
     '''
-    Check to see if a table named `table_name` exists in `db`.
-
-    Returns True if the table extists, or False otherwise.
+    Object for dealing with the StartupTimes sqlite3 database.
     '''
 
-    cur = db.cursor()
-    sql = 'SELECT EXISTS(SELECT 1 FROM sqlite_schema WHERE type="table" AND name=?);'
-    cur.execute(sql, [ table_name ])
-    return cur.fetchone()[0] == 1
+    __db: sqlite3.Connection
 
-def setup_db(db: sqlite3.Connection) -> None:
-    '''
-    Set up `db` for use with `startuptimes`. If `db` is not already set up,
-    this will also create and populate the Props table.
-    '''
+    def __init__(self, filename: str) -> None:
+        '''
+        Constructs a StartupTimesDB object and connects to the sqlite3 database referenced by
+        `filename`. If such a database does not exist, it is created.
+        '''
 
-    cur = db.cursor()
-    # NOTE: foreign_keys must be turned on ever time the connection is opened.
-    cur.execute('PRAGMA foreign_keys = ON')
-    # id is included in the records below to allow for easy checking that the values in the
-    # database match the expected values. If schemaVersion ever gets bumped, the logic will
-    # have to get more complicated.
-    version_record = {
-        'id': 1,
-        'namespace': 'startuptimes',
-        'name': 'schemaVersion',
-        'value': '1.0'
-    }
-    if check_for_table(db, 'Props'):
-        sql = 'SELECT * FROM Props WHERE namespace == "startuptimes" AND name == "schemaVersion"'
-        cur.execute(sql)
-        rows = process_rows(cur.fetchall(), cur.description)
-        if len(rows) == 1 and rows[0] ==  version_record:
-            # The database schema is already correct, so we are done.
-            return
-    else:
-        # Props table does not yet exist. Create and initialize it.
+        self.__connect(filename)
+
+    def __create_tables(self) -> None:
+        '''
+        Create the tables and indices in `db` needed by startuptimes (other
+        than Props).
+        '''
+
+        cur = self.cursor()
         sql = '''
-            CREATE TABLE Props(
+            CREATE TABLE Device(
                 id INTEGER PRIMARY KEY,
-                namespace TEXT NOT NULL,
-                name TEXT NOT NULL,
-                value TEXT NOT NULL
+                cpuCores INTEGER NOT NULL,
+                memory INTEGER NOT NULL,
+                model TEXT,
+                modelID TEXT NOT NULL,
+                modelIDRefURL TEXT NOT NULL,
+                systemName TEXT NOT NULL,
+                systemVersion TEXT NOT NULL
             );
-            CREATE UNIQUE INDEX Props_namespace ON Props(namespace);
-            CREATE UNIQUE INDEX Props_lookup ON Props(namespace, name);
+            CREATE TABLE Entry(
+                id INTEGER PRIMARY KEY,
+                iTwinVersion TEXT NOT NULL,
+                title TEXT NOT NULL,
+                timestamp TEXT NOT NULL,
+                totalTime REAL NOT NULL,
+                usingRemoteServer INT NOT NULL,
+                deviceID INT NOT NULL,
+                FOREIGN KEY(deviceID) REFERENCES Device(id)
+            );
+            CREATE TABLE Checkpoint(
+                id INTEGER PRIMARY KEY,
+                entryID INTEGER NOT NULL,
+                arrayIndex INT NOT NULL,
+                action TEXT NOT NULL,
+                timestamp TEXT NOT NULL,
+                step REAL NOT NULL,
+                total REAL NOT NULL,
+                FOREIGN KEY(entryID) REFERENCES Entry(id)
+            );
+            CREATE INDEX Entry_timestamp on Entry(timestamp);
+            CREATE INDEX Checkpoint_arrayIndex on Checkpoint(arrayIndex);
+            CREATE INDEX Device_modelID on Device(modelID);
         '''
         cur.executescript(sql)
-        insert_record(db, 'Props', version_record)
-    create_tables(db)
 
-def create_tables(db: sqlite3.Connection) -> None:
-    '''
-    Create the tables and indices in `db` needed by startuptimes (other
-    than Props).
-    '''
+    def __check_for_table(self, table_name: str) -> bool:
+        '''
+        Check to see if a table named `table_name` exists in `db`.
 
-    cur = db.cursor()
-    sql = '''
-        CREATE TABLE Device(
-            id INTEGER PRIMARY KEY,
-            cpuCores INTEGER NOT NULL,
-            memory INTEGER NOT NULL,
-            model TEXT,
-            modelID TEXT NOT NULL,
-            modelIDRefURL TEXT NOT NULL,
-            systemName TEXT NOT NULL,
-            systemVersion TEXT NOT NULL
-        );
-        CREATE TABLE Entry(
-            id INTEGER PRIMARY KEY,
-            iTwinVersion TEXT NOT NULL,
-            title TEXT NOT NULL,
-            timestamp TEXT NOT NULL,
-            totalTime REAL NOT NULL,
-            usingRemoteServer INT NOT NULL,
-            deviceID INT NOT NULL,
-            FOREIGN KEY(deviceID) REFERENCES Device(id)
-        );
-        CREATE TABLE Checkpoint(
-            id INTEGER PRIMARY KEY,
-            entryID INTEGER NOT NULL,
-            arrayIndex INT NOT NULL,
-            action TEXT NOT NULL,
-            timestamp TEXT NOT NULL,
-            step REAL NOT NULL,
-            total REAL NOT NULL,
-            FOREIGN KEY(entryID) REFERENCES Entry(id)
-        );
-        CREATE INDEX Entry_timestamp on Entry(timestamp);
-        CREATE INDEX Checkpoint_arrayIndex on Checkpoint(arrayIndex);
-        CREATE INDEX Device_modelID on Device(modelID);
-    '''
-    cur.executescript(sql)
+        Returns True if the table extists, or False otherwise.
+        '''
 
-def get_column_names(record: Record) -> list[str]:
-    '''
-    Gets the column names of the primitive fields `record`. (Primitive fields
-    are of type `str`, `int`, `bool`, and `float`.)
+        cur = self.cursor()
+        sql = '''
+            SELECT EXISTS(SELECT 1 FROM sqlite_schema WHERE type="table" AND name=?);
+        '''
+        cur.execute(sql, [ table_name ])
+        return cur.fetchone()[0] == 1
 
-    Returns a list containing the column names.
-    '''
+    def __setup(self) -> None:
+        '''
+        Set up `db` for use with `startuptimes`. If `db` is not already set up,
+        this will also create and populate the Props table.
+        '''
 
-    column_names = []
-    for key in record:
-        value = record[key]
-        # NOTE: bool is a subclass of int.
-        if isinstance(value, (str, int, float)):
-            column_names.append(key)
-    return column_names
+        cur = self.cursor()
+        # NOTE: foreign_keys must be turned on ever time the connection is opened.
+        cur.execute('PRAGMA foreign_keys = ON')
+        # id is included in the records below to allow for easy checking that the values in the
+        # database match the expected values. If schemaVersion ever gets bumped, the logic will
+        # have to get more complicated.
+        version_record = {
+            'id': 1,
+            'namespace': 'startuptimes',
+            'name': 'schemaVersion',
+            'value': '1.0'
+        }
+        if self.__check_for_table('Props'):
+            sql = '''
+                SELECT * FROM Props WHERE namespace == 'startuptimes' AND name == 'schemaVersion'
+            '''
+            cur.execute(sql)
+            rows = self.process_rows(cur.fetchall(), cur.description)
+            if len(rows) == 1 and rows[0] ==  version_record:
+                # The database schema is already correct, so we are done.
+                return
+        else:
+            # Props table does not yet exist. Create and initialize it.
+            sql = '''
+                CREATE TABLE Props(
+                    id INTEGER PRIMARY KEY,
+                    namespace TEXT NOT NULL,
+                    name TEXT NOT NULL,
+                    value TEXT NOT NULL
+                );
+                CREATE UNIQUE INDEX Props_namespace ON Props(namespace);
+                CREATE UNIQUE INDEX Props_lookup ON Props(namespace, name);
+            '''
+            cur.executescript(sql)
+            self.insert_record('Props', version_record)
+        self.__create_tables()
 
-def create_insert_sql(table_name: str, record: Record) -> str:
-    '''
-    Creates a SQL statement suitable for inserting `record` into a table
-    named `table_name`.
+    def __connect(self, filename: str) -> None:
+        '''
+        Connects to the SQLite database contained in the file named `filename`.
 
-    Returns the SQL statement.
-    '''
+        Also insures that the database is configured for use by startuptimes.
 
-    column_names = get_column_names(record)
-    sql = 'INSERT INTO ' + table_name + '('
-    sql += ', '.join(column_names)
-    sql += ') VALUES ('
-    sql += ', '.join(map(lambda column_name: f':{column_name}', column_names))
-    sql += ');'
-    # sql should now be of the following form:
-    # INSERT INTO TableName(column1, column2, ...) VALUES (:column1, :column2, ...);
-    return sql
+        Returns the database connection.
+        '''
 
-def insert_record(db: sqlite3.Connection, table_name: str, record: Record) -> int:
-    '''
-    Inserts `record` into the table named `table_name` in `db`.
+        self.__db = sqlite3.connect(filename)
+        self.__setup()
 
-    Returns the id of the inserted record.
-    '''
+    def get_column_names(self, record: Record) -> list[str]:
+        '''
+        Gets the column names of the primitive fields `record`. (Primitive fields
+        are of type `str`, `int`, `bool`, and `float`.)
 
-    sql = create_insert_sql(table_name, record)
-    cur = db.cursor()
-    cur.execute(sql, record)
-    db.commit()
-    return cur.lastrowid or 0
+        Returns a list containing the column names.
+        '''
 
-def insert_records(db: sqlite3.Connection, table_name: str, records: list[Record]) -> None:
-    '''
-    Inserts `records` into the table named `table_name` in `db`.
-    '''
+        column_names = []
+        for key in record:
+            value = record[key]
+            # NOTE: bool is a subclass of int.
+            if isinstance(value, (str, int, float)):
+                column_names.append(key)
+        return column_names
 
-    if len(records) == 0:
-        return
-    sql = create_insert_sql(table_name, records[0])
-    cur = db.cursor()
-    cur.executemany(sql, records)
-    db.commit()
+    def create_insert_sql(self, table_name: str, record: Record) -> str:
+        '''
+        Creates a SQL statement suitable for inserting `record` into a table
+        named `table_name`.
 
-def find_device_id(db: sqlite3.Connection, device: Record) -> int:
-    '''
-    Looks for `device` in `db` and returns its id if it is found. Otherwise,
-    adds `device` to `db` and returns the id of the newly created record.
+        Returns the SQL statement.
+        '''
 
-    Returns the id of the matching device entry.
-    '''
+        column_names = self.get_column_names(record)
+        sql = 'INSERT INTO ' + table_name + '('
+        sql += ', '.join(column_names)
+        sql += ') VALUES ('
+        sql += ', '.join(map(lambda column_name: f':{column_name}', column_names))
+        sql += ');'
+        # sql should now be of the following form:
+        # INSERT INTO TableName(column1, column2, ...) VALUES (:column1, :column2, ...);
+        return sql
 
-    cur = db.cursor()
-    sql = '''
-        SELECT id FROM Device
-            WHERE cpuCores = :cpuCores
-            AND memory = :memory
-            AND modelID = :modelID
-            AND systemVersion = :systemVersion
-    '''
-    cur.execute(sql, device)
-    row = cur.fetchone()
-    if row is not None:
-        return int(row[0])
-    device_id = insert_record(db, 'Device', device)
-    model_id = device['modelID']
-    print(f'Device {model_id} inserted with ID: {device_id}')
-    return device_id
+    def insert_record(self, table_name: str, record: Record) -> int:
+        '''
+        Inserts `record` into the table named `table_name` in `db`.
 
-def insert_entry(db: sqlite3.Connection, entry: Record) -> None:
-    '''
-    Inserts `entry` into `db`. This creates records in the Entry,
-    Checkpoints, and (optionally) Device tables. (If a record already exists
-    in the Device table matching the device of `entry`, that device is
-    used.)
-    '''
+        Returns the id of the inserted record.
+        '''
 
-    device_id = find_device_id(db, entry['device'])
-    entry['deviceID'] = device_id
-    cur = db.cursor()
-    cur.execute('SELECT 1 FROM Entry WHERE timestamp=:timestamp AND deviceID=:deviceID', entry)
-    if cur.fetchone() is not None:
-        model_id = entry['device']['modelID']
-        timestamp = entry['timestamp']
-        print(f'Entry for {model_id} at {timestamp} is already present! Skipping.')
-        return
-    entry_id = insert_record(db, 'Entry', entry)
-    print(f'Entry inserted with ID: {entry_id}')
-    index = 0
-    checkpoints = entry['checkpoints']
-    for checkpoint in checkpoints:
-        checkpoint['entryID'] = entry_id
-        checkpoint['arrayIndex'] = index
-        index = index + 1
-    insert_records(db, 'Checkpoint', checkpoints)
-    print(f'{len(checkpoints)} checkpoints inserted.')
+        sql = self.create_insert_sql(table_name, record)
+        cur = self.cursor()
+        cur.execute(sql, record)
+        self.commit()
+        return cur.lastrowid or 0
 
-def add_from_json(db: sqlite3.Connection, json_string: str) -> None:
-    '''
-    Add an entry to db from the given JSON string.
-    '''
+    def insert_records(self, table_name: str, records: list[Record]) -> None:
+        '''
+        Inserts `records` into the table named `table_name` in `db`.
+        '''
 
-    data = json.loads(json_string)
-    if isinstance(data, list):
-        for entry in data:
-            insert_entry(db, entry)
-    else:
-        insert_entry(db, data)
+        if len(records) == 0:
+            return
+        sql = self.create_insert_sql(table_name, records[0])
+        cur = self.cursor()
+        cur.executemany(sql, records)
+        self.commit()
 
-def connect_to_db(filename: str) -> sqlite3.Connection:
-    '''
-    Connects to the SQLite database contained in the file named `filename`.
+    def find_device_id(self, device: Record) -> int:
+        '''
+        Looks for `device` in `db` and returns its id if it is found. Otherwise,
+        adds `device` to `db` and returns the id of the newly created record.
 
-    Also insures that the database is configured for use by startuptimes.
+        Returns the id of the matching device entry.
+        '''
 
-    Returns the database connection.
-    '''
+        cur = self.cursor()
+        sql = '''
+            SELECT id FROM Device
+                WHERE cpuCores = :cpuCores
+                AND memory = :memory
+                AND modelID = :modelID
+                AND systemVersion = :systemVersion
+        '''
+        cur.execute(sql, device)
+        row = cur.fetchone()
+        if row is not None:
+            return int(row[0])
+        device_id = self.insert_record('Device', device)
+        model_id = device['modelID']
+        print(f'Device {model_id} inserted with ID: {device_id}')
+        return device_id
 
-    db = sqlite3.connect(filename)
-    setup_db(db)
-    return db
+    def insert_entry(self, entry: Record) -> None:
+        '''
+        Inserts `entry` into `db`. This creates records in the Entry,
+        Checkpoints, and (optionally) Device tables. (If a record already exists
+        in the Device table matching the device of `entry`, that device is
+        used.)
+        '''
 
-def process_row(row: tuple, description: SQLiteDescription) -> Record:
-    '''
-    Process the raw tuple `row` returned by a sqlite3 Cursor and converts it
-    into a dict using `description` (which comes from the Cursor).
+        device_id = self.find_device_id(entry['device'])
+        entry['deviceID'] = device_id
+        cur = self.cursor()
+        cur.execute('SELECT 1 FROM Entry WHERE timestamp=:timestamp AND deviceID=:deviceID', entry)
+        if cur.fetchone() is not None:
+            model_id = entry['device']['modelID']
+            timestamp = entry['timestamp']
+            print(f'Entry for {model_id} at {timestamp} is already present! Skipping.')
+            return
+        entry_id = self.insert_record('Entry', entry)
+        print(f'Entry inserted with ID: {entry_id}')
+        index = 0
+        checkpoints = entry['checkpoints']
+        for checkpoint in checkpoints:
+            checkpoint['entryID'] = entry_id
+            checkpoint['arrayIndex'] = index
+            index = index + 1
+        self.insert_records('Checkpoint', checkpoints)
+        print(f'{len(checkpoints)} checkpoints inserted.')
 
-    Returns the dictionary representation of the `row` tuple.
-    '''
+    def add_from_json(self, json_string: str) -> None:
+        '''
+        Add an entry to db from the given JSON string.
+        '''
 
-    return dict(zip([value[0] for value in description], row))
+        data = json.loads(json_string)
+        if isinstance(data, list):
+            for entry in data:
+                self.insert_entry(entry)
+        else:
+            self.insert_entry(data)
 
-def process_rows(rows: list, description: SQLiteDescription) -> list[Record]:
-    '''
-    Process the raw tuples `rows` returned by a sqlite3 Cursor and converts
-    them into a list of dicts using `description` (which comes from the
-    Cursor).
+    def cursor(self) -> sqlite3.Cursor:
+        '''
+        Get a cursor from the database.
+        '''
+        return self.__db.cursor()
 
-    Returns a list containing the dictionary representations of the row
-    tuples.
-    '''
+    def commit(self) -> None:
+        '''
+        Commit outstanding changes to the database.
+        '''
+        self.__db.commit()
 
-    result = []
-    for row in rows:
-        result.append(process_row(row, description))
-    return result
+    def close(self) -> None:
+        '''
+        Close the database connection.
+        '''
+        self.__db.close()
+
+    def process_row(self, row: tuple, description: SQLiteDescription) -> Record:
+        '''
+        Process the raw tuple `row` returned by a sqlite3 Cursor and converts it
+        into a dict using `description` (which comes from the Cursor).
+
+        Returns the dictionary representation of the `row` tuple.
+        '''
+
+        return dict(zip([value[0] for value in description], row))
+
+    def process_rows(self, rows: list, description: SQLiteDescription) -> list[Record]:
+        '''
+        Process the raw tuples `rows` returned by a sqlite3 Cursor and converts
+        them into a list of dicts using `description` (which comes from the
+        Cursor).
+
+        Returns a list containing the dictionary representations of the row
+        tuples.
+        '''
+
+        result = []
+        for row in rows:
+            result.append(self.process_row(row, description))
+        return result
 
 def gen_report_row(db: sqlite3.Connection, where: Record) -> Record:
     '''
@@ -395,10 +451,10 @@ def gen_report_row(db: sqlite3.Connection, where: Record) -> Record:
 
     cur = db.cursor()
     cur.execute('SELECT * FROM Device WHERE id = :deviceID', where)
-    device = process_row(cur.fetchone(), cur.description)
+    device = db.process_row(cur.fetchone(), cur.description)
     sql = 'SELECT * FROM Entry WHERE iTwinVersion = :iTwinVersion AND deviceID = :deviceID'
     cur.execute(sql, where)
-    entries = process_rows(cur.fetchall(), cur.description)
+    entries = db.process_rows(cur.fetchall(), cur.description)
     total_time = 0.0
     for entry in entries:
         total_time += entry['totalTime']
@@ -409,7 +465,7 @@ def gen_report_row(db: sqlite3.Connection, where: Record) -> Record:
         'samples': len(entries)
     }
 
-def add_command(db: sqlite3.Connection, args) -> None:
+def add_command(db: StartupTimesDB, args) -> None:
     '''
     Handler for the 'add' command line command. (See command help for more
     info.)
@@ -417,7 +473,7 @@ def add_command(db: sqlite3.Connection, args) -> None:
 
     input_file: TextIO
     if hasattr(args, 'filename') and args.filename:
-        input_file = open(args.filename, encoding="utf-8")
+        input_file = open(args.filename, encoding='utf-8')
     else:
         input_file = sys.stdin
         print('Input entry JSON, then hit Ctrl+D:')
@@ -428,14 +484,14 @@ def add_command(db: sqlite3.Connection, args) -> None:
         if len(stripped) > 0:
             json_string += f'{stripped}\n'
         else:
-            add_from_json(db, json_string)
+            db.add_from_json(json_string)
             json_string = ''
     if len(json_string) != 0:
-        add_from_json(db, json_string)
+        db.add_from_json(json_string)
     if isinstance(input_file, TextIOWrapper):
         input_file.close()
 
-def report_command(db: sqlite3.Connection, _) -> None:
+def report_command(db: StartupTimesDB, _) -> None:
     '''
     Handler for the 'report' command line command. (See command help for
     more info.)
@@ -455,7 +511,7 @@ def report_command(db: sqlite3.Connection, _) -> None:
         ('averageTime', 'Average Time'),
         ('samples', 'Samples')
     ]
-    table = asciitable(report_rows, columns, [ None, None, elapsed_string , None ])
+    table = ASCIITable(report_rows, columns, [ None, None, ASCIITable.elapsed_string , None ])
     print(f'Results:\n{table}')
 
 def main() -> None:
@@ -513,7 +569,7 @@ def main() -> None:
     # documented to throw an exception if the given attribute does not exist. Since I don't know
     # why it doesn't throw an exception without the default argument, I am providing it just in
     # case. And the 'or 'StartupTimes.db'' on the end is there because getattr is returning None.
-    db = connect_to_db(getattr(args, 'db_filename', 'StartupTimes.db') or 'StartupTimes.db')
+    db = StartupTimesDB(getattr(args, 'db_filename', 'StartupTimes.db') or 'StartupTimes.db')
     try:
         if hasattr(args, 'func'):
             args.func(db, args)
