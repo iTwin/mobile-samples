@@ -27,9 +27,9 @@ ColumnDefs = Sequence[ColumnDef]
 Formatters = Sequence[Callable[[Any], str] | None]
 SQLiteDescription = tuple[tuple[str, None, None, None, None, None, None], ...] | Any
 
-class ASCIITable:
+class TextTable:
     '''
-    Object for generating an ASCII table.
+    Object for generating a text table.
     '''
 
     __data: Records
@@ -44,7 +44,7 @@ class ASCIITable:
         formatters: Formatters | None = None
     ) -> None:
         '''
-        Creates an ASCII table containing data, which is a sequence of dict values.
+        Creates an text table containing data, which is a sequence of dict values.
 
         Each value in `columns` must be either a `str` value or a tuple of two
         `str` values. If it is a `str`, the value is used as a key. If it is a
@@ -82,13 +82,13 @@ class ASCIITable:
         suffix.
         '''
 
-        return f'{ASCIITable.__value_string(value)}s'
+        return f'{TextTable.__value_string(value)}s'
 
     def __format_value(self, pad, value, max_length, formatter = None) -> str:
         if formatter is not None:
             short_string = formatter(value)
         else:
-            short_string = ASCIITable.__value_string(value)
+            short_string = TextTable.__value_string(value)
         if isinstance(value, (int, float)):
             just = short_string.rjust
         else:
@@ -117,7 +117,7 @@ class ASCIITable:
 
     def __str__(self) -> str:
         '''
-        Creates an ASCII table based on parameters to the constuctor.
+        Creates an text table based on parameters to the constuctor.
         '''
 
         if len(self.__data) == 0 or len(self.__column_defs) == 0:
@@ -136,7 +136,7 @@ class ASCIITable:
                 row_values.append(row[key])
             data_values.append(row_values)
             for i, length in enumerate(self.__max_lengths):
-                self.__max_lengths[i] = max(length, len(ASCIITable.__value_string(row_values[i])))
+                self.__max_lengths[i] = max(length, len(TextTable.__value_string(row_values[i])))
         result = ''
         result = result + self.__format_row(header_row)
         result = result + self.__format_row(line_row, False, '-+-', '-')
@@ -511,7 +511,7 @@ def report_command(db: StartupTimesDB, _) -> None:
         ('averageTime', 'Average Time'),
         ('samples', 'Samples')
     ]
-    table = ASCIITable(report_rows, columns, [ None, None, ASCIITable.elapsed_string , None ])
+    table = TextTable(report_rows, columns, [ None, None, TextTable.elapsed_string , None ])
     print(f'Results:\n{table}')
 
 def main() -> None:
@@ -558,7 +558,7 @@ def main() -> None:
         'report',
         help='Print report using data in database.',
         description=textwrap.dedent('''
-            Prints a report in ASCII table format based on the data in the database.
+            Prints a report in text-only table format based on the data in the database.
             '''),
         formatter_class=argparse.RawDescriptionHelpFormatter)
     parser_report.set_defaults(func=report_command)
