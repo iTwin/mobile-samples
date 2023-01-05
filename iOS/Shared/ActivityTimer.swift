@@ -11,6 +11,7 @@ import UIKit
 class ActivityTimer {
     public var enabled = true
     public var useJSON = false
+    public var logToFile = false
     public var iTwinVersion = "<Unknown>"
     public var usingRemoteServer = false
     private var nameTitle: String
@@ -91,7 +92,7 @@ class ActivityTimer {
             rows.append(row)
             lastTime = checkpoint.1
         }
-        var message = "\(title):\n"
+        var message = ""
         if useJSON {
             let device = UIDevice.current
             let processInfo = ProcessInfo.processInfo
@@ -125,7 +126,50 @@ class ActivityTimer {
                 message += buildRow(row: row)
             }
         }
-        ITMApplication.logger.log(.info, message)
+        ITMApplication.logger.log(.info, "\(title):\n\(message)")
+        if useJSON, logToFile {
+            logToFile(jsonString: message)
+        }
+    }
+
+    func runningInDebugger() -> Bool {
+        // Buffer for "sysctl(...)" call's result.
+        var info = kinfo_proc()
+        // Counts buffer's size in bytes (like C/C++'s `sizeof`).
+        var size = MemoryLayout.stride(ofValue: info)
+        // Tells we want info about own process.
+        var mib : [Int32] = [CTL_KERN, KERN_PROC, KERN_PROC_PID, getpid()]
+        // Call the API (and assert success).
+        if sysctl(&mib, UInt32(mib.count), &info, &size, nil, 0) != 0 {
+            // If the sysctl call fails, just assume we aren't being debugged
+            return false
+        }
+        // Finally, checks if debugger's flag is present yet.
+        return (info.kp_proc.p_flag & P_TRACED) != 0
+    }
+
+    func logToFile(jsonString: String) {
+        if runningInDebugger() {
+            // Don't log times to disk if we are running in the debugger.
+            return
+        }
+        let documentsDirs = NSSearchPathForDirectoriesInDomains(.documentDirectory, .userDomainMask, true)
+        guard documentsDirs.count >= 1 else {
+            return
+        }
+        let documentsDir = NSString(string: documentsDirs[0])
+        let logFilePath = documentsDir.appendingPathComponent("\(UIDevice.modelID).log")
+        let messageData = "\(jsonString)\n\n".data(using: .utf8)!
+        do {
+            if var logFileData = try? Data(contentsOf: URL(fileURLWithPath: logFilePath)) {
+                logFileData.append(messageData)
+                try logFileData.write(to: URL(fileURLWithPath: logFilePath))
+            } else {
+                try messageData.write(to: URL(fileURLWithPath: logFilePath))
+            }
+        } catch {
+            ITMApplication.logger.log(.error, "Error writing startup times to log file: \(error)")
+        }
     }
 }
 
