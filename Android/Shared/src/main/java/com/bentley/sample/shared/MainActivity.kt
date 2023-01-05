@@ -4,8 +4,8 @@
 *--------------------------------------------------------------------------------------------*/
 package com.bentley.sample.shared
 
+import android.annotation.SuppressLint
 import android.content.Intent
-import android.content.res.Configuration
 import android.graphics.Color
 import android.net.Uri
 import android.os.Bundle
@@ -15,6 +15,7 @@ import android.view.WindowManager
 import android.webkit.WebView
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat.Type.systemBars
 import androidx.core.view.WindowInsetsControllerCompat.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
@@ -35,6 +36,7 @@ class MainActivity : AppCompatActivity() {
             current?.startActivity(browserIntent)
         }
 
+        @SuppressLint("StaticFieldLeak")
         lateinit var sampleITMApplication: SampleITMApplication
     }
 
@@ -42,6 +44,9 @@ class MainActivity : AppCompatActivity() {
         get() = findViewById(R.id.model_web_view_container)
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        if (AppCompatDelegate.getDefaultNightMode() == AppCompatDelegate.MODE_NIGHT_UNSPECIFIED)
+            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM)
+
         sampleITMApplication.onCreateActivity(this)
         requestWindowFeature(Window.FEATURE_NO_TITLE)
         super.onCreate(savedInstanceState)
@@ -109,10 +114,5 @@ class MainActivity : AppCompatActivity() {
         sampleITMApplication.onResume()
         setupFullScreen()
         super.onResume()
-    }
-
-    override fun onConfigurationChanged(newConfig: Configuration) {
-        super.onConfigurationChanged(newConfig)
-        sampleITMApplication.applyPreferredColorScheme() // update dark mode
     }
 }

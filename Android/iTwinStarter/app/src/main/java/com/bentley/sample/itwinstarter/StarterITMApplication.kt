@@ -4,8 +4,10 @@
 *--------------------------------------------------------------------------------------------*/
 package com.bentley.sample.itwinstarter
 
+import android.annotation.SuppressLint
 import com.bentley.sample.shared.SampleITMApplication
 
+@SuppressLint("StaticFieldLeak")
 object StarterITMApplication : SampleITMApplication(StarterApplication.getContext(), BuildConfig.DEBUG, BuildConfig.DEBUG) {
     init {
         finishInit()
