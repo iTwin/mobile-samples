@@ -132,7 +132,7 @@ class ActivityTimer {
         }
     }
 
-    func amIBeingDebugged() -> Bool {
+    func runningInDebugger() -> Bool {
         // Buffer for "sysctl(...)" call's result.
         var info = kinfo_proc()
         // Counts buffer's size in bytes (like C/C++'s `sizeof`).
@@ -149,7 +149,7 @@ class ActivityTimer {
     }
 
     func logToFile(jsonString: String) {
-        if amIBeingDebugged() {
+        if runningInDebugger() {
             // Don't log times to disk if we are running in the debugger.
             return
         }
