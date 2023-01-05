@@ -71,3 +71,16 @@
 //
 // Set the following setting if you want to enable ShowTime tap visibility:
 // ITMSAMPLE_SHOWTIME_ENABLED = YES
+//
+// The following three setting deal with logging how long the samples take to launch. They are used internally by the
+// iTwin Mobile team to prevent regressions.
+//
+// Set the following to cause startup times to be logged.
+// ITMSAMPLE_LOG_STARTUP_TIMES = YES
+//
+// Set the following to have the startup time logging use JSON format instead of a text table.
+// ITMSAMPLE_LOG_STARTUP_TIMES_JSON = YES
+//
+// Set the following to have JSON startup times logged to a file in the app's Documents folder. If
+// ITMSAMPLE_LOG_STARTUP_TIMES_JSON is not set to YES, this will be ignored.
+// ITMSAMPLE_LOG_STARTUP_TIMES_LOG_TO_FILE = YES
