@@ -356,12 +356,15 @@ class StartupTimesDB:
         print(f'Device {model_id} inserted with ID: {device_id}')
         return device_id
 
-    def insert_entry(self, entry: Record) -> None:
+    def insert_entry(self, entry: Record) -> int:
         '''
         Inserts `entry` into `db`. This creates records in the Entry,
         Checkpoints, and (optionally) Device tables. (If a record already exists
         in the Device table matching the device of `entry`, that device is
-        used.)
+        used.) Returns 1 if the insertion was skipped due the entry already
+        being present, or 0 if the entry was inserted. Note: the weird return
+        value allows the calling function to trivially add up the number of
+        skipped entries.
         '''
 
         device_id = self.find_device_id(entry['device'])
@@ -369,10 +372,7 @@ class StartupTimesDB:
         cur = self.cursor()
         cur.execute('SELECT 1 FROM Entry WHERE timestamp=:timestamp AND deviceID=:deviceID', entry)
         if cur.fetchone() is not None:
-            model_id = entry['device']['modelID']
-            timestamp = entry['timestamp']
-            print(f'Entry for {model_id} at {timestamp} is already present! Skipping.')
-            return
+            return 1
         entry_id = self.insert_record('Entry', entry)
         print(f'Entry inserted with ID: {entry_id}')
         index = 0
@@ -383,18 +383,23 @@ class StartupTimesDB:
             index = index + 1
         self.insert_records('Checkpoint', checkpoints)
         print(f'{len(checkpoints)} checkpoints inserted.')
+        return 0
 
-    def add_from_json(self, json_string: str) -> None:
+    def add_from_json(self, json_string: str) -> int:
         '''
-        Add an entry to db from the given JSON string.
+        Add an entry or entries to db from the given JSON string. Returns the
+        number of entries that were skipped due to already being present in the
+        database.
         '''
 
+        num_skipped = 0
         data = json.loads(json_string)
         if isinstance(data, list):
             for entry in data:
-                self.insert_entry(entry)
+                num_skipped += self.insert_entry(entry)
         else:
-            self.insert_entry(data)
+            num_skipped += self.insert_entry(data)
+        return num_skipped
 
     def cursor(self) -> sqlite3.Cursor:
         '''
@@ -479,17 +484,20 @@ def add_command(db: StartupTimesDB, args) -> None:
         print('Input entry JSON, then hit Ctrl+D:')
     lines = input_file.readlines()
     json_string = ''
+    num_skipped = 0
     for line in lines:
         stripped = line.rstrip()
         if len(stripped) > 0:
             json_string += f'{stripped}\n'
         else:
-            db.add_from_json(json_string)
+            num_skipped += db.add_from_json(json_string)
             json_string = ''
     if len(json_string) != 0:
-        db.add_from_json(json_string)
+        num_skipped += db.add_from_json(json_string)
     if isinstance(input_file, TextIOWrapper):
         input_file.close()
+    if num_skipped > 0:
+        print(f'{num_skipped} entries were skipped due to already being present.')
 
 def report_command(db: StartupTimesDB, _) -> None:
     '''
