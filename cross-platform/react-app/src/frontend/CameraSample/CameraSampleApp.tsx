@@ -3,7 +3,7 @@
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
 import * as React from "react";
-import { useUiEvent } from "@itwin/mobile-ui-react";
+import { useBeUiEvent } from "@itwin/mobile-ui-react";
 import { IModelApp, IModelConnection } from "@itwin/core-frontend";
 import { App, ModelScreenExtensionProps } from "../Exports";
 import {
@@ -24,7 +24,7 @@ export function CameraSampleAppGetLocalizedString(prefix: string, key: string, o
 function ImageSelectionHandler() {
   const [selectedPictureUrl, setSelectedPictureUrl] = React.useState<string>();
 
-  useUiEvent((url) => setSelectedPictureUrl(url), ImageMarkerApi.onImageSelected);
+  useBeUiEvent((url) => setSelectedPictureUrl(url), ImageMarkerApi.onImageSelected);
   return selectedPictureUrl ? <PictureView url={selectedPictureUrl} onClick={(e: React.MouseEvent<HTMLDivElement>) => {
     e.stopPropagation();
     setSelectedPictureUrl(undefined);
