@@ -4,8 +4,8 @@
 *--------------------------------------------------------------------------------------------*/
 package com.bentley.sample.shared
 
+import android.annotation.SuppressLint
 import android.content.Intent
-import android.content.res.Configuration
 import android.graphics.Color
 import android.net.Uri
 import android.os.Bundle
@@ -35,6 +35,7 @@ class MainActivity : AppCompatActivity() {
             current?.startActivity(browserIntent)
         }
 
+        @SuppressLint("StaticFieldLeak")
         lateinit var sampleITMApplication: SampleITMApplication
     }
 
@@ -109,10 +110,5 @@ class MainActivity : AppCompatActivity() {
         sampleITMApplication.onResume()
         setupFullScreen()
         super.onResume()
-    }
-
-    override fun onConfigurationChanged(newConfig: Configuration) {
-        super.onConfigurationChanged(newConfig)
-        sampleITMApplication.applyPreferredColorScheme() // update dark mode
     }
 }
