@@ -11,7 +11,7 @@ import {
   presentYesNoAlert,
   ReloadedEvent,
 } from "@itwin/mobile-sdk-core";
-import { DraggableComponent, NavigationButton, ResizableBottomPanel, ResizableBottomPanelProps, ToolButton, useUiEvent } from "@itwin/mobile-ui-react";
+import { DraggableComponent, NavigationButton, ResizableBottomPanel, ResizableBottomPanelProps, ToolButton, useBeUiEvent } from "@itwin/mobile-ui-react";
 import { HeaderTitle } from "../Exports";
 import { CameraSampleAppGetLocalizedString, ImageCache, ImageMarkerApi } from "./Exports";
 
@@ -62,7 +62,7 @@ export function PicturesBottomPanel(props: PicturesBottomPanelProps) {
     reload(); // eslint-disable-line @typescript-eslint/no-floating-promises
   }, [reload]);
 
-  useUiEvent(async () => reload(), ImageMarkerApi.onMarkerAdded);
+  useBeUiEvent(async () => reload(), ImageMarkerApi.onMarkerAdded);
 
   const togglePictureSelected = React.useCallback((pictureUrl: string) => {
     setSelectedUrls((previousSelectedUrls) => {
