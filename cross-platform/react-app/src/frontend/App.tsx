@@ -143,6 +143,10 @@ function useAppState(onInitialize?: () => Promise<void>) {
         // Switch from the Loading screen to the Home screen.
         pushActiveInfo(ActiveScreen.Home);
         console.log("...Done Initializing.");
+        Messenger.onQuery("queryExample").setHandler(async (params) => params.value);
+        Messenger.onQuery("oneWayExample").setHandler(async (params) => {
+          console.log(`oneWayExample received value: ${params.value}`);
+        });
       } catch (ex) {
         console.log(`Exception during initialization: ${ex}`);
       }
