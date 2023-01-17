@@ -79,7 +79,7 @@
     "@itwin/presentation-common": "3.4.5",
     "@itwin/presentation-components": "3.4.5",
     "@itwin/presentation-frontend": "3.4.5",
-    "@itwin/projects-client": "0.6.0",
+    "@itwin/projects-client": "0.7.0",
     "@itwin/webgl-compatibility": "3.4.5",
     "axios": "^0.25.0",
     "base64-js": "^1.5.1",

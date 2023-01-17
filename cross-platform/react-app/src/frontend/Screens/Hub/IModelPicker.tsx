@@ -68,7 +68,8 @@ function IModelList(props: IModelListProps) {
 }
 
 async function getIModels(project: Project) {
-  const imodelsClient = new IModelsClient();
+  const baseUrl = `https://${window.itmSampleParams.apiPrefix}api.bentley.com/imodels`;
+  const imodelsClient = new IModelsClient({ api: { baseUrl } });
   const accessToken = await IModelApp.getAccessToken();
   const minimalIModels: MinimalIModel[] = [];
   // Fetch the list of iModels.
