@@ -129,9 +129,6 @@ class ModelApplication: ITMApplication {
             if configData.isYes("ITMSAMPLE_LOW_RESOLUTION") {
                 hashParams.append(HashParam(name: "lowResolution", value: "YES"))
             }
-            if let apiPrefix = configData["ITMAPPLICATION_API_PREFIX"] as? String {
-                hashParams.append(HashParam(name: "apiPrefix", value: apiPrefix))
-            }
         }
         return hashParams
     }
