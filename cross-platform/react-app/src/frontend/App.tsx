@@ -22,6 +22,7 @@ declare global {
       lowResolution: boolean;
       haveBackButton: boolean;
       debugI18n: boolean;
+      apiPrefix: string;
     };
   }
 }
@@ -31,6 +32,7 @@ window.itmSampleParams = {
   lowResolution: false,
   haveBackButton: false,
   debugI18n: false,
+  apiPrefix: "",
 };
 
 /// Load the given boolean UrlSearchParam into the custom field on the window object.
@@ -38,11 +40,17 @@ function loadBooleanUrlSearchParam(name: "lowResolution" | "haveBackButton" | "d
   window.itmSampleParams[name] = MobileCore.getUrlSearchParam(name) === "YES";
 }
 
+/// Load the given string UrlSearchParam into the custom field on the window object.
+function loadStringUrlSearchParam(name: "apiPrefix") {
+  window.itmSampleParams[name] = MobileCore.getUrlSearchParam(name) ?? "";
+}
+
 /// Load the values stored in the URL hash params into the custom field on the window object.
 function loadUrlSearchParams() {
   loadBooleanUrlSearchParam("lowResolution");
   loadBooleanUrlSearchParam("haveBackButton");
   loadBooleanUrlSearchParam("debugI18n");
+  loadStringUrlSearchParam("apiPrefix");
 }
 
 /// Interface to allow switching from one screen to another.

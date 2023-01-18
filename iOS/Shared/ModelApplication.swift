@@ -36,6 +36,15 @@ class ModelApplication: ITMApplication {
         registerQueryHandler("reload") {
             self.webView.reload()
         }
+        registerQueryHandler("signOut") {
+            if let oac = self.authorizationClient as? ITMOIDCAuthorizationClient {
+                oac.signOut() { error in
+                    if let error = error {
+                        Self.logger.log(.error, "Error signing out: \(error)")
+                    }
+                }
+            }
+        }
         registerQueryHandler("getBimDocuments") { () -> [String] in
             return DocumentHelper.getBimDocuments()
         }
@@ -119,6 +128,9 @@ class ModelApplication: ITMApplication {
             }
             if configData.isYes("ITMSAMPLE_LOW_RESOLUTION") {
                 hashParams.append(HashParam(name: "lowResolution", value: "YES"))
+            }
+            if let apiPrefix = configData["ITMAPPLICATION_API_PREFIX"] as? String {
+                hashParams.append(HashParam(name: "apiPrefix", value: apiPrefix))
             }
         }
         return hashParams

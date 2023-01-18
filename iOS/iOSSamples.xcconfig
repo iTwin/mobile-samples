@@ -62,6 +62,9 @@
 // Or to include the data passed with the messages (may contain sensitive data, DO NOT enable this in a release build):
 // ITMAPPLICATION_FULL_MESSAGE_LOGGING = YES
 //
+// The following is used internally at Bentley for QA testing.
+// ITMAPPLICATION_API_PREFIX = qa-
+//
 // Set the following setting if you want to put delimiters around the app's localized strings.
 // ITMSAMPLE_DEBUG_I18N = YES
 //
