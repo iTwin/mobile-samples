@@ -188,7 +188,7 @@ class DocumentHelper {
             let path = await moveInboxFileIntoDocumentsWithPrompt(url)
             do {
                 if !path.isEmpty {
-                    try await messenger.query(query, path)
+                    messenger.query(query, path)
                 } else {
                     // Try to remove the file from the Inbox if the move failed or the user cancelled
                     try FileManager.default.removeItem(at: url)

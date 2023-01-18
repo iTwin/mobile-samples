@@ -3,7 +3,7 @@
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
 import React from "react";
-import { AlertAction, MobileCore } from "@itwin/mobile-sdk-core";
+import { AlertAction, Messenger, MobileCore } from "@itwin/mobile-sdk-core";
 import { ActionSheetButton, BackButton, useIsMountedRef } from "@itwin/mobile-ui-react";
 import { Project } from "@itwin/projects-client";
 import { BriefcaseConnection, IModelConnection } from "@itwin/core-frontend";
@@ -173,6 +173,7 @@ export function HubScreen(props: HubScreenProps) {
     case HubStep.Error:
       stepContent = <div className="centered-list">
         <Button title={signOutLabel} onClick={async () => {
+          Messenger.sendMessage("signOut");
           onBack();
         }} />
       </div>;

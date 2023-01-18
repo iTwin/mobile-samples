@@ -36,6 +36,15 @@ class ModelApplication: ITMApplication {
         registerQueryHandler("reload") {
             self.webView.reload()
         }
+        registerQueryHandler("signOut") {
+            if let oac = self.authorizationClient as? ITMOIDCAuthorizationClient {
+                oac.signOut() { error in
+                    if let error = error {
+                        Self.logger.log(.error, "Error signing out: \(error)")
+                    }
+                }
+            }
+        }
         registerQueryHandler("getBimDocuments") { () -> [String] in
             return DocumentHelper.getBimDocuments()
         }
@@ -47,6 +56,38 @@ class ModelApplication: ITMApplication {
         }
         if !showtimeEnabled {
             ShowTime.enabled = ShowTime.Enabled.never
+        }
+        oneWayExample("one way")
+        // Note that since these all run concurrently, there is no guarantee that the responses
+        // will come back in the same order that they are sent below.
+        queryExample("string query")
+        queryExample(42)
+        queryExample(1.234)
+        queryExample(true)
+    }
+
+    /// Example showing how to send a message with a value to the web app with no response expected.
+    /// - Parameter value: A value to be sent to the web app and returned back. It must be of a type supported by
+    ///                    the native <-> JavaScript interop layer.
+    func oneWayExample<T>(_ value: T) {
+        // Note: because we don't wait for any response, if there is a failure (like the web app
+        // does not have a handler for the message), the app won't know (although ITMMessenger will
+        // log an error).
+        itmMessenger.query("oneWayExample", ["value": value])
+        Self.logger.log(.debug, "oneWayExample message sent.")
+    }
+
+    /// Example showing how to send a message with a value to the web app, and receive a response.
+    /// - Parameter value: A value to be sent to the web app and returned back. It must be of a type supported by
+    ///                    the native <-> JavaScript interop layer.
+    func queryExample<T>(_ value: T) {
+        Task {
+            do {
+                let result: T = try await itmMessenger.query("queryExample", ["value": value])
+                Self.logger.log(.debug, "queryExample result \(result)")
+            } catch {
+                Self.logger.log(.error, "Error with queryExample: \(error)")
+            }
         }
     }
 
@@ -87,6 +128,9 @@ class ModelApplication: ITMApplication {
             }
             if configData.isYes("ITMSAMPLE_LOW_RESOLUTION") {
                 hashParams.append(HashParam(name: "lowResolution", value: "YES"))
+            }
+            if let apiPrefix = configData["ITMAPPLICATION_API_PREFIX"] as? String {
+                hashParams.append(HashParam(name: "apiPrefix", value: apiPrefix))
             }
         }
         return hashParams

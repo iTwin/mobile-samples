@@ -9,13 +9,11 @@ import { MobileHost, MobileHostOpts } from "@itwin/core-mobile/lib/cjs/MobileBac
 import { getSupportedRpcs } from "../common/rpcs";
 import { IModelHostConfiguration, IpcHost } from "@itwin/core-backend";
 import { BackendIModelsAccess } from "@itwin/imodels-access-backend";
+import { IModelsClient } from "@itwin/imodels-client-authoring";
 
 // This is the file that generates main.js, which is loaded by the backend into a Google V8 JavaScript
 // engine instance that is running for node.js. This code runs when the iTwin Mobile backend is
 // initialized from the native code.
-
-export const qaIssuerUrl = "https://qa-ims.bentley.com/";
-export const prodIssuerUrl = "https://ims.bentley.com/";
 
 // eslint-disable-next-line @typescript-eslint/no-floating-promises
 (async () => {
@@ -24,7 +22,9 @@ export const prodIssuerUrl = "https://ims.bentley.com/";
   Logger.setLevelDefault(LogLevel.Warning);
 
   const iModelHost = new IModelHostConfiguration();
-  iModelHost.hubAccess = new BackendIModelsAccess();
+  const baseUrl = `https://${process.env.ITMAPPLICATION_API_PREFIX ?? ""}api.bentley.com/imodels`;
+  const imodelsClient = new IModelsClient({ api: { baseUrl } });
+  iModelHost.hubAccess = new BackendIModelsAccess(imodelsClient);
   // Initialize imodeljs-backend
   const options: MobileHostOpts = {
     iModelHost,
