@@ -16,7 +16,7 @@
     "build:frontend": "cross-env NODE_OPTIONS=--max_old_space_size=8192 TRANSPILE_DEPS=false DISABLE_TERSER=true USE_FAST_SASS=true DISABLE_ESLINT_PLUGIN=true react-scripts build && run-s copy:assets",
     "build:camera": "cross-env REACT_APP_BUILD_TARGET=Camera NODE_OPTIONS=--max_old_space_size=8192 TRANSPILE_DEPS=false DISABLE_TERSER=true USE_FAST_SASS=true DISABLE_ESLINT_PLUGIN=true react-scripts build && run-s copy:assets copy:camera",
     "compile:backend": "cross-env tsc -p tsconfig.backend.json",
-    "webpack:backend": "cross-env NODE_OPTIONS=--max_old_space_size=8192 webpack --config ./webpack.config.js --env.outdir=./lib/webpack --env.entry=./lib/backend/main.js --env.bundlename=main",
+    "webpack:backend": "cross-env NODE_OPTIONS=--max_old_space_size=8192 webpack --config ./webpack.config.js --env outdir=./lib/webpack --env entry=./lib/backend/main.js --env bundlename=main",
     "build:backend": "run-s compile:backend webpack:backend",
     "build": "run-p build:frontend build:backend",
     "clean": "rimraf build lib",
