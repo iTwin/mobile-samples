@@ -10,10 +10,12 @@ import "./Button.scss";
 export interface ButtonProps extends React.HTMLAttributes<HTMLDivElement> {
   /// The title of the button.
   title: string;
+  /// Optional react node to put to the left of the title, intended to contain an icon.
+  icon?: React.ReactNode;
 }
 
 /// Extremely basic text button React component.
 export function Button(props: ButtonProps) {
-  const { className, title, children, ...others } = props;
-  return <div className={classnames("Button", className)} {...others}>{title}{children}</div>;
+  const { className, title, icon, children, ...others } = props;
+  return <div className={classnames("Button", className)} {...others}>{icon}{title}{children}</div>;
 }
