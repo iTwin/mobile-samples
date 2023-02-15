@@ -15,7 +15,6 @@ import android.view.WindowManager
 import android.webkit.WebView
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
-import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat.Type.systemBars
 import androidx.core.view.WindowInsetsControllerCompat.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
@@ -45,13 +44,13 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         sampleITMApplication.onCreateActivity(this)
-        requestWindowFeature(Window.FEATURE_NO_TITLE)
+        supportRequestWindowFeature(Window.FEATURE_NO_TITLE)
         super.onCreate(savedInstanceState)
         setupWebView()
         setupFullScreen()
         hideSystemBars()
         setContentView(R.layout.activity_main)
-        sampleITMApplication.initializeFrontend(this, R.id.model_host_fragment, true)
+        sampleITMApplication.initializeFrontend(this, true)
         MainScope().launch {
             sampleITMApplication.waitForFrontendInitialize()
             sampleITMApplication.attachWebView(modelWebViewContainer)
