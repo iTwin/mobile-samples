@@ -6,7 +6,8 @@ package com.bentley.sample.shared
 
 import android.content.Context
 import android.net.Uri
-import androidx.fragment.app.FragmentActivity
+import androidx.activity.ComponentActivity
+import com.bentley.itwin.AuthorizationClient
 import com.eclipsesource.json.Json
 import com.eclipsesource.json.JsonValue
 import com.github.itwin.mobilesdk.ITMApplication
@@ -89,25 +90,18 @@ open class SampleITMApplication(context: Context, attachWebViewLogger: Boolean, 
         this.host?.onResume()
     }
 
-    override fun initializeBackend(
-        fragmentActivity: FragmentActivity,
-        allowInspectBackend: Boolean
-    ) {
+    override fun initializeBackend(context: Context, allowInspectBackend: Boolean) {
         startupTimer.addCheckpoint("Before backend load")
-        super.initializeBackend(fragmentActivity, allowInspectBackend)
+        super.initializeBackend(context, allowInspectBackend)
         MainScope().launch {
             waitForBackendInitialize()
             startupTimer.addCheckpoint("After backend load")
         }
     }
 
-    override fun initializeFrontend(
-        fragmentActivity: FragmentActivity,
-        fragmentContainerId: Int,
-        allowInspectBackend: Boolean
-    ) {
+    override fun initializeFrontend(context: Context, allowInspectBackend: Boolean) {
         startupTimer.addCheckpoint("Before frontend load")
-        super.initializeFrontend(fragmentActivity, fragmentContainerId, allowInspectBackend)
+        super.initializeFrontend(context, allowInspectBackend)
         MainScope().launch {
             waitForFrontendInitialize()
             startupTimer.addCheckpoint("After frontend load")

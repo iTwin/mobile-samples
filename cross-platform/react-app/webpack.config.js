@@ -117,10 +117,6 @@ function getConfig(env) {
       warnings: false
     },
     node: {
-      fs: false,
-      console: false,
-      process: false,
-      Buffer: true,
       __dirname: false,
       __filename: false,
     },

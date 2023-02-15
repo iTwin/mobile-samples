@@ -44,13 +44,13 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         sampleITMApplication.onCreateActivity(this)
-        requestWindowFeature(Window.FEATURE_NO_TITLE)
+        supportRequestWindowFeature(Window.FEATURE_NO_TITLE)
         super.onCreate(savedInstanceState)
         setupWebView()
         setupFullScreen()
         hideSystemBars()
         setContentView(R.layout.activity_main)
-        sampleITMApplication.initializeFrontend(this, R.id.model_host_fragment, true)
+        sampleITMApplication.initializeFrontend(this, true)
         MainScope().launch {
             sampleITMApplication.waitForFrontendInitialize()
             sampleITMApplication.attachWebView(modelWebViewContainer)
