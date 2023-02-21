@@ -62,7 +62,6 @@ class MainActivity : AppCompatActivity() {
     override fun onDestroy() {
         current = null
         modelWebViewContainer.removeAllViews()
-        sampleITMApplication.onActivityDestroy(this)
         super.onDestroy()
     }
 
