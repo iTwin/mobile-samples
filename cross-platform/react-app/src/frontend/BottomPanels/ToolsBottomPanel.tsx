@@ -110,7 +110,7 @@ export function getDefaultTools(): ToolEntry[] {
 
 export function ToolsBottomPanel(props: ToolsBottomPanelProps) {
   const defaultTools = React.useMemo(getDefaultTools, []);
-  const { iModel, onToolClick, tools = defaultTools, ...others } = props;
+  const { iModel: _iModel, onToolClick, tools = defaultTools, ...others } = props;
   const activeToolId = useActiveToolId();
   const activeToolIndex = activeToolId !== undefined ? tools.findIndex((tool) => activeToolId === tool.toolItemDef.toolId) : undefined;
   const toolsRowRef = React.useRef<HTMLDivElement>(null);

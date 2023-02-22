@@ -5,24 +5,26 @@
 import React from "react";
 import { useIsMountedRef } from "@itwin/mobile-ui-react";
 import { Project } from "@itwin/projects-client";
-import { ProgressInfo } from "@itwin/core-frontend/lib/cjs/request/Request";
-import { DownloadBriefcaseOptions, NativeApp } from "@itwin/core-frontend";
+import { DownloadBriefcaseOptions, DownloadProgressInfo, NativeApp } from "@itwin/core-frontend";
 import { MinimalIModel } from "@itwin/imodels-client-management";
 import { BentleyError, BriefcaseDownloader, BriefcaseStatus, IModelStatus, LocalBriefcaseProps, SyncMode } from "@itwin/core-common";
 import { ProgressRadial } from "@itwin/itwinui-react";
 import { Button, i18n, IModelInfo, presentError } from "../../Exports";
 
-async function downloadIModel(project: Project, iModel: MinimalIModel, handleProgress: (progress: ProgressInfo) => boolean): Promise<LocalBriefcaseProps | undefined> {
-  const opts: DownloadBriefcaseOptions = { syncMode: SyncMode.PullOnly };
+async function downloadIModel(project: Project, iModel: MinimalIModel, handleProgress: (progress: DownloadProgressInfo) => boolean): Promise<LocalBriefcaseProps | undefined> {
+  const opts: DownloadBriefcaseOptions = {
+    syncMode: SyncMode.PullOnly,
+    progressCallback: async (progress: DownloadProgressInfo) => {
+      if (!handleProgress(progress)) {
+        await downloader?.requestCancel();
+        canceled = true;
+      }
+    },
+  };
   let downloader: BriefcaseDownloader | undefined;
   let canceled = false;
   try {
-    downloader = await NativeApp.requestDownloadBriefcase(project.id, iModel.id, opts, undefined, (progress: ProgressInfo) => {
-      if (!handleProgress(progress)) {
-        downloader?.requestCancel();
-        canceled = true;
-      }
-    });
+    downloader = await NativeApp.requestDownloadBriefcase(project.id, iModel.id, opts);
 
     if (canceled) {
       // If we got here we canceled before the initial return from NativeApp.requestDownloadBriefcase
@@ -79,11 +81,11 @@ export function IModelDownloader(props: IModelDownloaderProps) {
   const downloadingLabel = React.useMemo(() => i18n("HubScreen", "Downloading"), []);
   const cancelLabel = React.useMemo(() => i18n("HubScreen", "Cancel"), []);
 
-  const handleProgress = React.useCallback((progressInfo: ProgressInfo) => {
+  const handleProgress = React.useCallback((progressInfo: DownloadProgressInfo) => {
     if (isMountedRef.current) {
-      const percent: number = progressInfo.percent ?? (progressInfo.total ? Math.round(100.0 * progressInfo.loaded / progressInfo.total) : 0);
+      const percent: number = progressInfo.total !== 0 ? Math.round(100.0 * progressInfo.loaded / progressInfo.total) : 0;
       setProgress(percent);
-      setIndeterminate(progressInfo.percent === undefined && progressInfo.total === undefined);
+      setIndeterminate(progressInfo.total === 0);
     }
     return isMountedRef.current && !canceled;
   }, [canceled, isMountedRef]);

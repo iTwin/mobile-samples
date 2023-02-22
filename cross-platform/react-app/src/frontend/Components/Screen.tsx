@@ -5,7 +5,7 @@
 import React from "react";
 import classnames from "classnames";
 import { IModelApp } from "@itwin/core-frontend";
-import { ProgressInfo } from "@itwin/core-frontend/lib/cjs/request/Request";
+// import { ProgressInfo } from "@itwin/core-frontend/lib/cjs/request/Request";
 import { presentAlert } from "@itwin/mobile-sdk-core";
 import { useTheme } from "@itwin/itwinui-react";
 import { useActiveColorSchemeIsDark } from "@itwin/mobile-ui-react";
@@ -63,20 +63,20 @@ export function fileSizeString(input?: number, decimals?: number) {
   }
 }
 
-export function progressString(progress: ProgressInfo | undefined) {
-  let percent = progress?.percent?.toString();
-  if (percent === undefined && progress?.total) {
-    percent = roundedNumber(100.0 * progress.loaded / progress.total, 0);
-  }
-  if (percent === undefined) {
-    if (progress && progress.loaded) {
-      return i18n("Screen", "LoadedFormat", { value: progress.loaded });
-    } else {
-      return "";
-    }
-  }
-  return ` (${percent}%)`;
-}
+// export function progressString(progress: ProgressInfo | undefined) {
+//   let percent = progress?.percent?.toString();
+//   if (percent === undefined && progress?.total) {
+//     percent = roundedNumber(100.0 * progress.loaded / progress.total, 0);
+//   }
+//   if (percent === undefined) {
+//     if (progress && progress.loaded) {
+//       return i18n("Screen", "LoadedFormat", { value: progress.loaded });
+//     } else {
+//       return "";
+//     }
+//   }
+//   return ` (${percent}%)`;
+// }
 
 /// React component for a simple full-screen UI with arbitrary children.
 export function Screen(props: ScreenProps = {}) {
