@@ -3,7 +3,7 @@
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
 import * as path from "path";
-import { Presentation, PresentationManagerMode } from "@itwin/presentation-backend";
+import { Presentation } from "@itwin/presentation-backend";
 import { LogFunction, Logger, LoggingMetaData, LogLevel } from "@itwin/core-bentley";
 import { MobileHost, MobileHostOpts } from "@itwin/core-mobile/lib/cjs/MobileBackend";
 import { getSupportedRpcs } from "../common/rpcs";
@@ -40,7 +40,6 @@ import { IModelsClient } from "@itwin/imodels-client-authoring";
     rulesetDirectories: [path.join(assetsRoot, "presentation_rules")],
     localeDirectories: [path.join(assetsRoot, "locales")],
     supplementalRulesetDirectories: [path.join(assetsRoot, "supplemental_presentation_rules")],
-    mode: PresentationManagerMode.ReadOnly,
   });
   // Invoke platform-specific initialization
   const init = (await import("./mobile/main")).default;

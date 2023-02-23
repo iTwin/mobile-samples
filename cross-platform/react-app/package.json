@@ -98,9 +98,7 @@
       "@itwin"
     ],
     "extends": [
-      "plugin:@itwin/ui",
-      "react-app",
-      "react-app/jest"
+      "plugin:@itwin/ui"
     ],
     "rules": {
       "no-console": "off",

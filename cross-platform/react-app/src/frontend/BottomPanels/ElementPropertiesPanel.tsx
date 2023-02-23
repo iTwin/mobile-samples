@@ -46,7 +46,8 @@ function UnifiedSelectionPropertyGrid(props: UnifiedSelectionPropertyGridProps) 
   if (isOverLimit) {
     return (<FillCentered>Too many elements selected.</FillCentered>);
   }
-  return <PropertyGrid {...props} />;
+  // @todo: use VirtualizedPropertyGrid instead, seems like a non-trivial change
+  return <PropertyGrid {...props} />; // eslint-disable-line deprecation/deprecation
 }
 
 export function ElementPropertiesPanel(props: ElementPropertiesPanelProps) {
