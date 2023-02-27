@@ -140,7 +140,7 @@ export function ToolsBottomPanel(props: ToolsBottomPanelProps) {
           onClick={async () => {
             // Ensure the selectedView is the main viewport otherwise some tools won't execute as the selected view is incompatible.
             // This only applies when an app has more than one viewport, but does no harm.
-            IModelApp.viewManager.setSelectedView(IModelApp.viewManager.getFirstOpenView()); // eslint-disable-line @typescript-eslint/no-floating-promises
+            void IModelApp.viewManager.setSelectedView(IModelApp.viewManager.getFirstOpenView());
 
             value.toolItemDef.execute();
             onToolClick?.();

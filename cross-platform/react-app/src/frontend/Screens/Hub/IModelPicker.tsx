@@ -130,7 +130,7 @@ export function IModelPicker(props: IModelPickerProps) {
       }
       setLoading(false);
     };
-    fetchModels(); // eslint-disable-line @typescript-eslint/no-floating-promises
+    void fetchModels();
   }, [isMountedRef, onError, onLoaded, project]);
 
   return <IModelList models={iModels} loading={loading} onSelect={onSelect} onCacheDeleted={(model) => {

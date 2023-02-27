@@ -28,7 +28,7 @@ async function downloadIModel(project: Project, iModel: MinimalIModel, handlePro
 
     if (canceled) {
       // If we got here we canceled before the initial return from NativeApp.requestDownloadBriefcase
-      downloader.requestCancel(); // eslint-disable-line @typescript-eslint/no-floating-promises
+      void downloader.requestCancel();
       return undefined;
     }
 
@@ -101,7 +101,7 @@ export function IModelDownloader(props: IModelDownloaderProps) {
       onDownloaded({ minimalIModel, briefcase });
     };
     setDownloading(true);
-    fetchIModel(); // eslint-disable-line @typescript-eslint/no-floating-promises
+    void fetchIModel();
   }, [downloading, handleProgress, isMountedRef, model.minimalIModel, onDownloaded, project]);
 
   return <div className="centered-list">

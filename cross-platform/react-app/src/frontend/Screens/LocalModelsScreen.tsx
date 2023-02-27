@@ -38,7 +38,7 @@ export function LocalModelsScreen(props: LocalModelsScreenProps) {
 
   // React effect run during component initialization.
   React.useEffect(() => {
-    updateBimDocuments(); // eslint-disable-line @typescript-eslint/no-floating-promises
+    void updateBimDocuments();
   }, [updateBimDocuments]);
 
   const updateBriefcases = React.useCallback(async () => {
@@ -47,7 +47,7 @@ export function LocalModelsScreen(props: LocalModelsScreenProps) {
   }, []);
 
   React.useEffect(() => {
-    updateBriefcases(); // eslint-disable-line @typescript-eslint/no-floating-promises
+    void updateBriefcases();
   }, [updateBriefcases]);
 
   // Add a button to the beginning of the list to use the OS's file picker to choose a *.bim file.
@@ -58,7 +58,7 @@ export function LocalModelsScreen(props: LocalModelsScreenProps) {
         const document: string = await Messenger.query("chooseDocument");
         if (document.length) {
           // Open the given snapshot iModel, and then pass it to the onOpen props callback.
-          onOpen(document, SnapshotConnection.openFile(document)); // eslint-disable-line @typescript-eslint/no-floating-promises
+          void onOpen(document, SnapshotConnection.openFile(document));
         }
       }}
       title={chooseFileLabel}
@@ -74,7 +74,7 @@ export function LocalModelsScreen(props: LocalModelsScreenProps) {
       key={index + bimButtons.length}
       onClick={async () => {
         // Open the given snapshot iModel, and then pass it to the onOpen props callback.
-        onOpen(document, SnapshotConnection.openFile(document)); // eslint-disable-line @typescript-eslint/no-floating-promises
+        void onOpen(document, SnapshotConnection.openFile(document));
       }}
       title={documentName} />;
   });
@@ -91,7 +91,7 @@ export function LocalModelsScreen(props: LocalModelsScreenProps) {
       key={index + bimButtons.length}
       title={name}
       onClick={async () => {
-        onOpen(localBriefcase.fileName, BriefcaseConnection.openFile(localBriefcase)); // eslint-disable-line @typescript-eslint/no-floating-promises
+        void onOpen(localBriefcase.fileName, BriefcaseConnection.openFile(localBriefcase));
       }}
     />;
   });
@@ -113,7 +113,7 @@ export function LocalModelsScreen(props: LocalModelsScreenProps) {
           <NavigationButton
             iconSpec="icon-refresh"
             onClick={() => {
-              updateBimDocuments(); // eslint-disable-line @typescript-eslint/no-floating-promises
+              void updateBimDocuments();
             }}
           />
         </div>

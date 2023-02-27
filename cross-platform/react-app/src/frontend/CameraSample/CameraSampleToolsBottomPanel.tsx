@@ -18,7 +18,7 @@ import { Point3d } from "@itwin/core-geometry";
 const addImageMarker = async (point: Point3d, photoLibrary: boolean, iModelId: string) => {
   const fileUrl = await ImageCache.pickImage(iModelId, photoLibrary);
   if (fileUrl)
-    ImageMarkerApi.addMarker(point, fileUrl); // eslint-disable-line @typescript-eslint/no-floating-promises
+    void ImageMarkerApi.addMarker(point, fileUrl);
 };
 
 class PlacePhotoMarkerTool extends PlaceMarkerTool {
