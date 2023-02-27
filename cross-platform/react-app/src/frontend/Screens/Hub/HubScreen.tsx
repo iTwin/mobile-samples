@@ -102,8 +102,7 @@ export function HubScreen(props: HubScreenProps) {
         onSelect={(model) => {
           setIModel(model);
           if (model.briefcase)
-            // eslint-disable-next-line @typescript-eslint/no-floating-promises
-            onOpen(model.briefcase.fileName, BriefcaseConnection.openFile(model.briefcase));
+            void onOpen(model.briefcase.fileName, BriefcaseConnection.openFile(model.briefcase));
           else
             setHubStep(HubStep.DownloadIModel);
         }}
@@ -160,8 +159,7 @@ export function HubScreen(props: HubScreenProps) {
           setIModel(model);
           if (model.briefcase) {
             ModelNameCache.set(model.minimalIModel.id, model.minimalIModel.displayName);
-            // eslint-disable-next-line @typescript-eslint/no-floating-promises
-            onOpen(model.briefcase.fileName, BriefcaseConnection.openFile(model.briefcase));
+            void onOpen(model.briefcase.fileName, BriefcaseConnection.openFile(model.briefcase));
           } else {
             setHubStep(HubStep.SelectIModel);
           }

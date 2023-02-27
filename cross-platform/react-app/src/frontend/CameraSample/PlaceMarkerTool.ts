@@ -40,8 +40,7 @@ export class PlaceMarkerTool extends PrimitiveTool {
 
   // A reset button is the secondary action button, ex. right mouse button.
   public async onResetButtonUp(_ev: BeButtonEvent): Promise<EventHandled> {
-    // eslint-disable-next-line @typescript-eslint/no-floating-promises
-    this.onReinitialize(); // Calls onRestartTool to exit
+    void this.onReinitialize(); // Calls onRestartTool to exit
     return EventHandled.No;
   }
 

@@ -163,7 +163,7 @@ function useAppState(onInitialize?: () => Promise<void>) {
     // to prevent it from initializing more than once.
     if (!initialized) {
       setInitialized(true);
-      initialize(); // eslint-disable-line @typescript-eslint/no-floating-promises
+      void initialize();
     }
   }, [pushActiveInfo, initialized, onInitialize]);
 
@@ -230,7 +230,7 @@ function useAppState(onInitialize?: () => Promise<void>) {
           // switched to undefined.
           setOpenUrlPath(modelPath);
         } else {
-          handleOpen(modelPath, SnapshotConnection.openFile(modelPath)); // eslint-disable-line @typescript-eslint/no-floating-promises
+          void handleOpen(modelPath, SnapshotConnection.openFile(modelPath));
         }
       });
     }
@@ -246,9 +246,9 @@ function useAppState(onInitialize?: () => Promise<void>) {
       setOpenUrlPath(undefined);
       const openFunc = async () => {
         // Open the requested snapshot iModel.
-        handleOpen(modelPath, SnapshotConnection.openFile(modelPath)); // eslint-disable-line @typescript-eslint/no-floating-promises
+        void handleOpen(modelPath, SnapshotConnection.openFile(modelPath));
       };
-      openFunc(); // eslint-disable-line @typescript-eslint/no-floating-promises
+      void openFunc();
     }
   }, [iModel, openUrlPath, handleOpen]);
 

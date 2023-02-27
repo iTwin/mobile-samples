@@ -15,8 +15,7 @@ import { IModelsClient } from "@itwin/imodels-client-authoring";
 // engine instance that is running for node.js. This code runs when the iTwin Mobile backend is
 // initialized from the native code.
 
-// eslint-disable-next-line @typescript-eslint/no-floating-promises
-(async () => {
+void (async () => {
   // Initialize logging
   redirectLoggingToFrontend();
   Logger.setLevelDefault(LogLevel.Warning);
