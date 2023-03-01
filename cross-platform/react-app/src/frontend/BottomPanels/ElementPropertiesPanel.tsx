@@ -4,8 +4,9 @@
 *--------------------------------------------------------------------------------------------*/
 import * as React from "react";
 import { IModelApp, IModelConnection } from "@itwin/core-frontend";
-import { FillCentered } from "@itwin/core-react";
-import { PropertyGrid } from "@itwin/components-react";
+import { FillCentered, Orientation } from "@itwin/core-react";
+import { useElementSize } from "usehooks-ts";
+import { VirtualizedPropertyGridWithDataProvider } from "@itwin/components-react";
 import { IPresentationPropertyDataProvider, PresentationPropertyDataProvider, PresentationPropertyDataProviderProps, usePropertyDataProviderWithUnifiedSelection } from "@itwin/presentation-components";
 import { DraggableComponent, IconImage, ResizableBottomPanel, ResizableBottomPanelProps, useBeEvent } from "@itwin/mobile-ui-react";
 import { HeaderTitle, i18n } from "../Exports";
@@ -17,8 +18,13 @@ interface PropertiesPanelProps extends ResizableBottomPanelProps {
   children: React.ReactNode;
 }
 
-interface UnifiedSelectionPropertyGridProps {
+interface PropertyGridParentProps {
   dataProvider: IPresentationPropertyDataProvider;
+  height: number;
+}
+
+interface UnifiedSelectionPropertyGridProps extends PropertyGridParentProps {
+  width: number;
 }
 
 export interface ElementPropertiesPanelProps extends ResizableBottomPanelProps {
@@ -46,19 +52,34 @@ function UnifiedSelectionPropertyGrid(props: UnifiedSelectionPropertyGridProps) 
   if (isOverLimit) {
     return (<FillCentered>Too many elements selected.</FillCentered>);
   }
-  // @todo: use VirtualizedPropertyGrid instead, seems like a non-trivial change
-  return <PropertyGrid {...props} />; // eslint-disable-line deprecation/deprecation
+  return <VirtualizedPropertyGridWithDataProvider {...props} orientation={Orientation.Horizontal} />;
+}
+
+function PropertyGridParent(props: PropertyGridParentProps) {
+  const [gridRef, elementSize] = useElementSize();
+  const allProps = {
+    width: elementSize.width,
+    ...props,
+  };
+  return (
+    <div className="property-grid-parent" ref={gridRef}>
+      <UnifiedSelectionPropertyGrid {...allProps} />
+    </div>
+  );
 }
 
 export function ElementPropertiesPanel(props: ElementPropertiesPanelProps) {
   const { iModel, onCloseClick } = props;
   const [selectionCount, setSelectionCount] = React.useState(IModelApp.viewManager.getFirstOpenView()?.view.iModel.selectionSet.size ?? 0);
-  const ppdpProps: PresentationPropertyDataProviderProps = {
-    imodel: iModel,
-    ruleset: "Items",
-  };
-  const dataProvider = new PresentationPropertyDataProvider(ppdpProps);
+  const ppdpProps = React.useMemo(() => {
+    return {
+      imodel: iModel,
+      ruleset: "Items",
+    } as PresentationPropertyDataProviderProps;
+  }, [iModel]);
+  const dataProvider = React.useMemo(() => new PresentationPropertyDataProvider(ppdpProps), [ppdpProps]);
   const propertiesLabel = React.useMemo(() => i18n("ElementPropertiesPanel", "Properties"), []);
+  const [height, setHeight] = React.useState(0);
 
   useBeEvent(() => {
     setSelectionCount(iModel.selectionSet.size);
@@ -67,6 +88,11 @@ export function ElementPropertiesPanel(props: ElementPropertiesPanelProps) {
   return (
     <PropertiesPanel
       {...props}
+      onOpen={(panelHeight) => setHeight(panelHeight)}
+      onResized={(panelHeight) => {
+        setHeight(panelHeight);
+        return false;
+      }}
       selectionCount={selectionCount}
       header={<DraggableComponent className="resizable-panel-header">
         <div className="header-row">
@@ -82,11 +108,10 @@ export function ElementPropertiesPanel(props: ElementPropertiesPanelProps) {
     >
       {dataProvider &&
         <div className="properties-panel">
-          <div className="property-grid-parent">
-            <UnifiedSelectionPropertyGrid
-              dataProvider={dataProvider}
-            />
-          </div>
+          <PropertyGridParent
+            dataProvider={dataProvider}
+            height={height - 40}
+          />
         </div>
       }
     </PropertiesPanel>
