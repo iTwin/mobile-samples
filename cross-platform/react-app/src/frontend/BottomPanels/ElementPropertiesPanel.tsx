@@ -5,13 +5,33 @@
 import * as React from "react";
 import { IModelApp, IModelConnection } from "@itwin/core-frontend";
 import { FillCentered, Orientation } from "@itwin/core-react";
-import { useElementSize } from "usehooks-ts";
+import useResizeObserver from "@react-hook/resize-observer";
 import { VirtualizedPropertyGridWithDataProvider } from "@itwin/components-react";
 import { IPresentationPropertyDataProvider, PresentationPropertyDataProvider, PresentationPropertyDataProviderProps, usePropertyDataProviderWithUnifiedSelection } from "@itwin/presentation-components";
 import { DraggableComponent, IconImage, ResizableBottomPanel, ResizableBottomPanelProps, useBeEvent } from "@itwin/mobile-ui-react";
 import { HeaderTitle, i18n } from "../Exports";
 
 import "./ElementPropertiesPanel.scss";
+
+interface ElementSize {
+  width: number;
+  height: number;
+}
+
+const useElementSize = (target: React.RefObject<HTMLElement>) => {
+  const [size, setSize] = React.useState<ElementSize>();
+
+  React.useLayoutEffect(() => {
+    if (target.current) {
+      const rect = target.current?.getBoundingClientRect();
+      setSize({ width: rect.width, height: rect.height });
+    } else {
+      setSize(undefined);
+    }
+  }, [target]);
+  useResizeObserver(target, (entry) => setSize(entry.contentRect));
+  return size ?? ({ x: 0, y: 0, width: 0, height: 0 } as DOMRect);
+};
 
 interface PropertiesPanelProps extends ResizableBottomPanelProps {
   selectionCount: number;
@@ -20,11 +40,11 @@ interface PropertiesPanelProps extends ResizableBottomPanelProps {
 
 interface PropertyGridParentProps {
   dataProvider: IPresentationPropertyDataProvider;
-  height: number;
 }
 
 interface UnifiedSelectionPropertyGridProps extends PropertyGridParentProps {
   width: number;
+  height: number;
 }
 
 export interface ElementPropertiesPanelProps extends ResizableBottomPanelProps {
@@ -49,20 +69,23 @@ function PropertiesPanel(props: PropertiesPanelProps) {
 
 function UnifiedSelectionPropertyGrid(props: UnifiedSelectionPropertyGridProps) {
   const { isOverLimit } = usePropertyDataProviderWithUnifiedSelection({ dataProvider: props.dataProvider });
+  const toManyElementsLabel = React.useMemo(() => i18n("ElementPropertiesPanel", "TooManyElements"), []);
   if (isOverLimit) {
-    return (<FillCentered>Too many elements selected.</FillCentered>);
+    return (<FillCentered className="too-many-elements">{toManyElementsLabel}</FillCentered>);
   }
   return <VirtualizedPropertyGridWithDataProvider {...props} orientation={Orientation.Horizontal} />;
 }
 
 function PropertyGridParent(props: PropertyGridParentProps) {
-  const [gridRef, elementSize] = useElementSize();
+  const divRef = React.useRef<HTMLDivElement | null>(null);
+  const { width, height } = useElementSize(divRef);
   const allProps = {
-    width: elementSize.width,
+    width,
+    height,
     ...props,
   };
   return (
-    <div className="property-grid-parent" ref={gridRef}>
+    <div className="property-grid-parent" ref={divRef}>
       <UnifiedSelectionPropertyGrid {...allProps} />
     </div>
   );
@@ -79,7 +102,6 @@ export function ElementPropertiesPanel(props: ElementPropertiesPanelProps) {
   }, [iModel]);
   const dataProvider = React.useMemo(() => new PresentationPropertyDataProvider(ppdpProps), [ppdpProps]);
   const propertiesLabel = React.useMemo(() => i18n("ElementPropertiesPanel", "Properties"), []);
-  const [height, setHeight] = React.useState(0);
 
   useBeEvent(() => {
     setSelectionCount(iModel.selectionSet.size);
@@ -88,11 +110,6 @@ export function ElementPropertiesPanel(props: ElementPropertiesPanelProps) {
   return (
     <PropertiesPanel
       {...props}
-      onOpen={(panelHeight) => setHeight(panelHeight)}
-      onResized={(panelHeight) => {
-        setHeight(panelHeight);
-        return false;
-      }}
       selectionCount={selectionCount}
       header={<DraggableComponent className="resizable-panel-header">
         <div className="header-row">
@@ -110,7 +127,6 @@ export function ElementPropertiesPanel(props: ElementPropertiesPanelProps) {
         <div className="properties-panel">
           <PropertyGridParent
             dataProvider={dataProvider}
-            height={height - 40}
           />
         </div>
       }

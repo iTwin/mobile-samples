@@ -78,7 +78,8 @@
     "Header": "Random about text goes here."
   },
   "ElementPropertiesPanel": {
-    "Properties": "Properties"
+    "Properties": "Properties",
+    "TooManyElements": "Too many elements selected."
   },
   "InfoBottomPanel": {
     "PathFormat": "Path: {{- filename}}"
