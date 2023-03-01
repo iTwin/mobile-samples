@@ -20,12 +20,24 @@ $properties-panel-header-size: 20px;
   min-height: 100%;
   padding-bottom: var(--itm-safe-area-bottom);
 
-  .components-property-grid-wrapper>div {
-    margin-bottom: var(--itm-safe-area-bottom);
+  .components-property-grid-wrapper {
+    >div {
+      margin-bottom: var(--itm-safe-area-bottom);
+    }
+
+    // This shouldn't be necessary, since none of the elements are wide enough to allow for
+    // horizontal scrolling, but without it the properties grid can scroll to reveal empty space
+    // on the right after switching from landscape to portrait.
+    overflow-x: hidden !important;
+    overflow-y: auto;
   }
 }
 
 .header-row {
   display: flex;
   justify-content: space-between;
+}
+
+.too-many-elements {
+  font-size: larger;
 }
