@@ -5,7 +5,7 @@
 import React from "react";
 import { combineReducers, createStore, Store } from "redux";
 import { MobileApp, MobileAppOpts } from "@itwin/core-mobile/lib/cjs/MobileFrontend";
-import { IModelApp, IModelConnection, ITWINJS_CORE_VERSION, SnapshotConnection, ToolAssistanceInstructions } from "@itwin/core-frontend";
+import { IModelApp, IModelConnection, ITWINJS_CORE_VERSION, RenderSystem, SnapshotConnection, ToolAssistanceInstructions } from "@itwin/core-frontend";
 import { AppNotificationManager, FrameworkReducer, FrameworkState, UiFramework } from "@itwin/appui-react";
 import { Presentation } from "@itwin/presentation-frontend";
 import { Messenger, MobileCore } from "@itwin/mobile-sdk-core";
@@ -69,7 +69,6 @@ const rootReducer = combineReducers({
   frameworkState: FrameworkReducer,
 });
 const anyWindow: any = window;
-// eslint-disable-next-line deprecation/deprecation
 const appReduxStore: Store<RootState> = createStore(rootReducer, anyWindow.__REDUX_DEVTOOLS_EXTENSION__ && anyWindow.__REDUX_DEVTOOLS_EXTENSION__());
 
 class AppToolAssistanceNotificationManager extends AppNotificationManager {
@@ -77,6 +76,18 @@ class AppToolAssistanceNotificationManager extends AppNotificationManager {
     ToolAssistance.onSetToolAssistance.emit(instructions);
     super.setToolAssistance(instructions);
   }
+}
+
+function getRenderSysOptions(): RenderSystem.Options | undefined {
+  if (window.itmSampleParams.lowResolution) {
+    // Improves FPS on really slow devices and iOS simulator.
+    // Shader compilation still causes one-time slowness when interacting with model.
+    return {
+      devicePixelRatioOverride: 0.25, // Reduce resolution
+      dpiAwareLOD: true, // Reduce tile LOD for low resolution
+    };
+  }
+  return undefined;
 }
 
 function useAppState(onInitialize?: () => Promise<void>) {
@@ -117,24 +128,9 @@ function useAppState(onInitialize?: () => Promise<void>) {
           iModelApp: {
             rpcInterfaces: getSupportedRpcs(),
             notifications: new AppToolAssistanceNotificationManager(),
+            renderSys: getRenderSysOptions(),
           },
         };
-        if (window.itmSampleParams.lowResolution) {
-          // Improves FPS on really slow devices and iOS simulator.
-          // Shader compilation still causes one-time slowness when interacting with model.
-
-          // Note: Seemingly every other build the ! below goes from being required to not allowed.
-          // The underlying types don't change, and yet sometimes TypeScript states that
-          // opts.iModelApp is an optional value (which it is in IpcAppOptions), and sometimes
-          // states that the ! is unnecessary. Since it keeps breaking the build for no reason,
-          // I am including the !, and adding an eslint comment to disable the associated warning.
-          // I am 99% sure that a TypeScript compiler bug is causing this inconsistent behavior.
-          // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion
-          opts.iModelApp!.renderSys = {
-            devicePixelRatioOverride: 0.25, // Reduce resolution
-            dpiAwareLOD: true, // Reduce tile LOD for low resolution
-          };
-        }
         await MobileApp.startup(opts);
         await UiFramework.initialize(appReduxStore);
         await Presentation.initialize();
