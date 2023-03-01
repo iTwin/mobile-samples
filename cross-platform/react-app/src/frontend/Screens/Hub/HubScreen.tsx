@@ -7,7 +7,7 @@ import { AlertAction, Messenger, MobileCore } from "@itwin/mobile-sdk-core";
 import { ActionSheetButton, BackButton, useIsMountedRef } from "@itwin/mobile-ui-react";
 import { Project } from "@itwin/projects-client";
 import { BriefcaseConnection, IModelConnection } from "@itwin/core-frontend";
-import { Button, i18n, IModelDownloader, IModelInfo, IModelPicker, presentError, ProjectPicker, Screen, SignIn } from "../../Exports";
+import { Button, HubStep, i18n, IModelDownloader, IModelInfo, IModelPicker, presentError, ProjectPicker, Screen, SignIn } from "../../Exports";
 import "./HubScreen.scss";
 
 HubScreen.ACTIVE_PROJECT_INFO = "activeProjectInfo";
@@ -29,14 +29,6 @@ function getActiveProject() {
 
 function saveActiveProject(project: Project) {
   localStorage.setItem(HubScreen.ACTIVE_PROJECT_INFO, JSON.stringify(project));
-}
-
-enum HubStep {
-  SignIn, // eslint-disable-line @typescript-eslint/no-shadow
-  SelectProject,
-  SelectIModel,
-  DownloadIModel,
-  Error
 }
 
 /// Properties for the [[HubScreen]] React component.

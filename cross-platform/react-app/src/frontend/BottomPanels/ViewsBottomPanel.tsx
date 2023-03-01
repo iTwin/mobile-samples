@@ -49,6 +49,9 @@ export function ViewsBottomPanel(props: ViewsBottomPanelProps) {
         // undefined.
         const getThumbnail = async (viewSpecId: string) => {
           try {
+            // getThumbnail() is deprecated due to the fact that almost all iModels being created now
+            // lack thumbnails for embedded views. There is no plan to replace it, so once it is gone
+            // completely we'll just do what we currently do when there is no thumbnail on the view.
             // eslint-disable-next-line deprecation/deprecation
             return await iModel.views.getThumbnail(viewSpecId);
           } catch (ex) {

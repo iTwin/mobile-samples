@@ -20,6 +20,7 @@ export * from "./Screens/Hub/IModelDownloader";
 export * from "./Screens/Hub/IModelPicker";
 export * from "./Screens/Hub/ProjectPicker";
 export * from "./Screens/Hub/SignIn";
+export * from "./Screens/Hub/HubStep";
 export * from "./Screens/Hub/HubScreen";
 export * from "./BottomPanels/ElementPropertiesPanel";
 export * from "./BottomPanels/ToolsBottomPanel";
