@@ -4,7 +4,7 @@
 *--------------------------------------------------------------------------------------------*/
 import * as React from "react";
 import { IModelApp, IModelConnection } from "@itwin/core-frontend";
-import { FillCentered, Orientation } from "@itwin/core-react";
+import { FillCentered } from "@itwin/core-react";
 import useResizeObserver from "@react-hook/resize-observer";
 import { VirtualizedPropertyGridWithDataProvider } from "@itwin/components-react";
 import { IPresentationPropertyDataProvider, PresentationPropertyDataProvider, PresentationPropertyDataProviderProps, usePropertyDataProviderWithUnifiedSelection } from "@itwin/presentation-components";
@@ -73,7 +73,7 @@ function UnifiedSelectionPropertyGrid(props: UnifiedSelectionPropertyGridProps) 
   if (isOverLimit) {
     return (<FillCentered className="too-many-elements">{toManyElementsLabel}</FillCentered>);
   }
-  return <VirtualizedPropertyGridWithDataProvider {...props} orientation={Orientation.Horizontal} />;
+  return <VirtualizedPropertyGridWithDataProvider {...props} horizontalOrientationMinWidth={400} />;
 }
 
 function PropertyGridParent(props: PropertyGridParentProps) {
