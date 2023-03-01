@@ -2,16 +2,27 @@
 * Copyright (c) Bentley Systems, Incorporated. All rights reserved.
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
+
+$properties-panel-header-size: 20px;
+
 .properties-panel {
+  height: calc(100% - $properties-panel-header-size);
+  min-height: calc(100% - $properties-panel-header-size);
   background-color: var(--background-color);
-  overflow-y: auto;
-  -webkit-overflow-scrolling: touch;  
+  padding-left: 8px;
+  padding-right: 8px;
 }
 
 .property-grid-parent {
+  box-sizing: border-box;
+  display: flex;
   height: 100%;
-  padding-left: 7px;
-  padding-right: 7px;
+  min-height: 100%;
+  padding-bottom: var(--itm-safe-area-bottom);
+
+  .components-property-grid-wrapper>div {
+    margin-bottom: var(--itm-safe-area-bottom);
+  }
 }
 
 .header-row {
