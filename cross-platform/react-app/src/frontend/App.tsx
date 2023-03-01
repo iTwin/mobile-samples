@@ -176,7 +176,7 @@ function useAppState(onInitialize?: () => Promise<void>) {
         if (viewport) {
           IModelApp.viewManager.dropViewport(viewport);
         }
-        await iModel?.close();
+        await newIModel.close();
         setIModel(undefined);
         UiFramework.setIModelConnection(undefined);
         setModelFilename("");
@@ -185,7 +185,7 @@ function useAppState(onInitialize?: () => Promise<void>) {
     } catch (error) {
       presentError("LoadErrorFormat", error);
     }
-  }, [iModel, pushActiveInfo]);
+  }, [pushActiveInfo]);
 
   // Called when the back button is pressed on any screen.
   const handleBack = React.useCallback(() => {
