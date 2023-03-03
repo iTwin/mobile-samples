@@ -7,7 +7,7 @@ import { HorizontalPicker, useIsMountedRef } from "@itwin/mobile-ui-react";
 import { Project, ProjectsAccessClient, ProjectsQueryArg, ProjectsQueryFunction, ProjectsSearchableProperty, ProjectsSource } from "@itwin/projects-client";
 import { IModelApp } from "@itwin/core-frontend";
 import { LoadingSpinner } from "@itwin/core-react";
-import { ButtonProps, HubScreenButton, HubScreenButtonList, HubScreenButtonListProps, i18n, presentError, SearchControl } from "../../Exports";
+import { ButtonProps, HubScreenButton, HubScreenButtonList, HubScreenButtonListProps, i18n, presentError, PromiseUtil, SearchControl } from "../../Exports";
 
 async function getProjects(source = ProjectsSource.All, searchString = "") {
   const baseUrl = `https://${window.itmSampleParams.apiPrefix}api.bentley.com/projects/`;
@@ -91,7 +91,7 @@ export function ProjectPicker(props: ProjectPickerProps) {
       }
       setLoading(false);
     };
-    void fetchProjects();
+    void PromiseUtil.consolidateCall("fetchProjects", async () => fetchProjects());
   }, [isMountedRef, onError, projectSource, search]);
 
   const loadMore = React.useCallback(async () => {
