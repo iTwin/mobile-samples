@@ -10,7 +10,7 @@ import { IModelApp, NativeApp } from "@itwin/core-frontend";
 import { IModelsClient, MinimalIModel } from "@itwin/imodels-client-management";
 import { AccessTokenAdapter } from "@itwin/imodels-access-frontend";
 import { LocalBriefcaseProps } from "@itwin/core-common";
-import { ButtonProps, fileSizeString, HubScreenButton, HubScreenButtonList, HubScreenButtonListProps, i18n, presentError } from "../../Exports";
+import { ButtonProps, fileSizeString, HubScreenButton, HubScreenButtonList, HubScreenButtonListProps, i18n, presentError, PromiseUtil } from "../../Exports";
 
 export interface IModelInfo {
   minimalIModel: MinimalIModel;
@@ -130,7 +130,7 @@ export function IModelPicker(props: IModelPickerProps) {
       }
       setLoading(false);
     };
-    void fetchModels();
+    void PromiseUtil.consolidateCall(`fetchModels-${project.id}`, async () => fetchModels());
   }, [isMountedRef, onError, onLoaded, project]);
 
   return <IModelList models={iModels} loading={loading} onSelect={onSelect} onCacheDeleted={(model) => {

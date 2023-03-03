@@ -25,3 +25,4 @@ export * from "./Screens/Hub/HubScreen";
 export * from "./BottomPanels/ElementPropertiesPanel";
 export * from "./BottomPanels/ToolsBottomPanel";
 export * from "./Components/SearchControl";
+export * from "../common/PromiseUtil";
