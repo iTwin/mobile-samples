@@ -4,7 +4,8 @@
 *--------------------------------------------------------------------------------------------*/
 import React from "react";
 import { IconSpecUtilities } from "@itwin/appui-abstract";
-import { Messenger } from "@itwin/mobile-sdk-core";
+import { IModelApp } from "@itwin/core-frontend";
+import { Messenger, MobileCore } from "@itwin/mobile-sdk-core";
 import { BackButton, IconImage } from "@itwin/mobile-ui-react";
 import { Button, i18n, Screen } from "../Exports";
 import "./HomeScreen.scss";
@@ -37,9 +38,23 @@ export function HomeScreen(props: HomeScreenProps) {
   const homeLabel = React.useMemo(() => i18n("HomeScreen", "Home"), []);
   const localModelsLabel = React.useMemo(() => i18n("HomeScreen", "LocalIModels"), []);
   const hubIModelsLabel = React.useMemo(() => i18n("HomeScreen", "HubIModels"), []);
+  const [token, setToken] = React.useState("Token appears here");
 
   const handleBack = React.useCallback(async () => {
     Messenger.sendMessage("goBack");
+  }, []);
+
+  const handleGetToken = React.useCallback(async () => {
+    const tokenVal = await IModelApp.authorizationClient?.getAccessToken();
+    if (tokenVal === undefined || tokenVal.length === 0) {
+      setToken("Got invalid token.");
+    } else {
+      setToken(tokenVal);
+      // clipboard access doesn't work on Android
+      if (!MobileCore.isAndroidPlatform) {
+        await navigator.clipboard.writeText(tokenVal);
+      }
+    }
   }, []);
 
   return (
@@ -55,6 +70,8 @@ export function HomeScreen(props: HomeScreenProps) {
             title={localModelsLabel}
             onClick={() => onSelect(ActiveScreen.LocalModels)} />
           <Button title={hubIModelsLabel} onClick={() => onSelect(ActiveScreen.Hub)} />
+          <Button title={MobileCore.isAndroidPlatform ? "Show token" : "Copy token"} onClick={handleGetToken} />
+          <textarea value={token} readOnly style={{ width: "30%" }} onFocus={(e) => e.target.select()} />
         </div>
       </div>
     </Screen>
