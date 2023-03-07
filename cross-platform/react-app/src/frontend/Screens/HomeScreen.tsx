@@ -71,7 +71,7 @@ export function HomeScreen(props: HomeScreenProps) {
             onClick={() => onSelect(ActiveScreen.LocalModels)} />
           <Button title={hubIModelsLabel} onClick={() => onSelect(ActiveScreen.Hub)} />
           <Button title={MobileCore.isAndroidPlatform ? "Show token" : "Copy token"} onClick={handleGetToken} />
-          <textarea value={token} readOnly style={{ width: "30%" }} onFocus={(e) => e.target.select()} />
+          <textarea value={token} readOnly rows={8} cols={60} onFocus={(e) => e.target.select()} />
         </div>
       </div>
     </Screen>

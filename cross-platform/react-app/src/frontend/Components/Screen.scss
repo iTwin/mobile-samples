@@ -59,8 +59,3 @@
     }
   }
 }
-
-// Disable selection in all elements except text input fields by default.
-*:not(input[type=text]) {
-  user-select: none;
-}
