@@ -6,8 +6,6 @@ package com.bentley.sample.shared
 
 import android.content.Context
 import android.net.Uri
-import androidx.activity.ComponentActivity
-import com.bentley.itwin.AuthorizationClient
 import com.eclipsesource.json.Json
 import com.eclipsesource.json.JsonValue
 import com.github.itwin.mobilesdk.ITMApplication
