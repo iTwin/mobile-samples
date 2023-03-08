@@ -76,7 +76,7 @@ async function getIModels(project: Project) {
   for await (const minimalIModel of imodelsClient.iModels.getMinimalList({
     authorization: AccessTokenAdapter.toAuthorizationCallback(accessToken),
     urlParams: {
-      projectId: project.id,
+      iTwinId: project.id,
     },
   })) {
     minimalIModels.push(minimalIModel);
