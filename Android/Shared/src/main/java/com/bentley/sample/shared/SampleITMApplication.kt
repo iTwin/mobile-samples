@@ -90,9 +90,9 @@ open class SampleITMApplication(context: Context, attachWebViewLogger: Boolean, 
         this.host?.onResume()
     }
 
-    override fun initializeBackend(context: Context, allowInspectBackend: Boolean) {
+    override fun initializeBackend(allowInspectBackend: Boolean) {
         startupTimer.addCheckpoint("Before backend load")
-        super.initializeBackend(context, allowInspectBackend)
+        super.initializeBackend(allowInspectBackend)
         MainScope().launch {
             waitForBackendInitialize()
             startupTimer.addCheckpoint("After backend load")
