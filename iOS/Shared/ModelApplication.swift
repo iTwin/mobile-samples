@@ -16,6 +16,7 @@ class ModelApplication: ITMApplication {
     /// Registers query handlers.
     required init() {
         super.init()
+        ITMMessenger.addUnloggedQueryType("loading")
         startupTimer.enabled = self.configData?.isYes("ITMSAMPLE_LOG_STARTUP_TIMES") ?? false
         startupTimer.useJSON = self.configData?.isYes("ITMSAMPLE_LOG_STARTUP_TIMES_JSON") ?? false
         startupTimer.logToFile = self.configData?.isYes("ITMSAMPLE_LOG_STARTUP_TIMES_LOG_TO_FILE") ?? false

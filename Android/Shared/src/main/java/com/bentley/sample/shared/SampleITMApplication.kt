@@ -9,6 +9,7 @@ import android.net.Uri
 import com.eclipsesource.json.Json
 import com.eclipsesource.json.JsonValue
 import com.github.itwin.mobilesdk.ITMApplication
+import com.github.itwin.mobilesdk.ITMMessenger
 import com.github.itwin.mobilesdk.jsonvalue.getOptionalString
 import com.github.itwin.mobilesdk.jsonvalue.isYes
 import kotlinx.coroutines.MainScope
@@ -23,6 +24,7 @@ open class SampleITMApplication(context: Context, attachWebViewLogger: Boolean, 
 
     override fun finishInit() {
         super.finishInit()
+        ITMMessenger.addUnloggedQueryType("loading")
         startupTimer.enabled = configData?.isYes("ITMSAMPLE_LOG_STARTUP_TIMES") ?: false
         startupTimer.useJSON = configData?.isYes("ITMSAMPLE_LOG_STARTUP_TIMES_JSON") ?: false
     }
@@ -88,9 +90,9 @@ open class SampleITMApplication(context: Context, attachWebViewLogger: Boolean, 
         this.host?.onResume()
     }
 
-    override fun initializeBackend(context: Context, allowInspectBackend: Boolean) {
+    override fun initializeBackend(allowInspectBackend: Boolean) {
         startupTimer.addCheckpoint("Before backend load")
-        super.initializeBackend(context, allowInspectBackend)
+        super.initializeBackend(allowInspectBackend)
         MainScope().launch {
             waitForBackendInitialize()
             startupTimer.addCheckpoint("After backend load")
