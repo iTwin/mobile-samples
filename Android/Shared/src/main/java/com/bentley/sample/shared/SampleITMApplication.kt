@@ -10,6 +10,7 @@ import com.eclipsesource.json.Json
 import com.eclipsesource.json.JsonValue
 import com.github.itwin.mobilesdk.ITMApplication
 import com.github.itwin.mobilesdk.ITMMessenger
+import com.github.itwin.mobilesdk.ITMOIDCAuthorizationClient
 import com.github.itwin.mobilesdk.jsonvalue.getOptionalString
 import com.github.itwin.mobilesdk.jsonvalue.isYes
 import kotlinx.coroutines.MainScope
@@ -57,6 +58,11 @@ open class SampleITMApplication(context: Context, attachWebViewLogger: Boolean, 
 
         coMessenger.registerQueryHandler("getBimDocuments") {
             Json.array(*this.appContext.getExternalFiles("BimCache", ".bim").toTypedArray())
+        }
+
+        coMessenger.registerQueryHandler("Bentley_ITMAuthorizationClient_signOut") {
+            (authorizationClient as? ITMOIDCAuthorizationClient)?.signOut()
+            Json.NULL
         }
     }
 
