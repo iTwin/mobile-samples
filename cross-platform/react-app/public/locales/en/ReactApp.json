@@ -2,7 +2,8 @@
   "Shared": {
     "SelectIModel": "Select iModel",
     "Error": "Error",
-    "OK": "OK"
+    "OK": "OK",
+    "SignOut": "Sign Out"
   },
   "App": {
     "LoadErrorFormat": "Error loading iModel:\n{{- error}}"
@@ -28,7 +29,6 @@
     "Connecting": "Connecting...",
     "SelectProject": "Select Project",
     "DownloadingIModel": "Downloading iModel",
-    "SignOut": "Sign Out",
     "FetchProjectsErrorFormat": "Error getting projects list: {{- error}}",
     "GetIModelsErrorFormat": "Error getting iModels list: {{- error}}",
     "SigninErrorFormat": "Error signing in: {{- error}}",
