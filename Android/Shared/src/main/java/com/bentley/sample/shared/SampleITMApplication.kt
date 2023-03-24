@@ -60,9 +60,8 @@ open class SampleITMApplication(context: Context, attachWebViewLogger: Boolean, 
             Json.array(*this.appContext.getExternalFiles("BimCache", ".bim").toTypedArray())
         }
 
-        coMessenger.registerQueryHandler("Bentley_ITMAuthorizationClient_signOut") {
+        coMessenger.registerMessageHandler("signOut") {
             (authorizationClient as? ITMOIDCAuthorizationClient)?.signOut()
-            Json.NULL
         }
     }
 
