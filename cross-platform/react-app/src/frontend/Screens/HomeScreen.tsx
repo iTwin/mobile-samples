@@ -37,6 +37,7 @@ export function HomeScreen(props: HomeScreenProps) {
   const homeLabel = React.useMemo(() => i18n("HomeScreen", "Home"), []);
   const localModelsLabel = React.useMemo(() => i18n("HomeScreen", "LocalIModels"), []);
   const hubIModelsLabel = React.useMemo(() => i18n("HomeScreen", "HubIModels"), []);
+  const signOutLabel = React.useMemo(() => i18n("Shared", "SignOut"), []);
 
   const handleBack = React.useCallback(async () => {
     Messenger.sendMessage("goBack");
@@ -55,6 +56,7 @@ export function HomeScreen(props: HomeScreenProps) {
             title={localModelsLabel}
             onClick={() => onSelect(ActiveScreen.LocalModels)} />
           <Button title={hubIModelsLabel} onClick={() => onSelect(ActiveScreen.Hub)} />
+          <Button title={signOutLabel} onClick={async () => Messenger.sendMessage("signOut")} />
         </div>
       </div>
     </Screen>
