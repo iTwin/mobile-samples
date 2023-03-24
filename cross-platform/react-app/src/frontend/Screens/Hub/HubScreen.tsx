@@ -56,7 +56,8 @@ export function HubScreen(props: HubScreenProps) {
     [HubStep.SelectIModel, i18n("Shared", "SelectIModel")],
     [HubStep.DownloadIModel, i18n("HomeScreen", "HubIModels")],
   ]), []);
-  const signOutLabel = React.useMemo(() => i18n("HubScreen", "SignOut"), []);
+  const signOutLabel = React.useMemo(() => i18n("Shared", "SignOut"), []);
+  const selectProjectLabel = React.useMemo(() => i18n("HubScreen", "SelectProject"), []);
   const deleteAllDownloadsLabel = React.useMemo(() => i18n("HubScreen", "DeleteAllDownloads"), []);
   const changeProjectLabel = React.useMemo(() => i18n("HubScreen", "ChangeProject"), []);
 
@@ -165,6 +166,9 @@ export function HubScreen(props: HubScreenProps) {
         <Button title={signOutLabel} onClick={async () => {
           Messenger.sendMessage("signOut");
           onBack();
+        }} />
+        <Button title={selectProjectLabel} onClick={async () => {
+          setHubStep(HubStep.SelectProject);
         }} />
       </div>;
       break;
