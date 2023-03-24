@@ -9,6 +9,7 @@ import android.net.Uri
 import com.eclipsesource.json.Json
 import com.eclipsesource.json.JsonValue
 import com.github.itwin.mobilesdk.ITMApplication
+import com.github.itwin.mobilesdk.ITMLogger
 import com.github.itwin.mobilesdk.ITMMessenger
 import com.github.itwin.mobilesdk.ITMOIDCAuthorizationClient
 import com.github.itwin.mobilesdk.jsonvalue.getOptionalString
@@ -61,7 +62,11 @@ open class SampleITMApplication(context: Context, attachWebViewLogger: Boolean, 
         }
 
         coMessenger.registerMessageHandler("signOut") {
-            (authorizationClient as? ITMOIDCAuthorizationClient)?.signOut()
+            try {
+                (authorizationClient as? ITMOIDCAuthorizationClient)?.signOut()
+            } catch (ex: Error) {
+                logger.log(ITMLogger.Severity.Error, ex.message ?: "An unknown error occurred when signing out.")
+            }
         }
     }
 
