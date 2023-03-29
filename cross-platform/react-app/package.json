@@ -130,7 +130,7 @@
     ]
   },
   "relativeDependencies": {
-    "@itwin/mobile-sdk-core": "0.10.37/../../mobile-sdk-core",
-    "@itwin/mobile-ui-react": "0.10.37/../../mobile-ui-react"
+    "@itwin/mobile-sdk-core": "../../../mobile-sdk-core",
+    "@itwin/mobile-ui-react": "../../../mobile-ui-react"
   }
 }
