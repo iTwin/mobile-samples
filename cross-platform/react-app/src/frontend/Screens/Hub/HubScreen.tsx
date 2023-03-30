@@ -3,11 +3,11 @@
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
 import React from "react";
-import { AlertAction, Messenger, MobileCore } from "@itwin/mobile-sdk-core";
+import { AlertAction, MobileCore } from "@itwin/mobile-sdk-core";
 import { ActionSheetButton, BackButton, useIsMountedRef } from "@itwin/mobile-ui-react";
 import { Project } from "@itwin/projects-client";
 import { BriefcaseConnection, IModelConnection } from "@itwin/core-frontend";
-import { Button, HubStep, i18n, IModelDownloader, IModelInfo, IModelPicker, presentError, ProjectPicker, Screen, SignIn } from "../../Exports";
+import { Button, HubStep, i18n, IModelDownloader, IModelInfo, IModelPicker, presentError, ProjectPicker, Screen, SignIn, signOut } from "../../Exports";
 import "./HubScreen.scss";
 
 HubScreen.ACTIVE_PROJECT_INFO = "activeProjectInfo";
@@ -164,7 +164,7 @@ export function HubScreen(props: HubScreenProps) {
     case HubStep.Error:
       stepContent = <div className="centered-list">
         <Button title={signOutLabel} onClick={async () => {
-          Messenger.sendMessage("signOut");
+          await signOut();
           onBack();
         }} />
         <Button title={selectProjectLabel} onClick={async () => {

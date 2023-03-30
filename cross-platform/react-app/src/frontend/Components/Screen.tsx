@@ -5,7 +5,7 @@
 import React from "react";
 import classnames from "classnames";
 import { IModelApp } from "@itwin/core-frontend";
-import { presentAlert } from "@itwin/mobile-sdk-core";
+import { Messenger, presentAlert } from "@itwin/mobile-sdk-core";
 import { useTheme } from "@itwin/itwinui-react";
 import { useActiveColorSchemeIsDark } from "@itwin/mobile-ui-react";
 import "./Screen.scss";
@@ -84,4 +84,12 @@ export function presentError(formatKey: string, error: any, namespace = "App", s
       title: i18n("Shared", "OK"),
     }],
   });
+}
+
+export async function signOut() {
+  try {
+    await Messenger.query("signOut");
+  } catch (error) {
+    presentError("SignOutErrorFormat", error);
+  }
 }

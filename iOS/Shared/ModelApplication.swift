@@ -43,6 +43,7 @@ class ModelApplication: ITMApplication {
                     try await oac.signOut()
                 } catch {
                     Self.logger.log(.error, "Error signing out: \(error)")
+                    throw error
                 }
             }
         }

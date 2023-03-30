@@ -6,7 +6,8 @@
     "SignOut": "Sign Out"
   },
   "App": {
-    "LoadErrorFormat": "Error loading iModel:\n{{- error}}"
+    "LoadErrorFormat": "Error loading iModel:\n{{- error}}",
+    "SignOutErrorFormat": "Error signing out:\n{{- error}}"
   },
   "Screen": {
     "BFormat": "{{size}} B",
