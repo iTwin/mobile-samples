@@ -33,7 +33,9 @@ open class TokenServerAuthClient: NSObject, ITMAuthorizationClient {
     /// - Parameter value: The new value for the auth0 token used when communicating with the token server.
     public func setAuth0Token(_ value: String?) {
         auth0Token = value
-        raiseOnAccessTokenChanged()
+        getAccessToken() { accessToken, expirationDate, error in
+            self.raiseOnAccessTokenChanged(accessToken, expirationDate)
+        }
     }
 
     /// Main functionality from `AuthorizationClient`. Uses `completion` to communicate the result.
