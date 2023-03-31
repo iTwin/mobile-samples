@@ -64,8 +64,9 @@ open class SampleITMApplication(context: Context, attachWebViewLogger: Boolean, 
         coMessenger.registerMessageHandler("signOut") {
             try {
                 (authorizationClient as? ITMOIDCAuthorizationClient)?.signOut()
-            } catch (ex: Error) {
+            } catch (ex: Exception) {
                 logger.log(ITMLogger.Severity.Error, ex.message ?: "An unknown error occurred when signing out.")
+                throw ex
             }
         }
     }
