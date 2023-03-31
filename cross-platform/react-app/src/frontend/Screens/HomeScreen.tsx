@@ -6,7 +6,7 @@ import React from "react";
 import { IconSpecUtilities } from "@itwin/appui-abstract";
 import { Messenger } from "@itwin/mobile-sdk-core";
 import { BackButton, IconImage } from "@itwin/mobile-ui-react";
-import { Button, i18n, Screen } from "../Exports";
+import { Button, i18n, Screen, signOut } from "../Exports";
 import "./HomeScreen.scss";
 
 // With svg.d.ts present in the root of this project, Webpack automatically handles the import below
@@ -56,7 +56,7 @@ export function HomeScreen(props: HomeScreenProps) {
             title={localModelsLabel}
             onClick={() => onSelect(ActiveScreen.LocalModels)} />
           <Button title={hubIModelsLabel} onClick={() => onSelect(ActiveScreen.Hub)} />
-          <Button title={signOutLabel} onClick={async () => Messenger.sendMessage("signOut")} />
+          <Button title={signOutLabel} onClick={async () => signOut()} />
         </div>
       </div>
     </Screen>
