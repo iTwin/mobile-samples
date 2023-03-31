@@ -39,10 +39,10 @@ class ModelApplication: ITMApplication {
         }
         registerQueryHandler("signOut") {
             if let oac = self.authorizationClient as? ITMOIDCAuthorizationClient {
-                oac.signOut() { error in
-                    if let error = error {
-                        Self.logger.log(.error, "Error signing out: \(error)")
-                    }
+                do {
+                    try await oac.signOut()
+                } catch {
+                    Self.logger.log(.error, "Error signing out: \(error)")
                 }
             }
         }
