@@ -4,10 +4,10 @@
  *
  * @format
  */
-
 import React from 'react';
 import type {PropsWithChildren} from 'react';
 import {
+  Button,
   SafeAreaView,
   ScrollView,
   StatusBar,
@@ -16,6 +16,7 @@ import {
   useColorScheme,
   View,
 } from 'react-native';
+import WebView from 'react-native-webview';
 
 import {
   Colors,
@@ -31,6 +32,7 @@ type SectionProps = PropsWithChildren<{
 
 function Section({children, title}: SectionProps): JSX.Element {
   const isDarkMode = useColorScheme() === 'dark';
+
   return (
     <View style={styles.sectionContainer}>
       <Text
@@ -57,6 +59,7 @@ function Section({children, title}: SectionProps): JSX.Element {
 
 function App(): JSX.Element {
   const isDarkMode = useColorScheme() === 'dark';
+  const [wvVisible, setWvVisible] = React.useState(false);
 
   const backgroundStyle = {
     backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
@@ -71,6 +74,19 @@ function App(): JSX.Element {
       <ScrollView
         contentInsetAdjustmentBehavior="automatic"
         style={backgroundStyle}>
+        <Button
+          title={wvVisible ? 'Hide WebView' : 'Show WebView'}
+          onPress={() => {
+            setWvVisible(!wvVisible);
+          }}
+        />
+        <WebView
+          originWhitelist={['*']}
+          source={{html: '<h1>This is a webview</h1>'}}
+          style={{height: wvVisible ? 200 : 0}}
+          applicationNameForUserAgent="iTwin.js"
+          scrollEnabled={false}
+        />
         <Header />
         <View
           style={{
