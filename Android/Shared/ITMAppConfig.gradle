@@ -31,7 +31,7 @@ static def extractProperties(properties, prefix, contents) {
 static def readITMAppConfig (project) {
     Properties properties = new Properties()
     try {
-        properties.load(project.rootProject.file('../Shared/ITMSamples.properties').newDataInputStream())
+        properties.load(project.file("ITMSamples.properties").newDataInputStream())
     } catch (IOException ex) {
         println "Error loading Shared ITMSamples.properties; build might not work. ${ex}"
     }

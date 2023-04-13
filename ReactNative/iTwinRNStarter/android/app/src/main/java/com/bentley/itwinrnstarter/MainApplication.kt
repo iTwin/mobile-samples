@@ -1,7 +1,13 @@
+/*---------------------------------------------------------------------------------------------
+* Copyright (c) Bentley Systems, Incorporated. All rights reserved.
+* See LICENSE.md in the project root for license terms and full copyright notice.
+*--------------------------------------------------------------------------------------------*/
 package com.bentley.itwinrnstarter
 
 import android.app.Application
 import android.content.Context
+import com.bentley.sample.shared.SampleApplicationBase
+import com.bentley.sample.shared.SampleITMApplication
 import com.facebook.react.PackageList
 import com.facebook.react.ReactApplication
 import com.facebook.react.ReactNativeHost
@@ -10,7 +16,13 @@ import com.facebook.react.defaults.DefaultNewArchitectureEntryPoint.load
 import com.facebook.react.defaults.DefaultReactNativeHost
 import com.facebook.soloader.SoLoader
 
-class MainApplication : Application(), ReactApplication {
+class MainApplication : ReactApplication, SampleApplicationBase<SampleITMApplication>({
+    object: SampleITMApplication(it, BuildConfig.DEBUG, BuildConfig.DEBUG) {
+        init {
+            finishInit()
+        }
+    }
+}) {
     private val mReactNativeHost: ReactNativeHost = object : DefaultReactNativeHost(this) {
         override fun getUseDeveloperSupport() = BuildConfig.DEBUG
 
@@ -35,12 +47,5 @@ class MainApplication : Application(), ReactApplication {
             load()
         }
         ReactNativeFlipper.initializeFlipper(this, reactNativeHost.reactInstanceManager)
-        MainActivity.itmApplication = StarterITMApplication(applicationContext)
-        //appContext = applicationContext
     }
-
-    //companion object {
-    //    lateinit var appContext: Context
-    //        private set
-    //}
 }
