@@ -10,19 +10,10 @@ import android.content.Context
 import com.github.itwin.mobilesdk.ITMApplication
 
 open class SampleApplicationBase<T: ITMApplication>(private val factory: (context: Context) -> T): Application() {
-    companion object {
-        @SuppressLint("StaticFieldLeak")
-        lateinit var itmApplication: ITMApplication
-            private set
-    }
+    lateinit var itmApplication: T
 
     override fun onCreate() {
         super.onCreate()
         itmApplication = factory(applicationContext)
-    }
-
-    fun getITMApplication(): T {
-        @Suppress("UNCHECKED_CAST")
-        return itmApplication as T
     }
 }

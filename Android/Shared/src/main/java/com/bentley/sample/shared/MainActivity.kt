@@ -28,7 +28,7 @@ class MainActivity : AppCompatActivity() {
     private val sampleITMApplication: SampleITMApplication
         get() {
             @Suppress("UNCHECKED_CAST")
-            return (this.application as SampleApplicationBase<SampleITMApplication>).getITMApplication()
+            return (this.application as SampleApplicationBase<SampleITMApplication>).itmApplication
         }
     private val modelWebViewContainer: ViewGroup
         get() = findViewById(R.id.model_web_view_container)

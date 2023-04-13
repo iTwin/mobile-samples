@@ -24,7 +24,7 @@ class MainActivity: ReactActivity() {
     private val itmApplication: SampleITMApplication
         get() {
             @Suppress("UNCHECKED_CAST")
-            return (this.application as SampleApplicationBase<SampleITMApplication>).getITMApplication()
+            return (this.application as SampleApplicationBase<SampleITMApplication>).itmApplication
         }
     override fun getMainComponentName() = "iTwinRNStarter"
 
