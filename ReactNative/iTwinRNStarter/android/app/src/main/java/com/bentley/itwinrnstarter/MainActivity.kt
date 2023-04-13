@@ -45,7 +45,6 @@ class MainActivity: ReactActivity() {
         (view as? ViewGroup)?.setOnHierarchyChangeListener(HierarchyTreeChangeListener(object: OnHierarchyChangeListener {
             override fun onChildViewAdded(parent: View?, child: View?) {
                 if (child is WebView) { // && child.settings.userAgentString.contains("iTwin.js")) {
-                    println("WebView added!")
                     child.overScrollMode = View.OVER_SCROLL_NEVER
 
                     itmApplication.initializeFrontend(this@MainActivity, false, child)
@@ -57,7 +56,7 @@ class MainActivity: ReactActivity() {
             }
             override fun onChildViewRemoved(parent: View?, child: View?) {
                 if (child is WebView) {
-                    println("WebView removed!")
+                    itmApplication.webView = null
                 }
             }
         }))
