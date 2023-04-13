@@ -4,6 +4,7 @@
 *--------------------------------------------------------------------------------------------*/
 package com.bentley.sample.shared
 
+import android.content.res.Configuration
 import android.graphics.Color
 import android.os.Bundle
 import android.view.ViewGroup
@@ -15,6 +16,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat.Type.systemBars
 import androidx.core.view.WindowInsetsControllerCompat.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
+import com.github.itwin.mobilesdk.ITMApplication
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch
 import kotlin.system.exitProcess
@@ -97,5 +99,10 @@ class MainActivity : AppCompatActivity() {
         sampleITMApplication.onResume()
         setupFullScreen()
         super.onResume()
+    }
+
+    override fun onConfigurationChanged(newConfig: Configuration) {
+        super.onConfigurationChanged(newConfig)
+        sampleITMApplication.nativeUI.onConfigurationChanged(newConfig)
     }
 }
