@@ -100,9 +100,4 @@ class MainActivity : AppCompatActivity() {
         setupFullScreen()
         super.onResume()
     }
-
-    override fun onConfigurationChanged(newConfig: Configuration) {
-        super.onConfigurationChanged(newConfig)
-        sampleITMApplication.nativeUI.onConfigurationChanged(newConfig)
-    }
 }
