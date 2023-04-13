@@ -4,10 +4,7 @@
 *--------------------------------------------------------------------------------------------*/
 package com.bentley.sample.shared
 
-import android.annotation.SuppressLint
-import android.content.Intent
 import android.graphics.Color
-import android.net.Uri
 import android.os.Bundle
 import android.view.ViewGroup
 import android.view.Window
@@ -26,41 +23,32 @@ import kotlin.system.exitProcess
  * The main activity for the application.
  */
 class MainActivity : AppCompatActivity() {
-    companion object {
-        var current: MainActivity? = null
-            private set
-
-        fun openUri(uri: Uri) {
-            val browserIntent = Intent(Intent.ACTION_VIEW, uri)
-            current?.startActivity(browserIntent)
+    private val sampleITMApplication: SampleITMApplication
+        get() {
+            @Suppress("UNCHECKED_CAST")
+            return (this.application as SampleApplicationBase<SampleITMApplication>).getITMApplication()
         }
-
-        @SuppressLint("StaticFieldLeak")
-        lateinit var sampleITMApplication: SampleITMApplication
-    }
-
     private val modelWebViewContainer: ViewGroup
         get() = findViewById(R.id.model_web_view_container)
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        sampleITMApplication.onCreateActivity(this)
+        val itmApp = sampleITMApplication
+        itmApp.onCreateActivity(this)
         supportRequestWindowFeature(Window.FEATURE_NO_TITLE)
         super.onCreate(savedInstanceState)
         setupWebView()
         setupFullScreen()
         hideSystemBars()
         setContentView(R.layout.activity_main)
-        sampleITMApplication.initializeFrontend(this, true)
+        itmApp.initializeFrontend(this, true)
         MainScope().launch {
-            sampleITMApplication.waitForFrontendInitialize()
-            sampleITMApplication.attachWebView(modelWebViewContainer)
-            current = this@MainActivity
-            sampleITMApplication.onRegisterNativeUI()
+            itmApp.waitForFrontendInitialize()
+            itmApp.attachWebView(modelWebViewContainer)
+            itmApp.onRegisterNativeUI()
         }
     }
 
     override fun onDestroy() {
-        current = null
         modelWebViewContainer.removeAllViews()
         super.onDestroy()
     }
