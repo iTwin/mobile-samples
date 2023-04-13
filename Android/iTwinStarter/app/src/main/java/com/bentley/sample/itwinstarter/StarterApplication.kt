@@ -4,24 +4,14 @@
 *--------------------------------------------------------------------------------------------*/
 package com.bentley.sample.itwinstarter
 
-import android.app.Application
-import android.content.Context
-import com.bentley.sample.shared.MainActivity
+import com.bentley.sample.shared.BuildConfig
+import com.bentley.sample.shared.SampleApplicationBase
+import com.bentley.sample.shared.SampleITMApplication
 
-class StarterApplication: Application() {
-    override fun onCreate() {
-        super.onCreate()
-        appContext = applicationContext
-        application = this
-        MainActivity.sampleITMApplication = StarterITMApplication
-    }
-
-    companion object {
-        private lateinit var appContext: Context
-        private lateinit var application: Application
-
-        fun getContext() : Context {
-            return appContext
+class StarterApplication: SampleApplicationBase<SampleITMApplication>({
+    object: SampleITMApplication(it, BuildConfig.DEBUG, BuildConfig.DEBUG) {
+        init {
+            finishInit()
         }
     }
-}
+})

@@ -6,6 +6,10 @@ package com.bentley.sample.shared
 
 import android.content.Context
 import android.net.Uri
+import android.webkit.WebView
+import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.DefaultLifecycleObserver
+import androidx.lifecycle.LifecycleOwner
 import com.eclipsesource.json.Json
 import com.eclipsesource.json.JsonValue
 import com.github.itwin.mobilesdk.ITMApplication
@@ -29,13 +33,6 @@ open class SampleITMApplication(context: Context, attachWebViewLogger: Boolean, 
         ITMMessenger.addUnloggedQueryType("loading")
         startupTimer.enabled = configData?.isYes("ITMSAMPLE_LOG_STARTUP_TIMES") ?: false
         startupTimer.useJSON = configData?.isYes("ITMSAMPLE_LOG_STARTUP_TIMES_JSON") ?: false
-    }
-
-    /**
-     * Implements the abstract function by delegating to [MainActivity].
-     */
-    override fun openUri(uri: Uri) {
-        MainActivity.openUri(uri)
     }
 
     /**
@@ -74,7 +71,7 @@ open class SampleITMApplication(context: Context, attachWebViewLogger: Boolean, 
     /**
      * Registers activity result handlers for our native UI components.
      */
-    open fun onCreateActivity(activity: MainActivity) {
+    open fun onCreateActivity(activity: AppCompatActivity) {
         DocumentPicker.registerForActivityResult(activity)
     }
 
@@ -110,12 +107,28 @@ open class SampleITMApplication(context: Context, attachWebViewLogger: Boolean, 
         }
     }
 
-    override fun initializeFrontend(context: Context, allowInspectBackend: Boolean) {
+    override fun initializeFrontend(context: Context, allowInspectBackend: Boolean, existingWebView: WebView?) {
         startupTimer.addCheckpoint("Before frontend load")
-        super.initializeFrontend(context, allowInspectBackend)
+        super.initializeFrontend(context, allowInspectBackend, existingWebView)
         MainScope().launch {
             waitForFrontendInitialize()
             startupTimer.addCheckpoint("After frontend load")
         }
+    }
+
+    fun associateWithActivity(activity: AppCompatActivity) {
+        activity.lifecycle.addObserver(object: DefaultLifecycleObserver {
+            override fun onCreate(owner: LifecycleOwner) {
+                onCreateActivity(activity)
+            }
+
+            override fun onPause(owner: LifecycleOwner) {
+                this@SampleITMApplication.onPause()
+            }
+
+            override fun onResume(owner: LifecycleOwner) {
+                this@SampleITMApplication.onResume()
+            }
+        })
     }
 }
