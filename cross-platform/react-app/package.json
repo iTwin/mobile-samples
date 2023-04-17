@@ -99,7 +99,8 @@
       "loader-utils": "^2.0.0"
     },
     "svg-baker": {
-      "loader-utils": "^2.0.0"
+      "loader-utils": "^2.0.0",
+      "postcss": "7.0.39"
     },
     "svg-sprite-loader": {
       "loader-utils": "^2.0.0"
