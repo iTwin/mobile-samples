@@ -44,7 +44,6 @@
     "fibers": "^5.0.0",
     "npm-run-all": "^4.1.5",
     "null-loader": "^0.1.1",
-    "relative-deps": "^1.0.7",
     "sass": "^1.39.0",
     "typescript": "^4.4.4",
     "webpack": "^5.76.0",
@@ -92,10 +91,19 @@
     "react-dom": "^17.0.0",
     "react-redux": "^7.2.4",
     "redux": "^4.0.5",
-    "typedoc": "^0.22.11"
+    "typedoc": "^0.24.1"
   },
   "overrides": {
-    "eslint-plugin-react": "7.32.2"
+    "eslint-plugin-react": "7.32.2",
+    "fast-sass-loader": {
+      "loader-utils": "^2.0.0"
+    },
+    "svg-baker": {
+      "loader-utils": "^2.0.0"
+    },
+    "svg-sprite-loader": {
+      "loader-utils": "^2.0.0"
+    }
   },
   "eslintConfig": {
     "plugins": [

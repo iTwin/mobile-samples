@@ -36,7 +36,7 @@ export function roundedNumber(input: number, decimals?: number) {
     if (rounded.charAt(len - 1) === decimalSeparator) {
       --len;
     }
-    rounded = rounded.substr(0, len);
+    rounded = rounded.substring(0, len);
   } else {
     rounded = "";
   }
