@@ -98,9 +98,6 @@
     "fast-sass-loader": {
       "loader-utils": "^2.0.0"
     },
-    "relative-deps": {
-      "glob-parent": "5.1.2"
-    },
     "svg-baker": {
       "loader-utils": "^2.0.0"
     },
