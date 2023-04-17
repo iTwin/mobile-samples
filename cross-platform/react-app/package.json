@@ -92,10 +92,22 @@
     "react-dom": "^17.0.0",
     "react-redux": "^7.2.4",
     "redux": "^4.0.5",
-    "typedoc": "^0.22.11"
+    "typedoc": "^0.24.1"
   },
   "overrides": {
-    "eslint-plugin-react": "7.32.2"
+    "eslint-plugin-react": "7.32.2",
+    "fast-sass-loader": {
+      "loader-utils": "^2.0.0"
+    },
+    "relative-deps": {
+      "glob-parent": "5.1.2"
+    },
+    "svg-baker": {
+      "loader-utils": "^2.0.0"
+    },
+    "svg-sprite-loader": {
+      "loader-utils": "^2.0.0"
+    }
   },
   "eslintConfig": {
     "plugins": [
