@@ -465,6 +465,7 @@ def gen_report_row(db: sqlite3.Connection, where: Record) -> Record:
         total_time += entry['totalTime']
     return {
         'modelID': device['modelID'],
+        'osVersion': f"{device['systemName']} {device['systemVersion']}",
         'iTwinVersion': where['iTwinVersion'],
         'averageTime': total_time / len(entries),
         'samples': len(entries)
@@ -515,11 +516,12 @@ def report_command(db: StartupTimesDB, _) -> None:
         report_rows.append(gen_report_row(db, { 'iTwinVersion': row[0], 'deviceID': row[1] }))
     columns = [
         ('modelID', 'Device'),
-        'iTwinVersion',
+        ('osVersion', 'OS Ver'),
+        ('iTwinVersion', 'iTwin Ver'),
         ('averageTime', 'Average Time'),
         ('samples', 'Samples')
     ]
-    table = TextTable(report_rows, columns, [ None, None, TextTable.elapsed_string , None ])
+    table = TextTable(report_rows, columns, [ None, None, None, TextTable.elapsed_string , None ])
     print(f'Results:\n{table}')
 
 def main() -> None:
