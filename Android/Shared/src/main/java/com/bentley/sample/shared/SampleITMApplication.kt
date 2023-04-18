@@ -74,10 +74,8 @@ open class SampleITMApplication(context: Context, attachWebViewLogger: Boolean, 
     /**
      * Registers our native UI components.
      */
-    protected open fun onRegisterNativeUI() {
-        nativeUI?.apply {
-            components.add(DocumentPicker(this))
-        }
+    protected open fun onRegisterNativeUI(nativeUI: ITMNativeUI) {
+        nativeUI.components.add(DocumentPicker(nativeUI))
     }
 
     /**
@@ -85,7 +83,7 @@ open class SampleITMApplication(context: Context, attachWebViewLogger: Boolean, 
      */
     override fun createNativeUI(context: Context): ITMNativeUI? {
         return super.createNativeUI(context)?.also {
-            onRegisterNativeUI()
+            onRegisterNativeUI(it)
         }
     }
 

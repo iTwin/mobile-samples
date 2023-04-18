@@ -10,6 +10,7 @@ import android.webkit.WebResourceResponse
 import android.webkit.WebView
 import androidx.activity.ComponentActivity
 import com.bentley.sample.shared.SampleITMApplication
+import com.github.itwin.mobilesdk.ITMNativeUI
 
 /**
  * [SampleITMApplication] sub-class that sets up all of the camera-specific functionality.
@@ -44,10 +45,8 @@ open class CameraITMApplication(context: Context) : SampleITMApplication(context
     /**
      * Registers our native UI components including [ImagePicker].
      */
-    override fun onRegisterNativeUI() {
-        super.onRegisterNativeUI()
-        nativeUI?.apply {
-            components.add(ImagePicker(this))
-        }
+    override fun onRegisterNativeUI(nativeUI: ITMNativeUI) {
+        super.onRegisterNativeUI(nativeUI)
+        nativeUI.components.add(ImagePicker(nativeUI))
     }
 }
