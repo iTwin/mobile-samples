@@ -27,9 +27,9 @@ dependencyResolutionManagement {
         }
     }
 }
-rootProject.name = 'com.bentley.itwinrnstarter'
+rootProject.name = 'iTwin RN Starter'
 apply from: file("../node_modules/@react-native-community/cli-platform-android/native_modules.gradle"); applyNativeModulesSettingsGradle(settings)
 include ':app'
 includeBuild('../node_modules/react-native-gradle-plugin')
-include ':itmsamplesshared'
-project(':itmsamplesshared').projectDir = new File('../../../Android/Shared')
+include ':ITMSamplesShared'
+project(':ITMSamplesShared').projectDir = new File('../../../Android/Shared')

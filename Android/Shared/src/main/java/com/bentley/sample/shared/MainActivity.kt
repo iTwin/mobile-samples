@@ -4,7 +4,6 @@
 *--------------------------------------------------------------------------------------------*/
 package com.bentley.sample.shared
 
-import android.content.res.Configuration
 import android.graphics.Color
 import android.os.Bundle
 import android.view.ViewGroup
@@ -16,7 +15,6 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat.Type.systemBars
 import androidx.core.view.WindowInsetsControllerCompat.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
-import com.github.itwin.mobilesdk.ITMApplication
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch
 import kotlin.system.exitProcess
@@ -24,7 +22,7 @@ import kotlin.system.exitProcess
 /**
  * The main activity for the application.
  */
-class MainActivity : AppCompatActivity() {
+open class MainActivity : AppCompatActivity() {
     private val sampleITMApplication: SampleITMApplication
         get() {
             @Suppress("UNCHECKED_CAST")
@@ -35,18 +33,16 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         val itmApp = sampleITMApplication
-        itmApp.onCreateActivity(this)
+        itmApp.initializeFrontend(this, true)
         supportRequestWindowFeature(Window.FEATURE_NO_TITLE)
         super.onCreate(savedInstanceState)
         setupWebView()
         setupFullScreen()
         hideSystemBars()
         setContentView(R.layout.activity_main)
-        itmApp.initializeFrontend(this, true)
         MainScope().launch {
             itmApp.waitForFrontendInitialize()
             itmApp.attachWebView(modelWebViewContainer)
-            itmApp.onRegisterNativeUI()
         }
     }
 
@@ -77,7 +73,6 @@ class MainActivity : AppCompatActivity() {
     private fun setupFullScreen() {
         // Truly full screen (including camera cutouts)
         window.attributes.layoutInDisplayCutoutMode = WindowManager.LayoutParams.LAYOUT_IN_DISPLAY_CUTOUT_MODE_SHORT_EDGES
-
         WindowCompat.setDecorFitsSystemWindows(window, false)
         window.statusBarColor = Color.TRANSPARENT
     }
@@ -90,13 +85,7 @@ class MainActivity : AppCompatActivity() {
         windowInsetsController.hide(systemBars())
     }
 
-    override fun onPause() {
-        sampleITMApplication.onPause()
-        super.onPause()
-    }
-
     override fun onResume() {
-        sampleITMApplication.onResume()
         setupFullScreen()
         super.onResume()
     }

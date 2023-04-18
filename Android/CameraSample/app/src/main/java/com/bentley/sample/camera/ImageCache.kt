@@ -8,8 +8,7 @@ import android.content.Intent
 import android.net.Uri
 import android.webkit.WebResourceResponse
 import androidx.core.content.FileProvider
-import com.bentley.sample.shared.FileHelper
-import com.bentley.sample.shared.MainActivity
+import com.bentley.sample.shared.getExternalFiles
 import com.eclipsesource.json.Json
 import com.eclipsesource.json.JsonValue
 import com.github.itwin.mobilesdk.ITMLogger
@@ -28,7 +27,7 @@ object ImageCache {
      * The base directory for cached images.
      */
     private val baseDir: String by lazy {
-        CameraITMApplication.appContext.getExternalFilesDir("images").toString()
+        CameraApplication.instance.applicationContext.getExternalFilesDir("images").toString()
     }
 
     /**
@@ -86,7 +85,7 @@ object ImageCache {
      * @return A Json array of cached images uri's, may be empty.
      */
     fun handleGetImages(params: JsonValue?): JsonValue? {
-        val files = FileHelper.getExternalFiles(CameraITMApplication.appContext, getDestinationDir(params))
+        val files = CameraApplication.instance.applicationContext.getExternalFiles(getDestinationDir(params))
         return Json.array(*files.map { file ->
             getCacheUri(file).toString()
         }.toTypedArray())
@@ -118,7 +117,7 @@ object ImageCache {
             getFilePath(Uri.parse(fileName)).takeIf { it.exists() }?.delete()
         } catch (e: Exception) {
             e.message?.let {
-                CameraITMApplication.logger.log(ITMLogger.Severity.Error, it)
+                CameraApplication.instance.itmApplication.logger.log(ITMLogger.Severity.Error, it)
             }
         }
     }
@@ -143,11 +142,11 @@ object ImageCache {
     fun handleShareImages(params: JsonValue?): JsonValue? {
         val urls = getObjectValue(params, "urls")?.asArray()?.map {
             val file = getFilePath(Uri.parse(it.asString()))
-            FileProvider.getUriForFile(CameraITMApplication.appContext, "${BuildConfig.APPLICATION_ID}.provider", file)
+            FileProvider.getUriForFile(CameraApplication.instance.applicationContext, "${BuildConfig.APPLICATION_ID}.provider", file)
         }
 
         if (urls != null && urls.isNotEmpty()) {
-            MainActivity.current?.let {
+            CameraMainActivity.current?.let {
                 val shareIntent = Intent().apply {
                     type = "image/*"
                     action = Intent.ACTION_SEND_MULTIPLE

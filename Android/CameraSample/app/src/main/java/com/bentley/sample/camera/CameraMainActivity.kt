@@ -4,20 +4,22 @@
 *--------------------------------------------------------------------------------------------*/
 package com.bentley.sample.camera
 
-import com.bentley.sample.shared.SampleApplicationBase
+import android.os.Bundle
+import com.bentley.sample.shared.MainActivity
 
-class CameraApplication: SampleApplicationBase<CameraITMApplication>({
-    object: CameraITMApplication(it) {
-        init {
-            finishInit()
-        }
-    }
-}) {
+class CameraMainActivity: MainActivity() {
     companion object {
-        lateinit var instance: CameraApplication
+        var current: CameraMainActivity? = null
             private set
     }
-    init {
-        instance = this
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        current = this
+        super.onCreate(savedInstanceState)
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        current = null
     }
 }
