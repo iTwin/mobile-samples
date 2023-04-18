@@ -8,7 +8,6 @@ import android.content.Intent
 import android.net.Uri
 import android.webkit.WebResourceResponse
 import androidx.core.content.FileProvider
-import com.bentley.sample.shared.MainActivity
 import com.bentley.sample.shared.getExternalFiles
 import com.eclipsesource.json.Json
 import com.eclipsesource.json.JsonValue
@@ -147,7 +146,7 @@ object ImageCache {
         }
 
         if (urls != null && urls.isNotEmpty()) {
-            MainActivity.current?.let {
+            CameraMainActivity.current?.let {
                 val shareIntent = Intent().apply {
                     type = "image/*"
                     action = Intent.ACTION_SEND_MULTIPLE

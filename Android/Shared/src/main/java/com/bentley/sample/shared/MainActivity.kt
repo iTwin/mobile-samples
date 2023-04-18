@@ -22,12 +22,7 @@ import kotlin.system.exitProcess
 /**
  * The main activity for the application.
  */
-class MainActivity : AppCompatActivity() {
-    companion object {
-        var current: MainActivity? = null
-            private set
-    }
-
+open class MainActivity : AppCompatActivity() {
     private val sampleITMApplication: SampleITMApplication
         get() {
             @Suppress("UNCHECKED_CAST")
@@ -48,12 +43,10 @@ class MainActivity : AppCompatActivity() {
         MainScope().launch {
             itmApp.waitForFrontendInitialize()
             itmApp.attachWebView(modelWebViewContainer)
-            current = this@MainActivity
         }
     }
 
     override fun onDestroy() {
-        current = null
         modelWebViewContainer.removeAllViews()
         super.onDestroy()
     }
