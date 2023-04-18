@@ -5,17 +5,13 @@
 package com.bentley.sample.shared
 
 import android.content.Context
-import android.net.Uri
 import android.webkit.WebView
-import androidx.appcompat.app.AppCompatActivity
+import androidx.activity.ComponentActivity
 import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.LifecycleOwner
 import com.eclipsesource.json.Json
 import com.eclipsesource.json.JsonValue
-import com.github.itwin.mobilesdk.ITMApplication
-import com.github.itwin.mobilesdk.ITMLogger
-import com.github.itwin.mobilesdk.ITMMessenger
-import com.github.itwin.mobilesdk.ITMOIDCAuthorizationClient
+import com.github.itwin.mobilesdk.*
 import com.github.itwin.mobilesdk.jsonvalue.getOptionalString
 import com.github.itwin.mobilesdk.jsonvalue.isYes
 import kotlinx.coroutines.MainScope
@@ -71,31 +67,26 @@ open class SampleITMApplication(context: Context, attachWebViewLogger: Boolean, 
     /**
      * Registers activity result handlers for our native UI components.
      */
-    open fun onCreateActivity(activity: AppCompatActivity) {
+    protected open fun onCreateActivity(activity: ComponentActivity) {
         DocumentPicker.registerForActivityResult(activity)
     }
 
     /**
      * Registers our native UI components.
      */
-    open fun onRegisterNativeUI() {
-        nativeUI?.let {
-            it.components.add(DocumentPicker(it))
+    protected open fun onRegisterNativeUI() {
+        nativeUI?.apply {
+            components.add(DocumentPicker(this))
         }
     }
 
     /**
-     * Notifies the IModelJsHost that the app has paused.
+     * Override createNativeUI so we can also register our own native components.
      */
-    fun onPause() {
-        this.host?.onPause()
-    }
-
-    /**
-     * Notifies the IModelJsHost that the app has resumed.
-     */
-    fun onResume() {
-        this.host?.onResume()
+    override fun createNativeUI(context: Context): ITMNativeUI? {
+        return super.createNativeUI(context)?.also {
+            onRegisterNativeUI()
+        }
     }
 
     override fun initializeBackend(allowInspectBackend: Boolean) {
@@ -116,18 +107,11 @@ open class SampleITMApplication(context: Context, attachWebViewLogger: Boolean, 
         }
     }
 
-    fun associateWithActivity(activity: AppCompatActivity) {
+    override fun associateWithActivity(activity: ComponentActivity) {
+        super.associateWithActivity(activity)
         activity.lifecycle.addObserver(object: DefaultLifecycleObserver {
             override fun onCreate(owner: LifecycleOwner) {
                 onCreateActivity(activity)
-            }
-
-            override fun onPause(owner: LifecycleOwner) {
-                this@SampleITMApplication.onPause()
-            }
-
-            override fun onResume(owner: LifecycleOwner) {
-                this@SampleITMApplication.onResume()
             }
         })
     }

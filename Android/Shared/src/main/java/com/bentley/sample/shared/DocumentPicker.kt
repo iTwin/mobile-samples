@@ -9,8 +9,8 @@ import android.content.Context
 import android.content.ContextWrapper
 import android.content.Intent
 import android.net.Uri
+import androidx.activity.ComponentActivity
 import androidx.activity.result.ActivityResultLauncher
-import androidx.appcompat.app.AppCompatActivity
 import com.eclipsesource.json.Json
 import com.eclipsesource.json.JsonValue
 import com.github.itwin.mobilesdk.ITMNativeUI
@@ -79,7 +79,7 @@ class DocumentPicker(nativeUI: ITMNativeUI): ITMNativeUIComponent(nativeUI) {
         /**
          * Registers a request to start an activity for result using the [PickDocumentContract].
          */
-        fun registerForActivityResult(activity: AppCompatActivity) {
+        fun registerForActivityResult(activity: ComponentActivity) {
             startForResult = activity.registerForActivityResult(PickDocumentContract()) { uri ->
                 if (uri != null && !PickDocumentContract.isAcceptableBimUri(uri)) {
                     MainScope().launch {

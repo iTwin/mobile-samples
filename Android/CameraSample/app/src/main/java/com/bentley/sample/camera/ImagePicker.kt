@@ -7,10 +7,10 @@ package com.bentley.sample.camera
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
+import androidx.activity.ComponentActivity
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContract
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.FileProvider
 import com.bentley.sample.shared.PickUriContract
 import com.bentley.sample.shared.PickUriContractType
@@ -173,7 +173,7 @@ class ImagePicker(nativeUI: ITMNativeUI): ITMNativeUIComponent(nativeUI) {
         /**
          * Registers a request to start an activity for result using the [PickOrCaptureIModelImageContract].
          */
-        fun registerForActivityResult(activity: AppCompatActivity) {
+        fun registerForActivityResult(activity: ComponentActivity) {
             startForResult = activity.registerForActivityResult(PickOrCaptureIModelImageContract()) { uri ->
                 activeContinuation?.resumeWith(Result.success(Json.value(uri?.toString() ?: "")))
                 activeContinuation = null

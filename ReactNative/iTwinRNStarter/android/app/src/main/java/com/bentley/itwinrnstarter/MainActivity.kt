@@ -4,9 +4,6 @@
 *--------------------------------------------------------------------------------------------*/
 package com.bentley.itwinrnstarter
 
-import android.annotation.SuppressLint
-import android.os.Bundle
-import android.os.PersistableBundle
 import android.view.View
 import android.view.ViewGroup
 import android.view.ViewGroup.OnHierarchyChangeListener
@@ -35,10 +32,6 @@ class MainActivity: ReactActivity() {
         }
     }
 
-    override fun onCreate(savedInstanceState: Bundle?, persistentState: PersistableBundle?) {
-        super.onCreate(savedInstanceState, persistentState)
-    }
-
     override fun setContentView(view: View?) {
         itmApplication.associateWithActivity(this)
         super.setContentView(view)
@@ -50,7 +43,6 @@ class MainActivity: ReactActivity() {
                     itmApplication.initializeFrontend(this@MainActivity, false, child)
                     MainScope().launch {
                         itmApplication.waitForFrontendInitialize()
-                        itmApplication.onRegisterNativeUI()
                     }
                 }
             }

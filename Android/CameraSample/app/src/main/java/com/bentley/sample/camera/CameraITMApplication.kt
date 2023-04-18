@@ -4,20 +4,17 @@
 *--------------------------------------------------------------------------------------------*/
 package com.bentley.sample.camera
 
+import android.content.Context
 import android.webkit.WebResourceRequest
 import android.webkit.WebResourceResponse
 import android.webkit.WebView
-import com.bentley.sample.shared.MainActivity
+import androidx.activity.ComponentActivity
 import com.bentley.sample.shared.SampleITMApplication
 
 /**
  * [SampleITMApplication] sub-class that sets up all of the camera-specific functionality.
  */
-object CameraITMApplication : SampleITMApplication(CameraApplication.getContext(), BuildConfig.DEBUG, BuildConfig.DEBUG) {
-    init {
-        finishInit()
-    }
-
+open class CameraITMApplication(context: Context) : SampleITMApplication(context, BuildConfig.DEBUG, BuildConfig.DEBUG) {
     /**
      * Registers handlers for the camera-specific messages.
      */
@@ -39,7 +36,7 @@ object CameraITMApplication : SampleITMApplication(CameraApplication.getContext(
     /**
      * Registers activity result handlers for our native UI components including [ImagePicker].
      */
-    override fun onCreateActivity(activity: MainActivity) {
+    override fun onCreateActivity(activity: ComponentActivity) {
         super.onCreateActivity(activity)
         ImagePicker.registerForActivityResult(activity)
     }
@@ -49,8 +46,8 @@ object CameraITMApplication : SampleITMApplication(CameraApplication.getContext(
      */
     override fun onRegisterNativeUI() {
         super.onRegisterNativeUI()
-        nativeUI?.let {
-            it.components.add(ImagePicker(it))
+        nativeUI?.apply {
+            components.add(ImagePicker(this))
         }
     }
 }
