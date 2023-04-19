@@ -15,7 +15,15 @@ import com.github.itwin.mobilesdk.ITMNativeUI
 /**
  * [SampleITMApplication] sub-class that sets up all of the camera-specific functionality.
  */
-open class CameraITMApplication(context: Context) : SampleITMApplication(context, BuildConfig.DEBUG, BuildConfig.DEBUG) {
+class CameraITMApplication(context: Context) : SampleITMApplication(context, BuildConfig.DEBUG, BuildConfig.DEBUG) {
+    companion object {
+        fun newInstance(context: Context) = CameraITMApplication(context)
+    }
+
+    init {
+        finishInit()
+    }
+
     /**
      * Registers handlers for the camera-specific messages.
      */
