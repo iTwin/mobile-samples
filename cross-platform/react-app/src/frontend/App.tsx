@@ -3,10 +3,9 @@
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
 import React from "react";
-import { combineReducers, legacy_createStore as createStore, Store } from "redux";
 import { MobileApp, MobileAppOpts } from "@itwin/core-mobile/lib/cjs/MobileFrontend";
 import { IModelApp, IModelConnection, ITWINJS_CORE_VERSION, RenderSystem, SnapshotConnection, ToolAssistanceInstructions } from "@itwin/core-frontend";
-import { AppNotificationManager, FrameworkReducer, FrameworkState, UiFramework } from "@itwin/appui-react";
+import { AppNotificationManager, FrameworkState, UiFramework } from "@itwin/appui-react";
 import { Presentation } from "@itwin/presentation-frontend";
 import { Messenger, MobileCore } from "@itwin/mobile-sdk-core";
 import { MobileUi } from "@itwin/mobile-ui-react";
@@ -64,12 +63,6 @@ interface ActiveInfo {
 export interface RootState {
   frameworkState?: FrameworkState;
 }
-
-const rootReducer = combineReducers({
-  frameworkState: FrameworkReducer,
-});
-const anyWindow: any = window;
-const appReduxStore: Store<RootState> = createStore(rootReducer, anyWindow.__REDUX_DEVTOOLS_EXTENSION__ && anyWindow.__REDUX_DEVTOOLS_EXTENSION__());
 
 class AppToolAssistanceNotificationManager extends AppNotificationManager {
   public setToolAssistance(instructions: ToolAssistanceInstructions | undefined): void {
@@ -132,7 +125,7 @@ function useAppState(onInitialize?: () => Promise<void>) {
           },
         };
         await MobileApp.startup(opts);
-        await UiFramework.initialize(appReduxStore);
+        await UiFramework.initialize(undefined);
         await Presentation.initialize();
         await MobileUi.initialize(IModelApp.localization);
         await IModelApp.localization.registerNamespace("ReactApp");
