@@ -130,16 +130,17 @@ function useAppState(onInitialize?: () => Promise<void>) {
         MeasureToolsFeatureTracking.stop();
         await onInitialize?.();
 
-        // The following message lets the native side know that it is safe to send app-specific
-        // messages from the native code to the TypeScript code.
-        Messenger.sendMessage("didFinishLaunching", { iTwinVersion: ITWINJS_CORE_VERSION });
-        // Switch from the Loading screen to the Home screen.
-        pushActiveInfo(ActiveScreen.Home);
-        console.log("...Done Initializing.");
         Messenger.onQuery("queryExample").setHandler(async (params) => params.value);
         Messenger.onQuery("oneWayExample").setHandler(async (params) => {
           console.log(`oneWayExample received value: ${params.value}`);
         });
+        // The following message lets the native side know that it is safe to send app-specific
+        // messages from the native code to the TypeScript code.
+        Messenger.sendMessage("didFinishLaunching", { iTwinVersion: ITWINJS_CORE_VERSION });
+
+        // Switch from the Loading screen to the Home screen.
+        pushActiveInfo(ActiveScreen.Home);
+        console.log("...Done Initializing.");
       } catch (ex) {
         console.log(`Exception during initialization: ${ex}`);
       }
