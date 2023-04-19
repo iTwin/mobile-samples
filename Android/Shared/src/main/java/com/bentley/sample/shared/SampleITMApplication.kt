@@ -22,6 +22,21 @@ import kotlinx.coroutines.launch
  * Applications should sub-class using a singleton object and call [finishInit] in the init block.
  */
 open class SampleITMApplication(context: Context, attachWebViewLogger: Boolean, forceExtractBackendAssets: Boolean) : ITMApplication(context, attachWebViewLogger, forceExtractBackendAssets) {
+    companion object {
+        /**
+         * Convenience method for applications that don't need to sub-class [SampleITMApplication].
+         *
+         * @param context The application context.
+         * @return A new [SampleITMApplication] instance that calls [finishInit] in its init block.
+         */
+        @Suppress("unused")
+        fun newInstance(context: Context) = object: SampleITMApplication(context, BuildConfig.DEBUG, BuildConfig.DEBUG) {
+            init {
+                finishInit()
+            }
+        }
+    }
+
     private val startupTimer = ActivityTimer()
 
     override fun finishInit() {

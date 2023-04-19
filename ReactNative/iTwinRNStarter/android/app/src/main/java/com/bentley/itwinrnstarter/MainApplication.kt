@@ -4,10 +4,7 @@
 *--------------------------------------------------------------------------------------------*/
 package com.bentley.itwinrnstarter
 
-import android.app.Application
-import android.content.Context
-import com.bentley.sample.shared.SampleApplicationBase
-import com.bentley.sample.shared.SampleITMApplication
+import com.bentley.sample.shared.SampleApplication
 import com.facebook.react.PackageList
 import com.facebook.react.ReactApplication
 import com.facebook.react.ReactNativeHost
@@ -16,13 +13,7 @@ import com.facebook.react.defaults.DefaultNewArchitectureEntryPoint.load
 import com.facebook.react.defaults.DefaultReactNativeHost
 import com.facebook.soloader.SoLoader
 
-class MainApplication : ReactApplication, SampleApplicationBase<SampleITMApplication>({
-    object: SampleITMApplication(it, BuildConfig.DEBUG, BuildConfig.DEBUG) {
-        init {
-            finishInit()
-        }
-    }
-}) {
+class MainApplication : ReactApplication, SampleApplication() {
     private val mReactNativeHost: ReactNativeHost = object : DefaultReactNativeHost(this) {
         override fun getUseDeveloperSupport() = BuildConfig.DEBUG
 

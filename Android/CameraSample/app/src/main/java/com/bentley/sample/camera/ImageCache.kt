@@ -5,6 +5,9 @@
 package com.bentley.sample.camera
 
 import android.content.Intent
+import android.content.pm.PackageManager
+import android.content.pm.PackageManager.ResolveInfoFlags
+import android.content.pm.ResolveInfo
 import android.net.Uri
 import android.webkit.WebResourceResponse
 import androidx.core.content.FileProvider
@@ -148,7 +151,12 @@ object ImageCache {
         if (urls != null && urls.isNotEmpty()) {
             CameraMainActivity.current?.let {
                 val shareIntent = Intent().apply {
-                    type = "image/*"
+                    if (urls.size == 1) {
+                        data = urls[0] //shows a preview of the image if we're sharing only one
+                        flags = Intent.FLAG_GRANT_READ_URI_PERMISSION //weird but required so the share sheet preview can read the content URI
+                    } else {
+                        type = "image/*"
+                    }
                     action = Intent.ACTION_SEND_MULTIPLE
                     putParcelableArrayListExtra(Intent.EXTRA_STREAM, ArrayList(urls))
                 }
