@@ -5,7 +5,7 @@
 import React from "react";
 import { MobileApp, MobileAppOpts } from "@itwin/core-mobile/lib/cjs/MobileFrontend";
 import { IModelApp, IModelConnection, ITWINJS_CORE_VERSION, RenderSystem, SnapshotConnection, ToolAssistanceInstructions } from "@itwin/core-frontend";
-import { AppNotificationManager, FrameworkState, UiFramework } from "@itwin/appui-react";
+import { AppNotificationManager, UiFramework } from "@itwin/appui-react";
 import { Presentation } from "@itwin/presentation-frontend";
 import { Messenger, MobileCore } from "@itwin/mobile-sdk-core";
 import { MobileUi } from "@itwin/mobile-ui-react";
@@ -58,10 +58,6 @@ interface ActiveInfo {
   activeScreen: ActiveScreen;
   /// The optional cleanup function to call when switching to another screen.
   cleanup?: () => void;
-}
-
-export interface RootState {
-  frameworkState?: FrameworkState;
 }
 
 class AppToolAssistanceNotificationManager extends AppNotificationManager {
