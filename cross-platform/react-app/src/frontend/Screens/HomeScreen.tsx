@@ -16,6 +16,11 @@ import folderSvg from "../Images/folder.svg";
 // place that expects an IconSpec.
 const folderIconSpec = IconSpecUtilities.createWebComponentIconSpec(folderSvg);
 
+/**
+ * The App's active screen
+ *
+ * Note: Putting this in App.tsx leads to circular imports.
+ */
 export enum ActiveScreen {
   Loading,
   Home,
@@ -24,14 +29,18 @@ export enum ActiveScreen {
   Model,
 }
 
-/// Properties for [[HomeScreen]] React component.
+/**
+ *  Properties for {@link HomeScreen} React component.
+ */
 export interface HomeScreenProps {
-  /// Callback to select another screen.
+  /** Callback to select another screen. */
   onSelect: (screen: ActiveScreen) => void;
   showBackButton: boolean;
 }
 
-/// React component for Home screen (shown after loading has completed).
+/**
+ *  React component for Home screen (shown after loading has completed).
+ */
 export function HomeScreen(props: HomeScreenProps) {
   const { onSelect, showBackButton } = props;
   const homeLabel = React.useMemo(() => i18n("HomeScreen", "Home"), []);

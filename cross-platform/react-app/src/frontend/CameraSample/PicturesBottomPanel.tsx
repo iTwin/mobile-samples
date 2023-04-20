@@ -17,9 +17,9 @@ import { CameraSampleAppGetLocalizedString, ImageCache, ImageMarkerApi } from ".
 
 import "./PicturesBottomPanel.scss";
 
-/// Properties for the [[PicturesBottomPanel]] React component.
+/** Properties for the {@link PicturesBottomPanel} React component. */
 export interface PicturesBottomPanelProps extends ResizableBottomPanelProps {
-  /// The loaded iModel.
+  /** The loaded iModel. */
   iModel: IModelConnection;
 }
 
@@ -27,7 +27,8 @@ function i18n(key: string) {
   return CameraSampleAppGetLocalizedString("PicturesBottomPanel", key);
 }
 
-/** [[ResizableBottomPanel]] React component that allows the user to take pictures with the device's camera.
+/**
+ * `ResizableBottomPanel` React component that allows the user to take pictures with the device's camera.
  *
  * Shows the pictures that have been taken for the selected iModel. Allows the user to take more, as well as
  * delete individual pictures or all pictures.

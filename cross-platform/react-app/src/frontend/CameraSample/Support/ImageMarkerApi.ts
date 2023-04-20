@@ -140,11 +140,11 @@ class BadgedImageMarker extends ImageMarker {
 }
 
 /**
- * A MarkerSet sub-class that uses a gready clustering algorithm. Sub-classes should use the [[getAverageLocation]] function
+ * A MarkerSet sub-class that uses a gready clustering algorithm. Sub-classes should use the {@link getAverageLocation} function
  * to set the location of the marker they return in getClusterMarker.
  */
 abstract class GreedyClusteringMarkerSet<T extends Marker> extends MarkerSet<T> {
-  /// The radius (in pixels) for clustering markers, default 150.
+  /** The radius (in pixels) for clustering markers, default 150. */
   protected clusterRadius = 150;
 
   /**
@@ -228,7 +228,7 @@ abstract class GreedyClusteringMarkerSet<T extends Marker> extends MarkerSet<T> 
     });
   }
 
-  /** This method should be called from [[Decorator.decorate]]. It will add this MarkerSet to the supplied DecorateContext.
+  /** This method should be called from {@link Decorator.decorate}. It will add this MarkerSet to the supplied DecorateContext.
    * This method implements the logic that turns overlapping Markers into a Cluster.
    * @param context The DecorateContext for the Markers
    */

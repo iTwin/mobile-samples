@@ -7,7 +7,7 @@ import React from "react";
 import "./SearchControl.scss";
 
 /**
- * Properties for the [[SearchControl]] React component.
+ * Properties for the {@link SearchControl} React component.
  */
 export interface SearchControlProps {
   placeholder?: string;

@@ -10,15 +10,15 @@ import { BriefcaseConnection, IModelConnection, NativeApp, SnapshotConnection } 
 import { LocalBriefcaseProps } from "@itwin/core-common";
 import "./LocalModelsScreen.scss";
 
-/// Properties for the [[LocalModelsScreen]] React component.
+/** Properties for the {@link LocalModelsScreen} React component. */
 export interface LocalModelsScreenProps {
-  /// Callback called when the user selects an iModel.
+  /** Callback called when the user selects an iModel. */
   onOpen: (filename: string, iModelPromise: Promise<IModelConnection>) => Promise<void>;
-  /// Callback called to go back to the previous screen (Home).
+  /** Callback called to go back to the previous screen (Home). */
   onBack: () => void;
 }
 
-/// React component that displays a list of iModels stored on the device.
+/** React component that displays a list of iModels stored on the device. */
 export function LocalModelsScreen(props: LocalModelsScreenProps) {
   const { onOpen, onBack } = props;
   const [snapshots, setSnapshots] = React.useState<string[]>([]);
@@ -65,7 +65,7 @@ export function LocalModelsScreen(props: LocalModelsScreenProps) {
     />,
   ];
 
-  // Convert the array of paths into an array of [[Button]] components, where each button loads the
+  // Convert the array of paths into an array of Button components, where each button loads the
   // corresponding snapshot iModel.
   const snapshotButtons = snapshots.map((document: string, index: number) => {
     const lastSlash = document.lastIndexOf("/");

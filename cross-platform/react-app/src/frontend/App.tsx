@@ -16,7 +16,7 @@ import "./App.scss";
 
 declare global {
   interface Window {
-    /// Custom field on the window object that stores the settings that get passed via URL hash parameters.
+    /** Custom field on the window object that stores the settings that get passed via URL hash parameters. */
     itmSampleParams: {
       lowResolution: boolean;
       haveBackButton: boolean;
@@ -34,17 +34,17 @@ window.itmSampleParams = {
   apiPrefix: "",
 };
 
-/// Load the given boolean UrlSearchParam into the custom field on the window object.
+/** Load the given boolean UrlSearchParam into the custom field on the window object. */
 function loadBooleanUrlSearchParam(name: "lowResolution" | "haveBackButton" | "debugI18n") {
   window.itmSampleParams[name] = MobileCore.getUrlSearchParam(name) === "YES";
 }
 
-/// Load the given string UrlSearchParam into the custom field on the window object.
+/** Load the given string UrlSearchParam into the custom field on the window object. */
 function loadStringUrlSearchParam(name: "apiPrefix") {
   window.itmSampleParams[name] = MobileCore.getUrlSearchParam(name) ?? "";
 }
 
-/// Load the values stored in the URL hash params into the custom field on the window object.
+/** Load the values stored in the URL hash params into the custom field on the window object. */
 function loadUrlSearchParams() {
   loadBooleanUrlSearchParam("lowResolution");
   loadBooleanUrlSearchParam("haveBackButton");
@@ -52,11 +52,11 @@ function loadUrlSearchParams() {
   loadStringUrlSearchParam("apiPrefix");
 }
 
-/// Interface to allow switching from one screen to another.
+/** Interface to allow switching from one screen to another. */
 interface ActiveInfo {
-  /// The active screen represented by this entry in the activeStack.
+  /** The active screen represented by this entry in the activeStack. */
   activeScreen: ActiveScreen;
-  /// The optional cleanup function to call when switching to another screen.
+  /** The optional cleanup function to call when switching to another screen. */
   cleanup?: () => void;
 }
 
@@ -185,7 +185,7 @@ function useAppState(onInitialize?: () => Promise<void>) {
     lastScreen.cleanup?.();
     setActiveStack((old) => {
       // Remove the last element in activeStack (top of stack).
-      return old.slice(0, old.length - 1);
+      return old.slice(0, -1);
     });
     // Note that the activeScreen stored at the top of the stack is the previous active screen.
     setActiveScreen(lastScreen.activeScreen);
