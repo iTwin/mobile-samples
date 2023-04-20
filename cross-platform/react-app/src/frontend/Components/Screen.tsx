@@ -10,10 +10,10 @@ import { useTheme } from "@itwin/itwinui-react";
 import { useActiveColorSchemeIsDark } from "@itwin/mobile-ui-react";
 import "./Screen.scss";
 
-/// Properties for the [[Screen]] React component.
+/** Properties for the {@link Screen} React component. */
 export interface ScreenProps {
   className?: string;
-  /// The optional children of this full-screen component.
+  /** The optional children of this full-screen component. */
   children?: React.ReactNode;
 }
 
@@ -62,7 +62,7 @@ export function fileSizeString(input?: number, decimals?: number) {
   }
 }
 
-/// React component for a simple full-screen UI with arbitrary children.
+/** React component for a simple full-screen UI with arbitrary children. */
 export function Screen(props: ScreenProps = {}) {
   const isDark = useActiveColorSchemeIsDark();
   const { className, children } = props;

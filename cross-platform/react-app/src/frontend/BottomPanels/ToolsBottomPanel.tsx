@@ -70,10 +70,10 @@ export const ActiveButtonRow = React.forwardRef((props: ActiveButtonRowProps, re
 ActiveButtonRow.displayName = "ActiveButtonRow";
 
 export interface ToolsBottomPanelProps extends BottomPanelProps {
-  /// The loaded iModel.
+  /** The loaded iModel. */
   iModel: IModelConnection;
 
-  /// Optional callback that is called after a tool is selected.
+  /** Optional callback that is called after a tool is selected. */
   onToolClick?: () => void;
   tools?: ToolEntry[];
 }

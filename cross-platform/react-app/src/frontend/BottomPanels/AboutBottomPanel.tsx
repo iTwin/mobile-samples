@@ -8,7 +8,7 @@ import { HeaderTitle, i18n } from "../Exports";
 
 import "./AboutBottomPanel.scss";
 
-// [[BottomPanel]] React Component with fixed content, here simply as an example.
+/** `BottomPanel` React Component with fixed content, here simply as an example. */
 export function AboutBottomPanel(props: BottomPanelProps) {
   const aboutLabel = React.useMemo(() => i18n("AboutBottomPanel", "About"), []);
   const headerLabel = React.useMemo(() => i18n("AboutBottomPanel", "Header"), []);

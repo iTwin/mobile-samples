@@ -31,15 +31,15 @@ function saveActiveProject(project: Project) {
   localStorage.setItem(HubScreen.ACTIVE_PROJECT_INFO, JSON.stringify(project));
 }
 
-/// Properties for the [[HubScreen]] React component.
+/** Properties for the {@link HubScreen} React component. */
 export interface HubScreenProps {
-  /// Callback called when an iModel is opened.
+  /** Callback called when an iModel is opened. */
   onOpen: (filename: string, iModelPromise: Promise<IModelConnection>) => Promise<void>;
-  /// Callback called when the back button is pressed to go to the previous screen.
+  /** Callback called when the back button is pressed to go to the previous screen. */
   onBack: () => void;
 }
 
-/// React component to allow downloading and opening models from the iModel Hub.
+/** React component to allow downloading and opening models from the iModel Hub. */
 export function HubScreen(props: HubScreenProps) {
   const { onOpen, onBack } = props;
   const [initialized, setInitialized] = React.useState(false);

@@ -50,27 +50,27 @@ import "./ModelScreen.scss";
 const UnifiedSelectionViewportComponent = viewWithUnifiedSelection(ViewportComponent);
 
 export interface ModelScreenExtensionProps {
-  /// Optional bottom panel override.
+  /** Optional bottom panel override. */
   toolsBottomPanel?: React.FunctionComponent<ToolsBottomPanelProps>;
-  /// Additional components
+  /** Additional components */
   additionalComponents?: React.ReactNode;
-  /// Additional tabs
+  /** Additional tabs */
   additionalTabs?: TabOrPanelDef[];
 }
 
-/// Properties for the [[ModelScreen]] React component.
+/** Properties for the {@link ModelScreen} React component. */
 export interface ModelScreenProps extends ModelScreenExtensionProps {
-  /// The full path to the currently loaded iModel.
+  /** The full path to the currently loaded iModel. */
   filename: string;
-  /// The currently loaded iModel.
+  /** The currently loaded iModel. */
   iModel: IModelConnection;
-  /// Callback to go back to the previous screen.
+  /** Callback to go back to the previous screen. */
   onBack: () => void;
-  /// Optional bottom panel override.
+  /** Optional bottom panel override. */
   toolsBottomPanel?: React.FunctionComponent<ToolsBottomPanelProps>;
-  /// Additional components
+  /** Additional components */
   additionalComponents?: React.ReactNode;
-  /// Additional tabs
+  /** Additional tabs */
   additionalTabs?: TabOrPanelDef[];
 }
 
@@ -83,7 +83,7 @@ export function updateBackgroundColor(viewState: ViewState) {
   displayStyle.backgroundColor = ColorDef.fromString(bgColor);
 }
 
-/// React component showing the iModel and containing UI for interacting with it.
+/** React component showing the iModel and containing UI for interacting with it. */
 export function ModelScreen(props: ModelScreenProps) {
   const tabsAndPanelsAPI = useTabsAndStandAlonePanels();
   const { filename, iModel, onBack, toolsBottomPanel, additionalComponents, additionalTabs } = props;
@@ -351,8 +351,8 @@ export function ModelScreen(props: ModelScreenProps) {
   // set as the theme.
   useTheme(isDark ? "dark" : "light");
 
-  // Note: Changes to the [[viewState]] field of [[ViewportProps]] are ignored after the component is
-  // first created. So don't create the [[ViewportComponent]] until after we have loaded the default
+  // Note: Changes to the viewState field of ViewportProps are ignored after the component is
+  // first created. So don't create the ViewportComponent until after we have loaded the default
   // view state.
   return (
     <>

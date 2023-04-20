@@ -12,15 +12,16 @@ import { HeaderTitle, i18n, updateBackgroundColor } from "../Exports";
 
 import "./ViewsBottomPanel.scss";
 
-/// Properties for the [[ViewsBottomPanel]] React component.
+/** Properties for the `ViewsBottomPanel` React component. */
 export interface ViewsBottomPanelProps extends ResizableBottomPanelProps {
-  /// The loaded iModel from which to pick views.
+  /** The loaded iModel from which to pick views. */
   iModel: IModelConnection;
-  /// Optional callback that is called after a view is selected.
+  /** Optional callback that is called after a view is selected. */
   onViewSelected?: () => void;
 }
 
-/** [[ResizableBottomPanel]] React component that allows the user to select any of the views saved in the iModel.
+/**
+ * `ResizableBottomPanel` React component that allows the user to select any of the views saved in the iModel.
  *
  * This is a relatively simple example of a view selector that shows the view thumbnails.
  */
