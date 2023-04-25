@@ -6,7 +6,7 @@ import React from "react";
 import { IconSpecUtilities } from "@itwin/appui-abstract";
 import { Messenger } from "@itwin/mobile-sdk-core";
 import { BackButton, IconImage } from "@itwin/mobile-ui-react";
-import { Button, i18n, Screen, signOut } from "../Exports";
+import { ActiveScreen, Button, i18n, Screen, signOut } from "../Exports";
 import "./HomeScreen.scss";
 
 // With svg.d.ts present in the root of this project, Webpack automatically handles the import below
@@ -15,19 +15,6 @@ import folderSvg from "../Images/folder.svg";
 // IconSpecUtilities.createWebComponentIconSpec takes the SVG path and tweaks it for use in any
 // place that expects an IconSpec.
 const folderIconSpec = IconSpecUtilities.createWebComponentIconSpec(folderSvg);
-
-/**
- * The App's active screen
- *
- * Note: Putting this in App.tsx leads to circular imports.
- */
-export enum ActiveScreen {
-  Loading,
-  Home,
-  LocalModels,
-  Hub,
-  Model,
-}
 
 /**
  *  Properties for {@link HomeScreen} React component.
@@ -56,12 +43,13 @@ export function HomeScreen(props: HomeScreenProps) {
     <Screen className="home-screen">
       <div className="title">
         {showBackButton && <BackButton onClick={handleBack} />}
+        <IconImage iconSpec="icon-home" margin="0px 0px 0px 10px" size="28px" />
         <div className="title-text">{homeLabel}</div>
       </div>
       <div className="list">
         <div className="list-items">
           <Button
-            icon={<IconImage iconSpec={folderIconSpec} margin="0px 8px 0px 0px" size="32px" />}
+            icon={<IconImage iconSpec={folderIconSpec} margin="0px 8px 0px 0px" size="28px" />}
             title={localModelsLabel}
             onClick={() => onSelect(ActiveScreen.LocalModels)} />
           <Button title={hubIModelsLabel} onClick={() => onSelect(ActiveScreen.Hub)} />
