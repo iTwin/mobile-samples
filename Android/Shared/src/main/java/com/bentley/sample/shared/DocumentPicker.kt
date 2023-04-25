@@ -6,18 +6,16 @@ package com.bentley.sample.shared
 
 import android.app.AlertDialog
 import android.content.Context
-import android.content.ContextWrapper
 import android.content.Intent
 import android.net.Uri
 import androidx.activity.ComponentActivity
-import androidx.activity.result.ActivityResultLauncher
 import com.eclipsesource.json.Json
 import com.eclipsesource.json.JsonValue
+import com.github.itwin.mobilesdk.ITMCoActivityResult
 import com.github.itwin.mobilesdk.ITMNativeUI
 import com.github.itwin.mobilesdk.ITMNativeUIComponent
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch
-import kotlin.coroutines.Continuation
 import kotlin.coroutines.resume
 import kotlin.coroutines.suspendCoroutine
 
@@ -54,25 +52,26 @@ class DocumentPicker(nativeUI: ITMNativeUI): ITMNativeUIComponent(nativeUI) {
         }
     }
 
+    private class PickDocument(activity: ComponentActivity):
+        ITMCoActivityResult<JsonValue?, Uri?>(activity, PickDocumentContract())
+
     init {
         handler = coMessenger.registerQueryHandler("chooseDocument", ::handleQuery)
     }
 
     companion object {
-        private var startForResult: ActivityResultLauncher<JsonValue?>? = null
-        private var activeContinuation: Continuation<JsonValue?>? = null
+        private var pickDocument: PickDocument? = null
+        private var alertDialog: AlertDialog.Builder? = null
 
-        private suspend fun showErrorAlert(context: ContextWrapper?): Boolean {
-            return suspendCoroutine { continuation ->
-                with(AlertDialog.Builder(context)) {
-                    setTitle(R.string.alert_title_error)
-                    setMessage(R.string.alert_message_only_bim_files)
-                    setCancelable(false)
-                    setPositiveButton(R.string.ok) { _, _ ->
-                        continuation.resume(true)
-                    }
-                    show()
+        private suspend fun showErrorAlert() = suspendCoroutine { continuation ->
+            alertDialog?.apply {
+                setTitle(R.string.alert_title_error)
+                setMessage(R.string.alert_message_only_bim_files)
+                setCancelable(false)
+                setPositiveButton(R.string.ok) { _, _ ->
+                    continuation.resume(true)
                 }
+                show()
             }
         }
 
@@ -80,18 +79,8 @@ class DocumentPicker(nativeUI: ITMNativeUI): ITMNativeUIComponent(nativeUI) {
          * Registers a request to start an activity for result using the [PickDocumentContract].
          */
         fun registerForActivityResult(activity: ComponentActivity) {
-            startForResult = activity.registerForActivityResult(PickDocumentContract()) { uri ->
-                if (uri != null && !PickDocumentContract.isAcceptableBimUri(uri)) {
-                    MainScope().launch {
-                        showErrorAlert(activity)
-                        activeContinuation?.resumeWith(Result.success(Json.value("")))
-                        activeContinuation = null
-                    }
-                } else {
-                    activeContinuation?.resumeWith(Result.success(Json.value(uri?.toString() ?: "")))
-                    activeContinuation = null
-                }
-            }
+            pickDocument = PickDocument(activity)
+            alertDialog = AlertDialog.Builder(activity)
         }
     }
 
@@ -99,9 +88,13 @@ class DocumentPicker(nativeUI: ITMNativeUI): ITMNativeUIComponent(nativeUI) {
      * Starts the registered activity result request.
      */
     private suspend fun handleQuery(unused: JsonValue?): JsonValue? {
-        return suspendCoroutine { continuation ->
-            activeContinuation = continuation
-            startForResult?.launch(unused)
-        }
+        return pickDocument?.invoke(unused)?.let { uri ->
+            if (PickDocumentContract.isAcceptableBimUri(uri)) {
+                Json.value(uri.toString())
+            } else {
+                MainScope().launch { showErrorAlert() }
+                null
+            }
+        } ?: Json.value("")
     }
 }
