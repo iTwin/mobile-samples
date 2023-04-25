@@ -8,7 +8,6 @@ import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import androidx.activity.ComponentActivity
-import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContract
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.FileProvider
@@ -16,11 +15,10 @@ import com.bentley.sample.shared.PickUriContract
 import com.bentley.sample.shared.PickUriContractType
 import com.eclipsesource.json.Json
 import com.eclipsesource.json.JsonValue
+import com.github.itwin.mobilesdk.ITMCoActivityResult
 import com.github.itwin.mobilesdk.ITMNativeUI
 import com.github.itwin.mobilesdk.ITMNativeUIComponent
 import java.io.File
-import kotlin.coroutines.Continuation
-import kotlin.coroutines.suspendCoroutine
 
 /**
  * Presents a UI for selecting an image or taking a photo when the pickImage message is sent.
@@ -162,22 +160,21 @@ class ImagePicker(nativeUI: ITMNativeUI): ITMNativeUIComponent(nativeUI) {
         }
     }
 
+    private class PickOrCaptureImage(activity: ComponentActivity):
+        ITMCoActivityResult<JsonValue?, Uri?>(activity, PickOrCaptureIModelImageContract())
+
     init {
         handler = coMessenger.registerQueryHandler("pickImage", ::handleQuery)
     }
 
     companion object {
-        private var startForResult: ActivityResultLauncher<JsonValue?>? = null
-        private var activeContinuation: Continuation<JsonValue?>? = null
+        private var pickOrCaptureImage: PickOrCaptureImage? = null
 
         /**
          * Registers a request to start an activity for result using the [PickOrCaptureIModelImageContract].
          */
         fun registerForActivityResult(activity: ComponentActivity) {
-            startForResult = activity.registerForActivityResult(PickOrCaptureIModelImageContract()) { uri ->
-                activeContinuation?.resumeWith(Result.success(Json.value(uri?.toString() ?: "")))
-                activeContinuation = null
-            }
+            pickOrCaptureImage = PickOrCaptureImage(activity)
         }
     }
 
@@ -185,9 +182,8 @@ class ImagePicker(nativeUI: ITMNativeUI): ITMNativeUIComponent(nativeUI) {
      * Starts the registered activity result request.
      */
     private suspend fun handleQuery(params: JsonValue?): JsonValue? {
-        return suspendCoroutine { continuation ->
-            activeContinuation = continuation
-            startForResult?.launch(params)
-        }
+        return pickOrCaptureImage?.invoke(params)?.let { uri ->
+            Json.value(uri.toString())
+        } ?: Json.value("")
     }
 }
