@@ -18,6 +18,7 @@ import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch
 
 class MainActivity: ReactActivity() {
+    private var resumed = false
     private val itmApplication: SampleITMApplication
         get() {
             @Suppress("UNCHECKED_CAST")
@@ -42,6 +43,12 @@ class MainActivity: ReactActivity() {
 
                     itmApplication.initializeFrontend(this@MainActivity, false, child)
                     MainScope().launch {
+                        // Typically this is done in the activity's onResume the first time it is run,
+                        // but we need to call it *once* here since we can't initialize from onCreate
+                        if (!resumed) {
+                            itmApplication.onActivityResume()
+                            resumed = true
+                        }
                         itmApplication.waitForFrontendInitialize()
                     }
                 }
