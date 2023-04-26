@@ -26,10 +26,15 @@ export function SignIn(props: SignInProps) {
       return;
     const signIn = async () => {
       try {
-        await IModelApp.authorizationClient?.getAccessToken();
+        const accessToken = await IModelApp.authorizationClient?.getAccessToken();
         if (!isMountedRef.current)
           return;
-        onSignedIn();
+        if (accessToken) {
+          onSignedIn();
+        } else {
+          presentError("SigninErrorFormat", new Error("User canceled sign in."), "HubScreen");
+          onError();
+        }
       } catch (error) {
         presentError("SigninErrorFormat", error, "HubScreen");
         onError();
