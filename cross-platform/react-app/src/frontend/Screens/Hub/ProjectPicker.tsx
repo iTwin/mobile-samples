@@ -9,6 +9,13 @@ import { IModelApp } from "@itwin/core-frontend";
 import { LoadingSpinner } from "@itwin/core-react";
 import { ButtonProps, HubScreenButton, HubScreenButtonList, HubScreenButtonListProps, i18n, presentError, PromiseUtil, SearchControl } from "../../Exports";
 
+/**
+ * Get a list of projects from the Bentley server.
+ * @param source The source of the list: All, Favorites, or Recents
+ * @param searchString A search string to search for if source is All.
+ * @returns An object whose `projects` property is the list of projects, and whose `next` property
+ * is an arrow function to fetch the next batch of projects if there are more than 100 results.
+ */
 async function getProjects(source = ProjectsSource.All, searchString = "") {
   const baseUrl = `https://${window.itmSampleParams.apiPrefix}api.bentley.com/projects/`;
   const client = new ProjectsAccessClient();
@@ -27,21 +34,25 @@ async function getProjects(source = ProjectsSource.All, searchString = "") {
   return { projects: results.projects, next: results.links?.next };
 }
 
+/** Properties for the {@link ProjectButton} React component. */
 interface ProjectButtonProps extends Omit<ButtonProps, "title"> {
   project: Project;
 }
 
+/** React component to show a button to select a project. */
 function ProjectButton(props: ProjectButtonProps) {
   const { project, onClick } = props;
   const noNameLabel = React.useMemo(() => i18n("HubScreen", "NoName"), []);
   return <HubScreenButton title={project.name ?? noNameLabel} onClick={onClick} />;
 }
 
+/** Properties for the {@link ProjectList} React component. */
 interface ProjectListProps extends HubScreenButtonListProps {
   projects: Project[];
   onSelect?: (project: Project) => void;
 }
 
+/** React component to show a list of projects. */
 function ProjectList(props: ProjectListProps) {
   const { projects, onSelect, children, ...others } = props;
   return <HubScreenButtonList {...others}>
@@ -50,11 +61,15 @@ function ProjectList(props: ProjectListProps) {
   </HubScreenButtonList>;
 }
 
+/** Properties for the {@link ProjectPicker} React component. */
 export interface ProjectPickerProps {
   onSelect?: (project: Project) => void;
   onError?: (error: any) => void;
 }
 
+/**
+ * React component to show the user the projects they have access to so they can pick one.
+ */
 export function ProjectPicker(props: ProjectPickerProps) {
   const { onSelect, onError } = props;
   const [projects, setProjects] = React.useState<Project[]>([]);
@@ -70,6 +85,7 @@ export function ProjectPicker(props: ProjectPickerProps) {
   const projectSourceLabels = React.useMemo(() => [i18n("HubScreen", "All"), i18n("HubScreen", "Recents"), i18n("HubScreen", "Favorites")], []);
   const fetchId = React.useRef(0);
 
+  // Fetch the projects any time projectSource or search change.
   React.useEffect(() => {
     if (!isMountedRef.current)
       return;
@@ -94,6 +110,7 @@ export function ProjectPicker(props: ProjectPickerProps) {
     void PromiseUtil.consolidateCall("fetchProjects", async () => fetchProjects());
   }, [isMountedRef, onError, projectSource, search]);
 
+  // If there are more than 100 projects, load the next batch of 100.
   const loadMore = React.useCallback(async () => {
     if (loadingMore || !nextFunc) return;
     setLoadingMore(true);
@@ -113,6 +130,7 @@ export function ProjectPicker(props: ProjectPickerProps) {
     setLoadingMore(false);
   }, [isMountedRef, loadingMore, nextFunc, onError, projectSource]);
 
+  // Automatically load more projects if needed when the user scrolls to the bottom of the list.
   const onScroll = React.useCallback((element: HTMLElement) => {
     const atBottom = element.scrollTop > 0 && element.scrollHeight - element.scrollTop <= element.clientHeight;
     if (atBottom) {

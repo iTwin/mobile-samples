@@ -17,22 +17,27 @@ export interface IModelInfo {
   briefcase?: LocalBriefcaseProps;
 }
 
+/** Properties for the {@link IModelButton} React component. */
 interface IModelButtonProps extends Omit<ButtonProps, "title"> {
   modelInfo: IModelInfo;
   onCacheDeleted?: (modelInfo: IModelInfo) => void;
 }
 
+/** React component to show a button to select an iModel. */
 function IModelButton(props: IModelButtonProps) {
   const { modelInfo, onCacheDeleted, ...others } = props;
   const { minimalIModel, briefcase } = modelInfo;
   const isMountedRef = useIsMountedRef();
 
+  // The button title includes the iModel's display name, and if the iModel is downloaded, also
+  // includes the iModel's file size.
   const getTitle = React.useCallback(() => {
     if (!briefcase)
       return minimalIModel.displayName;
     return i18n("HubScreen", "IModelButtonFormat", { name: minimalIModel.displayName, size: fileSizeString(briefcase.fileSize) });
   }, [briefcase, minimalIModel.displayName]);
 
+  // Callback to call to delete the downloaded briefcase for an iModel.
   const deleteBriefcase = React.useCallback(async (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
     e.stopPropagation();
     if (!briefcase) return;
@@ -53,12 +58,14 @@ function IModelButton(props: IModelButtonProps) {
   </HubScreenButton>;
 }
 
+/** Properties for the {@link IModelList} React component. */
 interface IModelListProps extends HubScreenButtonListProps {
   models: IModelInfo[];
   onSelect?: (model: IModelInfo) => void;
   onCacheDeleted?: (modelInfo: IModelInfo) => void;
 }
 
+/** React component to show a list of iModels. */
 function IModelList(props: IModelListProps) {
   const { models, onSelect, onCacheDeleted, children, ...others } = props;
   return <HubScreenButtonList {...others}>
@@ -67,6 +74,11 @@ function IModelList(props: IModelListProps) {
   </HubScreenButtonList>;
 }
 
+/**
+ * Get all the iModels in the given project.
+ * @param project The project from which to get the list of iModels.
+ * @returns The iModels in the project.
+ */
 async function getIModels(project: Project) {
   const baseUrl = `https://${window.itmSampleParams.apiPrefix}api.bentley.com/imodels`;
   const imodelsClient = new IModelsClient({ api: { baseUrl } });
@@ -92,6 +104,7 @@ async function getIModels(project: Project) {
   return iModelInfos;
 }
 
+/** Properties for the {@link IModelPicker} React component. */
 export interface IModelPickerProps {
   project: Project;
   onSelect?: (model: IModelInfo) => void;
@@ -100,12 +113,14 @@ export interface IModelPickerProps {
   onCacheDeleted?: (modelInfo: IModelInfo) => void;
 }
 
+/** React component to show a list of iModels in a project so they can be picked. */
 export function IModelPicker(props: IModelPickerProps) {
   const { project, onSelect, onLoaded, onError, onCacheDeleted } = props;
   const [iModels, setIModels] = React.useState<IModelInfo[]>([]);
   const [loading, setLoading] = React.useState(false);
   const isMountedRef = useIsMountedRef();
 
+  // Fetch the iModels for the active project so they can be picked.
   React.useEffect(() => {
     if (!isMountedRef.current)
       return;
