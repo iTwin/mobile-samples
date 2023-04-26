@@ -12,4 +12,8 @@
   align-items: center;
   word-break: break-all;
   text-align: center;
+
+  &:active {
+    background-color: var(--background-color-active);
+  }
 }
