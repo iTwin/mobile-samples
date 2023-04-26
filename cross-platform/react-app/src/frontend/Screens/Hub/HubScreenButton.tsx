@@ -8,17 +8,20 @@ import { LoadingSpinner } from "@itwin/core-react";
 import { Button, ButtonProps } from "../../Exports";
 import { useScroll } from "@itwin/mobile-ui-react";
 
+/** React component to show a button on the hub screen. */
 export function HubScreenButton(props: ButtonProps) {
   const { className, ...others } = props;
   return <Button className={classnames("hubscreen-button", className)} {...others} />;
 }
 
+/** Properties for the {@link HubScreenButtonList} React component. */
 export interface HubScreenButtonListProps {
   children?: React.ReactNode;
   loading?: boolean;
   onScroll?: (element: HTMLElement) => void;
 }
 
+/** React component to show a list of buttons on the hub screen. */
 export function HubScreenButtonList(props: HubScreenButtonListProps) {
   const { children, loading, onScroll } = props;
   const listRef = React.useRef<HTMLDivElement | null>(null);

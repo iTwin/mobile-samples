@@ -11,6 +11,14 @@ import { BentleyError, BriefcaseDownloader, BriefcaseStatus, IModelStatus, Local
 import { ProgressRadial } from "@itwin/itwinui-react";
 import { Button, i18n, IModelInfo, presentError } from "../../Exports";
 
+/**
+ * Download the given iModel, reporting progress via {@link handleProgress}.
+ * @param project The iModel's project.
+ * @param iModel The iModel to download.
+ * @param handleProgress Progress callback.
+ * @returns The {@link LocalBriefcaseProps} for the downloaded iModel if successful, otherwise
+ * undefined.
+ */
 async function downloadIModel(project: Project, iModel: MinimalIModel, handleProgress: (progress: DownloadProgressInfo) => boolean): Promise<LocalBriefcaseProps | undefined> {
   const opts: DownloadBriefcaseOptions = {
     syncMode: SyncMode.PullOnly,
@@ -64,6 +72,7 @@ async function downloadIModel(project: Project, iModel: MinimalIModel, handlePro
   return undefined;
 }
 
+/** Properties for the {@link IModelDownloader} React component. */
 export interface IModelDownloaderProps {
   project: Project;
   model: IModelInfo;
@@ -71,6 +80,7 @@ export interface IModelDownloaderProps {
   onCanceled?: () => void;
 }
 
+/** React component that downloads an iModel and shows download progress. */
 export function IModelDownloader(props: IModelDownloaderProps) {
   const { project, model, onDownloaded, onCanceled } = props;
   const [progress, setProgress] = React.useState(0);
@@ -81,6 +91,7 @@ export function IModelDownloader(props: IModelDownloaderProps) {
   const downloadingLabel = React.useMemo(() => i18n("HubScreen", "Downloading"), []);
   const cancelLabel = React.useMemo(() => i18n("HubScreen", "Cancel"), []);
 
+  // Progress callback for iModel download.
   const handleProgress = React.useCallback((progressInfo: DownloadProgressInfo) => {
     if (isMountedRef.current) {
       const percent: number = progressInfo.total !== 0 ? Math.round(100.0 * progressInfo.loaded / progressInfo.total) : 0;
@@ -90,9 +101,10 @@ export function IModelDownloader(props: IModelDownloaderProps) {
     return isMountedRef.current && !canceled;
   }, [canceled, isMountedRef]);
 
+  // Starup effect to initiate the iModel download.
   React.useEffect(() => {
-    if (downloading)
-      return;
+    // We only want to download once.
+    if (downloading) return;
 
     const fetchIModel = async () => {
       const minimalIModel = model.minimalIModel;
