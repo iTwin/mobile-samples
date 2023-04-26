@@ -25,6 +25,7 @@ export function SignIn(props: SignInProps) {
   const [signedIn, setSignedIn] = React.useState(false);
   const cancelLabel = React.useMemo(() => i18n("HubScreen", "Cancel"), []);
   const connectingLabel = React.useMemo(() => i18n("HubScreen", "Connecting"), []);
+  const userCanceledSignInLabel = React.useMemo(() => i18n("HubScreen", "UserCanceledSignIn"), []);
   const isMountedRef = useIsMountedRef();
 
   React.useEffect(() => {
@@ -38,7 +39,7 @@ export function SignIn(props: SignInProps) {
         if (accessToken) {
           onSignedIn();
         } else {
-          presentError("SigninErrorFormat", new Error("User canceled sign in."), "HubScreen");
+          presentError("SigninErrorFormat", new Error(userCanceledSignInLabel), "HubScreen");
           onError();
         }
       } catch (error) {
@@ -48,7 +49,7 @@ export function SignIn(props: SignInProps) {
     };
     setSignedIn(true);
     void signIn();
-  }, [isMountedRef, onError, onSignedIn, signedIn]);
+  }, [isMountedRef, onError, onSignedIn, signedIn, userCanceledSignInLabel]);
 
   return <div className="centered-list">
     {connectingLabel}
