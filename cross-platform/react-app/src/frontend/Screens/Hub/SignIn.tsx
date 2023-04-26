@@ -32,10 +32,15 @@ export function SignIn(props: SignInProps) {
     const signIn = async () => {
       try {
         // Asking for the access token will trigger sign in if that has not already happened.
-        await IModelApp.authorizationClient?.getAccessToken();
+        const accessToken = await IModelApp.authorizationClient?.getAccessToken();
         if (!isMountedRef.current)
           return;
-        onSignedIn();
+        if (accessToken) {
+          onSignedIn();
+        } else {
+          presentError("SigninErrorFormat", new Error("User canceled sign in."), "HubScreen");
+          onError();
+        }
       } catch (error) {
         presentError("SigninErrorFormat", error, "HubScreen");
         onError();
