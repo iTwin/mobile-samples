@@ -12,6 +12,11 @@ import "./HubScreen.scss";
 
 HubScreen.ACTIVE_PROJECT_INFO = "activeProjectInfo";
 
+/**
+ * Gets active project stored in `localStorage`, or undefined if there isn't one
+ * @see {@link saveActiveProject}.
+ * @returns A {@link Project} object representing the active project, or undefined if there is none.
+ */
 function getActiveProject() {
   const projectInfoJson = localStorage.getItem(HubScreen.ACTIVE_PROJECT_INFO);
   if (projectInfoJson) {
@@ -27,6 +32,11 @@ function getActiveProject() {
   return undefined;
 }
 
+/**
+ * Stores the active project in `localStorage`.
+ * @see {@link getActiveProject}.
+ * @param project The {@link Project} to set as the active project.
+ */
 function saveActiveProject(project: Project) {
   localStorage.setItem(HubScreen.ACTIVE_PROJECT_INFO, JSON.stringify(project));
 }
@@ -116,6 +126,8 @@ export function HubScreen(props: HubScreenProps) {
       />;
       const actions: AlertAction[] = [];
       if (haveCachedBriefcase) {
+        // If any iModels have been downloaded, include a "Delete All Downloads" button at the top
+        // of the list of actions in the more button.
         actions.push({
           name: "deleteAll",
           title: deleteAllDownloadsLabel,
@@ -123,7 +135,9 @@ export function HubScreen(props: HubScreenProps) {
             if (!project) return;
             try {
               const deleted = await MobileCore.deleteCachedBriefcases(project.id);
+              // Note: Do the below even if isMounted is no longer true.
               deleted.forEach((briefcase) => ModelNameCache.remove(briefcase.iModelId));
+              // But don't do anything else if isMounted is not true.
               if (!isMountedRef.current) return;
               setHaveCachedBriefcase(false);
             } catch (error) {
@@ -165,6 +179,7 @@ export function HubScreen(props: HubScreenProps) {
       stepContent = <div className="centered-list">
         <Button title={signOutLabel} onClick={async () => {
           await signOut();
+          // Note: isMounted check not needed because onBack comes from HomeScreen.
           onBack();
         }} />
         <Button title={selectProjectLabel} onClick={async () => {
