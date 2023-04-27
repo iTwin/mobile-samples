@@ -17,11 +17,7 @@ import { ButtonProps, HubScreenButton, HubScreenButtonList, HubScreenButtonListP
  * is an arrow function to fetch the next batch of projects if there are more than 100 results.
  */
 async function getProjects(source = ProjectsSource.All, searchString = "") {
-  const baseUrl = `https://${window.itmSampleParams.apiPrefix}api.bentley.com/projects/`;
   const client = new ProjectsAccessClient();
-  // ProjectsAccessClient doesn't have any public way to change its base URL. Hopefully that
-  // will change in the future.
-  (client as any)._baseUrl = baseUrl;
   const numToFetch = 100;
   const accessToken = await IModelApp.getAccessToken();
 
