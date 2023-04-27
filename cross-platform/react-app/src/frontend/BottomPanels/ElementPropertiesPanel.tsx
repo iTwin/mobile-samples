@@ -9,7 +9,7 @@ import useResizeObserver from "@react-hook/resize-observer";
 import { VirtualizedPropertyGridWithDataProvider } from "@itwin/components-react";
 import { IPresentationPropertyDataProvider, PresentationPropertyDataProvider, PresentationPropertyDataProviderProps, usePropertyDataProviderWithUnifiedSelection } from "@itwin/presentation-components";
 import { DraggableComponent, IconImage, ResizableBottomPanel, ResizableBottomPanelProps, useBeEvent } from "@itwin/mobile-ui-react";
-import { HeaderTitle, i18n } from "../Exports";
+import { HeaderTitle, useLabel } from "../Exports";
 
 import "./ElementPropertiesPanel.scss";
 
@@ -69,7 +69,7 @@ function PropertiesPanel(props: PropertiesPanelProps) {
 
 function UnifiedSelectionPropertyGrid(props: UnifiedSelectionPropertyGridProps) {
   const { isOverLimit } = usePropertyDataProviderWithUnifiedSelection({ dataProvider: props.dataProvider });
-  const toManyElementsLabel = React.useMemo(() => i18n("ElementPropertiesPanel", "TooManyElements"), []);
+  const toManyElementsLabel = useLabel("ElementPropertiesPanel", "TooManyElements");
   if (isOverLimit) {
     return (<FillCentered className="too-many-elements">{toManyElementsLabel}</FillCentered>);
   }
@@ -101,7 +101,7 @@ export function ElementPropertiesPanel(props: ElementPropertiesPanelProps) {
     } as PresentationPropertyDataProviderProps;
   }, [iModel]);
   const dataProvider = React.useMemo(() => new PresentationPropertyDataProvider(ppdpProps), [ppdpProps]);
-  const propertiesLabel = React.useMemo(() => i18n("ElementPropertiesPanel", "Properties"), []);
+  const propertiesLabel = useLabel("ElementPropertiesPanel", "Properties");
 
   useBeEvent(() => {
     setSelectionCount(iModel.selectionSet.size);

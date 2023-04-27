@@ -6,7 +6,7 @@ import { IModelApp } from "@itwin/core-frontend";
 import { LoadingSpinner } from "@itwin/core-react";
 import { useIsMountedRef } from "@itwin/mobile-ui-react";
 import React from "react";
-import { Button, i18n, presentError } from "../../Exports";
+import { Button, presentError, useLabel } from "../../Exports";
 
 /** Properties for the {@link SignIn} React component. */
 export interface SignInProps {
@@ -23,9 +23,9 @@ export interface SignInProps {
 export function SignIn(props: SignInProps) {
   const { onBack, onError, onSignedIn } = props;
   const [signedIn, setSignedIn] = React.useState(false);
-  const cancelLabel = React.useMemo(() => i18n("HubScreen", "Cancel"), []);
-  const connectingLabel = React.useMemo(() => i18n("HubScreen", "Connecting"), []);
-  const userCanceledSignInLabel = React.useMemo(() => i18n("HubScreen", "UserCanceledSignIn"), []);
+  const cancelLabel = useLabel("HubScreen", "Cancel");
+  const connectingLabel = useLabel("HubScreen", "Connecting");
+  const userCanceledSignInLabel = useLabel("HubScreen", "UserCanceledSignIn");
   const isMountedRef = useIsMountedRef();
 
   React.useEffect(() => {

@@ -7,7 +7,7 @@ import { AlertAction, MobileCore } from "@itwin/mobile-sdk-core";
 import { ActionSheetButton, BackButton, useIsMountedRef } from "@itwin/mobile-ui-react";
 import { Project } from "@itwin/projects-client";
 import { BriefcaseConnection, IModelConnection } from "@itwin/core-frontend";
-import { Button, HubStep, i18n, IModelDownloader, IModelInfo, IModelPicker, presentError, ProjectPicker, Screen, SignIn, signOut } from "../../Exports";
+import { Button, HubStep, i18n, IModelDownloader, IModelInfo, IModelPicker, presentError, ProjectPicker, Screen, SignIn, signOut, useLabel } from "../../Exports";
 import "./HubScreen.scss";
 
 HubScreen.ACTIVE_PROJECT_INFO = "activeProjectInfo";
@@ -66,10 +66,10 @@ export function HubScreen(props: HubScreenProps) {
     [HubStep.SelectIModel, i18n("Shared", "SelectIModel")],
     [HubStep.DownloadIModel, i18n("HomeScreen", "HubIModels")],
   ]), []);
-  const signOutLabel = React.useMemo(() => i18n("Shared", "SignOut"), []);
-  const selectProjectLabel = React.useMemo(() => i18n("HubScreen", "SelectProject"), []);
-  const deleteAllDownloadsLabel = React.useMemo(() => i18n("HubScreen", "DeleteAllDownloads"), []);
-  const changeProjectLabel = React.useMemo(() => i18n("HubScreen", "ChangeProject"), []);
+  const signOutLabel = useLabel("Shared", "SignOut");
+  const selectProjectLabel = useLabel("HubScreen", "SelectProject");
+  const deleteAllDownloadsLabel = useLabel("HubScreen", "DeleteAllDownloads");
+  const changeProjectLabel = useLabel("HubScreen", "ChangeProject");
 
   let moreButton: React.ReactNode;
   let stepContent: React.ReactNode;

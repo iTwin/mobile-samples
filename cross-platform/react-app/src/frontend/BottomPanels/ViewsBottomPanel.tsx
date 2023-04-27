@@ -8,7 +8,7 @@ import { IModelApp, IModelConnection } from "@itwin/core-frontend";
 import { ThumbnailProps } from "@itwin/core-common";
 import { ReloadedEvent } from "@itwin/mobile-sdk-core";
 import { DraggableComponent, IconImage, ResizableBottomPanel, ResizableBottomPanelProps } from "@itwin/mobile-ui-react";
-import { HeaderTitle, i18n, updateBackgroundColor } from "../Exports";
+import { HeaderTitle, updateBackgroundColor, useLabel } from "../Exports";
 
 import "./ViewsBottomPanel.scss";
 
@@ -29,7 +29,7 @@ export function ViewsBottomPanel(props: ViewsBottomPanelProps) {
   const { iModel, onViewSelected, ...otherProps } = props;
   const [viewSpecs, setViewSpecs] = React.useState<IModelConnection.ViewSpec[]>([]);
   const [thumbnails, setThumbnails] = React.useState<(string | undefined)[]>([]);
-  const viewsLabel = React.useMemo(() => i18n("ViewsBottomPanel", "Views"), []);
+  const viewsLabel = useLabel("ViewsBottomPanel", "Views");
   const reloadedEvent = React.useRef(new ReloadedEvent());
 
   // React effect run during component initialization.

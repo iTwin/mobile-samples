@@ -5,7 +5,7 @@
 import React from "react";
 import { Messenger } from "@itwin/mobile-sdk-core";
 import { BackButton, NavigationButton, useIsMountedRef } from "@itwin/mobile-ui-react";
-import { Button, i18n, ModelNameCache, Screen } from "../Exports";
+import { Button, ModelNameCache, Screen, useLabel } from "../Exports";
 import { BriefcaseConnection, IModelConnection, NativeApp, SnapshotConnection } from "@itwin/core-frontend";
 import { LocalBriefcaseProps } from "@itwin/core-common";
 import "./LocalModelsScreen.scss";
@@ -23,10 +23,10 @@ export function LocalModelsScreen(props: LocalModelsScreenProps) {
   const { onOpen, onBack } = props;
   const [snapshots, setSnapshots] = React.useState<string[]>([]);
   const [briefcases, setBriefcases] = React.useState<LocalBriefcaseProps[]>([]);
-  const chooseFileLabel = React.useMemo(() => i18n("LocalModelsScreen", "ChooseFile"), []);
-  const selectIModelLabel = React.useMemo(() => i18n("Shared", "SelectIModel"), []);
-  const deviceDocumentsLabel = React.useMemo(() => i18n("LocalModelsScreen", "DeviceDocuments"), []);
-  const hubDocumentsLabel = React.useMemo(() => i18n("LocalModelsScreen", "HubDocuments"), []);
+  const chooseFileLabel = useLabel("LocalModelsScreen", "ChooseFile");
+  const selectIModelLabel = useLabel("Shared", "SelectIModel");
+  const deviceDocumentsLabel = useLabel("LocalModelsScreen", "DeviceDocuments");
+  const hubDocumentsLabel = useLabel("LocalModelsScreen", "HubDocuments");
   // Any time we do anything asynchronous, we have to check if the component is still mounted,
   // or it can lead to a run-time exception. The async calls used here are so fast as to be
   // extremely difficult to trigger a problem, but going to this screen and immediately backing

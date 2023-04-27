@@ -42,6 +42,7 @@ import {
   ToolAssistance,
   ToolsBottomPanel,
   ToolsBottomPanelProps,
+  useLabel,
   ViewsBottomPanel,
 } from "../Exports";
 import "./ModelScreen.scss";
@@ -89,30 +90,30 @@ export function ModelScreen(props: ModelScreenProps) {
   const { filename, iModel, onBack, toolsBottomPanel, additionalComponents, additionalTabs } = props;
   const [viewState, setViewState] = React.useState<ViewState>();
   const isDark = useActiveColorSchemeIsDark();
-  const locationLabel = React.useMemo(() => i18n("ModelScreen", "Location"), []);
-  const errorLabel = React.useMemo(() => i18n("Shared", "Error"), []);
-  const okLabel = React.useMemo(() => i18n("Shared", "OK"), []);
-  const showCurrentLocationLabel = React.useMemo(() => i18n("ModelScreen", "ShowCurrentLocation"), []);
-  const fitViewLabel = React.useMemo(() => i18n("ModelScreen", "FitView"), []);
-  const defaultViewLabel = React.useMemo(() => i18n("ModelScreen", "DefaultView"), []);
-  const toggleCameraLabel = React.useMemo(() => i18n("ModelScreen", "ToggleCamera"), []);
-  const alertDemoLabel = React.useMemo(() => i18n("ModelScreen", "AlertDemo"), []);
-  const oneLabel = React.useMemo(() => i18n("ModelScreen", "One"), []);
-  const twoLabel = React.useMemo(() => i18n("ModelScreen", "Two"), []);
-  const threeLabel = React.useMemo(() => i18n("ModelScreen", "Three"), []);
-  const fourLabel = React.useMemo(() => i18n("ModelScreen", "Four"), []);
-  const fiveLabel = React.useMemo(() => i18n("ModelScreen", "Five"), []);
-  const sixLabel = React.useMemo(() => i18n("ModelScreen", "Six"), []);
-  const youChoseLabel = React.useMemo(() => i18n("ModelScreen", "YouChose"), []);
-  const infoLabel = React.useMemo(() => i18n("ModelScreen", "Info"), []);
-  const aboutLabel = React.useMemo(() => i18n("AboutBottomPanel", "About"), []);
-  const viewsLabel = React.useMemo(() => i18n("ViewsBottomPanel", "Views"), []);
-  const toolsLabel = React.useMemo(() => i18n("ModelScreen", "Tools"), []);
-  const elementPropertiesLabel = React.useMemo(() => i18n("ModelScreen", "Properties"), []);
-  const changeAppearanceLabel = React.useMemo(() => i18n("ModelScreen", "ChangeAppearance"), []);
-  const lightLabel = React.useMemo(() => i18n("ModelScreen", "Light"), []);
-  const darkLabel = React.useMemo(() => i18n("ModelScreen", "Dark"), []);
-  const automaticLabel = React.useMemo(() => i18n("ModelScreen", "Automatic"), []);
+  const locationLabel = useLabel("ModelScreen", "Location");
+  const errorLabel = useLabel("Shared", "Error");
+  const okLabel = useLabel("Shared", "OK");
+  const showCurrentLocationLabel = useLabel("ModelScreen", "ShowCurrentLocation");
+  const fitViewLabel = useLabel("ModelScreen", "FitView");
+  const defaultViewLabel = useLabel("ModelScreen", "DefaultView");
+  const toggleCameraLabel = useLabel("ModelScreen", "ToggleCamera");
+  const alertDemoLabel = useLabel("ModelScreen", "AlertDemo");
+  const oneLabel = useLabel("ModelScreen", "One");
+  const twoLabel = useLabel("ModelScreen", "Two");
+  const threeLabel = useLabel("ModelScreen", "Three");
+  const fourLabel = useLabel("ModelScreen", "Four");
+  const fiveLabel = useLabel("ModelScreen", "Five");
+  const sixLabel = useLabel("ModelScreen", "Six");
+  const youChoseLabel = useLabel("ModelScreen", "YouChose");
+  const infoLabel = useLabel("ModelScreen", "Info");
+  const aboutLabel = useLabel("AboutBottomPanel", "About");
+  const viewsLabel = useLabel("ViewsBottomPanel", "Views");
+  const toolsLabel = useLabel("ModelScreen", "Tools");
+  const elementPropertiesLabel = useLabel("ModelScreen", "Properties");
+  const changeAppearanceLabel = useLabel("ModelScreen", "ChangeAppearance");
+  const lightLabel = useLabel("ModelScreen", "Light");
+  const darkLabel = useLabel("ModelScreen", "Dark");
+  const automaticLabel = useLabel("ModelScreen", "Automatic");
 
   // Any time we do anything asynchronous, we have to check if the component is still mounted,
   // or it can lead to a run-time exception.

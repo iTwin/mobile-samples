@@ -46,6 +46,18 @@ export function i18n(prefix: string, key: string, options?: any) {
 }
 
 /**
+ * Create a memoized localized string for the given prefix and key.
+ *
+ * __Note__: This just uses {@link React.useMemo} on the result from {@link i18n}.
+ * @param prefix The i18n prefix for the label.
+ * @param key The i18n key for the label.
+ * @returns A memoized localized string.
+ */
+export function useLabel(prefix: string, key: string) {
+  return React.useMemo(() => i18n(prefix, key), [prefix, key]);
+}
+
+/**
  * Convert a number to a string, rounded to a requested number of decimal places.
  *
  * @param input The number to round.
