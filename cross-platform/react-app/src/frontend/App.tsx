@@ -50,6 +50,9 @@ function loadUrlSearchParams() {
   loadBooleanUrlSearchParam("haveBackButton");
   loadBooleanUrlSearchParam("debugI18n");
   loadStringUrlSearchParam("apiPrefix");
+  // Some classes (notable ProjectsAccessClient for this sample) require process.env.IMJS_URL_PREFIX
+  // to be set. Due to the way that the webpack works, that is done via the following.
+  (globalThis as any).IMJS_URL_PREFIX = window.itmSampleParams.apiPrefix;
 }
 
 /** Interface to allow switching from one screen to another. */
