@@ -16,6 +16,11 @@
   --color: white;
 }
 
+// Disable iTwin UI's calculated line-height
+.iui-body * {
+  line-height: initial;
+}
+
 .screen {
   background-color: var(--background-color);
   color: var(--color);
