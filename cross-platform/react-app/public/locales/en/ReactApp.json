@@ -46,7 +46,8 @@
     "LoadMore": "Load More...",
     "Cancel": "Cancel",
     "IModelButtonFormat": "{{name}} ({{size}})",
-    "NoName": "<No Name>"
+    "NoName": "<No Name>",
+    "UserCanceledSignIn": "User canceled sign in."
   },
   "ModelScreen": {
     "Location": "Location",
