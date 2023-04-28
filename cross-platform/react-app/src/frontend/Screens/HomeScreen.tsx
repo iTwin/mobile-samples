@@ -6,7 +6,7 @@ import React from "react";
 import { IconSpecUtilities } from "@itwin/appui-abstract";
 import { Messenger } from "@itwin/mobile-sdk-core";
 import { BackButton, IconImage } from "@itwin/mobile-ui-react";
-import { ActiveScreen, Button, Screen, signOut, useLabel } from "../Exports";
+import { ActiveScreen, Button, Screen, signOut, useLocalizedString } from "../Exports";
 import "./HomeScreen.scss";
 
 // With svg.d.ts present in the root of this project, Webpack automatically handles the import below
@@ -30,10 +30,10 @@ export interface HomeScreenProps {
  */
 export function HomeScreen(props: HomeScreenProps) {
   const { onSelect, showBackButton } = props;
-  const homeLabel = useLabel("HomeScreen", "Home");
-  const localModelsLabel = useLabel("HomeScreen", "LocalIModels");
-  const hubIModelsLabel = useLabel("HomeScreen", "HubIModels");
-  const signOutLabel = useLabel("Shared", "SignOut");
+  const homeLabel = useLocalizedString("HomeScreen", "Home");
+  const localModelsLabel = useLocalizedString("HomeScreen", "LocalIModels");
+  const hubIModelsLabel = useLocalizedString("HomeScreen", "HubIModels");
+  const signOutLabel = useLocalizedString("Shared", "SignOut");
 
   const handleBack = React.useCallback(async () => {
     Messenger.sendMessage("goBack");

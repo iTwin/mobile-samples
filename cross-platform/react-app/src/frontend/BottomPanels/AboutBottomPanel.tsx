@@ -4,14 +4,14 @@
 *--------------------------------------------------------------------------------------------*/
 import React from "react";
 import { BottomPanel, BottomPanelProps } from "@itwin/mobile-ui-react";
-import { HeaderTitle, useLabel } from "../Exports";
+import { HeaderTitle, useLocalizedString } from "../Exports";
 
 import "./AboutBottomPanel.scss";
 
 /** `BottomPanel` React Component with fixed content, here simply as an example. */
 export function AboutBottomPanel(props: BottomPanelProps) {
-  const aboutLabel = useLabel("AboutBottomPanel", "About");
-  const headerLabel = useLabel("AboutBottomPanel", "Header");
+  const aboutLabel = useLocalizedString("AboutBottomPanel", "About");
+  const headerLabel = useLocalizedString("AboutBottomPanel", "Header");
   return (
     <BottomPanel {...props} className="about-bottom-panel">
       <HeaderTitle label={aboutLabel} iconSpec="icon-lightbulb" />

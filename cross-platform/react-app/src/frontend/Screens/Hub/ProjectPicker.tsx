@@ -7,7 +7,7 @@ import { HorizontalPicker, useIsMountedRef } from "@itwin/mobile-ui-react";
 import { Project, ProjectsAccessClient, ProjectsQueryArg, ProjectsQueryFunction, ProjectsSearchableProperty, ProjectsSource } from "@itwin/projects-client";
 import { IModelApp } from "@itwin/core-frontend";
 import { LoadingSpinner } from "@itwin/core-react";
-import { ButtonProps, HubScreenButton, HubScreenButtonList, HubScreenButtonListProps, i18n, presentError, PromiseUtil, SearchControl, useLabel } from "../../Exports";
+import { ButtonProps, HubScreenButton, HubScreenButtonList, HubScreenButtonListProps, i18n, presentError, PromiseUtil, SearchControl, useLocalizedString } from "../../Exports";
 
 /**
  * Get a list of projects from the Bentley server.
@@ -38,7 +38,7 @@ interface ProjectButtonProps extends Omit<ButtonProps, "title"> {
 /** React component to show a button to select a project. */
 function ProjectButton(props: ProjectButtonProps) {
   const { project, onClick } = props;
-  const noNameLabel = useLabel("HubScreen", "NoName");
+  const noNameLabel = useLocalizedString("HubScreen", "NoName");
   return <HubScreenButton title={project.name ?? noNameLabel} onClick={onClick} />;
 }
 
@@ -74,9 +74,9 @@ export function ProjectPicker(props: ProjectPickerProps) {
   const [loading, setLoading] = React.useState(false);
   const [nextFunc, setNextFunc] = React.useState<ProjectsQueryFunction>();
   const [loadingMore, setLoadingMore] = React.useState(false);
-  const loadMoreLabel = useLabel("HubScreen", "LoadMore");
+  const loadMoreLabel = useLocalizedString("HubScreen", "LoadMore");
   const isMountedRef = useIsMountedRef();
-  const searchLabel = useLabel("HubScreen", "Search");
+  const searchLabel = useLocalizedString("HubScreen", "Search");
   const projectSources = React.useMemo(() => [ProjectsSource.All, ProjectsSource.Recents, ProjectsSource.Favorites], []);
   const projectSourceLabels = React.useMemo(() => [i18n("HubScreen", "All"), i18n("HubScreen", "Recents"), i18n("HubScreen", "Favorites")], []);
   const fetchId = React.useRef(0);

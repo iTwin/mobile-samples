@@ -9,7 +9,7 @@ import { DownloadBriefcaseOptions, DownloadProgressInfo, NativeApp } from "@itwi
 import { MinimalIModel } from "@itwin/imodels-client-management";
 import { BentleyError, BriefcaseDownloader, BriefcaseStatus, IModelStatus, LocalBriefcaseProps, SyncMode } from "@itwin/core-common";
 import { ProgressRadial } from "@itwin/itwinui-react";
-import { Button, IModelInfo, presentError, useLabel } from "../../Exports";
+import { Button, IModelInfo, presentError, useLocalizedString } from "../../Exports";
 
 /**
  * Download the given iModel, reporting progress via {@link handleProgress}.
@@ -88,8 +88,8 @@ export function IModelDownloader(props: IModelDownloaderProps) {
   const [downloading, setDownloading] = React.useState(false);
   const [canceled, setCanceled] = React.useState(false);
   const isMountedRef = useIsMountedRef();
-  const downloadingLabel = useLabel("HubScreen", "Downloading");
-  const cancelLabel = useLabel("HubScreen", "Cancel");
+  const downloadingLabel = useLocalizedString("HubScreen", "Downloading");
+  const cancelLabel = useLocalizedString("HubScreen", "Cancel");
 
   // Progress callback for iModel download.
   const handleProgress = React.useCallback((progressInfo: DownloadProgressInfo) => {

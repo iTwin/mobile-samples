@@ -53,7 +53,7 @@ export function i18n(prefix: string, key: string, options?: any) {
  * @param key The i18n key for the label.
  * @returns A memoized localized string.
  */
-export function useLabel(prefix: string, key: string) {
+export function useLocalizedString(prefix: string, key: string) {
   return React.useMemo(() => i18n(prefix, key), [prefix, key]);
 }
 

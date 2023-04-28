@@ -42,7 +42,7 @@ import {
   ToolAssistance,
   ToolsBottomPanel,
   ToolsBottomPanelProps,
-  useLabel,
+  useLocalizedString,
   ViewsBottomPanel,
 } from "../Exports";
 import "./ModelScreen.scss";
@@ -90,30 +90,30 @@ export function ModelScreen(props: ModelScreenProps) {
   const { filename, iModel, onBack, toolsBottomPanel, additionalComponents, additionalTabs } = props;
   const [viewState, setViewState] = React.useState<ViewState>();
   const isDark = useActiveColorSchemeIsDark();
-  const locationLabel = useLabel("ModelScreen", "Location");
-  const errorLabel = useLabel("Shared", "Error");
-  const okLabel = useLabel("Shared", "OK");
-  const showCurrentLocationLabel = useLabel("ModelScreen", "ShowCurrentLocation");
-  const fitViewLabel = useLabel("ModelScreen", "FitView");
-  const defaultViewLabel = useLabel("ModelScreen", "DefaultView");
-  const toggleCameraLabel = useLabel("ModelScreen", "ToggleCamera");
-  const alertDemoLabel = useLabel("ModelScreen", "AlertDemo");
-  const oneLabel = useLabel("ModelScreen", "One");
-  const twoLabel = useLabel("ModelScreen", "Two");
-  const threeLabel = useLabel("ModelScreen", "Three");
-  const fourLabel = useLabel("ModelScreen", "Four");
-  const fiveLabel = useLabel("ModelScreen", "Five");
-  const sixLabel = useLabel("ModelScreen", "Six");
-  const youChoseLabel = useLabel("ModelScreen", "YouChose");
-  const infoLabel = useLabel("ModelScreen", "Info");
-  const aboutLabel = useLabel("AboutBottomPanel", "About");
-  const viewsLabel = useLabel("ViewsBottomPanel", "Views");
-  const toolsLabel = useLabel("ModelScreen", "Tools");
-  const elementPropertiesLabel = useLabel("ModelScreen", "Properties");
-  const changeAppearanceLabel = useLabel("ModelScreen", "ChangeAppearance");
-  const lightLabel = useLabel("ModelScreen", "Light");
-  const darkLabel = useLabel("ModelScreen", "Dark");
-  const automaticLabel = useLabel("ModelScreen", "Automatic");
+  const locationLabel = useLocalizedString("ModelScreen", "Location");
+  const errorLabel = useLocalizedString("Shared", "Error");
+  const okLabel = useLocalizedString("Shared", "OK");
+  const showCurrentLocationLabel = useLocalizedString("ModelScreen", "ShowCurrentLocation");
+  const fitViewLabel = useLocalizedString("ModelScreen", "FitView");
+  const defaultViewLabel = useLocalizedString("ModelScreen", "DefaultView");
+  const toggleCameraLabel = useLocalizedString("ModelScreen", "ToggleCamera");
+  const alertDemoLabel = useLocalizedString("ModelScreen", "AlertDemo");
+  const oneLabel = useLocalizedString("ModelScreen", "One");
+  const twoLabel = useLocalizedString("ModelScreen", "Two");
+  const threeLabel = useLocalizedString("ModelScreen", "Three");
+  const fourLabel = useLocalizedString("ModelScreen", "Four");
+  const fiveLabel = useLocalizedString("ModelScreen", "Five");
+  const sixLabel = useLocalizedString("ModelScreen", "Six");
+  const youChoseLabel = useLocalizedString("ModelScreen", "YouChose");
+  const infoLabel = useLocalizedString("ModelScreen", "Info");
+  const aboutLabel = useLocalizedString("AboutBottomPanel", "About");
+  const viewsLabel = useLocalizedString("ViewsBottomPanel", "Views");
+  const toolsLabel = useLocalizedString("ModelScreen", "Tools");
+  const elementPropertiesLabel = useLocalizedString("ModelScreen", "Properties");
+  const changeAppearanceLabel = useLocalizedString("ModelScreen", "ChangeAppearance");
+  const lightLabel = useLocalizedString("ModelScreen", "Light");
+  const darkLabel = useLocalizedString("ModelScreen", "Dark");
+  const automaticLabel = useLocalizedString("ModelScreen", "Automatic");
 
   // Any time we do anything asynchronous, we have to check if the component is still mounted,
   // or it can lead to a run-time exception.
