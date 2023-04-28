@@ -23,8 +23,24 @@ export interface PicturesBottomPanelProps extends ResizableBottomPanelProps {
   iModel: IModelConnection;
 }
 
+/**
+ * Look up a localized string in the `CameraSampleApp` i18n namespace.
+ * @param key The name of the localized string.
+ * @returns The given localized string.
+ */
 function i18n(key: string) {
   return CameraSampleAppGetLocalizedString("PicturesBottomPanel", key);
+}
+
+/**
+ * Create a memoized localized string for the given key.
+ *
+ * __Note__: This just uses {@link React.useMemo} on the result from {@link i18n}.
+ * @param key The i18n key for the label.
+ * @returns A memoized localized string.
+ */
+function useLocalizedString(key: string) {
+  return React.useMemo(() => i18n(key), [key]);
 }
 
 /**
@@ -35,15 +51,15 @@ function i18n(key: string) {
  */
 export function PicturesBottomPanel(props: PicturesBottomPanelProps) {
   const { iModel, ...otherProps } = props;
-  const picturesLabel = React.useMemo(() => i18n("Pictures"), []);
+  const picturesLabel = useLocalizedString("Pictures");
   const reloadedEvent = React.useRef(new ReloadedEvent());
   const [pictureUrls, setPictureUrls] = React.useState<string[]>([]);
-  const deletePictureTitle = React.useMemo(() => i18n("DeletePictureTitle"), []);
-  const deletePictureMessage = React.useMemo(() => i18n("DeletePictureMessage"), []);
-  const deleteAllTitle = React.useMemo(() => i18n("DeleteAllTitle"), []);
-  const deleteAllMessage = React.useMemo(() => i18n("DeleteAllMessage"), []);
-  const deleteSelectedTitle = React.useMemo(() => i18n("DeleteSelectedTitle"), []);
-  const deleteSelectedMessage = React.useMemo(() => i18n("DeleteSelectedMessage"), []);
+  const deletePictureTitle = useLocalizedString("DeletePictureTitle");
+  const deletePictureMessage = useLocalizedString("DeletePictureMessage");
+  const deleteAllTitle = useLocalizedString("DeleteAllTitle");
+  const deleteAllMessage = useLocalizedString("DeleteAllMessage");
+  const deleteSelectedTitle = useLocalizedString("DeleteSelectedTitle");
+  const deleteSelectedMessage = useLocalizedString("DeleteSelectedMessage");
   const [decoratorActive, setDecoratorActive] = React.useState(true);
   const [selectMode, setSelectMode] = React.useState(false);
   const [selectedUrls, setSelectedUrls] = React.useState(new Set<string>());

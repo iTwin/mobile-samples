@@ -42,6 +42,7 @@ import {
   ToolAssistance,
   ToolsBottomPanel,
   ToolsBottomPanelProps,
+  useLocalizedString,
   ViewsBottomPanel,
 } from "../Exports";
 import "./ModelScreen.scss";
@@ -89,30 +90,30 @@ export function ModelScreen(props: ModelScreenProps) {
   const { filename, iModel, onBack, toolsBottomPanel, additionalComponents, additionalTabs } = props;
   const [viewState, setViewState] = React.useState<ViewState>();
   const isDark = useActiveColorSchemeIsDark();
-  const locationLabel = React.useMemo(() => i18n("ModelScreen", "Location"), []);
-  const errorLabel = React.useMemo(() => i18n("Shared", "Error"), []);
-  const okLabel = React.useMemo(() => i18n("Shared", "OK"), []);
-  const showCurrentLocationLabel = React.useMemo(() => i18n("ModelScreen", "ShowCurrentLocation"), []);
-  const fitViewLabel = React.useMemo(() => i18n("ModelScreen", "FitView"), []);
-  const defaultViewLabel = React.useMemo(() => i18n("ModelScreen", "DefaultView"), []);
-  const toggleCameraLabel = React.useMemo(() => i18n("ModelScreen", "ToggleCamera"), []);
-  const alertDemoLabel = React.useMemo(() => i18n("ModelScreen", "AlertDemo"), []);
-  const oneLabel = React.useMemo(() => i18n("ModelScreen", "One"), []);
-  const twoLabel = React.useMemo(() => i18n("ModelScreen", "Two"), []);
-  const threeLabel = React.useMemo(() => i18n("ModelScreen", "Three"), []);
-  const fourLabel = React.useMemo(() => i18n("ModelScreen", "Four"), []);
-  const fiveLabel = React.useMemo(() => i18n("ModelScreen", "Five"), []);
-  const sixLabel = React.useMemo(() => i18n("ModelScreen", "Six"), []);
-  const youChoseLabel = React.useMemo(() => i18n("ModelScreen", "YouChose"), []);
-  const infoLabel = React.useMemo(() => i18n("ModelScreen", "Info"), []);
-  const aboutLabel = React.useMemo(() => i18n("AboutBottomPanel", "About"), []);
-  const viewsLabel = React.useMemo(() => i18n("ViewsBottomPanel", "Views"), []);
-  const toolsLabel = React.useMemo(() => i18n("ModelScreen", "Tools"), []);
-  const elementPropertiesLabel = React.useMemo(() => i18n("ModelScreen", "Properties"), []);
-  const changeAppearanceLabel = React.useMemo(() => i18n("ModelScreen", "ChangeAppearance"), []);
-  const lightLabel = React.useMemo(() => i18n("ModelScreen", "Light"), []);
-  const darkLabel = React.useMemo(() => i18n("ModelScreen", "Dark"), []);
-  const automaticLabel = React.useMemo(() => i18n("ModelScreen", "Automatic"), []);
+  const locationLabel = useLocalizedString("ModelScreen", "Location");
+  const errorLabel = useLocalizedString("Shared", "Error");
+  const okLabel = useLocalizedString("Shared", "OK");
+  const showCurrentLocationLabel = useLocalizedString("ModelScreen", "ShowCurrentLocation");
+  const fitViewLabel = useLocalizedString("ModelScreen", "FitView");
+  const defaultViewLabel = useLocalizedString("ModelScreen", "DefaultView");
+  const toggleCameraLabel = useLocalizedString("ModelScreen", "ToggleCamera");
+  const alertDemoLabel = useLocalizedString("ModelScreen", "AlertDemo");
+  const oneLabel = useLocalizedString("ModelScreen", "One");
+  const twoLabel = useLocalizedString("ModelScreen", "Two");
+  const threeLabel = useLocalizedString("ModelScreen", "Three");
+  const fourLabel = useLocalizedString("ModelScreen", "Four");
+  const fiveLabel = useLocalizedString("ModelScreen", "Five");
+  const sixLabel = useLocalizedString("ModelScreen", "Six");
+  const youChoseLabel = useLocalizedString("ModelScreen", "YouChose");
+  const infoLabel = useLocalizedString("ModelScreen", "Info");
+  const aboutLabel = useLocalizedString("AboutBottomPanel", "About");
+  const viewsLabel = useLocalizedString("ViewsBottomPanel", "Views");
+  const toolsLabel = useLocalizedString("ModelScreen", "Tools");
+  const elementPropertiesLabel = useLocalizedString("ModelScreen", "Properties");
+  const changeAppearanceLabel = useLocalizedString("ModelScreen", "ChangeAppearance");
+  const lightLabel = useLocalizedString("ModelScreen", "Light");
+  const darkLabel = useLocalizedString("ModelScreen", "Dark");
+  const automaticLabel = useLocalizedString("ModelScreen", "Automatic");
 
   // Any time we do anything asynchronous, we have to check if the component is still mounted,
   // or it can lead to a run-time exception.
