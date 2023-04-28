@@ -39,7 +39,7 @@ function i18n(key: string) {
  * @param key The i18n key for the label.
  * @returns A memoized localized string.
  */
-function useLabel(key: string) {
+function useLocalizedString(key: string) {
   return React.useMemo(() => i18n(key), [key]);
 }
 
@@ -51,15 +51,15 @@ function useLabel(key: string) {
  */
 export function PicturesBottomPanel(props: PicturesBottomPanelProps) {
   const { iModel, ...otherProps } = props;
-  const picturesLabel = useLabel("Pictures");
+  const picturesLabel = useLocalizedString("Pictures");
   const reloadedEvent = React.useRef(new ReloadedEvent());
   const [pictureUrls, setPictureUrls] = React.useState<string[]>([]);
-  const deletePictureTitle = useLabel("DeletePictureTitle");
-  const deletePictureMessage = useLabel("DeletePictureMessage");
-  const deleteAllTitle = useLabel("DeleteAllTitle");
-  const deleteAllMessage = useLabel("DeleteAllMessage");
-  const deleteSelectedTitle = useLabel("DeleteSelectedTitle");
-  const deleteSelectedMessage = useLabel("DeleteSelectedMessage");
+  const deletePictureTitle = useLocalizedString("DeletePictureTitle");
+  const deletePictureMessage = useLocalizedString("DeletePictureMessage");
+  const deleteAllTitle = useLocalizedString("DeleteAllTitle");
+  const deleteAllMessage = useLocalizedString("DeleteAllMessage");
+  const deleteSelectedTitle = useLocalizedString("DeleteSelectedTitle");
+  const deleteSelectedMessage = useLocalizedString("DeleteSelectedMessage");
   const [decoratorActive, setDecoratorActive] = React.useState(true);
   const [selectMode, setSelectMode] = React.useState(false);
   const [selectedUrls, setSelectedUrls] = React.useState(new Set<string>());
