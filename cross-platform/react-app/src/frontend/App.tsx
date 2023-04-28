@@ -8,9 +8,9 @@ import { IModelApp, IModelConnection, ITWINJS_CORE_VERSION, RenderSystem, Snapsh
 import { AppNotificationManager, UiFramework } from "@itwin/appui-react";
 import { Presentation } from "@itwin/presentation-frontend";
 import { Messenger, MobileCore } from "@itwin/mobile-sdk-core";
-import { MobileUi } from "@itwin/mobile-ui-react";
+import { MobileUi, ToolAssistanceSuggestion } from "@itwin/mobile-ui-react";
 import { MeasureTools, FeatureTracking as MeasureToolsFeatureTracking } from "@itwin/measure-tools-react";
-import { ActiveScreen, HomeScreen, HubScreen, LoadingScreen, LocalModelsScreen, ModelScreen, ModelScreenExtensionProps, presentError, ToolAssistance } from "./Exports";
+import { ActiveScreen, HomeScreen, HubScreen, LoadingScreen, LocalModelsScreen, ModelScreen, ModelScreenExtensionProps, presentError } from "./Exports";
 import { getSupportedRpcs } from "../common/rpcs";
 import "./App.scss";
 
@@ -65,7 +65,7 @@ interface ActiveInfo {
 
 class AppToolAssistanceNotificationManager extends AppNotificationManager {
   public setToolAssistance(instructions: ToolAssistanceInstructions | undefined): void {
-    ToolAssistance.onSetToolAssistance.emit(instructions);
+    ToolAssistanceSuggestion.onSetToolAssistance.emit({ instructions });
     super.setToolAssistance(instructions);
   }
 }
