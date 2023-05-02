@@ -44,10 +44,12 @@ function useLocalizedString(key: string) {
 }
 
 /**
- * `ResizableBottomPanel` React component that allows the user to take pictures with the device's camera.
+ * {@link ResizableBottomPanel} React component to interact with the pictures that have been
+ * attached to the current iModel.
  *
- * Shows the pictures that have been taken for the selected iModel. Allows the user to take more, as well as
- * delete individual pictures or all pictures.
+ * Shows the pictures that have been attached the selected iModel (both from the camera and the
+ * device's photo gallery). Allows the user to attach more, as well as delete and share individual
+ * pictures or all pictures.
  */
 export function PicturesBottomPanel(props: PicturesBottomPanelProps) {
   const { iModel, ...otherProps } = props;
@@ -64,6 +66,7 @@ export function PicturesBottomPanel(props: PicturesBottomPanelProps) {
   const [selectMode, setSelectMode] = React.useState(false);
   const [selectedUrls, setSelectedUrls] = React.useState(new Set<string>());
 
+  // Reload the list of attached pictures.
   const reload = React.useCallback(async () => {
     const urls = await ImageCache.getImages(iModel.iModelId);
     urls.sort();
@@ -75,12 +78,15 @@ export function PicturesBottomPanel(props: PicturesBottomPanelProps) {
     reloadedEvent.current.emit();
   }, [iModel]);
 
+  // React effect run during component initialization. (It also runs when the iModel changes, but
+  // that never happens while this component is loaded.)
   React.useEffect(() => {
     void reload();
   }, [reload]);
 
   useBeUiEvent(async () => reload(), ImageMarkerApi.onMarkerAdded);
 
+  // Toggle the selection status of the picture with the given URL.
   const togglePictureSelected = React.useCallback((pictureUrl: string) => {
     setSelectedUrls((previousSelectedUrls) => {
       const newSelected = new Set<string>(previousSelectedUrls);
@@ -102,6 +108,7 @@ export function PicturesBottomPanel(props: PicturesBottomPanelProps) {
 
   const getShareIcon = () => MobileCore.isIosPlatform ? "icon-upload" : "icon-share";
 
+  // Initialize the array of picture buttons.
   const pictureButtons = pictureUrls.map((pictureUrl, index) => {
     const selected = selectedUrls.has(pictureUrl);
     return (
@@ -181,7 +188,9 @@ export function PicturesBottomPanel(props: PicturesBottomPanelProps) {
           onClick={async () => {
             const all = pictureUrls.length === selectedUrls.size;
             if (all && await presentYesNoAlert(deleteAllTitle, deleteAllMessage, true)) {
-              await ImageCache.deleteAllImages(iModel.iModelId);
+              if (iModel.iModelId) {
+                await ImageCache.deleteAllImages(iModel.iModelId);
+              }
               void reload();
             } else if (!all && await presentYesNoAlert(deleteSelectedTitle, deleteSelectedMessage, true)) {
               await ImageCache.deleteImages(Array.from(selectedUrls));
@@ -216,11 +225,13 @@ export function PicturesBottomPanel(props: PicturesBottomPanelProps) {
   );
 }
 
+/** Properties for the {@link PictureView} React component. */
 export interface PictureViewProps {
   url: string;
   onClick?: (e: React.MouseEvent<HTMLDivElement>) => void;
 }
 
+/** React component to view a picture (mostly) full-screen. */
 export function PictureView(props: PictureViewProps) {
   const { url, onClick } = props;
   const portalDiv = (
@@ -229,5 +240,6 @@ export function PictureView(props: PictureViewProps) {
     </div>
   );
   const rootElement = document.getElementById("root");
+  // Make this component a child of the "root" element in the document.
   return ReactDOM.createPortal(portalDiv, rootElement!);
 }

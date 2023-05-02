@@ -15,17 +15,27 @@ import {
 } from "./Exports";
 import { Point3d } from "@itwin/core-geometry";
 
+/**
+ * Select and then add an image marker to the given iModel at the given location.
+ * @param point The 3D location of the image marker in the iModel.
+ * @param photoLibrary Whether or not to pick the image from the photo library (true) or use the
+ * camera (false).
+ * @param iModelId The iModelId of the iModel to which to add the image marker.
+ */
 const addImageMarker = async (point: Point3d, photoLibrary: boolean, iModelId: string) => {
   const fileUrl = await ImageCache.pickImage(iModelId, photoLibrary);
   if (fileUrl)
     void ImageMarkerApi.addMarker(point, fileUrl);
 };
 
+/**
+ * {@link PlaceMarkerTool} to allow the user to select a location in the model, then place a marker
+ * image from the photo gallery into that location.
+ */
 class PlacePhotoMarkerTool extends PlaceMarkerTool {
-  public static toolId = "PlacePhotoMarkerTool";
-  public static iconSpec = "icon-image";
-  public static prompt = "";
-  public static enableSnap = false;
+  public static override toolId = "PlacePhotoMarkerTool";
+  public static override iconSpec = "icon-image";
+  public static override prompt = "";
 
   constructor(iModelId: string) {
     super(async (point: Point3d) => {
@@ -36,11 +46,14 @@ class PlacePhotoMarkerTool extends PlaceMarkerTool {
   }
 }
 
+/**
+ * {@link PlaceMarkerTool}  to allow the user to select a location in the model, then place a marker
+ * image taken from camera into that location.
+ */
 class PlaceCameraMarkerTool extends PlaceMarkerTool {
-  public static toolId = "PlaceCameraMarkerTool";
-  public static iconSpec = "icon-camera";
-  public static prompt = "";
-  public static enableSnap = false;
+  public static override toolId = "PlaceCameraMarkerTool";
+  public static override iconSpec = "icon-camera";
+  public static override prompt = "";
 
   constructor(iModelId: string) {
     super(async (point: Point3d) => {
@@ -51,6 +64,7 @@ class PlaceCameraMarkerTool extends PlaceMarkerTool {
   }
 }
 
+/** {@link ToolsBottomPanel} React component with extra camera sample-specific tools added. */
 export function CameraSampleToolsBottomPanel(props: ToolsBottomPanelProps) {
   const { iModel } = props;
   const tools = React.useMemo(() => {
@@ -71,7 +85,11 @@ export function CameraSampleToolsBottomPanel(props: ToolsBottomPanelProps) {
     if (!IModelApp.tools.find(PlaceCameraMarkerTool.toolId))
       IModelApp.tools.register(PlaceCameraMarkerTool, "CameraSampleApp");
 
-    ImageMarkerApi.startup(iModel.iModelId);
+    if (iModel.iModelId) {
+      ImageMarkerApi.startup(iModel.iModelId);
+    } else {
+      ImageMarkerApi.shutdown();
+    }
 
     return () => {
       ImageMarkerApi.shutdown();
