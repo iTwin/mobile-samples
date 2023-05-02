@@ -31,6 +31,7 @@ export interface ToolEntry {
   toolItemDef: ToolItemDef;
 }
 
+/** A horizontally scrollable container for Buttons that forwards the scrollable div to its parent. */
 export const ButtonRow = React.forwardRef((props: ButtonRowProps, ref: MutableHtmlDivRefOrFunction) => {
   const { className, children, ...nonChildren } = props;
   const divRef = React.useRef<HTMLDivElement | null>(null);
@@ -54,10 +55,16 @@ export const ButtonRow = React.forwardRef((props: ButtonRowProps, ref: MutableHt
 });
 ButtonRow.displayName = "ButtonRow";
 
+/** Properties for the {@link ActiveButtonRow} React component. */
 export interface ActiveButtonRowProps extends ButtonRowProps {
+  /** The index of the active button. */
   activeIndex?: number;
 }
 
+/**
+ * A horizontally scrollable container for Buttons that ensures the child at the activeIndex is visible when resized.
+ * As with {@link ButtonRow}, it forwards the scrollable div's reference to its parent.
+ */
 export const ActiveButtonRow = React.forwardRef((props: ActiveButtonRowProps, ref: MutableHtmlDivRefOrFunction) => {
   const { activeIndex, ...others } = props;
   const divRef = React.useRef<HTMLDivElement | null>(null);
