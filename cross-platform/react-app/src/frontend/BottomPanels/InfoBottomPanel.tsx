@@ -16,7 +16,7 @@ interface InfoBottomPanelProps extends BottomPanelProps {
   filename: string;
 }
 
-/** `BottomPanel` React component that shows the iModel name and path. */
+/** {@link BottomPanel} React component that shows the iModel name and path. */
 export function InfoBottomPanel(props: InfoBottomPanelProps) {
   const { name, filename } = props;
   const pathLabel = React.useMemo(() => i18n("InfoBottomPanel", "PathFormat", { filename }), [filename]);

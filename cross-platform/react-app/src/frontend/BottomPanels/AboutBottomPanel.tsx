@@ -8,7 +8,7 @@ import { HeaderTitle, useLocalizedString } from "../Exports";
 
 import "./AboutBottomPanel.scss";
 
-/** `BottomPanel` React Component with fixed content, here simply as an example. */
+/** {@link BottomPanel} React Component with fixed content, here simply as an example. */
 export function AboutBottomPanel(props: BottomPanelProps) {
   const aboutLabel = useLocalizedString("AboutBottomPanel", "About");
   const headerLabel = useLocalizedString("AboutBottomPanel", "Header");

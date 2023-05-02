@@ -13,11 +13,15 @@ import { HeaderTitle, useLocalizedString } from "../Exports";
 
 import "./ElementPropertiesPanel.scss";
 
+/** Return type for {@link useElementSize}. */
 interface ElementSize {
+  /** The width of the element. */
   width: number;
+  /** The height of the element. */
   height: number;
 }
 
+/** React hook to keep track of the size of an {@link HTMLElement}. */
 const useElementSize = (target: React.RefObject<HTMLElement>) => {
   const [size, setSize] = React.useState<ElementSize>();
 
@@ -30,28 +34,41 @@ const useElementSize = (target: React.RefObject<HTMLElement>) => {
     }
   }, [target]);
   useResizeObserver(target, (entry) => setSize(entry.contentRect));
-  return size ?? ({ x: 0, y: 0, width: 0, height: 0 } as DOMRect);
+  return size ?? { width: 0, height: 0 };
 };
 
+/** Properties for the {@link PropertiesPanel} React component. */
 interface PropertiesPanelProps extends ResizableBottomPanelProps {
   selectionCount: number;
   children: React.ReactNode;
 }
 
+/** Properties for the {@link PropertyGridParent} React component. */
 interface PropertyGridParentProps {
+  /** The data provider for the property grid. */
   dataProvider: IPresentationPropertyDataProvider;
 }
 
+/** Properties for the {@link UnifiedSelectionPropertyGrid} React component. */
 interface UnifiedSelectionPropertyGridProps extends PropertyGridParentProps {
+  /** The width of the property grid. */
   width: number;
+  /** The height of the property grid. */
   height: number;
 }
 
+/** Properties for the {@link ElementPropertiesPanel} React component. */
 export interface ElementPropertiesPanelProps extends ResizableBottomPanelProps {
+  /** The loaded iModel. */
   iModel: IModelConnection;
+  /** Callback that is called when the close button is clicked. */
   onCloseClick: () => void;
 }
 
+/**
+ * {@link ResizableBottomPanel} React component helper to show the properties of the currently
+ * selected element.
+ */
 function PropertiesPanel(props: PropertiesPanelProps) {
   const { isOpen, selectionCount, children, ...otherProps } = props;
   const openAndHaveSelection = isOpen && selectionCount > 0;
@@ -67,6 +84,7 @@ function PropertiesPanel(props: PropertiesPanelProps) {
   </ResizableBottomPanel>;
 }
 
+/** React component to display a property grid that is kept in sync with the current selection. */
 function UnifiedSelectionPropertyGrid(props: UnifiedSelectionPropertyGridProps) {
   const { isOverLimit } = usePropertyDataProviderWithUnifiedSelection({ dataProvider: props.dataProvider });
   const toManyElementsLabel = useLocalizedString("ElementPropertiesPanel", "TooManyElements");
@@ -76,6 +94,11 @@ function UnifiedSelectionPropertyGrid(props: UnifiedSelectionPropertyGridProps) 
   return <VirtualizedPropertyGridWithDataProvider {...props} horizontalOrientationMinWidth={400} />;
 }
 
+/**
+ * React component that contains the property grid. Since the property grid needs to know its
+ * exact size, this component is completely filled by the property grid, and uses
+ * {@link useElementSize} to keep track of its size.
+ */
 function PropertyGridParent(props: PropertyGridParentProps) {
   const divRef = React.useRef<HTMLDivElement | null>(null);
   const { width, height } = useElementSize(divRef);
@@ -91,6 +114,10 @@ function PropertyGridParent(props: PropertyGridParentProps) {
   );
 }
 
+/**
+ * {@link ResizableBottomPanel} React component that shows the properties of the currently selected
+ * element.
+ */
 export function ElementPropertiesPanel(props: ElementPropertiesPanelProps) {
   const { iModel, onCloseClick } = props;
   const [selectionCount, setSelectionCount] = React.useState(IModelApp.viewManager.getFirstOpenView()?.view.iModel.selectionSet.size ?? 0);
