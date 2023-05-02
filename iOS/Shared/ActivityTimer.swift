@@ -106,7 +106,7 @@ class ActivityTimer {
                     "modelIDRefURL": "https://www.theiphonewiki.com/wiki/Models",
                     "systemName": device.systemName,
                     "systemVersion": device.systemVersion,
-                ],
+                ] as [String : Any],
                 "iTwinVersion": iTwinVersion,
                 "timestamp": isoDateFormatter.string(from: Date()),
                 "totalTime": lastTime.timeIntervalSince(startTime),
