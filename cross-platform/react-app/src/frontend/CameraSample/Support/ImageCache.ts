@@ -8,8 +8,10 @@ export class ImageCache {
   /**
    * Get an image, either by taking a camera picture, or picking one from the photo library.
    * @param iModelId The iModelId to associate the image with.
-   * @param photoLibrary true to pick from the photo library, or false to take a new picture with the camera, default is false.
-   * @returns The URL of the newly picked image.
+   * @param photoLibrary true to pick from the photo library, or false to take a new picture with
+   * the camera, default is false.
+   * @returns A string containing the URL of the newly picked image, or undefined if the user
+   * cancels.
    */
   public static async pickImage(iModelId: string | undefined, photoLibrary = false): Promise<string | undefined> {
     return Messenger.query("pickImage", { iModelId, sourceType: photoLibrary ? "photoLibrary" : "camera" });
@@ -17,7 +19,10 @@ export class ImageCache {
 
   /**
    * Delete images from the image cache.
-   * @param urls An array of URL's of the images to delete.
+   *
+   * __Note__: Also removes any markers that show the given images.
+   *
+   * @param urls An array of URLs of the images to delete.
    * @returns A void Promise that completes when the deletion has finished.
    */
   public static async deleteImages(urls: string[]): Promise<void> {
@@ -27,10 +32,13 @@ export class ImageCache {
 
   /**
    * Delete all cached images associated with a specific iModel.
+   *
+   * __Note__: Also removes any markers for the given iModel.
+   *
    * @param iModelId The iModelId to delete the cached images from.
    * @returns A void Promise that completes when the deletion has finished.
    */
-  public static async deleteAllImages(iModelId: string | undefined): Promise<void> {
+  public static async deleteAllImages(iModelId: string): Promise<void> {
     ImageMarkerApi.deleteMarkers(iModelId);
     return Messenger.query("deleteAllImages", { iModelId });
   }
@@ -45,7 +53,7 @@ export class ImageCache {
   }
 
   /**
-   * Share images from the image cache.
+   * Share images from the image cache using the OS-specific sharing mechanism.
    * @param urls An array of URL's of the images to share.
    * @returns A void Promise that completes when the share dialog is displayed.
    */
