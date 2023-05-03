@@ -32,6 +32,9 @@ export interface ScreenProps {
 /**
  * Look up a localized string in the `ReactApp` i18n namespace.
  *
+ * __Note__: If debugI18n is set to true in the app URL, the localized string has an equals sign
+ * added to both the front and back. (For example, "About" becomes "=About=").
+ *
  * @param prefix The prefix of (top-level group) for the localized string.
  * @param key The name of the localized string.
  * @param options Optional options to pass to `getLocalizedString`.

@@ -64,12 +64,17 @@ interface ActiveInfo {
 }
 
 class AppToolAssistanceNotificationManager extends AppNotificationManager {
-  public setToolAssistance(instructions: ToolAssistanceInstructions | undefined): void {
+  public override setToolAssistance(instructions: ToolAssistanceInstructions | undefined): void {
     ToolAssistanceSuggestion.onSetToolAssistance.emit({ instructions });
     super.setToolAssistance(instructions);
   }
 }
 
+/**
+ * Get the options to be passed into the `iModelApp.renderSys` property of the {@link MobileAppOpts}
+ * passed into {@link MobileApp.startup}.
+ * @returns The appropriate options, or undefined if there aren't any.
+ */
 function getRenderSysOptions(): RenderSystem.Options | undefined {
   if (window.itmSampleParams.lowResolution) {
     // Improves FPS on really slow devices and iOS simulator.
@@ -82,6 +87,14 @@ function getRenderSysOptions(): RenderSystem.Options | undefined {
   return undefined;
 }
 
+/**
+ * React hook that returns an object containing all of the import app state.
+ *
+ * This is present to allow for specific samples (like the camera sample) to perform more
+ * customization than they would otherwise be able to.
+ * @param onInitialize If present, called during initialization.
+ * @returns An app state object with all the fields needed to render the app.
+ */
 function useAppState(onInitialize?: () => Promise<void>) {
   // Start out on the Loading screen.
   const [activeScreen, setActiveScreen] = React.useState(ActiveScreen.Loading);
@@ -244,11 +257,13 @@ function useAppState(onInitialize?: () => Promise<void>) {
   return { activeScreen, handleHomeSelect, handleOpen, handleBack, haveBackButton, iModel, modelFilename };
 }
 
+/** Properties for the {@link App} React component. */
 export interface AppProps {
   getModelScreenExtensions?: (iModel: IModelConnection) => ModelScreenExtensionProps;
   onInitialize?: () => Promise<void>;
 }
 
+/** Top-level React component for the standard sample app. */
 export function App(props: AppProps) {
   const { getModelScreenExtensions, onInitialize } = props;
   const { activeScreen, handleHomeSelect, handleOpen, handleBack, haveBackButton, iModel, modelFilename } = useAppState(onInitialize);
