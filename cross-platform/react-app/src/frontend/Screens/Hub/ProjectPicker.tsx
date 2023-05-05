@@ -52,7 +52,7 @@ async function getProjects(source: ProjectsSource, search = "", skip = 0): Promi
   }
   // Provide a next function if the data contains a _links.next member
   let next: ProjectsQueryFunction | undefined;
-  if (results.data && source === ProjectsSource.All) {
+  if (source === ProjectsSource.All && results.data?.length === numToFetch) {
     next = async () => getProjects(source, search, skip + numToFetch);
   }
   // NOTE: Assume all returned ITwins have a valid id, should be safe since they're queried from the server.
