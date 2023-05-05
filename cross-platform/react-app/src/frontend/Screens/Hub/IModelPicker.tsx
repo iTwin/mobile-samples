@@ -5,7 +5,6 @@
 import React from "react";
 import { MobileCore } from "@itwin/mobile-sdk-core";
 import { IconImage, useIsMountedRef } from "@itwin/mobile-ui-react";
-import { Project } from "@itwin/projects-client";
 import { IModelApp, NativeApp } from "@itwin/core-frontend";
 import { IModelsClient, MinimalIModel } from "@itwin/imodels-client-management";
 import { AccessTokenAdapter } from "@itwin/imodels-access-frontend";
@@ -75,11 +74,11 @@ function IModelList(props: IModelListProps) {
 }
 
 /**
- * Get all the iModels in the given project.
- * @param project The project from which to get the list of iModels.
- * @returns The iModels in the project.
+ * Get all the iModels in the given iTwin.
+ * @param iTwinId The iTwin from which to get the list of iModels.
+ * @returns The iModels in the iTwin.
  */
-async function getIModels(project: Project) {
+async function getIModels(iTwinId: string) {
   const baseUrl = `https://${window.itmSampleParams.apiPrefix}api.bentley.com/imodels`;
   const imodelsClient = new IModelsClient({ api: { baseUrl } });
   const accessToken = await IModelApp.getAccessToken();
@@ -87,9 +86,7 @@ async function getIModels(project: Project) {
   // Fetch the list of iModels.
   for await (const minimalIModel of imodelsClient.iModels.getMinimalList({
     authorization: AccessTokenAdapter.toAuthorizationCallback(accessToken),
-    urlParams: {
-      iTwinId: project.id,
-    },
+    urlParams: { iTwinId },
   })) {
     minimalIModels.push(minimalIModel);
   }
@@ -106,21 +103,21 @@ async function getIModels(project: Project) {
 
 /** Properties for the {@link IModelPicker} React component. */
 export interface IModelPickerProps {
-  project: Project;
+  iTwinId: string;
   onSelect?: (model: IModelInfo) => void;
   onLoaded?: (models: IModelInfo[]) => void;
   onError?: (error: any) => void;
   onCacheDeleted?: (modelInfo: IModelInfo) => void;
 }
 
-/** React component to show a list of iModels in a project so they can be picked. */
+/** React component to show a list of iModels in an iTwin so they can be picked. */
 export function IModelPicker(props: IModelPickerProps) {
-  const { project, onSelect, onLoaded, onError, onCacheDeleted } = props;
+  const { iTwinId, onSelect, onLoaded, onError, onCacheDeleted } = props;
   const [iModels, setIModels] = React.useState<IModelInfo[]>([]);
   const [loading, setLoading] = React.useState(false);
   const isMountedRef = useIsMountedRef();
 
-  // Fetch the iModels for the active project so they can be picked.
+  // Fetch the iModels for the active iTwin so they can be picked.
   React.useEffect(() => {
     if (!isMountedRef.current)
       return;
@@ -128,7 +125,7 @@ export function IModelPicker(props: IModelPickerProps) {
     const fetchModels = async () => {
       try {
         setLoading(true);
-        const models = await getIModels(project);
+        const models = await getIModels(iTwinId);
         if (!isMountedRef.current)
           return;
         setIModels(models);
@@ -145,8 +142,8 @@ export function IModelPicker(props: IModelPickerProps) {
       }
       setLoading(false);
     };
-    void PromiseUtil.consolidateCall(`fetchModels-${project.id}`, async () => fetchModels());
-  }, [isMountedRef, onError, onLoaded, project]);
+    void PromiseUtil.consolidateCall(`fetchModels-${iTwinId}`, async () => fetchModels());
+  }, [isMountedRef, onError, onLoaded, iTwinId]);
 
   return <IModelList models={iModels} loading={loading} onSelect={onSelect} onCacheDeleted={(model) => {
     onCacheDeleted?.(model);
