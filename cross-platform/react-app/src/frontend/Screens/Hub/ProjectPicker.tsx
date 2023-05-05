@@ -10,7 +10,7 @@ import { LoadingSpinner } from "@itwin/core-react";
 import { ButtonProps, HubScreenButton, HubScreenButtonList, HubScreenButtonListProps, i18n, presentError, PromiseUtil, SearchControl, useLocalizedString } from "../../Exports";
 
 type WithRequired<T, K extends keyof T> = T & { [P in K]-?: T[P] };
-export type Project = WithRequired<ITwin, "id">;
+type IdentifiedITwin = WithRequired<ITwin, "id">;
 
 enum ProjectsSource {
   All = "",
@@ -18,10 +18,17 @@ enum ProjectsSource {
   Recents = "recents"
 }
 
+/**
+ * The data returned by {@link getProjects}.
+ */
 interface ProjectsQueryResponse {
-  projects: Array<Project>;
+  /** The queried projects, possibly empty. */
+  projects: Array<IdentifiedITwin>;
+  /** A function to get the next page of data. */
   next: ProjectsQueryFunction | undefined;
 }
+
+/** The next function type. */
 type ProjectsQueryFunction = () => Promise<ProjectsQueryResponse>;
 
 /**
@@ -55,7 +62,7 @@ async function getProjects(source: ProjectsSource, search = "", skip = 0): Promi
     next = async () => getProjects(source, search, skip + numToFetch);
   }
   // NOTE: Assume all returned ITwins have a valid id, should be safe since they're queried from the server.
-  return { projects: results.data as Array<Project> ?? [], next };
+  return { projects: results.data as Array<IdentifiedITwin> ?? [], next };
 }
 
 /** Properties for the {@link ProjectButton} React component. */
@@ -72,22 +79,22 @@ function ProjectButton(props: ProjectButtonProps) {
 
 /** Properties for the {@link ProjectList} React component. */
 interface ProjectListProps extends HubScreenButtonListProps {
-  projects: Project[];
-  onSelect?: (project: Project) => void;
+  projects: IdentifiedITwin[];
+  onSelect?: (iTwinId: string) => void;
 }
 
 /** React component to show a list of projects. */
 function ProjectList(props: ProjectListProps) {
   const { projects, onSelect, children, ...others } = props;
   return <HubScreenButtonList {...others}>
-    {projects.map((project, index) => <ProjectButton key={index} project={project} onClick={() => onSelect?.(project)} />)}
+    {projects.map((project, index) => <ProjectButton key={index} project={project} onClick={() => onSelect?.(project.id)} />)}
     {children}
   </HubScreenButtonList>;
 }
 
 /** Properties for the {@link ProjectPicker} React component. */
 export interface ProjectPickerProps {
-  onSelect?: (project: Project) => void;
+  onSelect?: (iTwinId: string) => void;
   onError?: (error: any) => void;
 }
 
@@ -96,7 +103,7 @@ export interface ProjectPickerProps {
  */
 export function ProjectPicker(props: ProjectPickerProps) {
   const { onSelect, onError } = props;
-  const [projects, setProjects] = React.useState<Project[]>([]);
+  const [projects, setProjects] = React.useState<IdentifiedITwin[]>([]);
   const [search, setSearch] = React.useState("");
   const [projectSource, setProjectSource] = React.useState(ProjectsSource.Recents);
   const [loading, setLoading] = React.useState(false);

@@ -5,36 +5,42 @@
 import React from "react";
 import { AlertAction, MobileCore } from "@itwin/mobile-sdk-core";
 import { ActionSheetButton, BackButton, useIsMountedRef } from "@itwin/mobile-ui-react";
-import { ITwin } from "@itwin/itwins-client";
 import { BriefcaseConnection, IModelConnection } from "@itwin/core-frontend";
-import { Button, HubStep, i18n, IModelDownloader, IModelInfo, IModelPicker, presentError, Project, ProjectPicker, Screen, SignIn, signOut, useLocalizedString } from "../../Exports";
+import { Button, HubStep, i18n, IModelDownloader, IModelInfo, IModelPicker, presentError, ProjectPicker, Screen, SignIn, signOut, useLocalizedString } from "../../Exports";
 import "./HubScreen.scss";
 
 HubScreen.ACTIVE_PROJECT_INFO = "activeProjectInfo";
 
 /**
- * Gets active project stored in `localStorage`, or undefined if there isn't one
- * @see {@link saveActiveProject}.
- * @returns A {@link Project} object representing the active project, or undefined if there is none.
+ * Gets the active project id stored in `localStorage`, or undefined if there isn't one.
+ * @see {@link saveActiveProjectId}.
+ * @returns The active project id or undefined.
  */
-function getActiveProject() {
-  const projectInfoJson = localStorage.getItem(HubScreen.ACTIVE_PROJECT_INFO);
-  if (projectInfoJson) {
-    const project = JSON.parse(projectInfoJson);
-    if (project.id) {
-      return project as Project;
+function getActiveProjectId() {
+  const storedValue = localStorage.getItem(HubScreen.ACTIVE_PROJECT_INFO);
+  if (!storedValue) return undefined;
+
+  // Previously we stored the whole Project object, now we just store the id.
+  // This code attempts to properly handle the old data.
+  if (storedValue.includes("{")) {
+    try {
+      const project = JSON.parse(storedValue);
+      if (typeof (project) === "object" && project.id)
+        return project.id;
+    } catch (_e) {
+      console.log(`Exception parsing: ${storedValue}`);
     }
   }
-  return undefined;
+  return storedValue;
 }
 
 /**
  * Stores the active project in `localStorage`.
- * @see {@link getActiveProject}.
- * @param project The {@link Project} to set as the active project.
+ * @see {@link getActiveProjectId}.
+ * @param iTwinId The id to set as the active project.
  */
-function saveActiveProject(project: ITwin) {
-  localStorage.setItem(HubScreen.ACTIVE_PROJECT_INFO, JSON.stringify(project));
+function saveActiveProjectId(iTwinId: string) {
+  localStorage.setItem(HubScreen.ACTIVE_PROJECT_INFO, iTwinId);
 }
 
 /** Properties for the {@link HubScreen} React component. */
@@ -50,7 +56,7 @@ export function HubScreen(props: HubScreenProps) {
   const { onOpen, onBack } = props;
   const [initialized, setInitialized] = React.useState(false);
   const [hubStep, setHubStep] = React.useState(HubStep.SignIn);
-  const [project, setProject] = React.useState(getActiveProject());
+  const [projectId, setProjectId] = React.useState(getActiveProjectId());
   const [haveCachedBriefcase, setHaveCachedBriefcase] = React.useState(false);
   const [iModel, setIModel] = React.useState<IModelInfo>();
   // Any time we do anything asynchronous, we have to check if the component is still mounted,
@@ -75,7 +81,7 @@ export function HubScreen(props: HubScreenProps) {
       stepContent = <SignIn
         onBack={onBack}
         onSignedIn={() => {
-          setHubStep(project ? HubStep.SelectIModel : HubStep.SelectProject);
+          setHubStep(projectId ? HubStep.SelectIModel : HubStep.SelectProject);
           setInitialized(true);
         }}
         onError={() => setHubStep(HubStep.Error)}
@@ -85,9 +91,9 @@ export function HubScreen(props: HubScreenProps) {
     case HubStep.SelectProject:
       if (!initialized) break;
       stepContent = <ProjectPicker
-        onSelect={(newProject) => {
-          saveActiveProject(newProject);
-          setProject(newProject);
+        onSelect={(newProjectId) => {
+          saveActiveProjectId(newProjectId);
+          setProjectId(newProjectId);
           setHubStep(HubStep.SelectIModel);
         }}
         onError={() => setHubStep(HubStep.Error)}
@@ -95,8 +101,8 @@ export function HubScreen(props: HubScreenProps) {
       break;
 
     case HubStep.SelectIModel:
-      if (!project) break;
-      stepContent = <IModelPicker iTwinId={project.id}
+      if (!projectId) break;
+      stepContent = <IModelPicker iTwinId={projectId}
         onLoaded={(models) => setHaveCachedBriefcase(models.some((model) => model.briefcase !== undefined))}
         onSelect={(model) => {
           setIModel(model);
@@ -127,9 +133,9 @@ export function HubScreen(props: HubScreenProps) {
           name: "deleteAll",
           title: deleteAllDownloadsLabel,
           onSelected: async () => {
-            if (!project) return;
+            if (!projectId) return;
             try {
-              const deleted = await MobileCore.deleteCachedBriefcases(project.id);
+              const deleted = await MobileCore.deleteCachedBriefcases(projectId);
               // Note: Do the below even if isMounted is no longer true.
               deleted.forEach((briefcase) => ModelNameCache.remove(briefcase.iModelId));
               // But don't do anything else if isMounted is not true.
@@ -139,7 +145,7 @@ export function HubScreen(props: HubScreenProps) {
               // There was a problem deleting the cached briefcases. Show the error, then refresh
               // anyway so if any were successfully deleted, it will reflect that.
               presentError("DeleteAllErrorFormat", error, "HubScreen");
-              setProject({ ...project });
+              setProjectId(projectId);
             }
           },
         });
@@ -153,9 +159,9 @@ export function HubScreen(props: HubScreenProps) {
       break;
 
     case HubStep.DownloadIModel:
-      if (!project || !iModel) break;
+      if (!projectId || !iModel) break;
       stepContent = <IModelDownloader
-        iTwinId={project.id}
+        iTwinId={projectId}
         model={iModel}
         onDownloaded={(model) => {
           setIModel(model);
