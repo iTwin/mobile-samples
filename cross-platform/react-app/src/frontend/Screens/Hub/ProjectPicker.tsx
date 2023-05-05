@@ -50,9 +50,9 @@ async function getProjects(source: ProjectsSource, search = "", skip = 0): Promi
       results = await client.queryRecentsAsync(accessToken, ITwinSubClass.Project, queryArgs);
       break;
   }
-  // Provide a next function if the data contains a _links.next member
+  // Provide a next function if we received a full page of data
   let next: ProjectsQueryFunction | undefined;
-  if (source === ProjectsSource.All && results.data?.length === numToFetch) {
+  if (results.data?.length === numToFetch) {
     next = async () => getProjects(source, search, skip + numToFetch);
   }
   // NOTE: Assume all returned ITwins have a valid id, should be safe since they're queried from the server.
@@ -119,12 +119,12 @@ export function ProjectPicker(props: ProjectPickerProps) {
       try {
         setLoading(true);
         const currFetchId = ++fetchId.current;
-        const { projects: fetchedProjects, next } = await getProjects(projectSource, search);
+        const results = await getProjects(projectSource, search);
         // If the component is no longer mounted or another fetch has occurred, just return.
         if (!isMountedRef.current || fetchId.current !== currFetchId)
           return;
-        setProjects(fetchedProjects);
-        setNextFunc(() => projectSource === ProjectsSource.All ? next : undefined);
+        setProjects(results.projects);
+        setNextFunc(() => results.next);
       } catch (error) {
         setProjects([]);
         presentError("FetchProjectsErrorFormat", error, "HubScreen");
@@ -145,7 +145,7 @@ export function ProjectPicker(props: ProjectPickerProps) {
       if (!isMountedRef.current) return;
       if (moreProjects.projects.length) {
         setProjects((oldProjects) => [...oldProjects, ...moreProjects.projects]);
-        setNextFunc(projectSource === ProjectsSource.All && moreProjects.next ? () => moreProjects.next : undefined);
+        setNextFunc(moreProjects.next ? () => moreProjects.next : undefined);
       } else {
         setNextFunc(undefined);
       }
@@ -154,7 +154,7 @@ export function ProjectPicker(props: ProjectPickerProps) {
       onError?.(error);
     }
     setLoadingMore(false);
-  }, [isMountedRef, loadingMore, nextFunc, onError, projectSource]);
+  }, [isMountedRef, loadingMore, nextFunc, onError]);
 
   // Automatically load more projects if needed when the user scrolls to the bottom of the list.
   const onScroll = React.useCallback((element: HTMLElement) => {
