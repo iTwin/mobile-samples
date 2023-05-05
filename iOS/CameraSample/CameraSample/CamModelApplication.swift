@@ -11,8 +11,8 @@ import ITwinMobile
 /// that is specific to this sample.
 class CamModelApplication: ModelApplication {
     /// Registers query handlers.
-    required init() {
-        super.init()
+    override func registerQueryHandlers() {
+        super.registerQueryHandlers()
         registerQueryHandler("getImages", ImageCache.handleGetImages)
         registerQueryHandler("deleteAllImages", ImageCache.handleDeleteAllImages)
         registerQueryHandler("deleteImages", ImageCache.handleDeleteImages)
@@ -29,7 +29,9 @@ class CamModelApplication: ModelApplication {
             itmNativeUI.addComponent(ImageSharer(itmNativeUI: itmNativeUI))
         }
     }
-
+    
+    /// Update the web view configuration to include our custom URL scheme handler for images.
+    /// - Parameter configuration: The `WKWebViewConfiguration` that is about to be applied to our `WKWebView`.
     override class func updateWebViewConfiguration(_ configuration: WKWebViewConfiguration) {
         configuration.setURLSchemeHandler(ImageCacheSchemeHandler(), forURLScheme: ImageCacheSchemeHandler.urlScheme)
     }

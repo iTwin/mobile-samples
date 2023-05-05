@@ -13,7 +13,7 @@ export class ImageCache {
    * @returns A string containing the URL of the newly picked image, or undefined if the user
    * cancels.
    */
-  public static async pickImage(iModelId: string | undefined, photoLibrary = false): Promise<string | undefined> {
+  public static async pickImage(iModelId: string, photoLibrary = false): Promise<string | undefined> {
     return Messenger.query("pickImage", { iModelId, sourceType: photoLibrary ? "photoLibrary" : "camera" });
   }
 
@@ -48,7 +48,7 @@ export class ImageCache {
    * @param iModelId The iModelId to get the images for.
    * @returns A Promise that resolves to an array of strings representing all the image URLs.
    */
-  public static async getImages(iModelId: string | undefined): Promise<string[]> {
+  public static async getImages(iModelId: string): Promise<string[]> {
     return Messenger.query("getImages", { iModelId });
   }
 

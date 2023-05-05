@@ -6,7 +6,7 @@
 import UIKit
 import ITwinMobile
 
-/// An `ITMNativeUIComponent` subclass for one or more pictures by URL.
+/// An `ITMNativeUIComponent` subclass for sharing one or more pictures by URL.
 class ImageSharer: ITMNativeUIComponent {
     override init(itmNativeUI: ITMNativeUI) {
         super.init(itmNativeUI: itmNativeUI)
@@ -15,10 +15,10 @@ class ImageSharer: ITMNativeUIComponent {
     
     /// Simple wrapper for sharing anything via the `UIActivityViewController`.
     /// - Parameters:
-    ///   - items: The items to share.
+    ///   - items: The items to share. The URLs are file URLs representing images in the image cache.
     ///   - vc: The view controller used to present the sharing UI.
     ///   - sourceRect: The rectangle in the coordinate space of `vc` that the popover should point at.
-    static func shareItems(items: [Any], vc: UIViewController, sourceRect: CGRect) {
+    static func shareItems(items: [URL], vc: UIViewController, sourceRect: CGRect) {
         let shareActivity = UIActivityViewController(activityItems: items, applicationActivities: nil)
         if let popover = shareActivity.popoverPresentationController {
             popover.sourceView = vc.view
@@ -27,7 +27,7 @@ class ImageSharer: ITMNativeUIComponent {
         vc.present(shareActivity, animated: true)
     }
     
-    /// Handles the shareImages message.
+    /// Handles the `"shareImages"` query.
     /// - Parameter params: The input params from JavaScript. This must contain a `urls` array string property.
     /// It can optionally also contain a `sourceRect` proprty that indicates the screen component this share action
     /// corresponds with. It is expected to be a javascript object with the same properties in ITMRect.

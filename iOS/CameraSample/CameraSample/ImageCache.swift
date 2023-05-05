@@ -8,7 +8,9 @@ import ITwinMobile
 
 /// Class for interacting with the image cache.
 class ImageCache {
-    /// Get all the images for a given iModel
+    /// Get all the images for a given iModel.
+    ///
+    /// This is a handler for the `'getImages'` query.
     /// - Parameter params: Requires an `iModelId` property to specify which iModel to get images for.
     /// - Returns: An array of image cache URLs for all the images in the cache for the given iModel
     static func handleGetImages(params: [String: Any]) -> [String] {
@@ -29,6 +31,8 @@ class ImageCache {
     }
     
     /// Deletes all the images in the cache for the given iModel.
+    ///
+    /// This is a handler for the `'deleteAllImages'` query.
     /// - Parameter params: Requires an `iModelId` property to specify which iModel to delete images for.
     static func handleDeleteAllImages(params: [String: Any]) {
         guard let iModelId = params["iModelId"] as? String, let dirURL = baseURL?.appendingPathComponent(iModelId) else {
@@ -45,6 +49,8 @@ class ImageCache {
         }
     }
     
+    /// Delete the image referenced by the given image cache URL.
+    /// - Parameter urlString: URL using camera sample's custom URL scheme to reference a cached image to be deleted.
     private static func deleteImage(urlString: String) {
         if let fileUrl = getFileUrl(URL(string: urlString)) {
             do {
@@ -53,8 +59,10 @@ class ImageCache {
         }
     }
     
-    /// Deletes a specific image cache image.
-    /// - Parameter params: Requires a `urls` property containing a string or array of strings with the image cache URL's to delete.
+    /// Deletes specific image cache images.
+    ///
+    /// This is a handler for the `'deleteImages'` query.
+    /// - Parameter params: Requires a `urls` property containing a string or array of strings with the image cache URLs to delete.
     static func handleDeleteImages(params: [String: Any]) {
         if let urls = params["urls"] as? [String] {
             for url in urls {

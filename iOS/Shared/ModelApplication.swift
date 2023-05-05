@@ -36,7 +36,7 @@ class ModelApplication: ITMApplication {
     }
 
     /// Registers query handlers.
-    private func registerQueryHandlers() {
+    open func registerQueryHandlers() {
         registerQueryHandler("didFinishLaunching") { (params: [String: Any]) -> Void in
             self.itmMessenger.frontendLaunchSucceeded()
             self.finishRecordingStartupTimes(params["iTwinVersion"] as? String)
