@@ -5,9 +5,9 @@
 import React from "react";
 import { AlertAction, MobileCore } from "@itwin/mobile-sdk-core";
 import { ActionSheetButton, BackButton, useIsMountedRef } from "@itwin/mobile-ui-react";
-import { Project } from "@itwin/projects-client";
+import { ITwin } from "@itwin/itwins-client";
 import { BriefcaseConnection, IModelConnection } from "@itwin/core-frontend";
-import { Button, HubStep, i18n, IModelDownloader, IModelInfo, IModelPicker, presentError, ProjectPicker, Screen, SignIn, signOut, useLocalizedString } from "../../Exports";
+import { Button, HubStep, i18n, IModelDownloader, IModelInfo, IModelPicker, presentError, Project, ProjectPicker, Screen, SignIn, signOut, useLocalizedString } from "../../Exports";
 import "./HubScreen.scss";
 
 HubScreen.ACTIVE_PROJECT_INFO = "activeProjectInfo";
@@ -22,11 +22,7 @@ function getActiveProject() {
   if (projectInfoJson) {
     const project = JSON.parse(projectInfoJson);
     if (project.id) {
-      // The format of the project object changed in iTwin 3. Since the id field is required, return
-      // undefined if our stored project does not have a value for that field.
       return project as Project;
-    } else {
-      return undefined;
     }
   }
   return undefined;
@@ -37,7 +33,7 @@ function getActiveProject() {
  * @see {@link getActiveProject}.
  * @param project The {@link Project} to set as the active project.
  */
-function saveActiveProject(project: Project) {
+function saveActiveProject(project: ITwin) {
   localStorage.setItem(HubScreen.ACTIVE_PROJECT_INFO, JSON.stringify(project));
 }
 
@@ -100,7 +96,7 @@ export function HubScreen(props: HubScreenProps) {
 
     case HubStep.SelectIModel:
       if (!project) break;
-      stepContent = <IModelPicker project={project}
+      stepContent = <IModelPicker iTwinId={project.id}
         onLoaded={(models) => setHaveCachedBriefcase(models.some((model) => model.briefcase !== undefined))}
         onSelect={(model) => {
           setIModel(model);
@@ -112,8 +108,7 @@ export function HubScreen(props: HubScreenProps) {
         onError={(error) => {
           if (error.code === "ProjectNotFound") {
             // The project that was being used before is no longer accessible. This could be due to a
-            // user change, a permissions change (user was removed from the project), or a project
-            // deletion (assuming that's even possible).
+            // user change, a permissions change (user was removed from the project), or a project deletion.
             // Switch to project selection.
             setHubStep(HubStep.SelectProject);
           } else {
@@ -160,7 +155,7 @@ export function HubScreen(props: HubScreenProps) {
     case HubStep.DownloadIModel:
       if (!project || !iModel) break;
       stepContent = <IModelDownloader
-        project={project}
+        iTwinId={project.id}
         model={iModel}
         onDownloaded={(model) => {
           setIModel(model);

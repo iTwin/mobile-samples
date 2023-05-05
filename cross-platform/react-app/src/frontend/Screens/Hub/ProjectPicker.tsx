@@ -4,42 +4,71 @@
 *--------------------------------------------------------------------------------------------*/
 import React from "react";
 import { HorizontalPicker, useIsMountedRef } from "@itwin/mobile-ui-react";
-import { Project, ProjectsAccessClient, ProjectsQueryArg, ProjectsQueryFunction, ProjectsSearchableProperty, ProjectsSource } from "@itwin/projects-client";
+import { ITwin, ITwinsAccessClient, ITwinsAPIResponse, ITwinsQueryArg, ITwinSubClass } from "@itwin/itwins-client";
 import { IModelApp } from "@itwin/core-frontend";
 import { LoadingSpinner } from "@itwin/core-react";
 import { ButtonProps, HubScreenButton, HubScreenButtonList, HubScreenButtonListProps, i18n, presentError, PromiseUtil, SearchControl, useLocalizedString } from "../../Exports";
 
+type WithRequired<T, K extends keyof T> = T & { [P in K]-?: T[P] };
+export type Project = WithRequired<ITwin, "id">;
+
+enum ProjectsSource {
+  All = "",
+  Favorites = "favorites",
+  Recents = "recents"
+}
+
+interface ProjectsQueryResponse {
+  projects: Array<Project>;
+  next: ProjectsQueryFunction | undefined;
+}
+type ProjectsQueryFunction = () => Promise<ProjectsQueryResponse>;
+
 /**
- * Get a list of projects from the Bentley server.
+ * Get a list of iTwin Projects from the Bentley server.
  * @param source The source of the list: All, Favorites, or Recents
- * @param searchString A search string to search for if source is All.
- * @returns An object whose `projects` property is the list of projects, and whose `next` property
- * is an arrow function to fetch the next batch of projects if there are more than 100 results.
+ * @param search A search string
+ * @param skip Number of results to skip
+ * @returns An object whose `projects` property is the list of iTwins, and whose `next` property
+ * is an arrow function to fetch the next batch.
  */
-async function getProjects(source = ProjectsSource.All, searchString = "") {
-  const client = new ProjectsAccessClient();
+async function getProjects(source: ProjectsSource, search = "", skip = 0): Promise<ProjectsQueryResponse> {
+  const client = new ITwinsAccessClient();
   const numToFetch = 100;
   const accessToken = await IModelApp.getAccessToken();
+  const queryArgs: ITwinsQueryArg = { skip, top: numToFetch };
+  let results: ITwinsAPIResponse<ITwin[]> | undefined;
 
-  const queryArgs: ProjectsQueryArg = { pagination: { skip: 0, top: numToFetch } };
-  if (source === ProjectsSource.All && searchString.length > 0)
-    queryArgs.search = { searchString, propertyName: ProjectsSearchableProperty.Name, exactMatch: false };
-  else
-    queryArgs.source = source;
-  const results = await client.getByQuery(accessToken, queryArgs);
-  return { projects: results.projects, next: results.links?.next };
+  switch (source) {
+    case ProjectsSource.All:
+      results = await client.queryAsync(accessToken, ITwinSubClass.Project, { ...queryArgs, search });
+      break;
+    case ProjectsSource.Favorites:
+      results = await client.queryFavoritesAsync(accessToken, ITwinSubClass.Project, queryArgs);
+      break;
+    case ProjectsSource.Recents:
+      results = await client.queryRecentsAsync(accessToken, ITwinSubClass.Project, queryArgs);
+      break;
+  }
+  // Provide a next function if the data contains a _links.next member
+  let next: ProjectsQueryFunction | undefined;
+  if (results.data && source === ProjectsSource.All) {
+    next = async () => getProjects(source, search, skip + numToFetch);
+  }
+  // NOTE: Assume all returned ITwins have a valid id, should be safe since they're queried from the server.
+  return { projects: results.data as Array<Project> ?? [], next };
 }
 
 /** Properties for the {@link ProjectButton} React component. */
 interface ProjectButtonProps extends Omit<ButtonProps, "title"> {
-  project: Project;
+  project: ITwin;
 }
 
 /** React component to show a button to select a project. */
 function ProjectButton(props: ProjectButtonProps) {
   const { project, onClick } = props;
   const noNameLabel = useLocalizedString("HubScreen", "NoName");
-  return <HubScreenButton title={project.name ?? noNameLabel} onClick={onClick} />;
+  return <HubScreenButton title={project.displayName ?? noNameLabel} onClick={onClick} />;
 }
 
 /** Properties for the {@link ProjectList} React component. */
@@ -106,18 +135,19 @@ export function ProjectPicker(props: ProjectPickerProps) {
     void PromiseUtil.consolidateCall("fetchProjects", async () => fetchProjects());
   }, [isMountedRef, onError, projectSource, search]);
 
-  // If there are more than 100 projects, load the next batch of 100.
+  // Loads the next batch of projects if `nextFunc` is defined.
   const loadMore = React.useCallback(async () => {
     if (loadingMore || !nextFunc) return;
     setLoadingMore(true);
-    const accessToken = await IModelApp.getAccessToken();
     if (!isMountedRef.current) return;
     try {
-      const moreProjects = await nextFunc(accessToken);
+      const moreProjects = await nextFunc();
       if (!isMountedRef.current) return;
       if (moreProjects.projects.length) {
         setProjects((oldProjects) => [...oldProjects, ...moreProjects.projects]);
-        setNextFunc(projectSource === ProjectsSource.All && moreProjects.links.next ? () => moreProjects.links.next : undefined);
+        setNextFunc(projectSource === ProjectsSource.All && moreProjects.next ? () => moreProjects.next : undefined);
+      } else {
+        setNextFunc(undefined);
       }
     } catch (error) {
       presentError("FetchProjectsErrorFormat", error, "HubScreen");
