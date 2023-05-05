@@ -29,8 +29,7 @@ type ProjectsQueryFunction = () => Promise<ProjectsQueryResponse>;
  * @param source The source of the list: All, Favorites, or Recents
  * @param search A search string
  * @param skip Number of results to skip
- * @returns An object whose `projects` property is the list of iTwins, and whose `next` property
- * is an arrow function to fetch the next batch.
+ * @returns A {@link ProjectsQueryResponse} object
  */
 async function getProjects(source: ProjectsSource, search = "", skip = 0): Promise<ProjectsQueryResponse> {
   const client = new ITwinsAccessClient();
