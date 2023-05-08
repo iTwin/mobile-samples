@@ -68,7 +68,9 @@ export function PicturesBottomPanel(props: PicturesBottomPanelProps) {
 
   // Reload the list of attached pictures.
   const reload = React.useCallback(async () => {
-    const urls = await ImageCache.getImages(iModel.iModelId);
+    // Note: We only allow loading iModels, not creating them, so our iModel is guaranteed to have
+    // an iModelId.
+    const urls = await ImageCache.getImages(iModel.iModelId!);
     urls.sort();
     setPictureUrls(urls);
     if (urls.length === 0) {
@@ -155,12 +157,16 @@ export function PicturesBottomPanel(props: PicturesBottomPanelProps) {
         }} />}
       {!selectMode && <>
         <ToolButton iconSpec={"icon-camera"} onClick={async () => {
-          if (await ImageCache.pickImage(iModel.iModelId)) {
+          // Note: We only allow loading iModels, not creating them, so our iModel is guaranteed to
+          // have an iModelId.
+          if (await ImageCache.pickImage(iModel.iModelId!)) {
             void reload();
           }
         }} />
         <ToolButton iconSpec={"icon-image"} onClick={async () => {
-          if (await ImageCache.pickImage(iModel.iModelId, true)) {
+          // Note: We only allow loading iModels, not creating them, so our iModel is guaranteed to
+          // have an iModelId.
+          if (await ImageCache.pickImage(iModel.iModelId!, true)) {
             void reload();
           }
         }} />
@@ -188,9 +194,9 @@ export function PicturesBottomPanel(props: PicturesBottomPanelProps) {
           onClick={async () => {
             const all = pictureUrls.length === selectedUrls.size;
             if (all && await presentYesNoAlert(deleteAllTitle, deleteAllMessage, true)) {
-              if (iModel.iModelId) {
-                await ImageCache.deleteAllImages(iModel.iModelId);
-              }
+              // Note: We only allow loading iModels, not creating them, so our iModel is guaranteed
+              // to have an iModelId.
+              await ImageCache.deleteAllImages(iModel.iModelId!);
               void reload();
             } else if (!all && await presentYesNoAlert(deleteSelectedTitle, deleteSelectedMessage, true)) {
               await ImageCache.deleteImages(Array.from(selectedUrls));
