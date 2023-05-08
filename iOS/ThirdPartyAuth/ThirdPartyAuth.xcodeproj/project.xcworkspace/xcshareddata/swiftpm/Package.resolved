@@ -50,8 +50,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/iTwin/mobile-sdk-ios.git",
       "state" : {
-        "revision" : "95ffe09e1202ecdc2ac7a3225e50eb573b6fec1d",
-        "version" : "0.10.41"
+        "revision" : "87fe5978bc0c9711a4b5afe53b31dc763e67b04b",
+        "version" : "0.10.42"
       }
     },
     {
