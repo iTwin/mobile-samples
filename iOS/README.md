@@ -24,7 +24,7 @@ Before building the samples, you must configure a Client ID for yourself. To do 
     * If you already had a Client ID, browse to your app's page in [my-apps](https://developer.bentley.com/my-apps/). If you just created it, you should already be there.
 
 1. Copy your client ID from the app's page, then replace &lt;Your Client ID&gt;.    
-1. Use the "Copy" button in the Scopes section of the app's page to copy your scopes to the clipboard. Then replace &lt;Your scope&gt;.
+1. Use the "Copy" button in the Scopes section of the app's page to copy your scopes to the clipboard. Then replace &lt;Your scope&gt;. Finally, add `offline_access` to the end of the list of scopes (separated from the others with a space).
 
 ## NPM Setup
 
