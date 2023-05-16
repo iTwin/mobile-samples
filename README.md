@@ -21,9 +21,13 @@ Each iOS sample app includes an Xcode project with a LocalSDK\_ prefix. These Xc
 
 There are three Android sample apps:
 
-- **iTwinStarter** is an app containing an Android webview running TypeScript code to host the iTwin content.
+- **iTwinStarter** is an app containing an Android WebView running TypeScript code to host the iTwin content.
 - **CameraSample** demonstrates how to make calls to native Android code to take or select a picture.
 - **ThirdPartyAuth** demonstrates how to use a third party for user authentication.
+
+There is one React Native sample app, but it is still a work in progress:
+
+- **iTwinRNStarter** is a React Native app with a WebView running TypeScript code to host the iTwin content.
 
 See [iOS/README.md](./iOS/README.md) for instructions on building the iOS samples.
 

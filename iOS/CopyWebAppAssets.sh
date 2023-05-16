@@ -7,7 +7,11 @@ else
     WebAppDir=$1
 fi
 
-reactAppDir=${PROJECT_DIR}/../../cross-platform/react-app
+if [ "$#" -eq 2 ] && [ -d "$2" ]; then
+    reactAppDir="$2"
+else
+    reactAppDir=${PROJECT_DIR}/../../cross-platform/react-app
+fi
 cd "${reactAppDir}"
 ./GenITMAppConfig.sh
 cd -
