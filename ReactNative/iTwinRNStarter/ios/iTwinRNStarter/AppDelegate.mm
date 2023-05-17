@@ -24,7 +24,6 @@
 
 - (NSURL *)sourceURLForBridge:(RCTBridge *)bridge
 {
-  NSLog(@"sourceURLForBridge: %@", [[RCTBundleURLProvider sharedSettings] jsBundleURLForBundleRoot:@"index"]);
 #if DEBUG
   return [[RCTBundleURLProvider sharedSettings] jsBundleURLForBundleRoot:@"index"];
 #else
@@ -32,6 +31,8 @@
 #endif
 }
 
+/// Find a `WKWebView` in the view hierarchy of the given view.
+/// - Parameter parentView: An ancestor view of a `WKWebView`.
 - (WKWebView *)findWebView:(UIView *)parentView
 {
   for (UIView *view in parentView.subviews)
@@ -52,6 +53,8 @@
   return nil;
 }
 
+/// Start up iTwin Mobile once the initial UI loading is done.
+/// - Parameter notification: The notification object that posted the notification.
 - (void)contentDidAppear:(NSNotification *)notification
 {
   WKWebView *webView = [self findWebView:self.window.rootViewController.view];
@@ -69,6 +72,26 @@
 - (BOOL)concurrentRootEnabled
 {
   return true;
+}
+
+@end
+
+@implementation WKWebViewConfiguration(ITwinCustomization)
+
+/// Create a new `WKWebViewConfiguration` and then customize it for use with iTwin Mobile.
+///
+/// React Native does not provide a mechanism to customize the `WKWebViewConfiguration` used by its WebView
+/// component. Since iTwin Mobile __requires__ the configuration to be customized, and the configuration cannot be
+/// customized __after__ the `WKWebView` is created, this override of `NSObject`'s `new` class function makes it
+/// so that all `WKWebViewConfiguration` objects created using `new` will be customized to work with iTwin Mobile.
+/// Since all that `NSObject`'s `new` does is `return [[self alloc] init]`, it is an easy function to replace.
+///
+/// - Note: This only works because React Native uses `new` to create its `WKWebViewConfiguration`. If it
+/// instead used `alloc init`, there would be no convenient way to perform this customization.
++ (instancetype)new {
+  WKWebViewConfiguration *configuration = [[self alloc] init];
+  [RNModelApplication setupWebViewConfiguration:configuration];
+  return configuration;
 }
 
 @end
