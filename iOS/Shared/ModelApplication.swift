@@ -144,15 +144,23 @@ class ModelApplication: ITMApplication {
             startupTimer.addCheckpoint(name: "After frontend load")
         }
     }
+    
+    /// Returns the `ITMNativeUI` associated with the given `UIViewController`.
+    /// - Note: Override this function if your actual view controller is not an `ITMViewController`.
+    /// - Parameter viewController: The `UIViewController` from which to get the `ITMNativeUI`.
+    /// - Returns: The `ITMNativeUI` associated with the given view controller, or nil if there isn't one.
+    open func nativeUI(_ viewController: UIViewController) -> ITMNativeUI? {
+        return (viewController as? ITMViewController)?.itmNativeUI
+    }
 
     /// Called when the `ITMViewController` will appear.
     ///
     /// Adds our DocumentPicker component to the native UI collection.
     /// - Parameter viewController: The view controller.
-    override func viewWillAppear(viewController: ITMViewController) {
+    override func viewWillAppear(viewController: UIViewController) {
         super.viewWillAppear(viewController: viewController)
-        if let itmNativeUI = viewController.itmNativeUI {
-            viewController.itmNativeUI?.addComponent(DocumentPicker(itmNativeUI: itmNativeUI))
+        if let itmNativeUI = nativeUI(viewController) {
+            itmNativeUI.addComponent(DocumentPicker(itmNativeUI: itmNativeUI))
         }
     }
     

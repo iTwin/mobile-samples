@@ -38,7 +38,7 @@ Once you have performed the above setup, you can build and run the samples.
 
 __Note:__ The samples cannot currently be built for or run on the iOS Simulator on an Apple Silicon Mac. This will be fixed in the future, but for the moment if you are using a Mac with an Apple Silicon processor, you can only build for and run on a connected iOS device.
 
-1. Open the appropriate Xcode project.
+1. Open the appropriate Xcode project or workspace.
 1. Xcode will take some time to download the Swift Packages that each sample depends on the first time you open that sample Xcode project. Also, it appears that Xcode sometimes randomly fails when installing Swift Packages. If this happens, select File->Packages->Reset Package Caches.
 1. Select the project in the Xcode navigator.
 1. Select the only entry under TARGETS.

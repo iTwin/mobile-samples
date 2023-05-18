@@ -12,6 +12,14 @@
 		13B07FBC1A68108700A75B9A /* AppDelegate.mm in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB01A68108700A75B9A /* AppDelegate.mm */; };
 		13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB51A68108700A75B9A /* Images.xcassets */; };
 		13B07FC11A68108700A75B9A /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB71A68108700A75B9A /* main.m */; };
+		1F1BBC2F2A12EBB1008B31A2 /* WebKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1F1BBC2E2A12EBB1008B31A2 /* WebKit.framework */; };
+		1F1BBC322A12EFD2008B31A2 /* ITwinMobile in Frameworks */ = {isa = PBXBuildFile; productRef = 1F1BBC312A12EFD2008B31A2 /* ITwinMobile */; };
+		1F1BBC372A12F718008B31A2 /* ModelApplicationBridge.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F1BBC362A12F718008B31A2 /* ModelApplicationBridge.swift */; };
+		1F64EF002A12FBEC00E2275E /* DocumentPicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F64EEFC2A12FBEC00E2275E /* DocumentPicker.swift */; };
+		1F64EF012A12FBEC00E2275E /* ModelApplication.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F64EEFD2A12FBEC00E2275E /* ModelApplication.swift */; };
+		1F64EF022A12FBEC00E2275E /* ActivityTimer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F64EEFE2A12FBEC00E2275E /* ActivityTimer.swift */; };
+		1F64EF032A12FBEC00E2275E /* PrintLogger.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F64EEFF2A12FBEC00E2275E /* PrintLogger.swift */; };
+		1F64EF062A12FC3300E2275E /* ShowTime in Frameworks */ = {isa = PBXBuildFile; productRef = 1F64EF052A12FC3300E2275E /* ShowTime */; };
 		7699B88040F8A987B510C191 /* libPods-iTwinRNStarter-iTwinRNStarterTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 19F6CBCC0A4E27FBF8BF4A61 /* libPods-iTwinRNStarter-iTwinRNStarterTests.a */; };
 		81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */; };
 /* End PBXBuildFile section */
@@ -37,6 +45,15 @@
 		13B07FB61A68108700A75B9A /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = Info.plist; path = iTwinRNStarter/Info.plist; sourceTree = "<group>"; };
 		13B07FB71A68108700A75B9A /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = main.m; path = iTwinRNStarter/main.m; sourceTree = "<group>"; };
 		19F6CBCC0A4E27FBF8BF4A61 /* libPods-iTwinRNStarter-iTwinRNStarterTests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-iTwinRNStarter-iTwinRNStarterTests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		1F1BBC2E2A12EBB1008B31A2 /* WebKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WebKit.framework; path = System/Library/Frameworks/WebKit.framework; sourceTree = SDKROOT; };
+		1F1BBC352A12F717008B31A2 /* iTwinRNStarter-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "iTwinRNStarter-Bridging-Header.h"; sourceTree = "<group>"; };
+		1F1BBC362A12F718008B31A2 /* ModelApplicationBridge.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = ModelApplicationBridge.swift; path = iTwinRNStarter/ModelApplicationBridge.swift; sourceTree = "<group>"; };
+		1F64EEFC2A12FBEC00E2275E /* DocumentPicker.swift */ = {isa = PBXFileReference; fileEncoding = 4; indentWidth = 4; lastKnownFileType = sourcecode.swift; path = DocumentPicker.swift; sourceTree = "<group>"; tabWidth = 4; };
+		1F64EEFD2A12FBEC00E2275E /* ModelApplication.swift */ = {isa = PBXFileReference; fileEncoding = 4; indentWidth = 4; lastKnownFileType = sourcecode.swift; path = ModelApplication.swift; sourceTree = "<group>"; tabWidth = 4; };
+		1F64EEFE2A12FBEC00E2275E /* ActivityTimer.swift */ = {isa = PBXFileReference; fileEncoding = 4; indentWidth = 4; lastKnownFileType = sourcecode.swift; path = ActivityTimer.swift; sourceTree = "<group>"; tabWidth = 4; };
+		1F64EEFF2A12FBEC00E2275E /* PrintLogger.swift */ = {isa = PBXFileReference; fileEncoding = 4; indentWidth = 4; lastKnownFileType = sourcecode.swift; path = PrintLogger.swift; sourceTree = "<group>"; tabWidth = 4; };
+		1F68D1C32A12C70F00137DD5 /* iOSSamples.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; name = iOSSamples.xcconfig; path = ../../../iOS/iOSSamples.xcconfig; sourceTree = "<group>"; };
+		1F84F5AF2A12C44F0026D806 /* ITMApplication.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; name = ITMApplication.xcconfig; path = ../../../iOS/ITMApplication.xcconfig; sourceTree = "<group>"; };
 		3B4392A12AC88292D35C810B /* Pods-iTwinRNStarter.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-iTwinRNStarter.debug.xcconfig"; path = "Target Support Files/Pods-iTwinRNStarter/Pods-iTwinRNStarter.debug.xcconfig"; sourceTree = "<group>"; };
 		5709B34CF0A7D63546082F79 /* Pods-iTwinRNStarter.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-iTwinRNStarter.release.xcconfig"; path = "Target Support Files/Pods-iTwinRNStarter/Pods-iTwinRNStarter.release.xcconfig"; sourceTree = "<group>"; };
 		5B7EB9410499542E8C5724F5 /* Pods-iTwinRNStarter-iTwinRNStarterTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-iTwinRNStarter-iTwinRNStarterTests.debug.xcconfig"; path = "Target Support Files/Pods-iTwinRNStarter-iTwinRNStarterTests/Pods-iTwinRNStarter-iTwinRNStarterTests.debug.xcconfig"; sourceTree = "<group>"; };
@@ -59,6 +76,9 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				1F64EF062A12FC3300E2275E /* ShowTime in Frameworks */,
+				1F1BBC322A12EFD2008B31A2 /* ITwinMobile in Frameworks */,
+				1F1BBC2F2A12EBB1008B31A2 /* WebKit.framework in Frameworks */,
 				0C80B921A6F3F58F76C31292 /* libPods-iTwinRNStarter.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -86,19 +106,35 @@
 		13B07FAE1A68108700A75B9A /* iTwinRNStarter */ = {
 			isa = PBXGroup;
 			children = (
+				1F64EEFB2A12FBEC00E2275E /* Shared */,
 				13B07FAF1A68108700A75B9A /* AppDelegate.h */,
 				13B07FB01A68108700A75B9A /* AppDelegate.mm */,
+				1F1BBC362A12F718008B31A2 /* ModelApplicationBridge.swift */,
 				13B07FB51A68108700A75B9A /* Images.xcassets */,
 				13B07FB61A68108700A75B9A /* Info.plist */,
 				81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */,
 				13B07FB71A68108700A75B9A /* main.m */,
+				1F1BBC352A12F717008B31A2 /* iTwinRNStarter-Bridging-Header.h */,
 			);
 			name = iTwinRNStarter;
+			sourceTree = "<group>";
+		};
+		1F64EEFB2A12FBEC00E2275E /* Shared */ = {
+			isa = PBXGroup;
+			children = (
+				1F64EEFC2A12FBEC00E2275E /* DocumentPicker.swift */,
+				1F64EEFD2A12FBEC00E2275E /* ModelApplication.swift */,
+				1F64EEFE2A12FBEC00E2275E /* ActivityTimer.swift */,
+				1F64EEFF2A12FBEC00E2275E /* PrintLogger.swift */,
+			);
+			name = Shared;
+			path = ../../../iOS/Shared;
 			sourceTree = "<group>";
 		};
 		2D16E6871FA4F8E400B85C8A /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				1F1BBC2E2A12EBB1008B31A2 /* WebKit.framework */,
 				ED297162215061F000B7C4FE /* JavaScriptCore.framework */,
 				5DCACB8F33CDC322A6C60F78 /* libPods-iTwinRNStarter.a */,
 				19F6CBCC0A4E27FBF8BF4A61 /* libPods-iTwinRNStarter-iTwinRNStarterTests.a */,
@@ -116,6 +152,8 @@
 		83CBB9F61A601CBA00E9B192 = {
 			isa = PBXGroup;
 			children = (
+				1F68D1C32A12C70F00137DD5 /* iOSSamples.xcconfig */,
+				1F84F5AF2A12C44F0026D806 /* ITMApplication.xcconfig */,
 				13B07FAE1A68108700A75B9A /* iTwinRNStarter */,
 				832341AE1AAA6A7D00B99B32 /* Libraries */,
 				00E356EF1AD99517003FC87E /* iTwinRNStarterTests */,
@@ -184,12 +222,18 @@
 				00DD1BFF1BD5951E006B06BC /* Bundle React Native code and images */,
 				00EEFC60759A1932668264C0 /* [CP] Embed Pods Frameworks */,
 				E235C05ADACE081382539298 /* [CP] Copy Pods Resources */,
+				1F1FC7DA2A14222400BE1BA2 /* Check react-app */,
+				1F1FC7DB2A14228900BE1BA2 /* Copy web app assets */,
 			);
 			buildRules = (
 			);
 			dependencies = (
 			);
 			name = iTwinRNStarter;
+			packageProductDependencies = (
+				1F1BBC312A12EFD2008B31A2 /* ITwinMobile */,
+				1F64EF052A12FC3300E2275E /* ShowTime */,
+			);
 			productName = iTwinRNStarter;
 			productReference = 13B07F961A680F5B00A75B9A /* iTwinRNStarter.app */;
 			productType = "com.apple.product-type.application";
@@ -207,7 +251,7 @@
 						TestTargetID = 13B07F861A680F5B00A75B9A;
 					};
 					13B07F861A680F5B00A75B9A = {
-						LastSwiftMigration = 1120;
+						LastSwiftMigration = 1430;
 					};
 				};
 			};
@@ -220,6 +264,10 @@
 				Base,
 			);
 			mainGroup = 83CBB9F61A601CBA00E9B192;
+			packageReferences = (
+				1F1BBC302A12EFD2008B31A2 /* XCRemoteSwiftPackageReference "mobile-sdk-ios" */,
+				1F64EF042A12FC3300E2275E /* XCRemoteSwiftPackageReference "ShowTime" */,
+			);
 			productRefGroup = 83CBBA001A601CBA00E9B192 /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
@@ -282,6 +330,45 @@
 			shellPath = /bin/sh;
 			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-iTwinRNStarter/Pods-iTwinRNStarter-frameworks.sh\"\n";
 			showEnvVarsInLog = 0;
+		};
+		1F1FC7DA2A14222400BE1BA2 /* Check react-app */ = {
+			isa = PBXShellScriptBuildPhase;
+			alwaysOutOfDate = 1;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			name = "Check react-app";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "cd \"${PROJECT_DIR}/../../../cross-platform/react-app\"\nif [[ ! -d node_modules ]]; then\n  echo Cannot find react-app/node_modules. Please follow the steps in iOS/REAMDE.md.\n  exit 1\nfi\nif [[ ! -d build ]]; then\n  echo Cannot find react-app/build. Please follow the steps in iOS/README.md.\n  exit 1\nfi\nif [[ ! -d lib ]]; then\n  echo Cannot find react-app/lib. Please follow the steps in iOS/README.md.\n  exit 1\nfi\n\n";
+			showEnvVarsInLog = 0;
+		};
+		1F1FC7DB2A14228900BE1BA2 /* Copy web app assets */ = {
+			isa = PBXShellScriptBuildPhase;
+			alwaysOutOfDate = 1;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			name = "Copy web app assets";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PROJECT_DIR}/../../../iOS/CopyWebAppAssets.sh\" ITMApplication \"${PROJECT_DIR}/../../../cross-platform/react-app\"\n";
 		};
 		A55EABD7B0C7F3A422A6CC61 /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -412,8 +499,13 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				1F64EF002A12FBEC00E2275E /* DocumentPicker.swift in Sources */,
+				1F1BBC372A12F718008B31A2 /* ModelApplicationBridge.swift in Sources */,
+				1F64EF032A12FBEC00E2275E /* PrintLogger.swift in Sources */,
 				13B07FBC1A68108700A75B9A /* AppDelegate.mm in Sources */,
 				13B07FC11A68108700A75B9A /* main.m in Sources */,
+				1F64EF022A12FBEC00E2275E /* ActivityTimer.swift in Sources */,
+				1F64EF012A12FBEC00E2275E /* ModelApplication.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -432,6 +524,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 5B7EB9410499542E8C5724F5 /* Pods-iTwinRNStarter-iTwinRNStarterTests.debug.xcconfig */;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					"DEBUG=1",
@@ -459,6 +552,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 89C6BE57DB24E9ADA2F236DE /* Pods-iTwinRNStarter-iTwinRNStarterTests.release.xcconfig */;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				COPY_PHASE_STRIP = NO;
 				INFOPLIST_FILE = iTwinRNStarterTests/Info.plist;
@@ -485,6 +579,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
+				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				ENABLE_BITCODE = NO;
 				INFOPLIST_FILE = iTwinRNStarter/Info.plist;
@@ -500,8 +595,13 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.bentley.itwinrnstarter;
 				PRODUCT_NAME = iTwinRNStarter;
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = YES;
+				SWIFT_OBJC_BRIDGING_HEADER = "iTwinRNStarter-Bridging-Header.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
 				VERSIONING_SYSTEM = "apple-generic";
 			};
 			name = Debug;
@@ -512,7 +612,9 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
+				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
+				ENABLE_BITCODE = NO;
 				INFOPLIST_FILE = iTwinRNStarter/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -526,13 +628,19 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.bentley.itwinrnstarter;
 				PRODUCT_NAME = iTwinRNStarter;
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = YES;
+				SWIFT_OBJC_BRIDGING_HEADER = "iTwinRNStarter-Bridging-Header.h";
 				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
 				VERSIONING_SYSTEM = "apple-generic";
 			};
 			name = Release;
 		};
 		83CBBA201A601CBA00E9B192 /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 1F68D1C32A12C70F00137DD5 /* iOSSamples.xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
@@ -560,7 +668,6 @@
 				CLANG_WARN_SUSPICIOUS_MOVE = YES;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				COPY_PHASE_STRIP = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_TESTABILITY = YES;
@@ -580,7 +687,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 12.4;
+				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					/usr/lib/swift,
 					"$(inherited)",
@@ -592,11 +699,13 @@
 				);
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = YES;
+				OTHER_CFLAGS = "-fmodules";
 				OTHER_CPLUSPLUSFLAGS = (
 					"$(OTHER_CFLAGS)",
 					"-DFOLLY_NO_CONFIG",
 					"-DFOLLY_MOBILE=1",
 					"-DFOLLY_USE_LIBCPP=1",
+					"-fcxx-modules",
 				);
 				REACT_NATIVE_PATH = "${PODS_ROOT}/../../node_modules/react-native";
 				SDKROOT = iphoneos;
@@ -605,6 +714,7 @@
 		};
 		83CBBA211A601CBA00E9B192 /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 1F68D1C32A12C70F00137DD5 /* iOSSamples.xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
@@ -632,7 +742,6 @@
 				CLANG_WARN_SUSPICIOUS_MOVE = YES;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				COPY_PHASE_STRIP = YES;
 				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
@@ -645,7 +754,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 12.4;
+				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					/usr/lib/swift,
 					"$(inherited)",
@@ -656,11 +765,13 @@
 					"\"$(inherited)\"",
 				);
 				MTL_ENABLE_DEBUG_INFO = NO;
+				OTHER_CFLAGS = "-fmodules";
 				OTHER_CPLUSPLUSFLAGS = (
 					"$(OTHER_CFLAGS)",
 					"-DFOLLY_NO_CONFIG",
 					"-DFOLLY_MOBILE=1",
 					"-DFOLLY_USE_LIBCPP=1",
+					"-fcxx-modules",
 				);
 				REACT_NATIVE_PATH = "${PODS_ROOT}/../../node_modules/react-native";
 				SDKROOT = iphoneos;
@@ -699,6 +810,38 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		1F1BBC302A12EFD2008B31A2 /* XCRemoteSwiftPackageReference "mobile-sdk-ios" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/iTwin/mobile-sdk-ios.git";
+			requirement = {
+				kind = exactVersion;
+				version = 0.10.42;
+			};
+		};
+		1F64EF042A12FC3300E2275E /* XCRemoteSwiftPackageReference "ShowTime" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/KaneCheshire/ShowTime.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 2.0.0;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		1F1BBC312A12EFD2008B31A2 /* ITwinMobile */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 1F1BBC302A12EFD2008B31A2 /* XCRemoteSwiftPackageReference "mobile-sdk-ios" */;
+			productName = ITwinMobile;
+		};
+		1F64EF052A12FC3300E2275E /* ShowTime */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 1F64EF042A12FC3300E2275E /* XCRemoteSwiftPackageReference "ShowTime" */;
+			productName = ShowTime;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 83CBB9F71A601CBA00E9B192 /* Project object */;
 }
