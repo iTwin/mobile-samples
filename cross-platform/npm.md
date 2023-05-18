@@ -5,7 +5,7 @@
     1. Run a Rosetta 2 Terminal.
     1. cd into the `cross-platform/react-app` directory of this repository.
     1. Run `npm install`.
-1. Run a Command Prompt/Terminal
+1. Run a Command Prompt/Terminal.
 1. cd into the `cross-platform/react-app` directory of this repository.
 1. If you are not on a Mac with Apple Silicon and did so above, run `npm install`.
 1. Run `npm run build`.

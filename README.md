@@ -25,13 +25,15 @@ There are three Android sample apps:
 - **CameraSample** demonstrates how to make calls to native Android code to take or select a picture.
 - **ThirdPartyAuth** demonstrates how to use a third party for user authentication.
 
-There is one React Native sample app, but it is still a work in progress:
+There is one React Native sample app:
 
 - **iTwinRNStarter** is a React Native app with a WebView running TypeScript code to host the iTwin content.
 
 See [iOS/README.md](./iOS/README.md) for instructions on building the iOS samples.
 
 See [Android/README.md](./Android/README.md) for instructions on building the Android samples.
+
+See [ReactNative/README.md](./ReactNative/README.md) for instructions on building the React Native sample.
 
 See [OFFLINE.md](./OFFLINE.md) for information about using iModels while offline.
 
