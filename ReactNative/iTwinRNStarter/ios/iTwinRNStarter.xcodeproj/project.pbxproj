@@ -265,8 +265,8 @@
 			);
 			mainGroup = 83CBB9F61A601CBA00E9B192;
 			packageReferences = (
-				1F1BBC302A12EFD2008B31A2 /* XCRemoteSwiftPackageReference "mobile-sdk-ios" */,
-				1F64EF042A12FC3300E2275E /* XCRemoteSwiftPackageReference "ShowTime" */,
+				1F1BBC302A12EFD2008B31A2 /* XCRemoteSwiftPackageReference "mobile-sdk-ios.git" */,
+				1F64EF042A12FC3300E2275E /* XCRemoteSwiftPackageReference "ShowTime.git" */,
 			);
 			productRefGroup = 83CBBA001A601CBA00E9B192 /* Products */;
 			projectDirPath = "";
@@ -812,15 +812,15 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
-		1F1BBC302A12EFD2008B31A2 /* XCRemoteSwiftPackageReference "mobile-sdk-ios" */ = {
+		1F1BBC302A12EFD2008B31A2 /* XCRemoteSwiftPackageReference "mobile-sdk-ios.git" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/iTwin/mobile-sdk-ios.git";
 			requirement = {
 				kind = exactVersion;
-				version = 0.10.42;
+				version = 0.10.43;
 			};
 		};
-		1F64EF042A12FC3300E2275E /* XCRemoteSwiftPackageReference "ShowTime" */ = {
+		1F64EF042A12FC3300E2275E /* XCRemoteSwiftPackageReference "ShowTime.git" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/KaneCheshire/ShowTime.git";
 			requirement = {
@@ -833,12 +833,12 @@
 /* Begin XCSwiftPackageProductDependency section */
 		1F1BBC312A12EFD2008B31A2 /* ITwinMobile */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = 1F1BBC302A12EFD2008B31A2 /* XCRemoteSwiftPackageReference "mobile-sdk-ios" */;
+			package = 1F1BBC302A12EFD2008B31A2 /* XCRemoteSwiftPackageReference "mobile-sdk-ios.git" */;
 			productName = ITwinMobile;
 		};
 		1F64EF052A12FC3300E2275E /* ShowTime */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = 1F64EF042A12FC3300E2275E /* XCRemoteSwiftPackageReference "ShowTime" */;
+			package = 1F64EF042A12FC3300E2275E /* XCRemoteSwiftPackageReference "ShowTime.git" */;
 			productName = ShowTime;
 		};
 /* End XCSwiftPackageProductDependency section */
