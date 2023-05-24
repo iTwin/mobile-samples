@@ -11,7 +11,10 @@ This React Native sample works like the other [iOS](../iOS/README.md) and [Andro
 
 ## Running the iOS Sample
 
-Follow the iOS samples instructions [here](../iOS/README.md). __Note__: Instead of opening the xcodeproj for the React Native sample, you _must_ open the xcworkspace. The workspace file is `ReactNative/ios/iTwinRNStarter.xcworkspace`.
+1. Run Terminal.
+1. cd into the `ReactNative/iTwinRNStarter/ios` directory of this repository.
+1. Run `pod install`.
+1. Follow the iOS samples instructions [here](../iOS/README.md). __Note__: Instead of opening the xcodeproj for the React Native sample, you _must_ open the xcworkspace. The workspace file is `ReactNative/ios/iTwinRNStarter.xcworkspace`.
 
 ## Running the Android Sample
 
