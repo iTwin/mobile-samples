@@ -17,12 +17,12 @@ class ModelApplication: ITMApplication {
     /// Creates a ``ModelApplication``.
     required init() {
         super.init()
-        
-        setupStartupTimer()
 
+        setupStartupTimer()
+        
         ITMMessenger.addUnloggedQueryType("loading")
         ITMApplication.logger = PrintLogger()
-
+        
         registerQueryHandlers()
         setupShowtime()
         performExampleQueries()
@@ -34,7 +34,7 @@ class ModelApplication: ITMApplication {
         startupTimer.useJSON = self.configData?.isYes("ITMSAMPLE_LOG_STARTUP_TIMES_JSON") ?? false
         startupTimer.logToFile = self.configData?.isYes("ITMSAMPLE_LOG_STARTUP_TIMES_LOG_TO_FILE") ?? false
     }
-
+    
     /// Registers query handlers.
     open func registerQueryHandlers() {
         registerQueryHandler("didFinishLaunching") { (params: [String: Any]) -> Void in
@@ -76,7 +76,7 @@ class ModelApplication: ITMApplication {
         self.startupTimer.addCheckpoint(name: "Launch total")
         self.startupTimer.logTimes(title: "STARTUP TIMES")
     }
-
+    
     /// Set up Showtime
     private func setupShowtime() {
         var showtimeEnabled = false
@@ -99,7 +99,7 @@ class ModelApplication: ITMApplication {
         queryExample(1.234)
         queryExample(true)
     }
-
+    
     /// Example showing how to send a message with a value to the web app with no response expected.
     /// - Parameter value: A value to be sent to the web app and returned back. It must be of a type supported by
     ///                    the native <-> JavaScript interop layer.
@@ -107,10 +107,10 @@ class ModelApplication: ITMApplication {
         // Note: because we don't wait for any response, if there is a failure (like the web app
         // does not have a handler for the message), the app won't know (although ITMMessenger will
         // log an error).
-        itmMessenger.query("oneWayExample", ["value": value])
+        itmMessenger.send("oneWayExample", ["value": value])
         Self.logger.log(.debug, "oneWayExample message sent.")
     }
-
+    
     /// Example showing how to send a message with a value to the web app, and receive a response.
     /// - Parameter value: A value to be sent to the web app and returned back. It must be of a type supported by
     ///                    the native <-> JavaScript interop layer.
@@ -124,7 +124,7 @@ class ModelApplication: ITMApplication {
             }
         }
     }
-
+    
     /// `loadBackend` override that wraps the call to super in `startupTimer` checkpoints.
     override func loadBackend(_ allowInspectBackend: Bool) {
         startupTimer.addCheckpoint(name: "Before backend load")
@@ -134,7 +134,7 @@ class ModelApplication: ITMApplication {
             startupTimer.addCheckpoint(name: "After backend load")
         }
     }
-
+    
     /// `loadFrontend` override that wraps the call to super in `startupTimer` checkpoints.
     override func loadFrontend() {
         startupTimer.addCheckpoint(name: "Before frontend load")
@@ -152,7 +152,7 @@ class ModelApplication: ITMApplication {
     open func nativeUI(_ viewController: UIViewController) -> ITMNativeUI? {
         return (viewController as? ITMViewController)?.itmNativeUI
     }
-
+    
     /// Called when the `ITMViewController` will appear.
     ///
     /// Adds our DocumentPicker component to the native UI collection.
