@@ -191,7 +191,7 @@ export function HubScreen(props: HubScreenProps) {
             void onOpen(model.briefcase.fileName, BriefcaseConnection.openFile(model.briefcase));
           } else {
             if (openRemoteITwinId && openRemoteIModelId) {
-              // We were unabled to download requested iModelId, so go back to the Home screen.
+              // We were unable to download requested iModelId, so go back to the Home screen.
               onBack();
             } else {
               setHubStep(HubStep.SelectIModel);
