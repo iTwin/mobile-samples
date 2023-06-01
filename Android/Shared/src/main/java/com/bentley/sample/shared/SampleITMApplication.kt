@@ -95,13 +95,15 @@ open class SampleITMApplication(context: Context, attachWebViewLogger: Boolean, 
      */
     protected open fun getActionsFromConfigData(): JsonObject {
         val actions = JsonObject()
-        val configData = this.configData ?: return actions
-        for (key in configData.names()) {
-            val shortKey = key.removePrefix("ITMSAMPLE_ACTION_")
-            if (shortKey.length == key.length) { continue }
-            val value = configData[key]
-            if (!value.isString) { continue }
-            actions[shortKey] = value
+        configData?.let { configData ->
+            for (key in (configData.names())) {
+                configData.getOptionalString(key)?.let { value ->
+                    val shortKey = key.removePrefix("ITMSAMPLE_ACTION_")
+                    if (shortKey.length < key.length) {
+                        actions[shortKey] = value
+                    }
+                }
+            }
         }
         return actions
     }
