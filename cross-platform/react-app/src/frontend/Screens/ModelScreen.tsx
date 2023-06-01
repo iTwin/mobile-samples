@@ -17,7 +17,7 @@ import {
 import { ViewportComponent } from "@itwin/imodel-components-react";
 import { getCssVariable, IconSpec } from "@itwin/core-react";
 import { viewWithUnifiedSelection } from "@itwin/presentation-components";
-import { ActionSheetGravity, ActionStyle, AlertAction, presentAlert } from "@itwin/mobile-sdk-core";
+import { ActionSheetGravity, ActionStyle, AlertAction, Messenger, presentAlert } from "@itwin/mobile-sdk-core";
 import { useTheme } from "@itwin/itwinui-react";
 import {
   ActionSheetButton,
@@ -28,6 +28,7 @@ import {
   PreferredColorScheme,
   TabOrPanelDef,
   useBeEvent,
+  useFirstViewport,
   useIsMountedRef,
   useTabsAndStandAlonePanels,
   VisibleBackButton,
@@ -117,6 +118,9 @@ export function ModelScreen(props: ModelScreenProps) {
   const lightLabel = useLocalizedString("ModelScreen", "Light");
   const darkLabel = useLocalizedString("ModelScreen", "Dark");
   const automaticLabel = useLocalizedString("ModelScreen", "Automatic");
+  const vp = useFirstViewport();
+  const [firstRenderStarted, setFirstRenderStarted] = React.useState(false);
+  const [firstRenderFinished, setFirstRenderFinished] = React.useState(false);
 
   // Any time we do anything asynchronous, we have to check if the component is still mounted,
   // or it can lead to a run-time exception.
@@ -335,6 +339,23 @@ export function ModelScreen(props: ModelScreenProps) {
       updateBackgroundColor(firstOpenView);
     }
   }, []), MobileUi.onColorSchemeChanged);
+
+  React.useEffect(() => {
+    if (!firstRenderStarted) {
+      setFirstRenderStarted(true);
+      Messenger.sendMessage("firstRenderStarted");
+    }
+  }, [firstRenderStarted]);
+
+  useBeEvent(React.useCallback(() => {
+    if (!vp || firstRenderFinished) return;
+    if (vp.numReadyTiles > 0 && vp.numRequestedTiles === 0) {
+      // If we get here, at least one tile has loaded, and there aren't any pending tiles waiting to
+      // be loaded, so the model has fully drawn from the initial viewpoint.
+      setFirstRenderFinished(true);
+      Messenger.sendMessage("firstRenderFinished");
+    }
+  }, [vp, firstRenderFinished]), vp ? vp.onRender : IModelApp.viewManager.onFinishRender);
 
   const applyDefaultView = React.useCallback(async () => {
     try {

@@ -49,11 +49,17 @@ export interface HubScreenProps {
   onOpen: (filename: string, iModelPromise: Promise<IModelConnection>) => Promise<void>;
   /** Callback called when the back button is pressed to go to the previous screen. */
   onBack: () => void;
+  /**
+   * If the performActions includes and OPEN action with a remote: prefix, this will be set to
+   * the rest of the value, split on the colon character.
+   */
+  openRemoteValues?: string[];
 }
 
 /** React component to allow downloading and opening models from the iModel Hub. */
 export function HubScreen(props: HubScreenProps) {
-  const { onOpen, onBack } = props;
+  const { onOpen, onBack, openRemoteValues = [] } = props;
+  const [openRemoteITwinId, openRemoteIModelId] = openRemoteValues;
   const [initialized, setInitialized] = React.useState(false);
   const [hubStep, setHubStep] = React.useState(HubStep.SignIn);
   const [projectId, setProjectId] = React.useState(getActiveProjectId());
@@ -76,6 +82,17 @@ export function HubScreen(props: HubScreenProps) {
   let moreButton: React.ReactNode;
   let stepContent: React.ReactNode;
 
+  // Download and open a remote iModel based on openRemoteITwinId and openRemoteIModelId.
+  const openRemoteIModel = React.useCallback(async () => {
+    if (!openRemoteITwinId || !openRemoteIModelId) return;
+    setProjectId(openRemoteITwinId);
+    setIModel({ minimalIModel: { id: openRemoteIModelId, displayName: "" } });
+    // Note: by switching to HubStep.DownloadIModel, it will automatically delete the model if it
+    // already exists locally before downloading it. If a user taps on the button for a downloaded
+    // iModel, it will simply open it.
+    setHubStep(HubStep.DownloadIModel);
+  }, [openRemoteITwinId, openRemoteIModelId]);
+
   switch (hubStep) {
     case HubStep.SignIn:
       stepContent = <SignIn
@@ -90,6 +107,9 @@ export function HubScreen(props: HubScreenProps) {
 
     case HubStep.SelectProject:
       if (!initialized) break;
+      if (openRemoteITwinId && openRemoteIModelId) {
+        setProjectId(openRemoteITwinId);
+      }
       stepContent = <ProjectPicker
         onSelect={(newProjectId) => {
           saveActiveProjectId(newProjectId);
@@ -102,6 +122,7 @@ export function HubScreen(props: HubScreenProps) {
 
     case HubStep.SelectIModel:
       if (!projectId) break;
+      void openRemoteIModel();
       stepContent = <IModelPicker iTwinId={projectId}
         onLoaded={(models) => setHaveCachedBriefcase(models.some((model) => model.briefcase !== undefined))}
         onSelect={(model) => {
@@ -169,7 +190,12 @@ export function HubScreen(props: HubScreenProps) {
             ModelNameCache.set(model.minimalIModel.id, model.minimalIModel.displayName);
             void onOpen(model.briefcase.fileName, BriefcaseConnection.openFile(model.briefcase));
           } else {
-            setHubStep(HubStep.SelectIModel);
+            if (openRemoteITwinId && openRemoteIModelId) {
+              // We were unabled to download requested iModelId, so go back to the Home screen.
+              onBack();
+            } else {
+              setHubStep(HubStep.SelectIModel);
+            }
           }
         }}
         onCanceled={() => setHubStep(HubStep.SelectIModel)}
