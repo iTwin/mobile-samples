@@ -10,6 +10,7 @@ import androidx.activity.ComponentActivity
 import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.LifecycleOwner
 import com.eclipsesource.json.Json
+import com.eclipsesource.json.JsonObject
 import com.eclipsesource.json.JsonValue
 import com.github.itwin.mobilesdk.*
 import com.github.itwin.mobilesdk.jsonvalue.getOptionalString
@@ -63,6 +64,7 @@ open class SampleITMApplication(context: Context, attachWebViewLogger: Boolean, 
             startupTimer.usingRemoteServer = usingRemoteServer
             startupTimer.addCheckpoint("Launch total")
             startupTimer.logTimes(logger, appContext, "STARTUP TIMES")
+            performSampleActions()
         }
 
         coMessenger.registerQueryHandler("getBimDocuments") {
@@ -76,6 +78,46 @@ open class SampleITMApplication(context: Context, attachWebViewLogger: Boolean, 
                 logger.log(ITMLogger.Severity.Error, ex.message ?: "An unknown error occurred when signing out.")
                 throw ex
             }
+        }
+
+        coMessenger.registerMessageHandler("firstRenderStarted") {
+            logger.log(ITMLogger.Severity.Debug, "Received firstRenderStarted")
+        }
+        coMessenger.registerMessageHandler("firstRenderFinished") {
+            logger.log(ITMLogger.Severity.Debug, "Received firstRenderFinished")
+        }
+    }
+
+    /**
+     * Checks for values in configData with a prefix of "ITMSAMPLE_ACTION_" and constructs a [JsonObject]
+     * using everything after ITMSAMPLE_ACTION_ as the key and the values from configData.
+     * @return A [JsonObject] containing all the ITMSAMPLE_ACTION_ prefixed values from configData.
+     */
+    protected open fun getActionsFromConfigData(): JsonObject {
+        val actions = JsonObject()
+        configData?.let { configData ->
+            for (key in configData.names()) {
+                configData.getOptionalString(key)?.let { value ->
+                    val shortKey = key.removePrefix("ITMSAMPLE_ACTION_")
+                    if (shortKey.length < key.length) {
+                        actions[shortKey] = value
+                    }
+                }
+            }
+        }
+        return actions
+    }
+
+    /**
+     * Checks for sample actions and uses them in a "performActions" message to TS if they exist.
+     */
+    protected open fun performSampleActions() {
+        val actions = getActionsFromConfigData()
+        if (!actions.isEmpty) {
+            val json = JsonObject()
+            json["documentsPath"] = appContext.getExternalFilesDir(null)?.path ?: "oops"
+            json["actions"] = actions
+            coMessenger.send("performActions", json)
         }
     }
 
