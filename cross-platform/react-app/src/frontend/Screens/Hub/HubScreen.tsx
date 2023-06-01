@@ -50,7 +50,7 @@ export interface HubScreenProps {
   /** Callback called when the back button is pressed to go to the previous screen. */
   onBack: () => void;
   /**
-   * If the performActions includes and OPEN action with a remote: prefix, this will be set to
+   * If the performActions includes an OPEN action with a remote: prefix, this will be set to
    * the rest of the value, split on the colon character.
    */
   openRemoteValues?: string[];
