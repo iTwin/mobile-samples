@@ -96,7 +96,7 @@ open class SampleITMApplication(context: Context, attachWebViewLogger: Boolean, 
     protected open fun getActionsFromConfigData(): JsonObject {
         val actions = JsonObject()
         configData?.let { configData ->
-            for (key in (configData.names())) {
+            for (key in configData.names()) {
                 configData.getOptionalString(key)?.let { value ->
                     val shortKey = key.removePrefix("ITMSAMPLE_ACTION_")
                     if (shortKey.length < key.length) {
