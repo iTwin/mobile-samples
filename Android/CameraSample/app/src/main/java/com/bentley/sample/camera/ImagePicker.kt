@@ -13,11 +13,10 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.FileProvider
 import com.bentley.sample.shared.PickUriContract
 import com.bentley.sample.shared.PickUriContractType
-import com.eclipsesource.json.Json
-import com.eclipsesource.json.JsonValue
 import com.github.itwin.mobilesdk.ITMCoActivityResult
 import com.github.itwin.mobilesdk.ITMNativeUI
 import com.github.itwin.mobilesdk.ITMNativeUIComponent
+import com.github.itwin.mobilesdk.jsonvalue.JSONValue
 import java.io.File
 
 /**
@@ -35,7 +34,7 @@ class ImagePicker(nativeUI: ITMNativeUI): ITMNativeUIComponent(nativeUI) {
          * @param input The input parameters.
          * @return An image picking intent.
          */
-        override fun createIntent(context: Context, input: JsonValue?): Intent {
+        override fun createIntent(context: Context, input: JSONValue?): Intent {
             destDir = ImageCache.getDestinationDir(input)
 
             return super.createIntent(context, input)
@@ -84,7 +83,7 @@ class ImagePicker(nativeUI: ITMNativeUI): ITMNativeUIComponent(nativeUI) {
          * @param input The input parameters.
          * @return A picture taking intent.
          */
-        override fun createIntent(context: Context, input: JsonValue?): Intent {
+        override fun createIntent(context: Context, input: JSONValue?): Intent {
             getOutputFile(ImageCache.getDestinationDir(input), context)?.let { outputFile ->
                 val newUri = ImageCache.getCacheUri(outputFile.toString())
                 cameraUri = newUri
@@ -143,8 +142,8 @@ class ImagePicker(nativeUI: ITMNativeUI): ITMNativeUIComponent(nativeUI) {
          * @param input The input parameters.
          * @return The intent to pick an image or take a picture.
          */
-        override fun createIntent(context: Context, input: JsonValue?): Intent {
-            val camera = ImageCache.getObjectValue(input, "sourceType")?.asString() == "camera"
+        override fun createIntent(context: Context, input: JSONValue?): Intent {
+            val camera = input?.optString("sourceType") == "camera"
             delegateContract = if (camera) CaptureIModelImageContract() else PickIModelImageContract()
             return delegateContract.createIntent(context, input)
         }
@@ -161,7 +160,7 @@ class ImagePicker(nativeUI: ITMNativeUI): ITMNativeUIComponent(nativeUI) {
     }
 
     private class PickOrCaptureImage(activity: ComponentActivity):
-        ITMCoActivityResult<JsonValue?, Uri?>(activity, PickOrCaptureIModelImageContract())
+        ITMCoActivityResult<JSONValue?, Uri?>(activity, PickOrCaptureIModelImageContract())
 
     init {
         handler = coMessenger.registerQueryHandler("pickImage", ::handleQuery)
@@ -181,9 +180,9 @@ class ImagePicker(nativeUI: ITMNativeUI): ITMNativeUIComponent(nativeUI) {
     /**
      * Starts the registered activity result request.
      */
-    private suspend fun handleQuery(params: JsonValue?): JsonValue? {
+    private suspend fun handleQuery(params: JSONValue?): JSONValue {
         return pickOrCaptureImage?.invoke(params)?.let { uri ->
-            Json.value(uri.toString())
-        } ?: Json.value("")
+            JSONValue(uri.toString())
+        } ?: JSONValue("")
     }
 }

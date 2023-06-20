@@ -9,9 +9,9 @@ import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import androidx.activity.result.contract.ActivityResultContract
-import com.eclipsesource.json.JsonValue
+import com.github.itwin.mobilesdk.jsonvalue.JSONValue
 
-typealias PickUriContractType = ActivityResultContract<JsonValue?, Uri?>
+typealias PickUriContractType = ActivityResultContract<JSONValue?, Uri?>
 
 /**
  * An [ActivityResultContract] that takes a JsonValue and returns a Uri.
@@ -28,7 +28,7 @@ open class PickUriContract(@Suppress("MemberVisibilityCanBePrivate") var destDir
      * @param input The optional JsonValue, usually sent from typescript.
      * @return The intent to be used for the activity.
      */
-    override fun createIntent(context: Context, input: JsonValue?): Intent {
+    override fun createIntent(context: Context, input: JSONValue?): Intent {
         this.context = context
         return Intent()
     }

@@ -9,14 +9,13 @@ import android.webkit.WebView
 import androidx.activity.ComponentActivity
 import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.LifecycleOwner
-import com.eclipsesource.json.Json
-import com.eclipsesource.json.JsonObject
-import com.eclipsesource.json.JsonValue
 import com.github.itwin.mobilesdk.*
-import com.github.itwin.mobilesdk.jsonvalue.getOptionalString
+import com.github.itwin.mobilesdk.jsonvalue.JSONValue
 import com.github.itwin.mobilesdk.jsonvalue.isYes
+import com.github.itwin.mobilesdk.jsonvalue.toMap
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch
+import org.json.JSONObject
 
 /**
  * The base [ITMApplication] implementation for the sample applications.
@@ -55,9 +54,8 @@ open class SampleITMApplication(context: Context, attachWebViewLogger: Boolean, 
         coMessenger.registerMessageHandler("loading") {
             startupTimer.addCheckpoint("Webview load")
         }
-        coMessenger.registerMessageHandler("didFinishLaunching") { value: JsonValue? ->
-            val params = value!!.asObject()
-            params.getOptionalString("iTwinVersion")?.let { iTwinVersion ->
+        coMessenger.registerMessageHandler("didFinishLaunching") { params: JSONValue? ->
+            params?.optString("iTwinVersion")?.let { iTwinVersion ->
                 startupTimer.iTwinVersion = iTwinVersion
             }
             coMessenger.frontendLaunchSucceeded()
@@ -68,7 +66,7 @@ open class SampleITMApplication(context: Context, attachWebViewLogger: Boolean, 
         }
 
         coMessenger.registerQueryHandler("getBimDocuments") {
-            Json.array(*this.appContext.getExternalFiles("BimCache", ".bim").toTypedArray())
+            JSONValue(this.appContext.getExternalFiles("BimCache", ".bim").toTypedArray())
         }
 
         coMessenger.registerMessageHandler("signOut") {
@@ -89,18 +87,18 @@ open class SampleITMApplication(context: Context, attachWebViewLogger: Boolean, 
     }
 
     /**
-     * Checks for values in configData with a prefix of "ITMSAMPLE_ACTION_" and constructs a [JsonObject]
+     * Checks for values in configData with a prefix of "ITMSAMPLE_ACTION_" and constructs a [JSONObject]
      * using everything after ITMSAMPLE_ACTION_ as the key and the values from configData.
-     * @return A [JsonObject] containing all the ITMSAMPLE_ACTION_ prefixed values from configData.
+     * @return A [JSONObject] containing all the ITMSAMPLE_ACTION_ prefixed values from configData.
      */
-    protected open fun getActionsFromConfigData(): JsonObject {
-        val actions = JsonObject()
+    protected open fun getActionsFromConfigData(): JSONObject {
+        val actions = JSONObject()
         configData?.let { configData ->
-            for (key in configData.names()) {
-                configData.getOptionalString(key)?.let { value ->
-                    val shortKey = key.removePrefix("ITMSAMPLE_ACTION_")
-                    if (shortKey.length < key.length) {
-                        actions[shortKey] = value
+            configData.toMap().forEach { entry ->
+                (entry.value as? String)?.let { value ->
+                    val shortKey = entry.key.removePrefix("ITMSAMPLE_ACTION_")
+                    if (shortKey.length < entry.key.length) {
+                        actions.put(shortKey, value)
                     }
                 }
             }
@@ -113,11 +111,11 @@ open class SampleITMApplication(context: Context, attachWebViewLogger: Boolean, 
      */
     protected open fun performSampleActions() {
         val actions = getActionsFromConfigData()
-        if (!actions.isEmpty) {
-            val json = JsonObject()
-            json["documentsPath"] = appContext.getExternalFilesDir(null)?.path ?: "oops"
-            json["actions"] = actions
-            coMessenger.send("performActions", json)
+        if ((actions.names()?.length() ?: 0) != 0) {
+            val data = JSONObject()
+            data.put("documentsPath", appContext.getExternalFilesDir(null)?.path ?: "oops")
+            data.put("actions", actions)
+            coMessenger.send("performActions", JSONValue(data))
         }
     }
 

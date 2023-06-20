@@ -9,9 +9,10 @@ import android.net.Uri
 import android.webkit.WebResourceResponse
 import androidx.core.content.FileProvider
 import com.bentley.sample.shared.getExternalFiles
-import com.eclipsesource.json.Json
-import com.eclipsesource.json.JsonValue
 import com.github.itwin.mobilesdk.ITMLogger
+import com.github.itwin.mobilesdk.jsonvalue.JSONValue
+import com.github.itwin.mobilesdk.jsonvalue.toList
+import org.json.JSONArray
 import java.io.File
 import java.io.FileInputStream
 import java.time.LocalDateTime
@@ -35,7 +36,7 @@ object ImageCache {
      * @param input The input parameters, expects an object with iModelId string member.
      * @return The file path of the destination directory.
      */
-    fun getDestinationDir(input: JsonValue?): String {
+    fun getDestinationDir(input: JSONValue?): String {
         val iModelId = getIModelId(input) ?: "unknownModelId"
         return File("images", iModelId).toString()
     }
@@ -82,30 +83,29 @@ object ImageCache {
     /**
      * Gets all the image files cached for a given iModelId.
      * @param params The input parameters, expects an object with an iModelId member.
-     * @return A Json array of cached images uri's, may be empty.
+     * @return A JSON array of cached images uri's, may be empty.
      */
-    fun handleGetImages(params: JsonValue?): JsonValue? {
+    fun handleGetImages(params: JSONValue?): JSONValue {
         val files = CameraApplication.instance.applicationContext.getExternalFiles(getDestinationDir(params))
-        return Json.array(*files.map { file ->
+        return JSONValue(JSONArray(files.map { file ->
             getCacheUri(file).toString()
-        }.toTypedArray())
+        }.toTypedArray()))
     }
 
     /**
      * Deletes cached images for a given iModelId.
      * @param params The input parameters, expects an object with a url member.
-     * @return [Json.NULL] always.
+     * @return null always.
      */
-    fun handleDeleteImages(params: JsonValue?): JsonValue? {
-        getObjectValue(params, "urls")?.let { urls ->
-            when {
-                urls.isArray -> { urls.asArray().forEach { url ->
-                    url.takeIf { it.isString }?.let { tryDeleteFile(it.asString()) } }
-                }
-                urls.isString -> { tryDeleteFile(urls.asString()) }
+    fun handleDeleteImages(params: JSONValue?): JSONValue? {
+        val urls = JSONValue(params?.opt("urls"))
+        when {
+            urls.isArray -> { urls.asArray()!!.toList().forEach { url ->
+                url.takeIf { it is String }?.let { tryDeleteFile(it as String) } }
             }
+            urls.isString -> { tryDeleteFile(urls.asString()!!) }
         }
-        return Json.NULL
+        return null
     }
 
     /**
@@ -125,23 +125,23 @@ object ImageCache {
     /**
      * Deletes all cached images for a given iModelId.
      * @param params The input parameters, expects an object with an iModelId member.
-     * @return [Json.NULL] always.
+     * @return null always.
      */
-    fun handleDeleteAllImages(params: JsonValue?): JsonValue? {
+    fun handleDeleteAllImages(params: JSONValue?): JSONValue? {
         getIModelId(params)?.let { iModelId ->
             File(baseDir, iModelId).deleteRecursively()
         }
-        return Json.NULL
+        return null
     }
 
     /**
      * Shares one or more cached images using the standard Android share sheet.
      * @param params The input parameters, expects an object with a url member.
-     * @return [Json.NULL] always.
+     * @return null always.
      */
-    fun handleShareImages(params: JsonValue?): JsonValue? {
-        val urls = getObjectValue(params, "urls")?.asArray()?.map {
-            val file = getFilePath(Uri.parse(it.asString()))
+    fun handleShareImages(params: JSONValue?): JSONValue? {
+        val urls = JSONValue(params?.opt("urls")).asArray()?.toList()?.map {
+            val file = getFilePath(Uri.parse(it as String))
             FileProvider.getUriForFile(CameraApplication.instance.applicationContext, "${BuildConfig.APPLICATION_ID}.provider", file)
         }
 
@@ -160,25 +160,15 @@ object ImageCache {
                 it.startActivity(Intent.createChooser(shareIntent, null))
             }
         }
-        return Json.NULL
-    }
-
-    /**
-     * Gets the object value for the input parameters.
-     * @param params Input parameters.
-     * @param name Name of object to get.
-     * @return The object value if [params] is a Json object, could be null.
-     */
-    fun getObjectValue(params: JsonValue?, name: String): JsonValue? {
-        return params?.takeIf { it.isObject }?.asObject()?.get(name)
+        return null
     }
 
     /**
      * Gets the iModelId value.
-     * @param params The input parameters, expects it to be a Json object with an iModelId string property.
+     * @param params The input parameters, expects it to be a JSON object with an iModelId string property.
      * @return The iModelId or null.
      */
-    private fun getIModelId(params: JsonValue?): String? {
-        return getObjectValue(params, "iModelId")?.takeIf { it.isString }?.asString()
+    private fun getIModelId(params: JSONValue?): String? {
+        return params?.optString("iModelId")
     }
 }

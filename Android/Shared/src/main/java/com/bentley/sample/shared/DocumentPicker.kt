@@ -9,11 +9,10 @@ import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import androidx.activity.ComponentActivity
-import com.eclipsesource.json.Json
-import com.eclipsesource.json.JsonValue
 import com.github.itwin.mobilesdk.ITMCoActivityResult
 import com.github.itwin.mobilesdk.ITMNativeUI
 import com.github.itwin.mobilesdk.ITMNativeUIComponent
+import com.github.itwin.mobilesdk.jsonvalue.JSONValue
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch
 import kotlin.coroutines.resume
@@ -27,7 +26,7 @@ class DocumentPicker(nativeUI: ITMNativeUI): ITMNativeUIComponent(nativeUI) {
      * Lets the user pick .bim documents and copies them to the BimCache external files directory.
      */
     private class PickDocumentContract : PickUriContract("BimCache") {
-        override fun createIntent(context: Context, input: JsonValue?): Intent {
+        override fun createIntent(context: Context, input: JSONValue?): Intent {
             return super.createIntent(context, input)
                 .setAction(Intent.ACTION_OPEN_DOCUMENT)
                 .setType("*/*")
@@ -53,7 +52,7 @@ class DocumentPicker(nativeUI: ITMNativeUI): ITMNativeUIComponent(nativeUI) {
     }
 
     private class PickDocument(activity: ComponentActivity):
-        ITMCoActivityResult<JsonValue?, Uri?>(activity, PickDocumentContract())
+        ITMCoActivityResult<JSONValue?, Uri?>(activity, PickDocumentContract())
 
     init {
         handler = coMessenger.registerQueryHandler("chooseDocument", ::handleQuery)
@@ -87,14 +86,14 @@ class DocumentPicker(nativeUI: ITMNativeUI): ITMNativeUIComponent(nativeUI) {
     /**
      * Starts the registered activity result request.
      */
-    private suspend fun handleQuery(unused: JsonValue?): JsonValue? {
+    private suspend fun handleQuery(unused: JSONValue?): JSONValue {
         return pickDocument?.invoke(unused)?.let { uri ->
             if (PickDocumentContract.isAcceptableBimUri(uri)) {
-                Json.value(uri.toString())
+                JSONValue(uri.toString())
             } else {
                 MainScope().launch { showErrorAlert() }
                 null
             }
-        } ?: Json.value("")
+        } ?: JSONValue("")
     }
 }
