@@ -10,7 +10,6 @@ import androidx.activity.ComponentActivity
 import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.LifecycleOwner
 import com.github.itwin.mobilesdk.*
-import com.github.itwin.mobilesdk.jsonvalue.JSONValue
 import com.github.itwin.mobilesdk.jsonvalue.isYes
 import com.github.itwin.mobilesdk.jsonvalue.toMap
 import kotlinx.coroutines.MainScope
@@ -51,11 +50,11 @@ open class SampleITMApplication(context: Context, attachWebViewLogger: Boolean, 
      */
     override fun setupWebView() {
         super.setupWebView()
-        coMessenger.registerMessageHandler("loading") {
+        coMessenger.registerMessageHandler<Unit>("loading") {
             startupTimer.addCheckpoint("Webview load")
         }
-        coMessenger.registerMessageHandler("didFinishLaunching") { params: JSONValue? ->
-            params?.optString("iTwinVersion")?.let { iTwinVersion ->
+        coMessenger.registerMessageHandler("didFinishLaunching") { params: Map<String, String> ->
+            params["iTwinVersion"]?.let { iTwinVersion ->
                 startupTimer.iTwinVersion = iTwinVersion
             }
             coMessenger.frontendLaunchSucceeded()
@@ -65,11 +64,11 @@ open class SampleITMApplication(context: Context, attachWebViewLogger: Boolean, 
             performSampleActions()
         }
 
-        coMessenger.registerQueryHandler("getBimDocuments") {
-            JSONValue(this.appContext.getExternalFiles("BimCache", ".bim").toTypedArray())
+        coMessenger.registerQueryHandler<Unit, _>("getBimDocuments") {
+            this.appContext.getExternalFiles("BimCache", ".bim")
         }
 
-        coMessenger.registerMessageHandler("signOut") {
+        coMessenger.registerMessageHandler<Unit>("signOut") {
             try {
                 (authorizationClient as? ITMOIDCAuthorizationClient)?.signOut()
             } catch (ex: Exception) {
@@ -78,10 +77,10 @@ open class SampleITMApplication(context: Context, attachWebViewLogger: Boolean, 
             }
         }
 
-        coMessenger.registerMessageHandler("firstRenderStarted") {
+        coMessenger.registerMessageHandler<Unit>("firstRenderStarted") {
             logger.log(ITMLogger.Severity.Debug, "Received firstRenderStarted")
         }
-        coMessenger.registerMessageHandler("firstRenderFinished") {
+        coMessenger.registerMessageHandler<Unit>("firstRenderFinished") {
             logger.log(ITMLogger.Severity.Debug, "Received firstRenderFinished")
         }
     }
@@ -115,7 +114,7 @@ open class SampleITMApplication(context: Context, attachWebViewLogger: Boolean, 
             val data = JSONObject()
             data.put("documentsPath", appContext.getExternalFilesDir(null)?.path ?: "oops")
             data.put("actions", actions)
-            coMessenger.send("performActions", JSONValue(data))
+            coMessenger.send("performActions", data)
         }
     }
 
@@ -157,6 +156,62 @@ open class SampleITMApplication(context: Context, attachWebViewLogger: Boolean, 
         MainScope().launch {
             waitForFrontendInitialize()
             startupTimer.addCheckpoint("After frontend load")
+            performExampleQueries()
+        }
+    }
+
+    /**
+     * Examples of performing both one-way and two-way queries.
+     * __Note__: All example queries are intentionally sent out asynchronously without waiting for
+     * one to complete before doing the next.
+     */
+    private fun performExampleQueries() {
+        oneWayExample("one way")
+        oneWayExample(13)
+        queryExample("string query")
+        queryExample(42)
+        queryExample(1.234)
+        queryExample(true)
+        voidExample()
+    }
+
+    /**
+     * Example showing how to send a message with a value to the web app with no response expected.
+     * @param value A value to be sent to the web app. It must be of a type supported by the native
+     * <-> JavaScript interop layer.
+     */
+    private fun <T> oneWayExample(value: T) {
+        coMessenger.send("oneWayExample", mapOf("value" to value))
+        logger.log(ITMLogger.Severity.Debug, "oneWayExample message sent.")
+    }
+
+    /**
+     * Example showing how to send a message with no value to the web app, and receive a response.
+     */
+    private fun voidExample() {
+        MainScope().launch {
+            try {
+                val result: String = coMessenger.query("voidExample")
+                logger.log(ITMLogger.Severity.Debug, "voidExample result: $result")
+            } catch (error: Throwable) {
+                logger.log(ITMLogger.Severity.Error, "Error with voidExample: $error")
+            }
+        }
+    }
+
+    /**
+     * Example showing how to send a message with a value to the web app, and receive a response.
+     * @param value A value to be sent to the web app and returned back. It must be of a type
+     * supported by the native <-> JavaScript interop layer.
+     */
+    private fun <T> queryExample(value: T) {
+        MainScope().launch {
+            try {
+                val result: T = coMessenger.query("queryExample", mapOf("value" to value))
+                logger.log(ITMLogger.Severity.Debug, "queryExample result: $result")
+            } catch (error: Throwable) {
+                logger.log(ITMLogger.Severity.Error, "Error with queryExample: $error")
+            }
         }
     }
 

@@ -12,7 +12,6 @@ import androidx.activity.ComponentActivity
 import com.github.itwin.mobilesdk.ITMCoActivityResult
 import com.github.itwin.mobilesdk.ITMNativeUI
 import com.github.itwin.mobilesdk.ITMNativeUIComponent
-import com.github.itwin.mobilesdk.jsonvalue.JSONValue
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch
 import kotlin.coroutines.resume
@@ -26,7 +25,7 @@ class DocumentPicker(nativeUI: ITMNativeUI): ITMNativeUIComponent(nativeUI) {
      * Lets the user pick .bim documents and copies them to the BimCache external files directory.
      */
     private class PickDocumentContract : PickUriContract("BimCache") {
-        override fun createIntent(context: Context, input: JSONValue?): Intent {
+        override fun createIntent(context: Context, input: Map<String, String>?): Intent {
             return super.createIntent(context, input)
                 .setAction(Intent.ACTION_OPEN_DOCUMENT)
                 .setType("*/*")
@@ -52,7 +51,7 @@ class DocumentPicker(nativeUI: ITMNativeUI): ITMNativeUIComponent(nativeUI) {
     }
 
     private class PickDocument(activity: ComponentActivity):
-        ITMCoActivityResult<JSONValue?, Uri?>(activity, PickDocumentContract())
+        ITMCoActivityResult<Map<String, String>?, Uri?>(activity, PickDocumentContract())
 
     init {
         handler = coMessenger.registerQueryHandler("chooseDocument", ::handleQuery)
@@ -86,14 +85,14 @@ class DocumentPicker(nativeUI: ITMNativeUI): ITMNativeUIComponent(nativeUI) {
     /**
      * Starts the registered activity result request.
      */
-    private suspend fun handleQuery(unused: JSONValue?): JSONValue {
+    private suspend fun handleQuery(unused: Map<String, String>?): String {
         return pickDocument?.invoke(unused)?.let { uri ->
             if (PickDocumentContract.isAcceptableBimUri(uri)) {
-                JSONValue(uri.toString())
+                uri.toString()
             } else {
                 MainScope().launch { showErrorAlert() }
                 null
             }
-        } ?: JSONValue("")
+        } ?: ""
     }
 }
