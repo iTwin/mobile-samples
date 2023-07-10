@@ -92,13 +92,11 @@ open class SampleITMApplication(context: Context, attachWebViewLogger: Boolean, 
      */
     protected open fun getActionsFromConfigData(): JSONObject {
         val actions = JSONObject()
-        configData?.let { configData ->
-            configData.toMap().forEach { entry ->
-                (entry.value as? String)?.let { value ->
-                    val shortKey = entry.key.removePrefix("ITMSAMPLE_ACTION_")
-                    if (shortKey.length < entry.key.length) {
-                        actions.put(shortKey, value)
-                    }
+        configData?.toMap()?.forEach { entry ->
+            (entry.value as? String)?.let { value ->
+                val shortKey = entry.key.removePrefix("ITMSAMPLE_ACTION_")
+                if (shortKey.length < entry.key.length) {
+                    actions.put(shortKey, value)
                 }
             }
         }
