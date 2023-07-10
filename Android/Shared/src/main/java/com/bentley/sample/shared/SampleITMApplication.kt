@@ -50,7 +50,7 @@ open class SampleITMApplication(context: Context, attachWebViewLogger: Boolean, 
      */
     override fun setupWebView() {
         super.setupWebView()
-        coMessenger.registerMessageHandler<Unit>("loading") {
+        coMessenger.registerMessageHandler("loading") {
             startupTimer.addCheckpoint("Webview load")
         }
         coMessenger.registerMessageHandler("didFinishLaunching") { params: Map<String, String> ->
@@ -68,7 +68,7 @@ open class SampleITMApplication(context: Context, attachWebViewLogger: Boolean, 
             this.appContext.getExternalFiles("BimCache", ".bim")
         }
 
-        coMessenger.registerMessageHandler<Unit>("signOut") {
+        coMessenger.registerMessageHandler("signOut") {
             try {
                 (authorizationClient as? ITMOIDCAuthorizationClient)?.signOut()
             } catch (ex: Exception) {
@@ -77,10 +77,10 @@ open class SampleITMApplication(context: Context, attachWebViewLogger: Boolean, 
             }
         }
 
-        coMessenger.registerMessageHandler<Unit>("firstRenderStarted") {
+        coMessenger.registerMessageHandler("firstRenderStarted") {
             logger.log(ITMLogger.Severity.Debug, "Received firstRenderStarted")
         }
-        coMessenger.registerMessageHandler<Unit>("firstRenderFinished") {
+        coMessenger.registerMessageHandler("firstRenderFinished") {
             logger.log(ITMLogger.Severity.Debug, "Received firstRenderFinished")
         }
     }
