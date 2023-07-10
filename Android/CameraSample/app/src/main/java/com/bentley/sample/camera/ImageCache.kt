@@ -87,7 +87,7 @@ object ImageCache {
         val files = CameraApplication.instance.applicationContext.getExternalFiles(getDestinationDir(params))
         return files.map { file ->
             getCacheUri(file).toString()
-        }.toTypedArray().toList()
+        }
     }
 
     /**
