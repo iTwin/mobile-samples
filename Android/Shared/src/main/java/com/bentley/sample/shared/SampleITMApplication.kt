@@ -108,7 +108,7 @@ open class SampleITMApplication(context: Context, attachWebViewLogger: Boolean, 
      */
     protected open fun performSampleActions() {
         val actions = getActionsFromConfigData()
-        if ((actions.names()?.length() ?: 0) != 0) {
+        if (actions.length() != 0) {
             val data = JSONObject()
             data.put("documentsPath", appContext.getExternalFilesDir(null)?.path ?: "oops")
             data.put("actions", actions)
