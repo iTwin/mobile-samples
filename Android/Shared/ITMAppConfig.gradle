@@ -77,7 +77,7 @@ static def getBoolProperty(properties, propertyName) {
 }
 
 def addITMAppConfigToResource(buildConfig) {
-    def properties = readITMAppConfig(project)
+    def properties = readITMAppConfig(project(":itmsamplesshared"))
     for(def prop in properties) {
         println "$prop.key: $prop.value"
         buildConfig.resValue("string", prop.key, prop.value)

@@ -156,6 +156,7 @@ function useAppState(onInitialize?: () => Promise<void>) {
         await onInitialize?.();
 
         Messenger.onQuery("queryExample").setHandler(async (params) => params.value);
+        Messenger.onQuery("voidExample").setHandler(async () => "void input");
         Messenger.onQuery("oneWayExample").setHandler(async (params) => {
           console.log(`oneWayExample received value: ${params.value}`);
         });

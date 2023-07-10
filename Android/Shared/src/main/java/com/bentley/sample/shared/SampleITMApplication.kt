@@ -9,14 +9,12 @@ import android.webkit.WebView
 import androidx.activity.ComponentActivity
 import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.LifecycleOwner
-import com.eclipsesource.json.Json
-import com.eclipsesource.json.JsonObject
-import com.eclipsesource.json.JsonValue
 import com.github.itwin.mobilesdk.*
-import com.github.itwin.mobilesdk.jsonvalue.getOptionalString
 import com.github.itwin.mobilesdk.jsonvalue.isYes
+import com.github.itwin.mobilesdk.jsonvalue.toMap
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch
+import org.json.JSONObject
 
 /**
  * The base [ITMApplication] implementation for the sample applications.
@@ -55,9 +53,8 @@ open class SampleITMApplication(context: Context, attachWebViewLogger: Boolean, 
         coMessenger.registerMessageHandler("loading") {
             startupTimer.addCheckpoint("Webview load")
         }
-        coMessenger.registerMessageHandler("didFinishLaunching") { value: JsonValue? ->
-            val params = value!!.asObject()
-            params.getOptionalString("iTwinVersion")?.let { iTwinVersion ->
+        coMessenger.registerMessageHandler("didFinishLaunching") { params: Map<String, String> ->
+            params["iTwinVersion"]?.let { iTwinVersion ->
                 startupTimer.iTwinVersion = iTwinVersion
             }
             coMessenger.frontendLaunchSucceeded()
@@ -67,8 +64,8 @@ open class SampleITMApplication(context: Context, attachWebViewLogger: Boolean, 
             performSampleActions()
         }
 
-        coMessenger.registerQueryHandler("getBimDocuments") {
-            Json.array(*this.appContext.getExternalFiles("BimCache", ".bim").toTypedArray())
+        coMessenger.registerQueryHandler<Unit, _>("getBimDocuments") {
+            this.appContext.getExternalFiles("BimCache", ".bim")
         }
 
         coMessenger.registerMessageHandler("signOut") {
@@ -89,19 +86,17 @@ open class SampleITMApplication(context: Context, attachWebViewLogger: Boolean, 
     }
 
     /**
-     * Checks for values in configData with a prefix of "ITMSAMPLE_ACTION_" and constructs a [JsonObject]
+     * Checks for values in configData with a prefix of "ITMSAMPLE_ACTION_" and constructs a [JSONObject]
      * using everything after ITMSAMPLE_ACTION_ as the key and the values from configData.
-     * @return A [JsonObject] containing all the ITMSAMPLE_ACTION_ prefixed values from configData.
+     * @return A [JSONObject] containing all the ITMSAMPLE_ACTION_ prefixed values from configData.
      */
-    protected open fun getActionsFromConfigData(): JsonObject {
-        val actions = JsonObject()
-        configData?.let { configData ->
-            for (key in configData.names()) {
-                configData.getOptionalString(key)?.let { value ->
-                    val shortKey = key.removePrefix("ITMSAMPLE_ACTION_")
-                    if (shortKey.length < key.length) {
-                        actions[shortKey] = value
-                    }
+    protected open fun getActionsFromConfigData(): JSONObject {
+        val actions = JSONObject()
+        configData?.toMap()?.forEach { entry ->
+            (entry.value as? String)?.let { value ->
+                val shortKey = entry.key.removePrefix("ITMSAMPLE_ACTION_")
+                if (shortKey.length < entry.key.length) {
+                    actions.put(shortKey, value)
                 }
             }
         }
@@ -113,11 +108,11 @@ open class SampleITMApplication(context: Context, attachWebViewLogger: Boolean, 
      */
     protected open fun performSampleActions() {
         val actions = getActionsFromConfigData()
-        if (!actions.isEmpty) {
-            val json = JsonObject()
-            json["documentsPath"] = appContext.getExternalFilesDir(null)?.path ?: "oops"
-            json["actions"] = actions
-            coMessenger.send("performActions", json)
+        if (actions.length() != 0) {
+            val data = JSONObject()
+            data.put("documentsPath", appContext.getExternalFilesDir(null)?.path ?: "oops")
+            data.put("actions", actions)
+            coMessenger.send("performActions", data)
         }
     }
 
@@ -159,6 +154,62 @@ open class SampleITMApplication(context: Context, attachWebViewLogger: Boolean, 
         MainScope().launch {
             waitForFrontendInitialize()
             startupTimer.addCheckpoint("After frontend load")
+            performExampleQueries()
+        }
+    }
+
+    /**
+     * Examples of performing both one-way and two-way queries.
+     * __Note__: All example queries are intentionally sent out asynchronously without waiting for
+     * one to complete before doing the next.
+     */
+    private fun performExampleQueries() {
+        oneWayExample("one way")
+        oneWayExample(13)
+        queryExample("string query")
+        queryExample(42)
+        queryExample(1.234)
+        queryExample(true)
+        voidExample()
+    }
+
+    /**
+     * Example showing how to send a message with a value to the web app with no response expected.
+     * @param value A value to be sent to the web app. It must be of a type supported by the native
+     * <-> JavaScript interop layer.
+     */
+    private fun <T> oneWayExample(value: T) {
+        coMessenger.send("oneWayExample", mapOf("value" to value))
+        logger.log(ITMLogger.Severity.Debug, "oneWayExample message sent.")
+    }
+
+    /**
+     * Example showing how to send a message with no value to the web app, and receive a response.
+     */
+    private fun voidExample() {
+        MainScope().launch {
+            try {
+                val result: String = coMessenger.query("voidExample")
+                logger.log(ITMLogger.Severity.Debug, "voidExample result: $result")
+            } catch (error: Throwable) {
+                logger.log(ITMLogger.Severity.Error, "Error with voidExample: $error")
+            }
+        }
+    }
+
+    /**
+     * Example showing how to send a message with a value to the web app, and receive a response.
+     * @param value A value to be sent to the web app and returned back. It must be of a type
+     * supported by the native <-> JavaScript interop layer.
+     */
+    private fun <T> queryExample(value: T) {
+        MainScope().launch {
+            try {
+                val result: T = coMessenger.query("queryExample", mapOf("value" to value))
+                logger.log(ITMLogger.Severity.Debug, "queryExample result: $result")
+            } catch (error: Throwable) {
+                logger.log(ITMLogger.Severity.Error, "Error with queryExample: $error")
+            }
         }
     }
 

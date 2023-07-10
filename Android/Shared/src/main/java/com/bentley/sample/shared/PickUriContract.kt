@@ -9,12 +9,11 @@ import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import androidx.activity.result.contract.ActivityResultContract
-import com.eclipsesource.json.JsonValue
 
-typealias PickUriContractType = ActivityResultContract<JsonValue?, Uri?>
+typealias PickUriContractType = ActivityResultContract<Map<String, String>?, Uri?>
 
 /**
- * An [ActivityResultContract] that takes a JsonValue and returns a Uri.
+ * An [ActivityResultContract] that takes a [Map] and returns a [Uri].
  * @property destDir The optional external files directory to copy the Uri to.
  *                   Must be non-null and [shouldCopyUri] must return true for the copying to occur.
  */
@@ -25,10 +24,10 @@ open class PickUriContract(@Suppress("MemberVisibilityCanBePrivate") var destDir
      * Gets an empty Intent by default. Sub-classes can override this function to add specifics
      * for the intent they are using.
      * @param context The context.
-     * @param input The optional JsonValue, usually sent from typescript.
+     * @param input The optional [Map], usually sent from typescript.
      * @return The intent to be used for the activity.
      */
-    override fun createIntent(context: Context, input: JsonValue?): Intent {
+    override fun createIntent(context: Context, input: Map<String, String>?): Intent {
         this.context = context
         return Intent()
     }
