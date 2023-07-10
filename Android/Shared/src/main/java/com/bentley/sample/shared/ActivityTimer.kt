@@ -12,6 +12,7 @@ import com.github.itwin.mobilesdk.ITMLogger
 import com.github.itwin.mobilesdk.epochMillisToISO8601
 import com.github.itwin.mobilesdk.jsonvalue.jsonOf
 import org.json.JSONArray
+import org.json.JSONObject
 import java.lang.Integer.max
 import java.text.SimpleDateFormat
 import java.util.*
@@ -97,12 +98,12 @@ class ActivityTimer(private val nameTitle: String = "ACTIVITY") {
                 timeDeltaString(lastTime, checkpoint.second),
                 timeDeltaString(startTime, checkpoint.second),
             )
-            jsonCheckpoints.put(jsonOf(
+            jsonCheckpoints.put(JSONObject(mapOf(
                 "action" to row[0],
                 "timestamp" to checkpoint.second.time.epochMillisToISO8601(),
                 "step" to timeDelta(lastTime, checkpoint.second),
                 "total" to timeDelta(startTime, checkpoint.second),
-            ).value)
+            )))
             for (i in maxLengths.indices) {
                 maxLengths[i] = max(maxLengths[i], row[i].length)
             }
