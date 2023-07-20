@@ -46,6 +46,13 @@ open class SampleITMApplication(context: Context, attachWebViewLogger: Boolean, 
     }
 
     /**
+     * Configure the default [ITMGeolocationManager] to return "last location" values up to 5
+     * seconds old.
+     */
+    override fun createGeolocationManager(): ITMGeolocationManager? =
+        super.createGeolocationManager()?.apply { setLastLocationTimeThreshold(5000) }
+
+    /**
      * Adds handlers for the messages used in this application.
      */
     override fun setupWebView() {
