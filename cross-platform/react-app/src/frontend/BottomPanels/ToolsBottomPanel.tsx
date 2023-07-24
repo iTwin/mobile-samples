@@ -24,13 +24,14 @@ import "./ToolsBottomPanel.scss";
 
 export type ButtonRowProps = React.HTMLAttributes<HTMLDivElement>;
 
+/** Information about one entry in the Tools panel. */
 export interface ToolEntry {
   labelKey: string;
   icon?: string;
   toolItemDef: ToolItemDef;
 }
 
-// tslint:disable-next-line: variable-name
+/** A horizontally scrollable container for Buttons that forwards the scrollable div to its parent. */
 export const ButtonRow = React.forwardRef((props: ButtonRowProps, ref: MutableHtmlDivRefOrFunction) => {
   const { className, children, ...nonChildren } = props;
   const divRef = React.useRef<HTMLDivElement | null>(null);
@@ -54,11 +55,16 @@ export const ButtonRow = React.forwardRef((props: ButtonRowProps, ref: MutableHt
 });
 ButtonRow.displayName = "ButtonRow";
 
+/** Properties for the {@link ActiveButtonRow} React component. */
 export interface ActiveButtonRowProps extends ButtonRowProps {
+  /** The index of the active button. */
   activeIndex?: number;
 }
 
-// tslint:disable-next-line: variable-name
+/**
+ * A horizontally scrollable container for Buttons that ensures the child at the activeIndex is visible when resized.
+ * As with {@link ButtonRow}, it forwards the scrollable div's reference to its parent.
+ */
 export const ActiveButtonRow = React.forwardRef((props: ActiveButtonRowProps, ref: MutableHtmlDivRefOrFunction) => {
   const { activeIndex, ...others } = props;
   const divRef = React.useRef<HTMLDivElement | null>(null);
@@ -69,15 +75,18 @@ export const ActiveButtonRow = React.forwardRef((props: ActiveButtonRowProps, re
 });
 ActiveButtonRow.displayName = "ActiveButtonRow";
 
+/** Properties for the {@link ToolsBottomPanel} React component. */
 export interface ToolsBottomPanelProps extends BottomPanelProps {
-  /// The loaded iModel.
+  /** The loaded iModel. */
   iModel: IModelConnection;
 
-  /// Optional callback that is called after a tool is selected.
+  /** Optional callback that is called after a tool is selected. */
   onToolClick?: () => void;
+  /** Optional tools to show instead of the default ones. Used by the camera sample. */
   tools?: ToolEntry[];
 }
 
+/** Command called by the walk tool. */
 function viewLookAndMoveCommand() {
   return new ToolItemDef({
     toolId: "View.LookAndMove",
@@ -89,6 +98,10 @@ function viewLookAndMoveCommand() {
   });
 }
 
+/**
+ * Generate the array of default tools.
+ * @returns An array of {@link ToolEntry} values for all of the default tools.
+ */
 export function getDefaultTools(): ToolEntry[] {
   return [
     { labelKey: "ReactApp:ToolsBottomPanel.Select", icon: "icon-gesture-touch", toolItemDef: CoreTools.selectElementCommand },
@@ -108,6 +121,7 @@ export function getDefaultTools(): ToolEntry[] {
   ];
 }
 
+/** {@link BottomPanel} React component that shows tools. */
 export function ToolsBottomPanel(props: ToolsBottomPanelProps) {
   const defaultTools = React.useMemo(getDefaultTools, []);
   const { iModel: _iModel, onToolClick, tools = defaultTools, ...others } = props;

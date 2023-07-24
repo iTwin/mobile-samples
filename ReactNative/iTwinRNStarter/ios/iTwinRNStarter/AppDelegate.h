@@ -2,14 +2,13 @@
 * Copyright (c) Bentley Systems, Incorporated. All rights reserved.
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
-package com.bentley.sample.itwinstarter
+#import <RCTAppDelegate.h>
+#import <UIKit/UIKit.h>
+@import ITwinMobile;
+#import "iTwinRNStarter-Swift.h"
 
-import android.annotation.SuppressLint
-import com.bentley.sample.shared.SampleITMApplication
+@interface AppDelegate : RCTAppDelegate
 
-@SuppressLint("StaticFieldLeak")
-object StarterITMApplication : SampleITMApplication(StarterApplication.getContext(), BuildConfig.DEBUG, BuildConfig.DEBUG) {
-    init {
-        finishInit()
-    }
-}
+@property (nonatomic, strong) ModelApplicationBridge *modelApplicationBridge;
+
+@end

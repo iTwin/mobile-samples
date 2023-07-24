@@ -5,8 +5,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/openid/AppAuth-iOS.git",
       "state" : {
-        "revision" : "3d36a58a2b736f7bc499453e996a704929b25080",
-        "version" : "1.6.0"
+        "revision" : "71cde449f13d453227e687458144bde372d30fc7",
+        "version" : "1.6.2"
       }
     },
     {
@@ -41,8 +41,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/iTwin/mobile-native-ios",
       "state" : {
-        "revision" : "99933c60c5b5180b6eef29626ca1926c1f511df8",
-        "version" : "3.6.8"
+        "revision" : "b5350b251a317e74d33a288742e2192c36896b67",
+        "version" : "3.7.2"
       }
     },
     {
@@ -50,8 +50,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/iTwin/mobile-sdk-ios.git",
       "state" : {
-        "revision" : "cc4ec7a86788bccb0e73ff2c69999145a58d9140",
-        "version" : "0.10.36"
+        "revision" : "97229f3ecf1449a710cb3de31f77b87fd965793b",
+        "version" : "0.10.45"
       }
     },
     {

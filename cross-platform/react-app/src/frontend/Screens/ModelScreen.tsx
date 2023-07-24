@@ -17,7 +17,7 @@ import {
 import { ViewportComponent } from "@itwin/imodel-components-react";
 import { getCssVariable, IconSpec } from "@itwin/core-react";
 import { viewWithUnifiedSelection } from "@itwin/presentation-components";
-import { ActionSheetGravity, AlertAction, presentAlert } from "@itwin/mobile-sdk-core";
+import { ActionSheetGravity, ActionStyle, AlertAction, Messenger, presentAlert } from "@itwin/mobile-sdk-core";
 import { useTheme } from "@itwin/itwinui-react";
 import {
   ActionSheetButton,
@@ -27,8 +27,8 @@ import {
   NavigationPanel,
   PreferredColorScheme,
   TabOrPanelDef,
-  useActiveColorSchemeIsDark,
   useBeEvent,
+  useFirstViewport,
   useIsMountedRef,
   useTabsAndStandAlonePanels,
   VisibleBackButton,
@@ -42,6 +42,7 @@ import {
   ToolAssistance,
   ToolsBottomPanel,
   ToolsBottomPanelProps,
+  useLocalizedString,
   ViewsBottomPanel,
 } from "../Exports";
 import "./ModelScreen.scss";
@@ -49,32 +50,36 @@ import "./ModelScreen.scss";
 // tslint:disable-next-line: variable-name
 const UnifiedSelectionViewportComponent = viewWithUnifiedSelection(ViewportComponent);
 
+/** Interface for adding extensions to the model screen; used by the camera sample. */
 export interface ModelScreenExtensionProps {
-  /// Optional bottom panel override.
+  /** Optional bottom panel override. */
   toolsBottomPanel?: React.FunctionComponent<ToolsBottomPanelProps>;
-  /// Additional components
+  /** Additional components */
   additionalComponents?: React.ReactNode;
-  /// Additional tabs
+  /** Additional tabs */
   additionalTabs?: TabOrPanelDef[];
 }
 
-/// Properties for the [[ModelScreen]] React component.
+/** Properties for the {@link ModelScreen} React component. */
 export interface ModelScreenProps extends ModelScreenExtensionProps {
-  /// The full path to the currently loaded iModel.
+  /** The full path to the currently loaded iModel. */
   filename: string;
-  /// The currently loaded iModel.
+  /** The currently loaded iModel. */
   iModel: IModelConnection;
-  /// Callback to go back to the previous screen.
+  /** Callback to go back to the previous screen. */
   onBack: () => void;
-  /// Optional bottom panel override.
+  /** Optional bottom panel override. */
   toolsBottomPanel?: React.FunctionComponent<ToolsBottomPanelProps>;
-  /// Additional components
+  /** Additional components */
   additionalComponents?: React.ReactNode;
-  /// Additional tabs
+  /** Additional tabs */
   additionalTabs?: TabOrPanelDef[];
 }
 
-// Set the model background color based on the currently active dark/light color scheme.
+/**
+ * Set the model background color based on the currently active dark/light color scheme.
+ * @param viewState The {@link ViewState} in which to update the background color.
+ */
 export function updateBackgroundColor(viewState: ViewState) {
   const displayStyle = viewState.displayStyle;
   // Note: the value of the --muic-background-model CSS variable automatically updates when the
@@ -83,36 +88,39 @@ export function updateBackgroundColor(viewState: ViewState) {
   displayStyle.backgroundColor = ColorDef.fromString(bgColor);
 }
 
-/// React component showing the iModel and containing UI for interacting with it.
+/** React component showing the iModel and containing UI for interacting with it. */
 export function ModelScreen(props: ModelScreenProps) {
   const tabsAndPanelsAPI = useTabsAndStandAlonePanels();
   const { filename, iModel, onBack, toolsBottomPanel, additionalComponents, additionalTabs } = props;
   const [viewState, setViewState] = React.useState<ViewState>();
-  const isDark = useActiveColorSchemeIsDark();
-  const locationLabel = React.useMemo(() => i18n("ModelScreen", "Location"), []);
-  const errorLabel = React.useMemo(() => i18n("Shared", "Error"), []);
-  const okLabel = React.useMemo(() => i18n("Shared", "OK"), []);
-  const showCurrentLocationLabel = React.useMemo(() => i18n("ModelScreen", "ShowCurrentLocation"), []);
-  const fitViewLabel = React.useMemo(() => i18n("ModelScreen", "FitView"), []);
-  const defaultViewLabel = React.useMemo(() => i18n("ModelScreen", "DefaultView"), []);
-  const toggleCameraLabel = React.useMemo(() => i18n("ModelScreen", "ToggleCamera"), []);
-  const alertDemoLabel = React.useMemo(() => i18n("ModelScreen", "AlertDemo"), []);
-  const oneLabel = React.useMemo(() => i18n("ModelScreen", "One"), []);
-  const twoLabel = React.useMemo(() => i18n("ModelScreen", "Two"), []);
-  const threeLabel = React.useMemo(() => i18n("ModelScreen", "Three"), []);
-  const fourLabel = React.useMemo(() => i18n("ModelScreen", "Four"), []);
-  const fiveLabel = React.useMemo(() => i18n("ModelScreen", "Five"), []);
-  const sixLabel = React.useMemo(() => i18n("ModelScreen", "Six"), []);
-  const youChoseLabel = React.useMemo(() => i18n("ModelScreen", "YouChose"), []);
-  const infoLabel = React.useMemo(() => i18n("ModelScreen", "Info"), []);
-  const aboutLabel = React.useMemo(() => i18n("AboutBottomPanel", "About"), []);
-  const viewsLabel = React.useMemo(() => i18n("ViewsBottomPanel", "Views"), []);
-  const toolsLabel = React.useMemo(() => i18n("ModelScreen", "Tools"), []);
-  const elementPropertiesLabel = React.useMemo(() => i18n("ModelScreen", "Properties"), []);
-  const changeAppearanceLabel = React.useMemo(() => i18n("ModelScreen", "ChangeAppearance"), []);
-  const lightLabel = React.useMemo(() => i18n("ModelScreen", "Light"), []);
-  const darkLabel = React.useMemo(() => i18n("ModelScreen", "Dark"), []);
-  const automaticLabel = React.useMemo(() => i18n("ModelScreen", "Automatic"), []);
+  const locationLabel = useLocalizedString("ModelScreen", "Location");
+  const errorLabel = useLocalizedString("Shared", "Error");
+  const okLabel = useLocalizedString("Shared", "OK");
+  const showCurrentLocationLabel = useLocalizedString("ModelScreen", "ShowCurrentLocation");
+  const fitViewLabel = useLocalizedString("ModelScreen", "FitView");
+  const defaultViewLabel = useLocalizedString("ModelScreen", "DefaultView");
+  const toggleCameraLabel = useLocalizedString("ModelScreen", "ToggleCamera");
+  const alertDemoLabel = useLocalizedString("ModelScreen", "AlertDemo");
+  const oneLabel = useLocalizedString("ModelScreen", "One");
+  const twoLabel = useLocalizedString("ModelScreen", "Two");
+  const threeLabel = useLocalizedString("ModelScreen", "Three");
+  const fourLabel = useLocalizedString("ModelScreen", "Four");
+  const fiveLabel = useLocalizedString("ModelScreen", "Five");
+  const sixLabel = useLocalizedString("ModelScreen", "Six");
+  const youChoseLabel = useLocalizedString("ModelScreen", "YouChose");
+  const infoLabel = useLocalizedString("ModelScreen", "Info");
+  const aboutLabel = useLocalizedString("AboutBottomPanel", "About");
+  const viewsLabel = useLocalizedString("ViewsBottomPanel", "Views");
+  const toolsLabel = useLocalizedString("ModelScreen", "Tools");
+  const elementPropertiesLabel = useLocalizedString("ModelScreen", "Properties");
+  const changeAppearanceLabel = useLocalizedString("ModelScreen", "ChangeAppearance");
+  const cancelLabel = useLocalizedString("HubScreen", "Cancel");
+  const lightLabel = useLocalizedString("ModelScreen", "Light");
+  const darkLabel = useLocalizedString("ModelScreen", "Dark");
+  const automaticLabel = useLocalizedString("ModelScreen", "Automatic");
+  const vp = useFirstViewport();
+  const [firstRenderStarted, setFirstRenderStarted] = React.useState(false);
+  const [firstRenderFinished, setFirstRenderFinished] = React.useState(false);
 
   // Any time we do anything asynchronous, we have to check if the component is still mounted,
   // or it can lead to a run-time exception.
@@ -153,6 +161,10 @@ export function ModelScreen(props: ModelScreenProps) {
     const handleFitView = () => {
       void IModelApp.tools.run(FitViewTool.toolId, IModelApp.viewManager.getFirstOpenView(), true);
     };
+    const handleToggleCamera = () => {
+      void IModelApp.tools.run(ViewToggleCameraTool.toolId, IModelApp.viewManager.getFirstOpenView());
+    };
+
     const actions: AlertAction[] = [
       {
         name: "location",
@@ -172,7 +184,7 @@ export function ModelScreen(props: ModelScreenProps) {
       {
         name: "toggleCamera",
         title: toggleCameraLabel,
-        onSelected: toggleCamera,
+        onSelected: handleToggleCamera,
       },
       {
         name: "appearance",
@@ -180,10 +192,12 @@ export function ModelScreen(props: ModelScreenProps) {
         onSelected: async () => {
           const result = await presentAlert({
             title: changeAppearanceLabel,
+            showStatusBar: true,
             actions: [
               { name: automaticLabel, title: automaticLabel },
               { name: lightLabel, title: lightLabel },
               { name: darkLabel, title: darkLabel },
+              { name: cancelLabel, title: cancelLabel, style: ActionStyle.Cancel },
             ],
           });
           switch (result) {
@@ -257,6 +271,7 @@ export function ModelScreen(props: ModelScreenProps) {
     return actions;
   };
   const moreButton = <ActionSheetButton actions={moreActions} showStatusBar gravity={ActionSheetGravity.BottomRight} />;
+  // Definitions for the bottom tab bar (with panels) and other bottom panels (element properties).
   const panels: TabOrPanelDef[] = [
     {
       label: infoLabel,
@@ -275,11 +290,12 @@ export function ModelScreen(props: ModelScreenProps) {
     {
       label: toolsLabel,
       isTab: true,
+      // The tools panel can be overridden (as is done in the camera sample).
       popup: React.createElement(toolsBottomPanel ?? ToolsBottomPanel,
         {
           key: "tools",
           iModel,
-          // Close the Views bottom panel when a view is selected from it.
+          // Close the Tools bottom panel when a tool is selected from it.
           onToolClick: () => { tabsAndPanelsAPI.closeSelectedPanel(); },
         }),
     },
@@ -295,6 +311,7 @@ export function ModelScreen(props: ModelScreenProps) {
     },
     {
       label: elementPropertiesLabel,
+      // Not a tab like the others, but still a bottom panel.
       isTab: false,
       popup: <ElementPropertiesPanel
         key={elementPropertiesLabel}
@@ -308,6 +325,7 @@ export function ModelScreen(props: ModelScreenProps) {
     },
   ];
 
+  // The camera sample adds a pictures tab.
   if (additionalTabs) {
     panels.push(...additionalTabs);
   }
@@ -315,17 +333,34 @@ export function ModelScreen(props: ModelScreenProps) {
   tabsAndPanelsAPI.setPanels(panels);
 
   // Update the model background color when the color scheme changes.
-  useBeEvent(() => {
+  useBeEvent(React.useCallback(() => {
     const firstOpenView = IModelApp.viewManager.getFirstOpenView()?.view;
     if (firstOpenView) {
       updateBackgroundColor(firstOpenView);
     }
-  }, MobileUi.onColorSchemeChanged);
+  }, []), MobileUi.onColorSchemeChanged);
+
+  React.useEffect(() => {
+    if (!firstRenderStarted) {
+      setFirstRenderStarted(true);
+      Messenger.sendMessage("firstRenderStarted");
+    }
+  }, [firstRenderStarted]);
+
+  useBeEvent(React.useCallback(() => {
+    if (!vp || firstRenderFinished) return;
+    if (vp.numReadyTiles > 0 && vp.numRequestedTiles === 0) {
+      // If we get here, at least one tile has loaded, and there aren't any pending tiles waiting to
+      // be loaded, so the model has fully drawn from the initial viewpoint.
+      setFirstRenderFinished(true);
+      Messenger.sendMessage("firstRenderFinished");
+    }
+  }, [vp, firstRenderFinished]), vp ? vp.onRender : IModelApp.viewManager.onFinishRender);
 
   const applyDefaultView = React.useCallback(async () => {
     try {
       const opts: ViewCreator3dOptions = {
-        standardViewId: StandardViewId.RightIso,
+        standardViewId: StandardViewId.Iso,
       };
       const vc = new ViewCreator3d(iModel);
       const defaultViewState = await vc.createDefaultView(opts);
@@ -338,21 +373,15 @@ export function ModelScreen(props: ModelScreenProps) {
     }
   }, [iModel, isMountedRef]);
 
-  const toggleCamera = React.useCallback(() => {
-    void IModelApp.tools.run(ViewToggleCameraTool.toolId, IModelApp.viewManager.getFirstOpenView());
-  }, []);
-
   // Effect to apply the default view state after component is loaded.
   React.useEffect(() => {
     void applyDefaultView();
   }, [applyDefaultView]);
 
-  // The useTheme hook below does not currently detect theme changes on the fly if "os" is
-  // set as the theme.
-  useTheme(isDark ? "dark" : "light");
+  useTheme("os");
 
-  // Note: Changes to the [[viewState]] field of [[ViewportProps]] are ignored after the component is
-  // first created. So don't create the [[ViewportComponent]] until after we have loaded the default
+  // Note: Changes to the viewState field of ViewportProps are ignored after the component is
+  // first created. So don't create the ViewportComponent until after we have loaded the default
   // view state.
   return (
     <>
@@ -382,12 +411,14 @@ export function ModelScreen(props: ModelScreenProps) {
   );
 }
 
+/** Properties for the {@link HeaderTitle} React component. */
 export interface HeaderTitleProps {
   iconSpec?: IconSpec;
   label?: string;
   moreElements?: React.ReactNode;
 }
 
+/** React component to use for the title of bottom panels. */
 export function HeaderTitle(props: HeaderTitleProps) {
   const { iconSpec, label, moreElements } = props;
   return <div className="title">

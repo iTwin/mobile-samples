@@ -1,0 +1,59 @@
+{
+  "pins" : [
+    {
+      "identity" : "appauth-ios",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/openid/AppAuth-iOS.git",
+      "state" : {
+        "revision" : "71cde449f13d453227e687458144bde372d30fc7",
+        "version" : "1.6.2"
+      }
+    },
+    {
+      "identity" : "asynclocationkit",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/AsyncSwift/AsyncLocationKit.git",
+      "state" : {
+        "revision" : "4fb1ba1865dacc4dff1d5529af26abbbebc934bc",
+        "version" : "1.6.2"
+      }
+    },
+    {
+      "identity" : "mobile-native-ios",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/iTwin/mobile-native-ios",
+      "state" : {
+        "revision" : "b5350b251a317e74d33a288742e2192c36896b67",
+        "version" : "3.7.2"
+      }
+    },
+    {
+      "identity" : "mobile-sdk-ios",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/iTwin/mobile-sdk-ios.git",
+      "state" : {
+        "revision" : "97229f3ecf1449a710cb3de31f77b87fd965793b",
+        "version" : "0.10.45"
+      }
+    },
+    {
+      "identity" : "reachability.swift",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/ashleymills/Reachability.swift",
+      "state" : {
+        "revision" : "c01bbdf2d633cf049ae1ed1a68a2020a8bda32e2",
+        "version" : "5.1.0"
+      }
+    },
+    {
+      "identity" : "showtime",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/KaneCheshire/ShowTime.git",
+      "state" : {
+        "revision" : "f4e976931fc5f9b7a7d011f40c62a250c4ff53ab",
+        "version" : "2.5.3"
+      }
+    }
+  ],
+  "version" : 2
+}

@@ -7,20 +7,16 @@ package com.bentley.sample.camera
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
-import androidx.activity.result.ActivityResultLauncher
+import androidx.activity.ComponentActivity
 import androidx.activity.result.contract.ActivityResultContract
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.FileProvider
 import com.bentley.sample.shared.PickUriContract
 import com.bentley.sample.shared.PickUriContractType
-import com.eclipsesource.json.Json
-import com.eclipsesource.json.JsonValue
+import com.github.itwin.mobilesdk.ITMCoActivityResult
 import com.github.itwin.mobilesdk.ITMNativeUI
 import com.github.itwin.mobilesdk.ITMNativeUIComponent
 import java.io.File
-import kotlin.coroutines.Continuation
-import kotlin.coroutines.suspendCoroutine
 
 /**
  * Presents a UI for selecting an image or taking a photo when the pickImage message is sent.
@@ -37,7 +33,7 @@ class ImagePicker(nativeUI: ITMNativeUI): ITMNativeUIComponent(nativeUI) {
          * @param input The input parameters.
          * @return An image picking intent.
          */
-        override fun createIntent(context: Context, input: JsonValue?): Intent {
+        override fun createIntent(context: Context, input: Map<String, String>?): Intent {
             destDir = ImageCache.getDestinationDir(input)
 
             return super.createIntent(context, input)
@@ -86,7 +82,7 @@ class ImagePicker(nativeUI: ITMNativeUI): ITMNativeUIComponent(nativeUI) {
          * @param input The input parameters.
          * @return A picture taking intent.
          */
-        override fun createIntent(context: Context, input: JsonValue?): Intent {
+        override fun createIntent(context: Context, input: Map<String, String>?): Intent {
             getOutputFile(ImageCache.getDestinationDir(input), context)?.let { outputFile ->
                 val newUri = ImageCache.getCacheUri(outputFile.toString())
                 cameraUri = newUri
@@ -145,8 +141,8 @@ class ImagePicker(nativeUI: ITMNativeUI): ITMNativeUIComponent(nativeUI) {
          * @param input The input parameters.
          * @return The intent to pick an image or take a picture.
          */
-        override fun createIntent(context: Context, input: JsonValue?): Intent {
-            val camera = ImageCache.getObjectValue(input, "sourceType")?.asString() == "camera"
+        override fun createIntent(context: Context, input: Map<String, String>?): Intent {
+            val camera = input?.get("sourceType") == "camera"
             delegateContract = if (camera) CaptureIModelImageContract() else PickIModelImageContract()
             return delegateContract.createIntent(context, input)
         }
@@ -162,32 +158,28 @@ class ImagePicker(nativeUI: ITMNativeUI): ITMNativeUIComponent(nativeUI) {
         }
     }
 
+    private class PickOrCaptureImage(activity: ComponentActivity):
+        ITMCoActivityResult<Map<String, String>?, Uri?>(activity, PickOrCaptureIModelImageContract())
+
     init {
         handler = coMessenger.registerQueryHandler("pickImage", ::handleQuery)
     }
 
     companion object {
-        private var startForResult: ActivityResultLauncher<JsonValue?>? = null
-        private var activeContinuation: Continuation<JsonValue?>? = null
+        private var pickOrCaptureImage: PickOrCaptureImage? = null
 
         /**
          * Registers a request to start an activity for result using the [PickOrCaptureIModelImageContract].
          */
-        fun registerForActivityResult(activity: AppCompatActivity) {
-            startForResult = activity.registerForActivityResult(PickOrCaptureIModelImageContract()) { uri ->
-                activeContinuation?.resumeWith(Result.success(Json.value(uri?.toString() ?: "")))
-                activeContinuation = null
-            }
+        fun registerForActivityResult(activity: ComponentActivity) {
+            pickOrCaptureImage = PickOrCaptureImage(activity)
         }
     }
 
     /**
      * Starts the registered activity result request.
      */
-    private suspend fun handleQuery(params: JsonValue?): JsonValue? {
-        return suspendCoroutine { continuation ->
-            activeContinuation = continuation
-            startForResult?.launch(params)
-        }
+    private suspend fun handleQuery(params: Map<String, String>?): String {
+        return pickOrCaptureImage?.invoke(params)?.toString() ?: ""
     }
 }

@@ -4,14 +4,21 @@
 *--------------------------------------------------------------------------------------------*/
 import React from "react";
 import { useIsMountedRef } from "@itwin/mobile-ui-react";
-import { Project } from "@itwin/projects-client";
 import { DownloadBriefcaseOptions, DownloadProgressInfo, NativeApp } from "@itwin/core-frontend";
 import { MinimalIModel } from "@itwin/imodels-client-management";
 import { BentleyError, BriefcaseDownloader, BriefcaseStatus, IModelStatus, LocalBriefcaseProps, SyncMode } from "@itwin/core-common";
 import { ProgressRadial } from "@itwin/itwinui-react";
-import { Button, i18n, IModelInfo, presentError } from "../../Exports";
+import { Button, IModelInfo, presentError, useLocalizedString } from "../../Exports";
 
-async function downloadIModel(project: Project, iModel: MinimalIModel, handleProgress: (progress: DownloadProgressInfo) => boolean): Promise<LocalBriefcaseProps | undefined> {
+/**
+ * Download the given iModel, reporting progress via {@link handleProgress}.
+ * @param project The iModel's project.
+ * @param iModel The iModel to download.
+ * @param handleProgress Progress callback.
+ * @returns The {@link LocalBriefcaseProps} for the downloaded iModel if successful, otherwise
+ * undefined.
+ */
+async function downloadIModel(iTwinId: string, iModel: MinimalIModel, handleProgress: (progress: DownloadProgressInfo) => boolean): Promise<LocalBriefcaseProps | undefined> {
   const opts: DownloadBriefcaseOptions = {
     syncMode: SyncMode.PullOnly,
     progressCallback: async (progress: DownloadProgressInfo) => {
@@ -24,7 +31,7 @@ async function downloadIModel(project: Project, iModel: MinimalIModel, handlePro
   let downloader: BriefcaseDownloader | undefined;
   let canceled = false;
   try {
-    downloader = await NativeApp.requestDownloadBriefcase(project.id, iModel.id, opts);
+    downloader = await NativeApp.requestDownloadBriefcase(iTwinId, iModel.id, opts);
 
     if (canceled) {
       // If we got here we canceled before the initial return from NativeApp.requestDownloadBriefcase
@@ -51,7 +58,7 @@ async function downloadIModel(project: Project, iModel: MinimalIModel, handlePro
           // to delete the existing file using that briefcaseId.
           const filename = await NativeApp.getBriefcaseFileName({ iModelId: iModel.id, briefcaseId: 0 });
           await NativeApp.deleteBriefcase(filename);
-          return downloadIModel(project, iModel, handleProgress);
+          return downloadIModel(iTwinId, iModel, handleProgress);
         } catch (_error) { }
       } else if (error.errorNumber === BriefcaseStatus.DownloadCancelled && canceled) {
         // When we call requestCancel, it causes the downloader to throw this error; ignore.
@@ -64,23 +71,26 @@ async function downloadIModel(project: Project, iModel: MinimalIModel, handlePro
   return undefined;
 }
 
+/** Properties for the {@link IModelDownloader} React component. */
 export interface IModelDownloaderProps {
-  project: Project;
+  iTwinId: string;
   model: IModelInfo;
   onDownloaded: (model: IModelInfo) => void;
   onCanceled?: () => void;
 }
 
+/** React component that downloads an iModel and shows download progress. */
 export function IModelDownloader(props: IModelDownloaderProps) {
-  const { project, model, onDownloaded, onCanceled } = props;
+  const { iTwinId, model, onDownloaded, onCanceled } = props;
   const [progress, setProgress] = React.useState(0);
   const [indeterminate, setIndeterminate] = React.useState(true);
   const [downloading, setDownloading] = React.useState(false);
   const [canceled, setCanceled] = React.useState(false);
   const isMountedRef = useIsMountedRef();
-  const downloadingLabel = React.useMemo(() => i18n("HubScreen", "Downloading"), []);
-  const cancelLabel = React.useMemo(() => i18n("HubScreen", "Cancel"), []);
+  const downloadingLabel = useLocalizedString("HubScreen", "Downloading");
+  const cancelLabel = useLocalizedString("HubScreen", "Cancel");
 
+  // Progress callback for iModel download.
   const handleProgress = React.useCallback((progressInfo: DownloadProgressInfo) => {
     if (isMountedRef.current) {
       const percent: number = progressInfo.total !== 0 ? Math.round(100.0 * progressInfo.loaded / progressInfo.total) : 0;
@@ -90,19 +100,20 @@ export function IModelDownloader(props: IModelDownloaderProps) {
     return isMountedRef.current && !canceled;
   }, [canceled, isMountedRef]);
 
+  // Starup effect to initiate the iModel download.
   React.useEffect(() => {
-    if (downloading)
-      return;
+    // We only want to download once.
+    if (downloading) return;
 
     const fetchIModel = async () => {
       const minimalIModel = model.minimalIModel;
-      const briefcase = await downloadIModel(project, minimalIModel, handleProgress);
+      const briefcase = await downloadIModel(iTwinId, minimalIModel, handleProgress);
       if (!isMountedRef.current) return;
       onDownloaded({ minimalIModel, briefcase });
     };
     setDownloading(true);
     void fetchIModel();
-  }, [downloading, handleProgress, isMountedRef, model.minimalIModel, onDownloaded, project]);
+  }, [downloading, handleProgress, isMountedRef, model.minimalIModel, onDownloaded, iTwinId]);
 
   return <div className="centered-list">
     <div>{downloadingLabel}</div>

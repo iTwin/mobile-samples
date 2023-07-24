@@ -35,9 +35,8 @@ dependencies {
     implementation 'androidx.appcompat:appcompat:1.5.1'
     implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
     implementation "androidx.lifecycle:lifecycle-runtime-ktx:2.5.1"
-    implementation 'com.eclipsesource.minimal-json:minimal-json:0.9.5'
     implementation 'com.google.android.material:material:1.6.1'
-    implementation 'com.github.itwin:mobile-sdk-android:0.10.37'
+    implementation 'com.github.itwin:mobile-sdk-android:0.10.45'
 }
 
 apply from: 'ITMAppConfig.gradle'

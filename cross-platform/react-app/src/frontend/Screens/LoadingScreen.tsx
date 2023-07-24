@@ -6,7 +6,7 @@ import React from "react";
 import { Screen } from "../Exports";
 import "./LoadingScreen.scss";
 
-/// React component that shows while the application is doing its initial loading of iModelJS and iTwinMobileUI.
+/** React component that shows while the application is doing its initial loading of iModelJS and iTwinMobileUI. */
 export function LoadingScreen() {
   return (
     <Screen className="loading-screen">

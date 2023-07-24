@@ -32,7 +32,7 @@ For the Android samples, you need to create a custom redirect URI for each one t
     * If you already had a Client ID, browse to your app's page in [my-apps](https://developer.bentley.com/my-apps/). If you just created it, you should already be there.
 
 1. Copy your client ID from the app's page, then replace `YOUR_CLIENT_ID`.
-1. Use the "Copy" button in the Scopes section of the app's page to copy your scopes to the clipboard. Then replace `YOUR_SCOPE`.
+1. Use the "Copy" button in the Scopes section of the app's page to copy your scopes to the clipboard. Then replace `YOUR_SCOPE`. Finally, add `offline_access` to the end of the list of scopes (separated from the others with a space).
 
 ## NPM Setup
 

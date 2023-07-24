@@ -8,15 +8,15 @@ import { HeaderTitle, i18n } from "../Exports";
 
 import "./InfoBottomPanel.scss";
 
-/// Properties for the [[InfoBottomPanel]] React component.
+/** Properties for the {@link InfoBottomPanel} React component. */
 interface InfoBottomPanelProps extends BottomPanelProps {
-  /// The name of the iModel.
+  /** The name of the iModel. */
   name: string;
-  /// The path for the iModel.
+  /** The path for the iModel. */
   filename: string;
 }
 
-/// [[BottomPanel]] React component that shows the iModel name and path.
+/** {@link BottomPanel} React component that shows the iModel name and path. */
 export function InfoBottomPanel(props: InfoBottomPanelProps) {
   const { name, filename } = props;
   const pathLabel = React.useMemo(() => i18n("InfoBottomPanel", "PathFormat", { filename }), [filename]);

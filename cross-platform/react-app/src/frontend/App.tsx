@@ -3,21 +3,21 @@
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
 import React from "react";
-import { combineReducers, createStore, Store } from "redux";
 import { MobileApp, MobileAppOpts } from "@itwin/core-mobile/lib/cjs/MobileFrontend";
-import { IModelApp, IModelConnection, ITWINJS_CORE_VERSION, RenderSystem, SnapshotConnection, ToolAssistanceInstructions } from "@itwin/core-frontend";
-import { AppNotificationManager, FrameworkReducer, FrameworkState, UiFramework } from "@itwin/appui-react";
+import { IModelApp, IModelConnection, ITWINJS_CORE_VERSION, NativeApp, RenderSystem, SnapshotConnection, ToolAssistanceInstructions } from "@itwin/core-frontend";
+import { AppNotificationManager, UiFramework } from "@itwin/appui-react";
 import { Presentation } from "@itwin/presentation-frontend";
 import { Messenger, MobileCore } from "@itwin/mobile-sdk-core";
-import { MobileUi } from "@itwin/mobile-ui-react";
+import { MobileUi, ToolAssistanceSuggestion } from "@itwin/mobile-ui-react";
 // import { MeasureTools, FeatureTracking as MeasureToolsFeatureTracking } from "@itwin/measure-tools-react";
-import { ActiveScreen, HomeScreen, HubScreen, LoadingScreen, LocalModelsScreen, ModelScreen, ModelScreenExtensionProps, presentError, ToolAssistance } from "./Exports";
+// import { ActiveScreen, HomeScreen, HubScreen, LoadingScreen, LocalModelsScreen, ModelScreen, ModelScreenExtensionProps, presentError, ToolAssistance } from "./Exports";
+import { ActiveScreen, HomeScreen, HubScreen, LoadingScreen, LocalModelsScreen, ModelScreen, ModelScreenExtensionProps, presentError } from "./Exports";
 import { getSupportedRpcs } from "../common/rpcs";
 import "./App.scss";
 
 declare global {
   interface Window {
-    /// Custom field on the window object that stores the settings that get passed via URL hash parameters.
+    /** Custom field on the window object that stores the settings that get passed via URL hash parameters. */
     itmSampleParams: {
       lowResolution: boolean;
       haveBackButton: boolean;
@@ -25,6 +25,14 @@ declare global {
       apiPrefix: string;
     };
   }
+}
+
+/** Interface for the parameters passed in the "performActions" message. */
+interface PerformActionsProps {
+  /** The actions to perform. */
+  actions: { [key: string]: string };
+  /** The path to the app's documents folder */
+  documentsPath: string;
 }
 
 // Initialize all boolean URL has parameters to false. (String parameters default to undefined.)
@@ -35,49 +43,47 @@ window.itmSampleParams = {
   apiPrefix: "",
 };
 
-/// Load the given boolean UrlSearchParam into the custom field on the window object.
+/** Load the given boolean UrlSearchParam into the custom field on the window object. */
 function loadBooleanUrlSearchParam(name: "lowResolution" | "haveBackButton" | "debugI18n") {
   window.itmSampleParams[name] = MobileCore.getUrlSearchParam(name) === "YES";
 }
 
-/// Load the given string UrlSearchParam into the custom field on the window object.
+/** Load the given string UrlSearchParam into the custom field on the window object. */
 function loadStringUrlSearchParam(name: "apiPrefix") {
   window.itmSampleParams[name] = MobileCore.getUrlSearchParam(name) ?? "";
 }
 
-/// Load the values stored in the URL hash params into the custom field on the window object.
+/** Load the values stored in the URL hash params into the custom field on the window object. */
 function loadUrlSearchParams() {
   loadBooleanUrlSearchParam("lowResolution");
   loadBooleanUrlSearchParam("haveBackButton");
   loadBooleanUrlSearchParam("debugI18n");
   loadStringUrlSearchParam("apiPrefix");
+  // Some classes (notable ProjectsAccessClient for this sample) require process.env.IMJS_URL_PREFIX
+  // to be set. Due to the way that webpack works, that is done via the following.
+  (globalThis as any).IMJS_URL_PREFIX = window.itmSampleParams.apiPrefix;
 }
 
-/// Interface to allow switching from one screen to another.
+/** Interface to allow switching from one screen to another. */
 interface ActiveInfo {
-  /// The active screen represented by this entry in the activeStack.
+  /** The active screen represented by this entry in the activeStack. */
   activeScreen: ActiveScreen;
-  /// The optional cleanup function to call when switching to another screen.
+  /** The optional cleanup function to call when switching to another screen. */
   cleanup?: () => void;
 }
 
-export interface RootState {
-  frameworkState?: FrameworkState;
-}
-
-const rootReducer = combineReducers({
-  frameworkState: FrameworkReducer,
-});
-const anyWindow: any = window;
-const appReduxStore: Store<RootState> = createStore(rootReducer, anyWindow.__REDUX_DEVTOOLS_EXTENSION__ && anyWindow.__REDUX_DEVTOOLS_EXTENSION__());
-
 class AppToolAssistanceNotificationManager extends AppNotificationManager {
-  public setToolAssistance(instructions: ToolAssistanceInstructions | undefined): void {
-    ToolAssistance.onSetToolAssistance.emit(instructions);
+  public override setToolAssistance(instructions: ToolAssistanceInstructions | undefined): void {
+    ToolAssistanceSuggestion.onSetToolAssistance.emit({ instructions });
     super.setToolAssistance(instructions);
   }
 }
 
+/**
+ * Get the options to be passed into the `iModelApp.renderSys` property of the {@link MobileAppOpts}
+ * passed into {@link MobileApp.startup}.
+ * @returns The appropriate options, or undefined if there aren't any.
+ */
 function getRenderSysOptions(): RenderSystem.Options | undefined {
   if (window.itmSampleParams.lowResolution) {
     // Improves FPS on really slow devices and iOS simulator.
@@ -90,6 +96,14 @@ function getRenderSysOptions(): RenderSystem.Options | undefined {
   return undefined;
 }
 
+/**
+ * React hook that returns an object containing all of the import app state.
+ *
+ * This is present to allow for specific samples (like the camera sample) to perform more
+ * customization than they would otherwise be able to.
+ * @param onInitialize If present, called during initialization.
+ * @returns An app state object with all the fields needed to render the app.
+ */
 function useAppState(onInitialize?: () => Promise<void>) {
   // Start out on the Loading screen.
   const [activeScreen, setActiveScreen] = React.useState(ActiveScreen.Loading);
@@ -101,6 +115,7 @@ function useAppState(onInitialize?: () => Promise<void>) {
   const [initialized, setInitialized] = React.useState(false);
   const [openUrlPath, setOpenUrlPath] = React.useState<string>();
   const [haveBackButton, setHaveBackButton] = React.useState(false);
+  const [openRemoteValues, setOpenRemoteValues] = React.useState<string[]>();
 
   const pushActiveInfo = React.useCallback((screen: ActiveScreen, cleanup?: () => void) => {
     // Push the current activeScreen onto the activeStack, along with the cleanup function for the new active screen.
@@ -132,7 +147,7 @@ function useAppState(onInitialize?: () => Promise<void>) {
           },
         };
         await MobileApp.startup(opts);
-        await UiFramework.initialize(appReduxStore);
+        await UiFramework.initialize(undefined);
         await Presentation.initialize();
         await MobileUi.initialize(IModelApp.localization);
         await IModelApp.localization.registerNamespace("ReactApp");
@@ -141,16 +156,19 @@ function useAppState(onInitialize?: () => Promise<void>) {
         // MeasureToolsFeatureTracking.stop();
         await onInitialize?.();
 
-        // The following message lets the native side know that it is safe to send app-specific
-        // messages from the native code to the TypeScript code.
-        Messenger.sendMessage("didFinishLaunching", { iTwinVersion: ITWINJS_CORE_VERSION });
-        // Switch from the Loading screen to the Home screen.
-        pushActiveInfo(ActiveScreen.Home);
-        console.log("...Done Initializing.");
         Messenger.onQuery("queryExample").setHandler(async (params) => params.value);
+        Messenger.onQuery("voidExample").setHandler(async () => "void input");
         Messenger.onQuery("oneWayExample").setHandler(async (params) => {
           console.log(`oneWayExample received value: ${params.value}`);
         });
+        // Switch from the Loading screen to the Home screen.
+        pushActiveInfo(ActiveScreen.Home);
+
+        // The following message lets the native side know that it is safe to send app-specific
+        // messages from the native code to the TypeScript code.
+        Messenger.sendMessage("didFinishLaunching", { iTwinVersion: ITWINJS_CORE_VERSION });
+
+        console.log("...Done Initializing.");
       } catch (ex) {
         console.log(`Exception during initialization: ${ex}`);
       }
@@ -195,8 +213,10 @@ function useAppState(onInitialize?: () => Promise<void>) {
     lastScreen.cleanup?.();
     setActiveStack((old) => {
       // Remove the last element in activeStack (top of stack).
-      return old.slice(0, old.length - 1);
+      return old.slice(0, -1);
     });
+    // Clear openRemoteValues when going back.
+    setOpenRemoteValues(undefined);
     // Note that the activeScreen stored at the top of the stack is the previous active screen.
     setActiveScreen(lastScreen.activeScreen);
   }, [activeStack]);
@@ -207,30 +227,62 @@ function useAppState(onInitialize?: () => Promise<void>) {
     pushActiveInfo(screen);
   }, [pushActiveInfo]);
 
+  // Open the given model file.
+  const openModelFile = React.useCallback(async (modelPath: string) => {
+    if (activeScreen === ActiveScreen.Model) {
+      // If the user is currently on the Model screen, we need to close the current
+      // model before opening a new one. The handleBack() call below triggers the
+      // cleanup function for the Model screen.
+      handleBack();
+      // The asynchronous nature of React useState variables means that even if the
+      // handleBack above were async, and we waited for it to complete, we'd still end
+      // up in a situation where the Model screen was active, but the iModel is undefined.
+      // Also, the model we open below would be immediately closed, and the previously
+      // open model would get abandoned. (In other words, checking for an undefined iModel
+      // before displaying the Model screen would not fix the problem.)
+      // So instead of opening the model right here, we set another state variable that
+      // will do so once the previous model is done closing and its state variable has
+      // switched to undefined.
+      setOpenUrlPath(modelPath);
+    } else {
+      void handleOpen(modelPath, SnapshotConnection.openFile(modelPath));
+    }
+  }, [handleBack, handleOpen, activeScreen]);
+
+  // Handler for "openModel" Messenger query.
   React.useEffect(() => {
     if (initialized) {
       return Messenger.onQuery("openModel").setHandler(async (modelPath: string) => {
-        if (activeScreen === ActiveScreen.Model) {
-          // If the user is currently on the Model screen, we need to close the current
-          // model before opening a new one. The handleBack() call below triggers the
-          // cleanup function for the Model screen.
-          handleBack();
-          // The asynchronous nature of React useState variables means that even if the
-          // handleBack above were async, and we waited for it to complete, we'd still end
-          // up in a situation where the Model screen was active, but the iModel is undefined.
-          // Also, the model we open below would be immediately closed, and the previously
-          // open model would get abandoned. (In other words, checking for an undefined iModel
-          // before displaying the Model screen would not fix the problem.)
-          // So instead of opening the model right here, we set another state variable that
-          // will do so once the previous model is done closing and its state variable has
-          // switched to undefined.
-          setOpenUrlPath(modelPath);
-        } else {
-          void handleOpen(modelPath, SnapshotConnection.openFile(modelPath));
+        await openModelFile(modelPath);
+      });
+    }
+  }, [openModelFile, initialized]);
+
+  // Handler for "performActions" Messenger query.
+  React.useEffect(() => {
+    if (initialized) {
+      return Messenger.onQuery("performActions").setHandler(async (props: PerformActionsProps) => {
+        const { actions, documentsPath } = props;
+        const openValue = actions.OPEN;
+        if (openValue) {
+          const [source, ...values] = openValue.split(":");
+          switch (source) {
+            case "document":
+              await openModelFile(`${documentsPath}/${values[0]}`);
+              break;
+            case "local":
+              const fileName = await NativeApp.getBriefcaseFileName({ iModelId: values[0], briefcaseId: 0 });
+              await openModelFile(fileName);
+              break;
+            case "remote":
+              setOpenRemoteValues(values);
+              pushActiveInfo(ActiveScreen.Hub);
+              break;
+          }
         }
       });
     }
-  }, [handleOpen, initialized, handleBack, activeScreen]);
+  }, [openModelFile, pushActiveInfo, initialized]);
 
   // When openUrlPath is set above, wait for iModel to become undefined, then open the
   // specified model.
@@ -248,17 +300,19 @@ function useAppState(onInitialize?: () => Promise<void>) {
     }
   }, [iModel, openUrlPath, handleOpen]);
 
-  return { activeScreen, handleHomeSelect, handleOpen, handleBack, haveBackButton, iModel, modelFilename };
+  return { activeScreen, handleHomeSelect, handleOpen, handleBack, haveBackButton, iModel, modelFilename, openRemoteValues };
 }
 
+/** Properties for the {@link App} React component. */
 export interface AppProps {
   getModelScreenExtensions?: (iModel: IModelConnection) => ModelScreenExtensionProps;
   onInitialize?: () => Promise<void>;
 }
 
+/** Top-level React component for the standard sample app. */
 export function App(props: AppProps) {
   const { getModelScreenExtensions, onInitialize } = props;
-  const { activeScreen, handleHomeSelect, handleOpen, handleBack, haveBackButton, iModel, modelFilename } = useAppState(onInitialize);
+  const { activeScreen, handleHomeSelect, handleOpen, handleBack, haveBackButton, iModel, modelFilename, openRemoteValues } = useAppState(onInitialize);
 
   switch (activeScreen) {
     case ActiveScreen.Home:
@@ -266,7 +320,7 @@ export function App(props: AppProps) {
     case ActiveScreen.LocalModels:
       return <LocalModelsScreen onOpen={handleOpen} onBack={handleBack} />;
     case ActiveScreen.Hub:
-      return <HubScreen onOpen={handleOpen} onBack={handleBack} />;
+      return <HubScreen onOpen={handleOpen} onBack={handleBack} openRemoteValues={openRemoteValues} />;
     case ActiveScreen.Model:
       return <ModelScreen filename={modelFilename} iModel={iModel!} onBack={handleBack} {...props} {...getModelScreenExtensions?.(iModel!)} />;
     default:

@@ -6,7 +6,7 @@ import React from "react";
 import { IconSpecUtilities } from "@itwin/appui-abstract";
 import { Messenger } from "@itwin/mobile-sdk-core";
 import { BackButton, IconImage } from "@itwin/mobile-ui-react";
-import { Button, i18n, Screen } from "../Exports";
+import { ActiveScreen, Button, Screen, signOut, useLocalizedString } from "../Exports";
 import "./HomeScreen.scss";
 
 // With svg.d.ts present in the root of this project, Webpack automatically handles the import below
@@ -16,28 +16,24 @@ import folderSvg from "../Images/folder.svg";
 // place that expects an IconSpec.
 const folderIconSpec = IconSpecUtilities.createWebComponentIconSpec(folderSvg);
 
-export enum ActiveScreen {
-  Loading,
-  Home,
-  LocalModels,
-  Hub,
-  Model,
-}
-
-/// Properties for [[HomeScreen]] React component.
+/**
+ *  Properties for {@link HomeScreen} React component.
+ */
 export interface HomeScreenProps {
-  /// Callback to select another screen.
+  /** Callback to select another screen. */
   onSelect: (screen: ActiveScreen) => void;
   showBackButton: boolean;
 }
 
-/// React component for Home screen (shown after loading has completed).
+/**
+ *  React component for Home screen (shown after loading has completed).
+ */
 export function HomeScreen(props: HomeScreenProps) {
   const { onSelect, showBackButton } = props;
-  const homeLabel = React.useMemo(() => i18n("HomeScreen", "Home"), []);
-  const localModelsLabel = React.useMemo(() => i18n("HomeScreen", "LocalIModels"), []);
-  const hubIModelsLabel = React.useMemo(() => i18n("HomeScreen", "HubIModels"), []);
-  const signOutLabel = React.useMemo(() => i18n("Shared", "SignOut"), []);
+  const homeLabel = useLocalizedString("HomeScreen", "Home");
+  const localModelsLabel = useLocalizedString("HomeScreen", "LocalIModels");
+  const hubIModelsLabel = useLocalizedString("HomeScreen", "HubIModels");
+  const signOutLabel = useLocalizedString("Shared", "SignOut");
 
   const handleBack = React.useCallback(async () => {
     Messenger.sendMessage("goBack");
@@ -47,16 +43,17 @@ export function HomeScreen(props: HomeScreenProps) {
     <Screen className="home-screen">
       <div className="title">
         {showBackButton && <BackButton onClick={handleBack} />}
+        <IconImage iconSpec="icon-home" margin="0px 0px 0px 10px" size="28px" />
         <div className="title-text">{homeLabel}</div>
       </div>
       <div className="list">
         <div className="list-items">
           <Button
-            icon={<IconImage iconSpec={folderIconSpec} margin="0px 8px 0px 0px" size="32px" />}
+            icon={<IconImage iconSpec={folderIconSpec} margin="0px 8px 0px 0px" size="28px" />}
             title={localModelsLabel}
             onClick={() => onSelect(ActiveScreen.LocalModels)} />
           <Button title={hubIModelsLabel} onClick={() => onSelect(ActiveScreen.Hub)} />
-          <Button title={signOutLabel} onClick={async () => Messenger.sendMessage("signOut")} />
+          <Button title={signOutLabel} onClick={async () => signOut()} />
         </div>
       </div>
     </Screen>

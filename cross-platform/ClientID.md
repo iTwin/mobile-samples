@@ -6,14 +6,17 @@
 1. Pick a name.
 1. Check the check boxes next to "Visualization", "Administration", and "Digital Twin Management".
 1. Remove the following scopes by selecting the X next to them:
-    * library:modify
-    * realitydata:modify
-    * library:read
+    * itwins:modify
+    * projects:modify
+    * users:read
+    * sensor-data:read
+    * sensor-data:modify
     * imodels:modify
     * storage:modify
     * storage:read
-    * projects:modify
-    * users:read
+    * library:read
+    * library:modify
+    * realitydata:modify
 1. Finish with the steps below from _either_ the __OIDC application__ section _or_ the __Service application__ section.
 
 ## OIDC application

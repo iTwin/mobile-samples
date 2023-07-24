@@ -28,10 +28,11 @@ fun ContentResolver.getDisplayName(uri: Uri): String? {
  * Copies the input uri to the destination directory.
  * @param uri The input content Uri to copy.
  * @param destDir The destination directory.
+ * @param uriDisplayName The optional display name for the uri.
  * @return The full path of the copied file, null if it failed.
  */
-fun Context.copyToExternalFiles(uri: Uri, destDir: String): String? {
-    return contentResolver.getDisplayName(uri)?.let { displayName ->
+fun Context.copyToExternalFiles(uri: Uri, destDir: String, uriDisplayName: String? = null): String? {
+    return (uriDisplayName ?: contentResolver.getDisplayName(uri))?.let { displayName ->
         getExternalFilesDir(null)?.let { filesDir ->
             contentResolver.openInputStream(uri)?.use { input ->
                 val outDir = File(filesDir.path, destDir)

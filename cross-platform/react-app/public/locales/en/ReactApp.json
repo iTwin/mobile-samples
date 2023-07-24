@@ -6,7 +6,8 @@
     "SignOut": "Sign Out"
   },
   "App": {
-    "LoadErrorFormat": "Error loading iModel:\n{{- error}}"
+    "LoadErrorFormat": "Error loading iModel:\n{{- error}}",
+    "SignOutErrorFormat": "Error signing out:\n{{- error}}"
   },
   "Screen": {
     "BFormat": "{{size}} B",
@@ -45,7 +46,8 @@
     "LoadMore": "Load More...",
     "Cancel": "Cancel",
     "IModelButtonFormat": "{{name}} ({{size}})",
-    "NoName": "<No Name>"
+    "NoName": "<No Name>",
+    "UserCanceledSignIn": "User canceled sign in."
   },
   "ModelScreen": {
     "Location": "Location",

@@ -17,38 +17,60 @@ import { CameraSampleAppGetLocalizedString, ImageCache, ImageMarkerApi } from ".
 
 import "./PicturesBottomPanel.scss";
 
-/// Properties for the [[PicturesBottomPanel]] React component.
+/** Properties for the {@link PicturesBottomPanel} React component. */
 export interface PicturesBottomPanelProps extends ResizableBottomPanelProps {
-  /// The loaded iModel.
+  /** The loaded iModel. */
   iModel: IModelConnection;
 }
 
+/**
+ * Look up a localized string in the `CameraSampleApp` i18n namespace.
+ * @param key The name of the localized string.
+ * @returns The given localized string.
+ */
 function i18n(key: string) {
   return CameraSampleAppGetLocalizedString("PicturesBottomPanel", key);
 }
 
-/** [[ResizableBottomPanel]] React component that allows the user to take pictures with the device's camera.
+/**
+ * Create a memoized localized string for the given key.
  *
- * Shows the pictures that have been taken for the selected iModel. Allows the user to take more, as well as
- * delete individual pictures or all pictures.
+ * __Note__: This just uses {@link React.useMemo} on the result from {@link i18n}.
+ * @param key The i18n key for the label.
+ * @returns A memoized localized string.
+ */
+function useLocalizedString(key: string) {
+  return React.useMemo(() => i18n(key), [key]);
+}
+
+/**
+ * {@link ResizableBottomPanel} React component to interact with the pictures that have been
+ * attached to the current iModel.
+ *
+ * Shows the pictures that have been attached the selected iModel (both from the camera and the
+ * device's photo gallery). Allows the user to attach more, as well as delete and share individual
+ * pictures or all pictures.
  */
 export function PicturesBottomPanel(props: PicturesBottomPanelProps) {
   const { iModel, ...otherProps } = props;
-  const picturesLabel = React.useMemo(() => i18n("Pictures"), []);
+  const picturesLabel = useLocalizedString("Pictures");
   const reloadedEvent = React.useRef(new ReloadedEvent());
   const [pictureUrls, setPictureUrls] = React.useState<string[]>([]);
-  const deletePictureTitle = React.useMemo(() => i18n("DeletePictureTitle"), []);
-  const deletePictureMessage = React.useMemo(() => i18n("DeletePictureMessage"), []);
-  const deleteAllTitle = React.useMemo(() => i18n("DeleteAllTitle"), []);
-  const deleteAllMessage = React.useMemo(() => i18n("DeleteAllMessage"), []);
-  const deleteSelectedTitle = React.useMemo(() => i18n("DeleteSelectedTitle"), []);
-  const deleteSelectedMessage = React.useMemo(() => i18n("DeleteSelectedMessage"), []);
+  const deletePictureTitle = useLocalizedString("DeletePictureTitle");
+  const deletePictureMessage = useLocalizedString("DeletePictureMessage");
+  const deleteAllTitle = useLocalizedString("DeleteAllTitle");
+  const deleteAllMessage = useLocalizedString("DeleteAllMessage");
+  const deleteSelectedTitle = useLocalizedString("DeleteSelectedTitle");
+  const deleteSelectedMessage = useLocalizedString("DeleteSelectedMessage");
   const [decoratorActive, setDecoratorActive] = React.useState(true);
   const [selectMode, setSelectMode] = React.useState(false);
   const [selectedUrls, setSelectedUrls] = React.useState(new Set<string>());
 
+  // Reload the list of attached pictures.
   const reload = React.useCallback(async () => {
-    const urls = await ImageCache.getImages(iModel.iModelId);
+    // Note: We only allow loading iModels, not creating them, so our iModel is guaranteed to have
+    // an iModelId.
+    const urls = await ImageCache.getImages(iModel.iModelId!);
     urls.sort();
     setPictureUrls(urls);
     if (urls.length === 0) {
@@ -58,12 +80,15 @@ export function PicturesBottomPanel(props: PicturesBottomPanelProps) {
     reloadedEvent.current.emit();
   }, [iModel]);
 
+  // React effect run during component initialization. (It also runs when the iModel changes, but
+  // that never happens while this component is loaded.)
   React.useEffect(() => {
     void reload();
   }, [reload]);
 
   useBeUiEvent(async () => reload(), ImageMarkerApi.onMarkerAdded);
 
+  // Toggle the selection status of the picture with the given URL.
   const togglePictureSelected = React.useCallback((pictureUrl: string) => {
     setSelectedUrls((previousSelectedUrls) => {
       const newSelected = new Set<string>(previousSelectedUrls);
@@ -85,6 +110,7 @@ export function PicturesBottomPanel(props: PicturesBottomPanelProps) {
 
   const getShareIcon = () => MobileCore.isIosPlatform ? "icon-upload" : "icon-share";
 
+  // Initialize the array of picture buttons.
   const pictureButtons = pictureUrls.map((pictureUrl, index) => {
     const selected = selectedUrls.has(pictureUrl);
     return (
@@ -131,12 +157,16 @@ export function PicturesBottomPanel(props: PicturesBottomPanelProps) {
         }} />}
       {!selectMode && <>
         <ToolButton iconSpec={"icon-camera"} onClick={async () => {
-          if (await ImageCache.pickImage(iModel.iModelId)) {
+          // Note: We only allow loading iModels, not creating them, so our iModel is guaranteed to
+          // have an iModelId.
+          if (await ImageCache.pickImage(iModel.iModelId!)) {
             void reload();
           }
         }} />
         <ToolButton iconSpec={"icon-image"} onClick={async () => {
-          if (await ImageCache.pickImage(iModel.iModelId, true)) {
+          // Note: We only allow loading iModels, not creating them, so our iModel is guaranteed to
+          // have an iModelId.
+          if (await ImageCache.pickImage(iModel.iModelId!, true)) {
             void reload();
           }
         }} />
@@ -164,7 +194,9 @@ export function PicturesBottomPanel(props: PicturesBottomPanelProps) {
           onClick={async () => {
             const all = pictureUrls.length === selectedUrls.size;
             if (all && await presentYesNoAlert(deleteAllTitle, deleteAllMessage, true)) {
-              await ImageCache.deleteAllImages(iModel.iModelId);
+              // Note: We only allow loading iModels, not creating them, so our iModel is guaranteed
+              // to have an iModelId.
+              await ImageCache.deleteAllImages(iModel.iModelId!);
               void reload();
             } else if (!all && await presentYesNoAlert(deleteSelectedTitle, deleteSelectedMessage, true)) {
               await ImageCache.deleteImages(Array.from(selectedUrls));
@@ -199,11 +231,13 @@ export function PicturesBottomPanel(props: PicturesBottomPanelProps) {
   );
 }
 
+/** Properties for the {@link PictureView} React component. */
 export interface PictureViewProps {
   url: string;
   onClick?: (e: React.MouseEvent<HTMLDivElement>) => void;
 }
 
+/** React component to view a picture (mostly) full-screen. */
 export function PictureView(props: PictureViewProps) {
   const { url, onClick } = props;
   const portalDiv = (
@@ -212,5 +246,6 @@ export function PictureView(props: PictureViewProps) {
     </div>
   );
   const rootElement = document.getElementById("root");
+  // Make this component a child of the "root" element in the document.
   return ReactDOM.createPortal(portalDiv, rootElement!);
 }

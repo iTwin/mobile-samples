@@ -4,72 +4,119 @@
 *--------------------------------------------------------------------------------------------*/
 import React from "react";
 import { HorizontalPicker, useIsMountedRef } from "@itwin/mobile-ui-react";
-import { Project, ProjectsAccessClient, ProjectsQueryArg, ProjectsQueryFunction, ProjectsSearchableProperty, ProjectsSource } from "@itwin/projects-client";
+import { ITwin, ITwinsAccessClient, ITwinsAPIResponse, ITwinsQueryArg, ITwinSubClass } from "@itwin/itwins-client";
 import { IModelApp } from "@itwin/core-frontend";
 import { LoadingSpinner } from "@itwin/core-react";
-import { ButtonProps, HubScreenButton, HubScreenButtonList, HubScreenButtonListProps, i18n, presentError, PromiseUtil, SearchControl } from "../../Exports";
+import { ButtonProps, HubScreenButton, HubScreenButtonList, HubScreenButtonListProps, i18n, presentError, PromiseUtil, SearchControl, useLocalizedString } from "../../Exports";
 
-async function getProjects(source = ProjectsSource.All, searchString = "") {
-  const baseUrl = `https://${window.itmSampleParams.apiPrefix}api.bentley.com/projects/`;
-  const client = new ProjectsAccessClient();
-  // ProjectsAccessClient doesn't have any public way to change its base URL. Hopefully that
-  // will change in the future.
-  (client as any)._baseUrl = baseUrl;
+type WithRequired<T, K extends keyof T> = T & { [P in K]-?: T[P] };
+type IdentifiedITwin = WithRequired<ITwin, "id">;
+
+enum ProjectsSource {
+  All = "",
+  Favorites = "favorites",
+  Recents = "recents"
+}
+
+/**
+ * The data returned by {@link getProjects}.
+ */
+interface ProjectsQueryResponse {
+  /** The queried projects, possibly empty. */
+  projects: Array<IdentifiedITwin>;
+  /** A function to get the next page of data. */
+  next: ProjectsQueryFunction | undefined;
+}
+
+/** The next function type. */
+type ProjectsQueryFunction = () => Promise<ProjectsQueryResponse>;
+
+/**
+ * Get a list of iTwin Projects from the Bentley server.
+ * @param source The source of the list: All, Favorites, or Recents
+ * @param search A search string
+ * @param skip Number of results to skip
+ * @returns A {@link ProjectsQueryResponse} object
+ */
+async function getProjects(source: ProjectsSource, search = "", skip = 0): Promise<ProjectsQueryResponse> {
+  const client = new ITwinsAccessClient();
   const numToFetch = 100;
   const accessToken = await IModelApp.getAccessToken();
+  const queryArgs: ITwinsQueryArg = { skip, top: numToFetch };
+  let results: ITwinsAPIResponse<ITwin[]> | undefined;
 
-  const queryArgs: ProjectsQueryArg = { pagination: { skip: 0, top: numToFetch } };
-  if (source === ProjectsSource.All && searchString.length > 0)
-    queryArgs.search = { searchString, propertyName: ProjectsSearchableProperty.Name, exactMatch: false };
-  else
-    queryArgs.source = source;
-  const results = await client.getByQuery(accessToken, queryArgs);
-  return { projects: results.projects, next: results.links?.next };
+  switch (source) {
+    case ProjectsSource.All:
+      results = await client.queryAsync(accessToken, ITwinSubClass.Project, { ...queryArgs, search });
+      break;
+    case ProjectsSource.Favorites:
+      results = await client.queryFavoritesAsync(accessToken, ITwinSubClass.Project, queryArgs);
+      break;
+    case ProjectsSource.Recents:
+      results = await client.queryRecentsAsync(accessToken, ITwinSubClass.Project, queryArgs);
+      break;
+  }
+  // Provide a next function if we received a full page of data
+  let next: ProjectsQueryFunction | undefined;
+  if (results.data?.length === numToFetch) {
+    next = async () => getProjects(source, search, skip + numToFetch);
+  }
+  // NOTE: Assume all returned ITwins have a valid id, should be safe since they're queried from the server.
+  return { projects: results.data as Array<IdentifiedITwin> ?? [], next };
 }
 
+/** Properties for the {@link ProjectButton} React component. */
 interface ProjectButtonProps extends Omit<ButtonProps, "title"> {
-  project: Project;
+  project: ITwin;
 }
 
+/** React component to show a button to select a project. */
 function ProjectButton(props: ProjectButtonProps) {
   const { project, onClick } = props;
-  const noNameLabel = React.useMemo(() => i18n("HubScreen", "NoName"), []);
-  return <HubScreenButton title={project.name ?? noNameLabel} onClick={onClick} />;
+  const noNameLabel = useLocalizedString("HubScreen", "NoName");
+  return <HubScreenButton title={project.displayName ?? noNameLabel} onClick={onClick} />;
 }
 
+/** Properties for the {@link ProjectList} React component. */
 interface ProjectListProps extends HubScreenButtonListProps {
-  projects: Project[];
-  onSelect?: (project: Project) => void;
+  projects: IdentifiedITwin[];
+  onSelect?: (iTwinId: string) => void;
 }
 
+/** React component to show a list of projects. */
 function ProjectList(props: ProjectListProps) {
   const { projects, onSelect, children, ...others } = props;
   return <HubScreenButtonList {...others}>
-    {projects.map((project, index) => <ProjectButton key={index} project={project} onClick={() => onSelect?.(project)} />)}
+    {projects.map((project, index) => <ProjectButton key={index} project={project} onClick={() => onSelect?.(project.id)} />)}
     {children}
   </HubScreenButtonList>;
 }
 
+/** Properties for the {@link ProjectPicker} React component. */
 export interface ProjectPickerProps {
-  onSelect?: (project: Project) => void;
+  onSelect?: (iTwinId: string) => void;
   onError?: (error: any) => void;
 }
 
+/**
+ * React component to show the user the projects they have access to so they can pick one.
+ */
 export function ProjectPicker(props: ProjectPickerProps) {
   const { onSelect, onError } = props;
-  const [projects, setProjects] = React.useState<Project[]>([]);
+  const [projects, setProjects] = React.useState<IdentifiedITwin[]>([]);
   const [search, setSearch] = React.useState("");
   const [projectSource, setProjectSource] = React.useState(ProjectsSource.Recents);
   const [loading, setLoading] = React.useState(false);
   const [nextFunc, setNextFunc] = React.useState<ProjectsQueryFunction>();
   const [loadingMore, setLoadingMore] = React.useState(false);
-  const loadMoreLabel = React.useMemo(() => i18n("HubScreen", "LoadMore"), []);
+  const loadMoreLabel = useLocalizedString("HubScreen", "LoadMore");
   const isMountedRef = useIsMountedRef();
-  const searchLabel = React.useMemo(() => i18n("HubScreen", "Search"), []);
+  const searchLabel = useLocalizedString("HubScreen", "Search");
   const projectSources = React.useMemo(() => [ProjectsSource.All, ProjectsSource.Recents, ProjectsSource.Favorites], []);
   const projectSourceLabels = React.useMemo(() => [i18n("HubScreen", "All"), i18n("HubScreen", "Recents"), i18n("HubScreen", "Favorites")], []);
   const fetchId = React.useRef(0);
 
+  // Fetch the projects any time projectSource or search change.
   React.useEffect(() => {
     if (!isMountedRef.current)
       return;
@@ -78,12 +125,12 @@ export function ProjectPicker(props: ProjectPickerProps) {
       try {
         setLoading(true);
         const currFetchId = ++fetchId.current;
-        const { projects: fetchedProjects, next } = await getProjects(projectSource, search);
+        const results = await getProjects(projectSource, search);
         // If the component is no longer mounted or another fetch has occurred, just return.
         if (!isMountedRef.current || fetchId.current !== currFetchId)
           return;
-        setProjects(fetchedProjects);
-        setNextFunc(() => projectSource === ProjectsSource.All ? next : undefined);
+        setProjects(results.projects);
+        setNextFunc(() => results.next);
       } catch (error) {
         setProjects([]);
         presentError("FetchProjectsErrorFormat", error, "HubScreen");
@@ -94,25 +141,28 @@ export function ProjectPicker(props: ProjectPickerProps) {
     void PromiseUtil.consolidateCall("fetchProjects", async () => fetchProjects());
   }, [isMountedRef, onError, projectSource, search]);
 
+  // Loads the next batch of projects if `nextFunc` is defined.
   const loadMore = React.useCallback(async () => {
     if (loadingMore || !nextFunc) return;
     setLoadingMore(true);
-    const accessToken = await IModelApp.getAccessToken();
     if (!isMountedRef.current) return;
     try {
-      const moreProjects = await nextFunc(accessToken);
+      const moreProjects = await nextFunc();
       if (!isMountedRef.current) return;
       if (moreProjects.projects.length) {
         setProjects((oldProjects) => [...oldProjects, ...moreProjects.projects]);
-        setNextFunc(projectSource === ProjectsSource.All && moreProjects.links.next ? () => moreProjects.links.next : undefined);
+        setNextFunc(moreProjects.next ? () => moreProjects.next : undefined);
+      } else {
+        setNextFunc(undefined);
       }
     } catch (error) {
       presentError("FetchProjectsErrorFormat", error, "HubScreen");
       onError?.(error);
     }
     setLoadingMore(false);
-  }, [isMountedRef, loadingMore, nextFunc, onError, projectSource]);
+  }, [isMountedRef, loadingMore, nextFunc, onError]);
 
+  // Automatically load more projects if needed when the user scrolls to the bottom of the list.
   const onScroll = React.useCallback((element: HTMLElement) => {
     const atBottom = element.scrollTop > 0 && element.scrollHeight - element.scrollTop <= element.clientHeight;
     if (atBottom) {

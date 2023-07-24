@@ -6,30 +6,42 @@ import { IModelApp } from "@itwin/core-frontend";
 import { LoadingSpinner } from "@itwin/core-react";
 import { useIsMountedRef } from "@itwin/mobile-ui-react";
 import React from "react";
-import { Button, i18n, presentError } from "../../Exports";
+import { Button, presentError, useLocalizedString } from "../../Exports";
 
+/** Properties for the {@link SignIn} React component. */
 export interface SignInProps {
   onBack: () => void;
   onError: () => void;
   onSignedIn: () => void;
 }
 
+/**
+ * React component to trigger sign in and then wait while the user is signing in.
+ *
+ * Shows a spinner and a cancel button while the sign in is happening.
+ */
 export function SignIn(props: SignInProps) {
   const { onBack, onError, onSignedIn } = props;
   const [signedIn, setSignedIn] = React.useState(false);
-  const cancelLabel = React.useMemo(() => i18n("HubScreen", "Cancel"), []);
-  const connectingLabel = React.useMemo(() => i18n("HubScreen", "Connecting"), []);
+  const cancelLabel = useLocalizedString("HubScreen", "Cancel");
+  const connectingLabel = useLocalizedString("HubScreen", "Connecting");
+  const userCanceledSignInLabel = useLocalizedString("HubScreen", "UserCanceledSignIn");
   const isMountedRef = useIsMountedRef();
 
   React.useEffect(() => {
-    if (signedIn)
-      return;
+    if (signedIn) return;
     const signIn = async () => {
       try {
-        await IModelApp.authorizationClient?.getAccessToken();
+        // Asking for the access token will trigger sign in if that has not already happened.
+        const accessToken = await IModelApp.authorizationClient?.getAccessToken();
         if (!isMountedRef.current)
           return;
-        onSignedIn();
+        if (accessToken) {
+          onSignedIn();
+        } else {
+          presentError("SigninErrorFormat", new Error(userCanceledSignInLabel), "HubScreen");
+          onError();
+        }
       } catch (error) {
         presentError("SigninErrorFormat", error, "HubScreen");
         onError();
@@ -37,7 +49,7 @@ export function SignIn(props: SignInProps) {
     };
     setSignedIn(true);
     void signIn();
-  }, [isMountedRef, onError, onSignedIn, signedIn]);
+  }, [isMountedRef, onError, onSignedIn, signedIn, userCanceledSignInLabel]);
 
   return <div className="centered-list">
     {connectingLabel}

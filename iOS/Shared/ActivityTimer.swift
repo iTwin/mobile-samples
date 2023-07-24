@@ -25,14 +25,14 @@ class ActivityTimer {
         self.nameTitle = nameTitle
     }
     
-    /// Add a checkpoint
+    /// Add a checkpoint.
     /// - Parameter name: The name of the checkpoint
     func addCheckpoint(name: String) {
         guard enabled else { return }
         checkpoints.append((name, Date()))
     }
     
-    /// Create a string representing the elapsed time (in seconds and milliseconds) between two 'Date' values.
+    /// Create a string representing the elapsed time (in seconds and milliseconds) between two `Date` values.
     /// - Parameters:
     ///   - start: The start date for the elapsed time
     ///   - end: The end date for the elapsed time
@@ -106,7 +106,7 @@ class ActivityTimer {
                     "modelIDRefURL": "https://www.theiphonewiki.com/wiki/Models",
                     "systemName": device.systemName,
                     "systemVersion": device.systemVersion,
-                ],
+                ] as [String : Any],
                 "iTwinVersion": iTwinVersion,
                 "timestamp": isoDateFormatter.string(from: Date()),
                 "totalTime": lastTime.timeIntervalSince(startTime),
@@ -131,8 +131,10 @@ class ActivityTimer {
             logToFile(jsonString: message)
         }
     }
-
-    func runningInDebugger() -> Bool {
+    
+    /// Determine if the app is being run from the debugger.
+    /// - Returns: true if running from the debugger, or false otherwise.
+    private func runningInDebugger() -> Bool {
         // Buffer for "sysctl(...)" call's result.
         var info = kinfo_proc()
         // Counts buffer's size in bytes (like C/C++'s `sizeof`).
@@ -147,8 +149,15 @@ class ActivityTimer {
         // Finally, checks if debugger's flag is present yet.
         return (info.kp_proc.p_flag & P_TRACED) != 0
     }
-
-    func logToFile(jsonString: String) {
+    
+    /// Log the given JSON string to a file as long as the app is not running from the debugger.
+    ///
+    /// The filename for the log file is based on the modelID of the current device.
+    /// __Note__: The given JSON is appended to the log file (followed by two line feeds). This means that even
+    /// thought the log file contains JSON, it is not valid JSON after the second log appends data, since this does
+    /// __not__ put the new JSON string into a JSON array inside the log file.
+    /// - Parameter jsonString: The JSON string to add to the log file.
+    private func logToFile(jsonString: String) {
         if runningInDebugger() {
             // Don't log times to disk if we are running in the debugger.
             return
@@ -174,6 +183,8 @@ class ActivityTimer {
 }
 
 public extension UIDevice {
+    /// The model ID of the currently running device. For example, a second generation iPad Pro has a model ID of `iPad8,9`.
+    /// A second generation iPhone SE has a model ID of `iPhone12,8`.
     static var modelID: String {
         get {
             var systemInfo = utsname()

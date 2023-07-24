@@ -4,14 +4,15 @@
 *--------------------------------------------------------------------------------------------*/
 package com.bentley.sample.shared
 
+import android.annotation.SuppressLint
 import android.app.ActivityManager
 import android.content.Context
 import android.os.Build
-import com.eclipsesource.json.JsonArray
-import com.eclipsesource.json.WriterConfig
 import com.github.itwin.mobilesdk.ITMLogger
 import com.github.itwin.mobilesdk.epochMillisToISO8601
 import com.github.itwin.mobilesdk.jsonvalue.jsonOf
+import org.json.JSONArray
+import org.json.JSONObject
 import java.lang.Integer.max
 import java.text.SimpleDateFormat
 import java.util.*
@@ -79,6 +80,7 @@ class ActivityTimer(private val nameTitle: String = "ACTIVITY") {
             logger.log(ITMLogger.Severity.Info, "${title}:\nNO CHECKPOINTS.")
             return
         }
+        @SuppressLint("SimpleDateFormat")
         val timeFormat = SimpleDateFormat("HH:mm:ss.SSS")
         val headerRow = arrayOf(nameTitle, "START", "STEP", "TOTAL")
         assert(headerRow.size == maxLengths.size)
@@ -88,7 +90,7 @@ class ActivityTimer(private val nameTitle: String = "ACTIVITY") {
         for (i in maxLengths.indices) {
             maxLengths[i] = headerRow[i].length
         }
-        val jsonCheckpoints = JsonArray()
+        val jsonCheckpoints = JSONArray()
         for (checkpoint in checkpoints) {
             val row = arrayOf(
                 checkpoint.first,
@@ -96,7 +98,7 @@ class ActivityTimer(private val nameTitle: String = "ACTIVITY") {
                 timeDeltaString(lastTime, checkpoint.second),
                 timeDeltaString(startTime, checkpoint.second),
             )
-            jsonCheckpoints.add(jsonOf(mapOf(
+            jsonCheckpoints.put(JSONObject(mapOf(
                 "action" to row[0],
                 "timestamp" to checkpoint.second.time.epochMillisToISO8601(),
                 "step" to timeDelta(lastTime, checkpoint.second),
@@ -114,7 +116,7 @@ class ActivityTimer(private val nameTitle: String = "ACTIVITY") {
             val memInfo = ActivityManager.MemoryInfo()
             actManager.getMemoryInfo(memInfo)
             val totalMemory = memInfo.totalMem
-            val json = jsonOf(mapOf(
+            val json = jsonOf(
                 "checkpoints" to jsonCheckpoints,
                 "device" to jsonOf(
                     "cpuCores" to Runtime.getRuntime().availableProcessors(),
@@ -129,8 +131,8 @@ class ActivityTimer(private val nameTitle: String = "ACTIVITY") {
                 "title" to title,
                 "totalTime" to timeDelta(startTime, lastTime),
                 "usingRemoteServer" to usingRemoteServer
-            ))
-            message += json.toString(WriterConfig.PRETTY_PRINT)
+            )
+            message += json.toPrettyString()
         } else {
             message += buildRow(headerRow)
             message += buildRow(lineRow, "--+-", '-')

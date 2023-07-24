@@ -6,28 +6,25 @@ import { IconImage } from "@itwin/mobile-ui-react";
 import React from "react";
 import "./SearchControl.scss";
 
-/**
- * Properties for the [[SearchControl]] React component.
- */
+/** Properties for the {@link SearchControl} React component. */
 export interface SearchControlProps {
   placeholder?: string;
   initialValue?: string;
   onSearch?: (value: string) => void;
 }
 
-/**
- * A React component representing a simple search input field.
- */
+/** React component representing a simple search input field. */
 export function SearchControl(props: SearchControlProps) {
-  const { placeholder, onSearch: onFilter, initialValue } = props;
+  const { placeholder, onSearch, initialValue } = props;
   const [value, setValue] = React.useState<string>(initialValue ?? "");
 
   React.useEffect(() => {
-    if (onFilter) {
-      const id = setTimeout(() => onFilter(value), 500);
+    if (onSearch) {
+      // Call onSearch 500 ms after the value stops changing.
+      const id = setTimeout(() => onSearch(value), 500);
       return () => clearTimeout(id);
     }
-  }, [value, onFilter]);
+  }, [value, onSearch]);
 
   return (
     <div className="search-control">

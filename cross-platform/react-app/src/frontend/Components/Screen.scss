@@ -5,13 +5,20 @@
 :root {
   --background-color: white;
   --background-color-2: var(--muic-gray-9);
+  --background-color-active: var(--muic-gray-a);
   --color: black;
 }
 
 [preferred-color-scheme="dark"] {
   --background-color: var(--muic-gray-2);
   --background-color-2: var(--muic-gray-4);
+  --background-color-active: var(--muic-gray-5);
   --color: white;
+}
+
+// Disable iTwin UI's calculated line-height
+.iui-body * {
+  line-height: initial;
 }
 
 .screen {

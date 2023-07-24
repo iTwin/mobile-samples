@@ -8,19 +8,20 @@ import { IModelApp, IModelConnection } from "@itwin/core-frontend";
 import { ThumbnailProps } from "@itwin/core-common";
 import { ReloadedEvent } from "@itwin/mobile-sdk-core";
 import { DraggableComponent, IconImage, ResizableBottomPanel, ResizableBottomPanelProps } from "@itwin/mobile-ui-react";
-import { HeaderTitle, i18n, updateBackgroundColor } from "../Exports";
+import { HeaderTitle, updateBackgroundColor, useLocalizedString } from "../Exports";
 
 import "./ViewsBottomPanel.scss";
 
-/// Properties for the [[ViewsBottomPanel]] React component.
+/** Properties for the {@link ViewsBottomPanel} React component. */
 export interface ViewsBottomPanelProps extends ResizableBottomPanelProps {
-  /// The loaded iModel from which to pick views.
+  /** The loaded iModel from which to pick views. */
   iModel: IModelConnection;
-  /// Optional callback that is called after a view is selected.
+  /** Optional callback that is called after a view is selected. */
   onViewSelected?: () => void;
 }
 
-/** [[ResizableBottomPanel]] React component that allows the user to select any of the views saved in the iModel.
+/**
+ * {@link ResizableBottomPanel} React component that allows the user to select any of the views saved in the iModel.
  *
  * This is a relatively simple example of a view selector that shows the view thumbnails.
  */
@@ -28,7 +29,7 @@ export function ViewsBottomPanel(props: ViewsBottomPanelProps) {
   const { iModel, onViewSelected, ...otherProps } = props;
   const [viewSpecs, setViewSpecs] = React.useState<IModelConnection.ViewSpec[]>([]);
   const [thumbnails, setThumbnails] = React.useState<(string | undefined)[]>([]);
-  const viewsLabel = React.useMemo(() => i18n("ViewsBottomPanel", "Views"), []);
+  const viewsLabel = useLocalizedString("ViewsBottomPanel", "Views");
   const reloadedEvent = React.useRef(new ReloadedEvent());
 
   // React effect run during component initialization.
@@ -97,6 +98,7 @@ export function ViewsBottomPanel(props: ViewsBottomPanelProps) {
     void loadViewSpecs();
   }, [iModel.views]);
 
+  // Callback called when the user selects a view.
   const handleChangeView = React.useCallback((viewSpec: IModelConnection.ViewSpec) => {
     const changeView = async () => {
       const viewState = await iModel.views.load(viewSpec.id);
@@ -108,21 +110,18 @@ export function ViewsBottomPanel(props: ViewsBottomPanelProps) {
   }, [iModel.views, onViewSelected]);
 
   const viewButtons = viewSpecs.map((viewSpec, index) => {
+    let icon;
     if (thumbnails.length > index && thumbnails[index]) {
-      return (
-        <div className="list-item" key={index} onClick={() => { handleChangeView(viewSpec); }}>
-          <div>{viewSpec.name}</div>
-          <img src={thumbnails[index]} alt="View Thumbnail" />
-        </div>
-      );
+      icon = <img src={thumbnails[index]} alt="View Thumbnail" />;
     } else {
-      return (
-        <div className="list-item" key={index} onClick={() => { handleChangeView(viewSpec); }}>
-          <div>{viewSpec.name}</div>
-          <IconImage iconSpec="icon-saved-view" size="100px" />
-        </div>
-      );
+      icon = <IconImage iconSpec="icon-saved-view" size="100px" />;
     }
+    return (
+      <div className="list-item" key={index} onClick={() => { handleChangeView(viewSpec); }}>
+        <div>{viewSpec.name}</div>
+        {icon}
+      </div>
+    );
   });
 
   // Add 10 0-height dummy items after the real items to force the last row to be left-justified.
