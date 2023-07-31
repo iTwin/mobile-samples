@@ -50,7 +50,6 @@
     "webpack-cli": "^5.0.1"
   },
   "dependencies": {
-    "@bentley/icons-generic-webfont": "1.0.34",
     "@itwin/appui-abstract": "4.1.0-dev.75",
     "@itwin/appui-layout-react": "4.3.0",
     "@itwin/appui-react": "4.3.0",
