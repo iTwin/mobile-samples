@@ -17,7 +17,7 @@
 // app's environment at launch time.
 // LIBDISPATCH_COOPERATIVE_POOL_STRICT = 1
 
-// The following four settings apply to all of the samples except ThirdPartyAuth. The first is
+// The following five settings apply to all of the samples except ThirdPartyAuth. The first is
 // required to run those samples. The second is recommended, but does have a reasonable default.
 //
 // ITMAPPLICATION_CLIENT_ID = YOUR-CLIENT-ID-GOES-HERE
@@ -26,6 +26,9 @@
 // Other supported ITMApplication settings:
 // ITMAPPLICATION_ISSUER_URL
 // ITMAPPLICATION_REDIRECT_URI
+//
+// Set the following to disable auth if it crashes when running in the Simulator.
+// ITMAPPLICATION_DISABLE_AUTH = YES
 
 // The following four settings only apply to the ThirdPartyAuth example.
 //
