@@ -22,9 +22,9 @@ class CamModelApplication: ModelApplication {
     ///
     /// Adds our DocumentPicker component to the native UI collection.
     /// - Parameter viewController: The view controller.
-    override func viewWillAppear(viewController: ITMViewController) {
+    override func viewWillAppear(viewController: UIViewController) {
         super.viewWillAppear(viewController: viewController)
-        if let itmNativeUI = viewController.itmNativeUI {
+        if let itmNativeUI = nativeUI(viewController) {
             itmNativeUI.addComponent(ImagePicker(itmNativeUI: itmNativeUI))
             itmNativeUI.addComponent(ImageSharer(itmNativeUI: itmNativeUI))
         }
