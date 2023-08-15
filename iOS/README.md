@@ -36,7 +36,7 @@ Follow the npm setup instructions [here](../cross-platform/npm.md).
 
 Once you have performed the above setup, you can build and run the samples.
 
-__Note:__ The samples cannot currently be built for or run on the iOS Simulator on an Apple Silicon Mac. This will be fixed in the future, but for the moment if you are using a Mac with an Apple Silicon processor, you can only build for and run on a connected iOS device.
+__Note:__ The samples must currently use Rosetta 2 mode when targeting the iOS Simulator on an Apple Silicon Mac, which requires Xcode 14.3 or later. (This will probably be fixed in the future.) The first time you run on the simulator, you will get a dialog saying the build failed due to a required architecture being missing. Select `Build for Rosetta` in that dialog. You will probably also have to set `ITMAPPLICATION_DISABLE_AUTH = YES` in ITMApplication.xcconfig in order to avoid having it crash during startup. That means that only local iModels can be loaded. You can drag and drop `Snapshot iModels/Building Blocks.bim` onto the running iOS Simulator to open the iTwin Mobile SDK sample model. If running the simulator from the command line instead of Xcode, the `simctl launch` command must be run using `arch -arch x86_64` in order to cause it to use Rosetta 2 mode.
 
 1. Open the appropriate Xcode project or workspace.
 1. Xcode will take some time to download the Swift Packages that each sample depends on the first time you open that sample Xcode project. Also, it appears that Xcode sometimes randomly fails when installing Swift Packages. If this happens, select File->Packages->Reset Package Caches.
