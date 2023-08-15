@@ -6,7 +6,7 @@ import React from "react";
 import classnames from "classnames";
 import { IModelApp } from "@itwin/core-frontend";
 import { Messenger, presentAlert } from "@itwin/mobile-sdk-core";
-import { useTheme } from "@itwin/itwinui-react";
+import { ThemeProvider } from "@itwin/itwinui-react";
 import "./Screen.scss";
 
 /**
@@ -115,8 +115,11 @@ export function fileSizeString(input?: number, decimals?: number) {
 export function Screen(props: ScreenProps = {}) {
   const { className, children } = props;
 
-  useTheme("os");
-  return <div className={classnames("screen", className)}>{children}</div>;
+  return (
+    <ThemeProvider theme="os">
+      <div className={classnames("screen", className)}>{children}</div>;
+    </ThemeProvider>
+  );
 }
 
 /**
