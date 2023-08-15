@@ -5,7 +5,7 @@ import * as React from "react";
 import classnames from "classnames";
 import { CoreTools, ToolItemDef } from "@itwin/appui-react";
 import { IModelApp, IModelConnection, ToolSettings, ViewClipClearTool, WalkViewTool } from "@itwin/core-frontend";
-// import { MeasureToolDefinitions } from "@itwin/measure-tools-react";
+import { MeasureToolDefinitions } from "@itwin/measure-tools-react";
 import {
   assignRef,
   BottomPanel,
@@ -105,13 +105,13 @@ function viewLookAndMoveCommand() {
 export function getDefaultTools(): ToolEntry[] {
   return [
     { labelKey: "ReactApp:ToolsBottomPanel.Select", icon: "icon-gesture-touch", toolItemDef: CoreTools.selectElementCommand },
-    // { labelKey: "ReactApp:ToolsBottomPanel.Distance", icon: "icon-measure-distance", toolItemDef: MeasureToolDefinitions.measureDistanceToolCommand },
-    // { labelKey: "ReactApp:ToolsBottomPanel.Location", icon: "icon-measure-location", toolItemDef: MeasureToolDefinitions.measureLocationToolCommand },
-    // { labelKey: "ReactApp:ToolsBottomPanel.Area", icon: "icon-measure-2d", toolItemDef: MeasureToolDefinitions.measureAreaToolCommand },
-    // { labelKey: "ReactApp:ToolsBottomPanel.Radius", icon: "icon-measure-arc", toolItemDef: MeasureToolDefinitions.measureRadiusToolCommand },
-    // { labelKey: "ReactApp:ToolsBottomPanel.Angle", icon: "icon-measure-angle", toolItemDef: MeasureToolDefinitions.measureAngleToolCommand },
-    // { labelKey: "ReactApp:ToolsBottomPanel.Perpendicular", icon: "icon-measure-perpendicular", toolItemDef: MeasureToolDefinitions.measurePerpendicularToolCommand },
-    // { labelKey: "ReactApp:ToolsBottomPanel.Clear", icon: "icon-measure-clear", toolItemDef: MeasureToolDefinitions.clearMeasurementsToolCommand },
+    { labelKey: "ReactApp:ToolsBottomPanel.Distance", icon: "icon-measure-distance", toolItemDef: MeasureToolDefinitions.measureDistanceToolCommand },
+    { labelKey: "ReactApp:ToolsBottomPanel.Location", icon: "icon-measure-location", toolItemDef: MeasureToolDefinitions.measureLocationToolCommand },
+    { labelKey: "ReactApp:ToolsBottomPanel.Area", icon: "icon-measure-2d", toolItemDef: MeasureToolDefinitions.measureAreaToolCommand },
+    { labelKey: "ReactApp:ToolsBottomPanel.Radius", icon: "icon-measure-arc", toolItemDef: MeasureToolDefinitions.measureRadiusToolCommand },
+    { labelKey: "ReactApp:ToolsBottomPanel.Angle", icon: "icon-measure-angle", toolItemDef: MeasureToolDefinitions.measureAngleToolCommand },
+    { labelKey: "ReactApp:ToolsBottomPanel.Perpendicular", icon: "icon-measure-perpendicular", toolItemDef: MeasureToolDefinitions.measurePerpendicularToolCommand },
+    { labelKey: "ReactApp:ToolsBottomPanel.Clear", icon: "icon-measure-clear", toolItemDef: MeasureToolDefinitions.clearMeasurementsToolCommand },
     { labelKey: "ReactApp:ToolsBottomPanel.Walk", icon: "icon-walk", toolItemDef: viewLookAndMoveCommand() },
     { labelKey: "ReactApp:ToolsBottomPanel.SectionByPlane", toolItemDef: CoreTools.sectionByPlaneCommandItemDef },
     { labelKey: "ReactApp:ToolsBottomPanel.SectionByElement", toolItemDef: CoreTools.sectionByElementCommandItemDef },

@@ -9,8 +9,7 @@ import { AppNotificationManager, UiFramework } from "@itwin/appui-react";
 import { Presentation } from "@itwin/presentation-frontend";
 import { Messenger, MobileCore } from "@itwin/mobile-sdk-core";
 import { MobileUi, ToolAssistanceSuggestion } from "@itwin/mobile-ui-react";
-// import { MeasureTools, FeatureTracking as MeasureToolsFeatureTracking } from "@itwin/measure-tools-react";
-// import { ActiveScreen, HomeScreen, HubScreen, LoadingScreen, LocalModelsScreen, ModelScreen, ModelScreenExtensionProps, presentError, ToolAssistance } from "./Exports";
+import { MeasureTools, FeatureTracking as MeasureToolsFeatureTracking } from "@itwin/measure-tools-react";
 import { ActiveScreen, HomeScreen, HubScreen, LoadingScreen, LocalModelsScreen, ModelScreen, ModelScreenExtensionProps, presentError } from "./Exports";
 import { getSupportedRpcs } from "../common/rpcs";
 import "./App.scss";
@@ -152,8 +151,8 @@ function useAppState(onInitialize?: () => Promise<void>) {
         await MobileUi.initialize(IModelApp.localization);
         await IModelApp.localization.registerNamespace("ReactApp");
         setHaveBackButton(window.itmSampleParams.haveBackButton);
-        // await MeasureTools.startup();
-        // MeasureToolsFeatureTracking.stop();
+        await MeasureTools.startup();
+        MeasureToolsFeatureTracking.stop();
         await onInitialize?.();
 
         Messenger.onQuery("queryExample").setHandler(async (params) => params.value);
