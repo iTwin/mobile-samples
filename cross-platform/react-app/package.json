@@ -82,7 +82,6 @@
     "@itwin/presentation-common": "4.1.0",
     "@itwin/presentation-components": "4.1.0",
     "@itwin/presentation-frontend": "4.1.0",
-    "@itwin/projects-client": "0.7.0",
     "@itwin/webgl-compatibility": "4.1.0",
     "@react-hook/resize-observer": "^1.2.6",
     "axios": "^0.25.0",
