@@ -18,7 +18,7 @@ import { ViewportComponent } from "@itwin/imodel-components-react";
 import { getCssVariable, IconSpec } from "@itwin/core-react";
 import { viewWithUnifiedSelection } from "@itwin/presentation-components";
 import { ActionSheetGravity, ActionStyle, AlertAction, Messenger, presentAlert } from "@itwin/mobile-sdk-core";
-import { useTheme } from "@itwin/itwinui-react";
+import { ThemeProvider } from "@itwin/itwinui-react";
 import {
   ActionSheetButton,
   IconImage,
@@ -378,13 +378,11 @@ export function ModelScreen(props: ModelScreenProps) {
     void applyDefaultView();
   }, [applyDefaultView]);
 
-  useTheme("os");
-
   // Note: Changes to the viewState field of ViewportProps are ignored after the component is
   // first created. So don't create the ViewportComponent until after we have loaded the default
   // view state.
   return (
-    <>
+    <ThemeProvider theme="os">
       {viewState &&
         <div id="main-viewport">
           <UnifiedSelectionViewportComponent imodel={iModel} viewState={viewState} />
@@ -407,7 +405,7 @@ export function ModelScreen(props: ModelScreenProps) {
         {additionalComponents}
         {tabsAndPanelsAPI.renderTabBarAndPanels()}
       </MobileUiContent >
-    </>
+    </ThemeProvider>
   );
 }
 
