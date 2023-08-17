@@ -22,6 +22,7 @@ import {
 
 import "./ToolsBottomPanel.scss";
 
+/** Properties for the {@link ButtonRow} React component. */
 export type ButtonRowProps = React.HTMLAttributes<HTMLDivElement>;
 
 /** Information about one entry in the Tools panel. */

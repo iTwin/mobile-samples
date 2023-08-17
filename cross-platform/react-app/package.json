@@ -31,7 +31,7 @@
     "@babel/core": "^7.15.8",
     "@bentley/react-scripts": "5.0.4",
     "@itwin/build-tools": "4.1.0",
-    "@itwin/eslint-plugin": "4.0.0-dev.33",
+    "@itwin/eslint-plugin": "4.0.0-dev.48",
     "@types/axios": "^0.14.0",
     "@types/jest": "^26.0.15",
     "@types/jsonwebtoken": "^8.5.8",
@@ -99,7 +99,6 @@
     "eslint-plugin-jsdoc": {
       "eslint": "^8.36.0"
     },
-    "eslint-plugin-react": "7.32.2",
     "fast-sass-loader": {
       "loader-utils": "^2.0.0"
     },
@@ -112,26 +111,6 @@
     },
     "typedoc": {
       "typescript": "~5.0.2"
-    }
-  },
-  "eslintConfig": {
-    "plugins": [
-      "@itwin"
-    ],
-    "extends": [
-      "plugin:@itwin/ui"
-    ],
-    "rules": {
-      "no-console": "off",
-      "@itwin/no-internal-barrel-imports": "off",
-      "jsx-a11y/click-events-have-key-events": "off",
-      "jsx-a11y/no-static-element-interactions": "off"
-    },
-    "parserOptions": {
-      "project": [
-        "./tsconfig.json",
-        "./tsconfig.backend.json"
-      ]
     }
   },
   "browserslist": {

@@ -228,6 +228,7 @@ export function HubScreen(props: HubScreenProps) {
   );
 }
 
+/** @internal */
 export class ModelNameCache {
   private static MODEL_ID_PREFIX = "modelIdToName_";
 
