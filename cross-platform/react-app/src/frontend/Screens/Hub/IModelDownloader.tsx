@@ -12,7 +12,7 @@ import { Button, IModelInfo, presentError, useLocalizedString } from "../../Expo
 
 /**
  * Download the given iModel, reporting progress via {@link handleProgress}.
- * @param project The iModel's project.
+ * @param iTwinId The iModel's iTwin (project) ID.
  * @param iModel The iModel to download.
  * @param handleProgress Progress callback.
  * @returns The {@link LocalBriefcaseProps} for the downloaded iModel if successful, otherwise

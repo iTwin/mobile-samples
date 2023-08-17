@@ -86,12 +86,12 @@ class ImageMarker extends Marker {
 
 /** Displays a Marker for a group of images, along with a count badge. */
 class BadgedImageMarker extends ImageMarker {
-  private count = 0;
+  private _count = 0;
   private static activeColor: string;
 
   constructor(location: XYAndZ, size: XAndY, cluster: Cluster<ImageMarker>) {
     super(location, size, cluster.markers[0].url, cluster.markers[0].image!, cluster.markers[0].onClickCallback);
-    this.count = cluster.markers.length;
+    this._count = cluster.markers.length;
     const aspect = this.image!.width / this.image!.height;
     const halfHeight = size.y / 2;
     this.labelOffset = { x: -((halfHeight * aspect) - 5), y: halfHeight - 5 };
@@ -102,11 +102,11 @@ class BadgedImageMarker extends ImageMarker {
   public override drawDecoration(ctx: CanvasRenderingContext2D): void {
     super.drawDecoration(ctx);
 
-    if (this.count !== 0) {
+    if (this._count !== 0) {
       ctx.font = this.labelFont ? this.labelFont : "14px sans-serif";
       ctx.textAlign = "center";
       ctx.textBaseline = "middle";
-      const text = this.count.toString();
+      const text = this._count.toString();
       const metrics = ctx.measureText(text);
       const x = this.labelOffset ? -this.labelOffset.x : 0;
       const y = this.labelOffset ? -this.labelOffset.y : 0;
