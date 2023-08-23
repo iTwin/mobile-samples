@@ -27,6 +27,6 @@ If you want to run the sample, you will need to set up an auth0 account and conf
 1. Follow the instructions in the [Token Server Readme](../../cross-platform/token-server/README.md).
 1. Open the ThirdPartyAuth folder (where this README.md file resides) in Android Studio.
 1. Sync project with gradle files, build, and run.
-1. Hit Log in
+1. Hit Log in.
 1. Select "Sign up" and create an account.
 

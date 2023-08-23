@@ -2,7 +2,7 @@
 
 ## Consistency Across Modules
 
-These samples make use of the iTwin [`mobile-sdk-android`](https://github.com/iTwin/mobile-sdk-android) package (which itself uses the iTwin [`mobile-native-android`](https://github.com/iTwin/mobile-native-android/releases) package), as well as the `@itwin/mobile-sdk-core` and `@itwin/mobile-ui-react` npm modules. In order to work properly, all of these things have to be in sync with each other. When new functionality is added to any of the dependent modules, and that new functionality is used in the samples, the samples won't work until the next official release of the dependent modules. That means that there is a very good chance that the main branch __will not work__ at any given time. To avoid problems when using these samples, you should always check out a release tag.
+These samples make use of the iTwin [`mobile-sdk-android`](https://github.com/iTwin/mobile-sdk-android) package (which itself uses the iTwin [`mobile-native-android`](https://github.com/iTwin/mobile-native-android/releases) package), as well as the `@itwin/mobile-sdk-core` and `@itwin/mobile-ui-react` npm modules. In order to work properly, all of these packages have to be in sync with each other. When new functionality is added to any of the dependent modules, and that new functionality is used in the samples, the samples won't work until the next official release of the dependent modules. That means that there is a very good chance that the main branch __will not work__ at any given time. To avoid problems when using these samples, you should always check out a release tag.
 
 ## Client ID Setup
 
@@ -23,7 +23,7 @@ For the Android samples, you need to create a custom redirect URI for each one t
 
 ## ITMSamples.properties Setup
 
-1. In the `Android/Shared` directory, copy the file `example-ITMSamples` and rename it to `ITMSamples.properties`. You will need to configure `itmapplication.client_id` and `itmapplication.scope`.
+1. In the `Android/Shared` directory, copy the file `example-ITMSamples.properties` and rename the copy to `ITMSamples.properties`. You will need to configure `itmapplication.client_id` and `itmapplication.scope`.
 
     Notes:
 
@@ -62,12 +62,12 @@ Once you have performed the above setup, you can build and run the samples.
 1. Select whatever JDK you want to use.
 1. Wait for Gradle to download all the dependencies.
 1. Run on either a connected Android device, or an appropriate emulator.
-1. If you get an error dialog that says `Could not connect to React debug server.`, the first thing to try is to uncomment the `itm.debug_use_ip=YES` line in ITMSamples.properties.
+1. If you get an error dialog that says `Could not connect to React debug server.`, make sure that your React debug server is running (from the end of the npm setup instructions). If it is, the next thing to try is to uncomment the `itm.debug_use_ip=YES` line in ITMSamples.properties.
 1. Please see [Debugging.md](./Debugging.md) for instructions on debugging.
 
 ## Organization
 
-The iTwinStarter sample app is a simple app that present a full-screen web view. The app UI inside this web view is a React app in the `cross-platform/react-app` directory of this repository.
+The iTwinStarter sample app is a simple app that presents a full-screen web view. The app UI inside this web view is a React app in the `cross-platform/react-app` directory of this repository.
 
 It is recommended that you use Visual Studio Code to edit your TypeScript code. Opening the `react-app` directory itself in Visual Studio code will generally be the most convenient way to do this. If you do this, you can use Ctrl+Shift+B (Cmd+Shift+B on Mac) to start the React debug server, and omit using `npm run start` in a Command Prompt/Terminal window.
 

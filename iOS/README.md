@@ -2,7 +2,7 @@
 
 ## Consistency Across Modules
 
-These samples make use of the [`itwin-mobile-sdk-ios`](https://github.com/iTwin/mobile-sdk-ios) Swift Package (which itself uses the [`itwin-mobile-native-ios`](https://github.com/iTwin/mobile-native-ios/releases) Swift Package), as well as the `@itwin/mobile-sdk-core` and `@itwin/mobile-ui-react` npm modules. In order to work properly, all of these things have to be in sync with each other. When new functionality is added to any of the dependent modules, and that new functionality is used in the samples, the samples won't work until the next official release of the dependent modules. That means that there is a very good chance that the main branch __will not work__ at any given time. To avoid problems when using these samples, you should always check out a release tag.
+These samples make use of the [`itwin-mobile-sdk-ios`](https://github.com/iTwin/mobile-sdk-ios) Swift Package (which itself uses the [`itwin-mobile-native-ios`](https://github.com/iTwin/mobile-native-ios/releases) Swift Package), as well as the `@itwin/mobile-sdk-core` and `@itwin/mobile-ui-react` npm modules. In order to work properly, all of these packages have to be in sync with each other. When new functionality is added to any of the dependent modules, and that new functionality is used in the samples, the samples won't work until the next official release of the dependent modules. That means that there is a very good chance that the main branch __will not work__ at any given time. To avoid problems when using these samples, you should always check out a release tag.
 
 ## Client ID Setup
 
@@ -46,7 +46,7 @@ __Note:__ The samples must currently use Rosetta 2 mode when targeting the iOS S
 1. Select your team from the Team popup menu.
 1. Use `git diff` to see the team ID value that was added to project.pbxproj after the above change, and then set the `DEVELOPMENT_TEAM` value in ITMApplication.xcconfig to contain that value. You can then revert the change to project.pbxproj.
 1. Run.
-1. If you get an error dialog that says `Could not connect to React debug server.`, the first thing to try is to uncomment the `ITMAPPLICATION_USE_IP = YES` line in iOSSamples.xcconfig.
+1. If you get an error dialog that says `Could not connect to React debug server.`, make sure that your React debug server is running (from the end of the npm setup instructions). If it is, the next thing to try is to uncomment the `ITMAPPLICATION_USE_IP = YES` line in iOSSamples.xcconfig.
 1. Once a sample is installed on your device, you can use Finder to copy a Snapshot iModel to the device if you want to open local snapshot models in the sample:
     1. Select your connected device in Finder's left navigation pane.
     1. Select the Files tab.
