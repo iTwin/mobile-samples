@@ -18,5 +18,5 @@ This sample demonstrates using an iTwin service app so that an iTwin Mobile app 
 1. Follow the instructions in the [Token Server Readme](../../cross-platform/token-server/README.md).
 1. Open ThirdPartyAuth.xcodeproj.
 1. Run.
-1. Hit Log in
+1. Hit Log in.
 1. Select "Sign up" and create an account.

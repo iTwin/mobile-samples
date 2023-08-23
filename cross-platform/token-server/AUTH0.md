@@ -1,5 +1,5 @@
 # Auth0 Setup
-If you want to run the ThirdPartyAuth samples, you will need to set up an auth0 account and configure it to work with this sample. However, while these samples use auth0, the 3rd party authentication workflow should work the same with any authentication provider. Specifically:
+If you want to run a ThirdPartyAuth sample, you will need to set up an auth0 account and configure it to work with the sample. However, while these samples use auth0, the 3rd party authentication workflow should work the same with any authentication provider. Specifically:
 
 1. Have the user sign in and get a token.
 1. Automatically refresh this token as needed.

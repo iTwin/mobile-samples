@@ -19,7 +19,7 @@ Next, you must enable remote debugging on your device.
 1. Scroll all the way to the bottom of the Safari settings and select "Advanced".
 1. Turn on the "Web Inspector" switch.
 
-Once you have configured Safari on your Mac and Mobile Safari on your device, you are ready to debug your TypeScript.
+Once you have configured Safari on your Mac and Mobile Safari on your device, you are ready to debug your TypeScript. Note: in iOS 16.4 and later, the `isInspectable` property of the `WKWebView` containing the web app must be set to `true`. This is done automatically in debug builds in `ITMApplication.createEmptyWebView`. If you override `createEmptyWebView` without calling super, or you want to debug a release build, you must set this property to `true` yourself.
 
 1. Launch Safari on your Mac.
 1. Launch your app from Xcode, and make sure it is launched and in the foreground on your device.
@@ -30,13 +30,13 @@ Once you have configured Safari on your Mac and Mobile Safari on your device, yo
 
 This document is not intended to provide in-depth instructions on using the Safari Web Inspector. For that, you'll need to look at the [official documentation](https://webkit.org/web-inspector/), as well as any guides that are available from third parties on the web. However, we will quickly summarize the most frequently used functionality.
 
-Note that the overview below assumes that you are using React for your UI, and that you used something similar to the sample app's index.html (which has a top-level `div` element with an id of `root` into which the React UI renders). Also note that these instructions were created for Safari 15.1. If you have a different version of Safari, there might be minor differences.
+Note that the overview below assumes that you are using React for your UI, and that you used something similar to the sample app's index.html (which has a top-level `div` element with an id of `root` into which the React UI renders). Also note that these instructions were created for Safari 16.5. If you have a different version of Safari, there might be minor differences.
 
 1. Across the top of the Safari Web Inspector are a number of tabs. If you right click on any tab, you should see the list of possible tabs that can be enabled and disabled.
 1. You can click and drag any tab to reorder the tabs.
 1. The Elements tab shows the HTML DOM tree for your running app.
     * The left side of the window should show the DOM tree, while the right side has an inspector pane with informations about the selected DOM node. If you don't see the inspector pane, click the rightmost button in the toolbar just underneath the tab bar at the top of the window.
-    * When you first open this tab, the `html` element of the document should already be expanded, as well as the `body` element, and the `body` element should be selected. If not, you can do that manually.
+    * When you first open this tab, the `html` element of the document should already be expanded, and the `body` element should be selected. If not, you can do that manually. Also, expand the `body` element.
     * Inside the `body` element, you should see a `div` element with an `id` of `root`. This element is the top-level element of the React-based UI. Expand that.
     * Inside that `root` `div` is your React UI. You can navigate it to see all of the elements in your UI.
     * If you want to find a specific element, you can hit Cmd+F to bring up a find UI, then type in a search string.
@@ -53,6 +53,7 @@ Note that the overview below assumes that you are using React for your UI, and t
     * A Console line is visible at the bottom of the screen. You can type JavaScript directly into that console. If you do so (for example typing "document" and hitting enter), the console line will expand to show you the return value of the JavaScript you executed.
 1. The Storage tab shows data stored in Local Storage and Session Storage.
     * If you use the Hub iModels screen on the sample app and select a project, you will see an entry that this process creates in Local Storage.
+    * If you download and open a hub iModel, you will see an entry in Local Store that maps its GUID to its name.
 1. The Network tab shows network traffic that your app makes via the web view. *Note:* Downloading of iModels happens in the backend, and so does not show up here.
 1. The Timelines tab is Safari's profiler.
 1. The Graphics tab shows various graphics-related information.

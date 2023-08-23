@@ -25,7 +25,7 @@ Note that the overview below assumes that you are using React for your UI, and t
 1. The preview area on the left side of the window will show your running app's page contents, but does not display any WebGL content. That means that if you are on a screen that shows an iModel, the iModel itself won't be visible in the preview.
 1. Across the top of the DevTools window are a number of tabs.
 1. The Elements tab shows the HTML DOM tree for your running app.
-    * The left side should show the DOM tree, while the right side has an inspector pane with informations about the selected DOM node.
+    * The left side should show the DOM tree, while the right side has an inspector pane with information about the selected DOM node.
     * When you first open this tab, the `html` element of the document should already be expanded, as well as the `body` element, and the `body` element should be selected. If not, you can do that manually.
     * Inside the `body` element, you should see a `div` element with an `id` of `root`. This element is the top-level element of the React-based UI. Expand that.
     * Inside that `root` `div` is your React UI. You can navigate it to see all of the elements in your UI.
@@ -41,6 +41,7 @@ Note that the overview below assumes that you are using React for your UI, and t
     * If you don't see the Console drawer at the bottom of the screen, you can hit Escape to show it. You can type JavaScript directly into that console. If you do so (for example typing "document" and hitting enter), the console will show you the result of whatever you typed.
 1. The Application tab includes various useful pieces of information, including Local Storage and Session Storage.
     * If you use the Hub iModels screen on the sample app and select a project, you will see an entry that this process creates in Local Storage.
+    * If you download and open a hub iModel, you will see an entry in Local Store that maps its GUID to its name.
 1. The Network tab shows network traffic that your app makes via the web view. *Note:* Downloading of iModels happens in the backend, and so does not show up here.
 1. The Performance tab is a profiler.
 1. The Console tab shows a JavaScript console. At the very bottom is a console command line where you can type JavaScript to have it execute inside your running app. Above that is any console output (including results from JavaScript code that you directly execute).

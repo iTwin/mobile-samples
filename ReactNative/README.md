@@ -1,10 +1,10 @@
 # iTwin Mobile SDK React Native Sample
 
-This React Native sample works like the other [iOS](../iOS/README.md) and [Android](../Android/README.md) samples, with a few differences.
+This React Native sample works like the [iOS](../iOS/README.md) and [Android](../Android/README.md) samples, with a few differences.
 
 ## React Native App NPM Setup
 
-1. You must install node 16 on your computer, and it needs to be the default node found in your path.
+1. You must install node 18 on your computer, and it needs to be the default node found in your path.
 1. Run a Command Prompt/Terminal.
 1. cd into the `ReactNative/iTwinRNStarter` directory of this repository.
 1. Run `npm install`.
