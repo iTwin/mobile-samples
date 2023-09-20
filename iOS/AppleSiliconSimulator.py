@@ -49,14 +49,18 @@ def update_dst_framework(src_path: str, dst_path: str, minios_ver: str, sdk_ver:
     Replace the binary in `dst_path` with the one from `src_path`, updated to be a Simulator build
     with the given `minios_ver` and `sdk_ver`. The destination is then code signed.
     '''
+    print('Updating destination framework to be ARM64 Simulator...\n')
     run_command(
         f'xcrun vtool -arch arm64 -set-build-version 7 {minios_ver} {sdk_ver} -replace -output \'{dst_path}\' \'{src_path}\'',
         'Error updating dst framework!'
     )
+    print('\nDone. NOTE: warning about invalid code signature above is expected and normal.')
+    print('Doing new codesign for updated framework...\n')
     run_command(
         f'xcrun codesign --force --sign - {dst_path}',
         f'Error updating codesign for dst framework!'
     )
+    print('\nDone. NOTE: signature replacement warning above is expected and normal.')
 
 def find_value(dict_node: ET.Element, key: str) -> ET.Element | None:
     '''
