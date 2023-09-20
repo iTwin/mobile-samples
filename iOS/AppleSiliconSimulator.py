@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 import fileinput
 import os
+import shutil
 import subprocess
 import sys
 import xml.etree.ElementTree as ET
@@ -8,6 +9,8 @@ import xml.etree.ElementTree as ET
 '''
 Update an iOS XCFramework that supports device and X86_64 simulator to instead support device an
 ARM64 simulator. This is designed to work with IModelJsNative.xcframework.
+
+Usage: AppleSiliconSimulator.py <Path to xcframework>
 '''
 
 def get_versions(src_path: str) -> tuple[str]:
@@ -40,12 +43,6 @@ def run_command(command: str, error: str | None = None) -> None:
     '''
     if os.system(command) != 0:
         raise Exception(error or f'Error executing command {command}!')
-
-def copy_directory_tree(src: str, dst: str) -> None:
-    '''
-    Copies a directory tree from one place to another.
-    '''
-    run_command(f'rsync -a \'{os.path.dirname(src)}/\' \'{os.path.dirname(dst)}/\'', 'Error copying arm64 framework!')
 
 def update_dst_framework(src_path: str, dst_path: str, minios_ver: str, sdk_ver: str) -> None:
     '''
@@ -160,7 +157,7 @@ def process_xcframework(path: str) -> None:
     dst_path = os.path.join(dst_framework, framework_name)
     minios_ver, sdk_ver = get_versions(src_path)
     if update_info_plist(path):
-        copy_directory_tree(src_framework, dst_framework)
+        shutil.copytree(src_framework, dst_framework)
         update_dst_framework(src_path, dst_path, minios_ver, sdk_ver)
         print(f'{framework_name} updated.')
     else:
@@ -174,7 +171,7 @@ def main() -> None:
         if len(sys.argv) != 2:
             raise Exception('Usage: AppleSiliconSimulator.py <Path to xcframework>')
         process_xcframework(sys.argv[1])
-    except Exception as e:
+    except (Exception, shutil.Error) as e:
         print(e)
         sys.exit(1)
 
