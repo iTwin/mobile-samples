@@ -8,7 +8,7 @@ import xml.etree.ElementTree as ET
 
 '''
 Update an iOS XCFramework that supports device and X86_64 simulator to instead
-support device an ARM64 simulator. This is designed to work with
+support device and ARM64 simulator. This is designed to work with
 IModelJsNative.xcframework.
 
 Usage: AppleSiliconSimulator.py <Path to xcframework>
