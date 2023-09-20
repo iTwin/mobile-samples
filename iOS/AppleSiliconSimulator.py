@@ -7,8 +7,9 @@ import sys
 import xml.etree.ElementTree as ET
 
 '''
-Update an iOS XCFramework that supports device and X86_64 simulator to instead support device an
-ARM64 simulator. This is designed to work with IModelJsNative.xcframework.
+Update an iOS XCFramework that supports device and X86_64 simulator to instead
+support device an ARM64 simulator. This is designed to work with
+IModelJsNative.xcframework.
 
 Usage: AppleSiliconSimulator.py <Path to xcframework>
 '''
@@ -173,7 +174,12 @@ def main() -> None:
     '''
     try:
         if len(sys.argv) != 2:
-            raise Exception('Usage: AppleSiliconSimulator.py <Path to xcframework>')
+            raise Exception(
+'''Update an iOS XCFramework that supports device and X86_64 simulator to instead
+support device an ARM64 simulator. This is designed to work with
+IModelJsNative.xcframework.
+
+Usage: AppleSiliconSimulator.py <Path to xcframework>''')
         process_xcframework(sys.argv[1])
     except (Exception, shutil.Error) as e:
         print(e)
