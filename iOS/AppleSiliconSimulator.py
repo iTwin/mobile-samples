@@ -128,6 +128,7 @@ def update_libraries_array(libraries_array: ET.Element) -> bool:
     for child in supported_archs_node:
         if child.text.strip() == 'x86_64':
             arm64_node = copy.deepcopy(child)
+            child.tail = '\n\t\t\t\t' # Fix indentation of new node
             arm64_node.text = 'arm64'
             supported_archs_node.append(arm64_node)
             return True
