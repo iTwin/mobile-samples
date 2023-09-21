@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+import copy
 import fileinput
 import os
 import shutil
@@ -7,8 +8,8 @@ import sys
 import xml.etree.ElementTree as ET
 
 '''
-Update an iOS XCFramework that supports device and X86_64 simulator to instead
-support device and ARM64 simulator. This is designed to work with
+Update an iOS XCFramework that supports device and X86_64 simulator to also
+support ARM64 simulator. This is designed to work with
 IModelJsNative.xcframework.
 
 Usage: AppleSiliconSimulator.py <Path to xcframework>
@@ -59,9 +60,17 @@ def update_dst_framework(src_path: str, dst_path: str, minios_ver: str, sdk_ver:
     print('Doing new codesign for updated framework...\n')
     run_command(
         f'xcrun codesign --force --sign - {dst_path}',
-        f'Error updating codesign for dst framework!'
+        'Error updating codesign for dst framework!'
     )
     print('\nDone. NOTE: signature replacement warning above is expected and normal.')
+
+def join_frameworks(sim_arm_path: str, sim_intel_path: str, sim_path: str) -> None:
+    print('\nCreating Universal binary from Apple Silicon and Intel Simulator frameworks...')
+    run_command(
+        f'xcrun lipo \'{sim_arm_path}\' \'{sim_intel_path}\' -create -output \'{sim_path}\'',
+        'Error creating universal binary!'
+    )
+    print('Done.')
 
 def find_value(dict_node: ET.Element, key: str) -> ET.Element | None:
     '''
@@ -94,17 +103,17 @@ def get_library_identifier(dict_node: ET.Element) -> str:
 
 def update_libraries_array(libraries_array: ET.Element) -> bool:
     '''
-    Search the `libraries_array` node for the Intel Simulator entry and update it to instead be an
-    Arm64 Simulator entry. Return `True` if an update happens, or `False` if no Intel Simulator
-    entry is found.
+    Search the `libraries_array` node for the Intel Simulator entry, rename it to ios-simulator, and
+    update it to also support the arm64 architecture. Return `True` if an update happens, or `False`
+    if no Intel Simulator entry is found.
     '''
     intel_simulator_index = None
     for index, node in enumerate(libraries_array):
         if node.tag != 'dict':
             raise Exception(f'Found unexpected tag in libraries array: {node.tag}!')
         library_id = get_library_identifier(node)
-        if library_id == 'ios-arm64-simulator':
-            return False # Already have ios-arm64-simulator: no update needed
+        if library_id == 'ios-simulator':
+            return False # Already have ios-simulator: no update needed
         if library_id == 'ios-x86_64-simulator':
             intel_simulator_index = index
     if intel_simulator_index is None:
@@ -112,20 +121,24 @@ def update_libraries_array(libraries_array: ET.Element) -> bool:
     intel_simulator_node = libraries_array[intel_simulator_index]
     arm_node = intel_simulator_node
     library_id_node = find_required_value(arm_node, 'LibraryIdentifier')
-    library_id_node.text = 'ios-arm64-simulator'
+    library_id_node.text = 'ios-simulator'
     supported_archs_node = find_required_value(arm_node, 'SupportedArchitectures')
     if supported_archs_node.tag != 'array':
         raise Exception(f'Found unexpected tag in SupportedArchitectures array: {supported_archs_node.tag}')
     for child in supported_archs_node:
         if child.text.strip() == 'x86_64':
-            child.text = 'arm64'
-    return True
+            arm64_node = copy.deepcopy(child)
+            child.tail = '\n\t\t\t\t' # Fix indentation of new node
+            arm64_node.text = 'arm64'
+            supported_archs_node.append(arm64_node)
+            return True
+    raise Exception("x86_64 architecture not found!")
 
 def update_info_plist(path: str) -> bool:
     '''
-    Update the Info.plist file for the XCFramework referenced by `path` to refer to an Arm64
-    Simulator instead of an Intel Simulator target. Returns `True` if the update was successful, or
-    `False` if the XCFramework has already been updated.
+    Update the Info.plist file for the XCFramework referenced by `path` to have a Simulator entry
+    that supports both Intel and Apple Silicon, instead of just Intel. Returns `True` if the update
+    was successful, or `False` if the XCFramework has already been updated.
     '''
     info_plist_path = os.path.join(path, "Info.plist")
     with open(info_plist_path) as input_file:
@@ -150,23 +163,41 @@ def update_info_plist(path: str) -> bool:
         return True
     return False
 
+def get_paths(path: str, platform: str) -> dict[str]:
+    '''
+    Return a dictionary containing various paths related to the given platform.
+    '''
+    xcframework = os.path.basename(os.path.splitext(path)[0])
+    parent_dir = os.path.join(path, platform)
+    framework = os.path.join(parent_dir, f'{xcframework}.framework')
+    binary = os.path.join(framework, xcframework)
+    return {
+        'xcframework': xcframework,
+        'parent_dir': parent_dir,
+        'framework': framework,
+        'binary': binary
+    }
+
 def process_xcframework(path: str) -> None:
     '''
-    Update the XCFramework referenced by `path` to contain an Arm64 Simulator instead of an Intel
-    Simulator.
+    Update the XCFramework referenced by `path` to support both Apple Silicon and Intel in its
+    simulator, instead of just Intel.
     '''
-    framework_name = os.path.basename(os.path.splitext(path)[0])
-    src_framework = os.path.join(path, 'ios-arm64', f'{framework_name}.framework')
-    src_path = os.path.join(src_framework, framework_name)
-    dst_framework = os.path.join(path, 'ios-arm64-simulator', f'{framework_name}.framework')
-    dst_path = os.path.join(dst_framework, framework_name)
-    minios_ver, sdk_ver = get_versions(src_path)
+    device = get_paths(path, 'ios-arm64')
+    sim_arm = get_paths(path, 'ios-arm64-simulator')
+    sim_intel = get_paths(path, 'ios-x86_64-simulator')
+    sim = get_paths(path, 'ios-simulator')
+    minios_ver, sdk_ver = get_versions(device['binary'])
     if update_info_plist(path):
-        shutil.copytree(src_framework, dst_framework)
-        update_dst_framework(src_path, dst_path, minios_ver, sdk_ver)
-        print(f'{framework_name} updated.')
+        shutil.copytree(device['framework'], sim_arm['framework'])
+        shutil.copytree(device['framework'], sim['framework'])
+        update_dst_framework(device['binary'], sim_arm['binary'], minios_ver, sdk_ver)
+        join_frameworks(sim_arm['binary'], sim_intel['binary'], sim['binary'])
+        shutil.rmtree(sim_arm['parent_dir'])
+        shutil.rmtree(sim_intel['parent_dir'])
+        print(f'{device["xcframework"]} updated.')
     else:
-        raise Exception(f'{framework_name} has already been updated.')
+        raise Exception(f'{device["xcframework"]} has already been updated.')
 
 def main() -> None:
     '''
@@ -175,8 +206,8 @@ def main() -> None:
     try:
         if len(sys.argv) != 2:
             raise Exception(
-'''Update an iOS XCFramework that supports device and X86_64 simulator to instead
-support device and ARM64 simulator. This is designed to work with
+'''Update an iOS XCFramework that supports device and X86_64 simulator to also
+support ARM64 simulator. This is designed to work with
 IModelJsNative.xcframework.
 
 Usage: AppleSiliconSimulator.py <Path to xcframework>''')
