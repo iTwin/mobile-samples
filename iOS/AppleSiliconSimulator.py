@@ -164,6 +164,9 @@ def update_info_plist(path: str) -> bool:
     return False
 
 def get_paths(path: str, platform: str) -> dict[str]:
+    '''
+    Return a dictionary containing various paths related to the given platform.
+    '''
     xcframework = os.path.basename(os.path.splitext(path)[0])
     parent_dir = os.path.join(path, platform)
     framework = os.path.join(parent_dir, f'{xcframework}.framework')
