@@ -163,33 +163,38 @@ def update_info_plist(path: str) -> bool:
         return True
     return False
 
+def get_paths(path: str, platform: str) -> dict[str]:
+    xcframework = os.path.basename(os.path.splitext(path)[0])
+    parent_dir = os.path.join(path, platform)
+    framework = os.path.join(parent_dir, f'{xcframework}.framework')
+    binary = os.path.join(framework, xcframework)
+    return {
+        'xcframework': xcframework,
+        'parent_dir': parent_dir,
+        'framework': framework,
+        'binary': binary
+    }
+
 def process_xcframework(path: str) -> None:
     '''
     Update the XCFramework referenced by `path` to support both Apple Silicon and Intel in its
     simulator, instead of just Intel.
     '''
-    framework_name = os.path.basename(os.path.splitext(path)[0])
-    device_framework = os.path.join(path, 'ios-arm64', f'{framework_name}.framework')
-    device_path = os.path.join(device_framework, framework_name)
-    sim_framework = os.path.join(path, 'ios-simulator', f'{framework_name}.framework')
-    sim_path = os.path.join(sim_framework, framework_name)
-    sim_arm_parent = os.path.join(path, 'ios-arm64-simulator')
-    sim_arm_framework = os.path.join(sim_arm_parent, f'{framework_name}.framework')
-    sim_arm_path = os.path.join(sim_arm_framework, framework_name)
-    sim_intel_parent = os.path.join(path, 'ios-x86_64-simulator')
-    sim_intel_framework = os.path.join(sim_intel_parent, f'{framework_name}.framework')
-    sim_intel_path = os.path.join(sim_intel_framework, framework_name)
-    minios_ver, sdk_ver = get_versions(device_path)
+    device = get_paths(path, 'ios-arm64')
+    sim_arm = get_paths(path, 'ios-arm64-simulator')
+    sim_intel = get_paths(path, 'ios-x86_64-simulator')
+    sim = get_paths(path, 'ios-simulator')
+    minios_ver, sdk_ver = get_versions(device['binary'])
     if update_info_plist(path):
-        shutil.copytree(device_framework, sim_arm_framework)
-        shutil.copytree(device_framework, sim_framework)
-        update_dst_framework(device_path, sim_arm_path, minios_ver, sdk_ver)
-        join_frameworks(sim_arm_path, sim_intel_path, sim_path)
-        shutil.rmtree(sim_arm_parent)
-        shutil.rmtree(sim_intel_parent)
-        print(f'{framework_name} updated.')
+        shutil.copytree(device['framework'], sim_arm['framework'])
+        shutil.copytree(device['framework'], sim['framework'])
+        update_dst_framework(device['binary'], sim_arm['binary'], minios_ver, sdk_ver)
+        join_frameworks(sim_arm['binary'], sim_intel['binary'], sim['binary'])
+        shutil.rmtree(sim_arm['parent_dir'])
+        shutil.rmtree(sim_intel['parent_dir'])
+        print(f'{device["xcframework"]} updated.')
     else:
-        raise Exception(f'{framework_name} has already been updated.')
+        raise Exception(f'{device["xcframework"]} has already been updated.')
 
 def main() -> None:
     '''
