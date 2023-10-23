@@ -18,6 +18,7 @@ class ModelApplication: ITMApplication {
     required init() {
         super.init()
 
+        geolocationManager.setLastLocationTimeThreshold(3.0)
         setupStartupTimer()
 
         ITMMessenger.addUnloggedQueryType("loading")
