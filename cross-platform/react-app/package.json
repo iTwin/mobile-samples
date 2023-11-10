@@ -84,7 +84,7 @@
     "@itwin/presentation-frontend": "4.2.1",
     "@itwin/webgl-compatibility": "4.2.1",
     "@react-hook/resize-observer": "^1.2.6",
-    "axios": "^0.25.0",
+    "axios": "^1.6.0",
     "base64-js": "^1.5.1",
     "classnames": "^2.2.6",
     "js-base64": "^3.7.2",
