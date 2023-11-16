@@ -2,7 +2,7 @@
 
 This React Native sample works like the [iOS](../iOS/README.md) and [Android](../Android/README.md) samples, with a few differences.
 
-> ⚠️ Warning
+> **Warning**
 >
 > This sample is designed to show you how to use the iTwin Mobile SDK in a React Native app. However, unlike the iOS and Android samples, it is strongly recommended that you __do not__ use this sample as a basis for a new app. In addition to increasing the download size of your app, React Native has its own JavaScript runtime that is completely separate from the iTwin.js JavaScript runtime. Both runtimes consume significant memory, so we only recommend this approach when adding iTwin.js to an existing non-trivial React Native app. For apps that just present a full-screen web view to the user into which the iTwin-based web app is loaded, React Native does not provide much benefit.
 
