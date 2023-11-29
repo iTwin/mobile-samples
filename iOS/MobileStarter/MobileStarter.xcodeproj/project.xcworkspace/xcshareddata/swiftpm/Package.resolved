@@ -23,8 +23,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/iTwin/mobile-native-ios",
       "state" : {
-        "revision" : "2f6675d9b997e3f8fdad1aec31c175e15a4f61b6",
-        "version" : "4.2.10"
+        "revision" : "c864c841f94fa50e2c354344a123bd8785f7893b",
+        "version" : "4.2.11"
       }
     },
     {
@@ -32,8 +32,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/iTwin/mobile-sdk-ios.git",
       "state" : {
-        "revision" : "0183d3ac0ca956086fe2d3127e415e3a980942ac",
-        "version" : "0.21.0"
+        "revision" : "2e122dc71ab180b8607da0dd5874823466677391",
+        "version" : "0.21.1"
       }
     },
     {
