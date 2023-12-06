@@ -36,3 +36,9 @@ task copyITMAssets {
             copyDirectory(Paths.get(entry.key), Paths.get(entry.value))
     }
 }
+
+task cleanITMAssets {
+    def assetsDir = "${rootDir}/app/src/main/assets/ITMApplication"
+    println "assetsDir ${new File(assetsDir).canonicalPath}"
+    project.delete(files(assetsDir))
+}
