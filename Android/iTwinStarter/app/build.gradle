@@ -53,3 +53,4 @@ dependencies {
 }
 
 preBuild.dependsOn(":itmsamplesshared:genITMAppConfig", ":itmsamplesshared:copyITMAssets")
+clean.dependsOn(":itmsamplesshared:cleanITMAssets")

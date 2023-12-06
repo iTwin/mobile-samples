@@ -19,14 +19,16 @@ static def copyDirectory(srcDir, destDir) {
 task copyITMAssets {
     doLast {
         def reactAppDir = "${projectDir}/../../cross-platform/react-app"
-        println "reactAppDir ${new File(reactAppDir).canonicalPath}"
+        println "Copying assets."
+        println "reactAppDir: ${new File(reactAppDir).canonicalPath}"
         def assetsDir = "${rootDir}/app/src/main/assets/ITMApplication"
-        println "assetsDir ${new File(assetsDir).canonicalPath}"
+        println "assetsDir: ${new File(assetsDir).canonicalPath}"
 
         Map foldersToCopy = [
             "${reactAppDir}/build": "${assetsDir}/frontend",
             "${reactAppDir}/lib/webpack": "${assetsDir}/backend",
             "${reactAppDir}/assets": "${assetsDir}/backend/assets",
+            "${reactAppDir}/node_modules/@itwin/core-backend/lib/cjs/assets": "${assetsDir}/backend/assets",
             "${reactAppDir}/node_modules/@itwin/presentation-backend/lib/cjs/assets/supplemental-presentation-rules": "${assetsDir}/backend/assets/supplemental_presentation_rules",
             "${reactAppDir}/node_modules/@itwin/presentation-common/lib/cjs/assets/locales": "${assetsDir}/backend/assets/locales"
         ]
@@ -34,4 +36,11 @@ task copyITMAssets {
         for (def entry in foldersToCopy)
             copyDirectory(Paths.get(entry.key), Paths.get(entry.value))
     }
+}
+
+task cleanITMAssets {
+    def assetsDir = "${rootDir}/app/src/main/assets/ITMApplication"
+    println "Cleaning assets."
+    println "assetsDir: ${new File(assetsDir).canonicalPath}"
+    project.delete(files(assetsDir))
 }
