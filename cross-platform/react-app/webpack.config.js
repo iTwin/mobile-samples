@@ -42,6 +42,13 @@ function getConfig(env) {
     },
     target: "node",
     devtool: devMode ? "cheap-module-source-map" : undefined,
+    // WebPack defaults to using the esm version of json5. The alias below forces it to use cjs.
+    // See: https://github.com/json5/json5/issues/240
+    resolve: {
+      alias: {
+        json5: 'json5/lib/index.js',
+      }
+    },
     // The module rules below cause it to skip certain things. These are things that we
     // don't really use, but trigger exceptions at run-time in their startup
     // initialization.
