@@ -19,9 +19,10 @@ static def copyDirectory(srcDir, destDir) {
 task copyITMAssets {
     doLast {
         def reactAppDir = "${projectDir}/../../cross-platform/react-app"
-        println "reactAppDir ${new File(reactAppDir).canonicalPath}"
+        println "Copying assets."
+        println "reactAppDir: ${new File(reactAppDir).canonicalPath}"
         def assetsDir = "${rootDir}/app/src/main/assets/ITMApplication"
-        println "assetsDir ${new File(assetsDir).canonicalPath}"
+        println "assetsDir: ${new File(assetsDir).canonicalPath}"
 
         Map foldersToCopy = [
             "${reactAppDir}/build": "${assetsDir}/frontend",
@@ -39,6 +40,7 @@ task copyITMAssets {
 
 task cleanITMAssets {
     def assetsDir = "${rootDir}/app/src/main/assets/ITMApplication"
-    println "assetsDir ${new File(assetsDir).canonicalPath}"
+    println "Cleaning assets."
+    println "assetsDir: ${new File(assetsDir).canonicalPath}"
     project.delete(files(assetsDir))
 }
