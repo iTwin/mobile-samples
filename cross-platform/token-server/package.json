@@ -20,7 +20,7 @@
     "url": "http://www.bentley.com"
   },
   "dependencies": {
-    "@itwin/express-server": "4.2.4",
+    "@itwin/express-server": "4.3.0",
     "@itwin/service-authorization": "1.0.3",
     "axios": "^1.6.0",
     "dotenv": "^8.2.0",
@@ -31,11 +31,11 @@
     "jsonwebtoken": "^9.0.0"
   },
   "devDependencies": {
-    "@itwin/core-backend": "4.2.4",
-    "@itwin/core-bentley": "4.2.4",
-    "@itwin/core-common": "4.2.4",
-    "@itwin/core-geometry": "4.2.4",
-    "@itwin/ecschema-metadata": "4.2.4",
+    "@itwin/core-backend": "4.3.0",
+    "@itwin/core-bentley": "4.3.0",
+    "@itwin/core-common": "4.3.0",
+    "@itwin/core-geometry": "4.3.0",
+    "@itwin/ecschema-metadata": "4.3.0",
     "@types/axios": "^0.14.0",
     "@types/dotenv-flow": "^3.1.0",
     "@types/express": "^4.17.9",

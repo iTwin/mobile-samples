@@ -29,7 +29,6 @@ task copyITMAssets {
             "${reactAppDir}/lib/webpack": "${assetsDir}/backend",
             "${reactAppDir}/assets": "${assetsDir}/backend/assets",
             "${reactAppDir}/node_modules/@itwin/core-backend/lib/cjs/assets": "${assetsDir}/backend/assets",
-            "${reactAppDir}/node_modules/@itwin/presentation-backend/lib/cjs/assets/supplemental-presentation-rules": "${assetsDir}/backend/assets/supplemental_presentation_rules",
             "${reactAppDir}/node_modules/@itwin/presentation-common/lib/cjs/assets/locales": "${assetsDir}/backend/assets/locales"
         ]
 

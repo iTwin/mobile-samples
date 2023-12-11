@@ -27,7 +27,6 @@ rsync -aL --delete "${reactAppDir}/assets/" "$AppBundleRoot/$WebAppDir/backend/a
 [ -d "$AppBundleRoot/$WebAppDir/backend/assets" ] || mkdir -p "$AppBundleRoot/$WebAppDir/backend/assets"
 rsync -aL "${reactAppDir}/node_modules/@itwin/core-backend/lib/cjs/assets/" "$AppBundleRoot/$WebAppDir/backend/assets/"
 rsync -aL --delete "${reactAppDir}/node_modules/@itwin/presentation-common/lib/cjs/assets/locales/" "$AppBundleRoot/$WebAppDir/backend/assets/locales/"
-rsync -aL --delete "${reactAppDir}/node_modules/@itwin/presentation-backend/lib/cjs/assets/supplemental-presentation-rules/" "$AppBundleRoot/$WebAppDir/backend/assets/supplemental_presentation_rules/"
 
 rsync -aL "${reactAppDir}/ITMAppConfig.json" "$AppBundleRoot/$WebAppDir/"
 # if [ -f "${reactAppDir}/ITMAppConfig.json" ]; then
