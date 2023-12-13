@@ -44,7 +44,7 @@ class ModelApplication: ITMApplication {
             self.performSampleActions()
         }
         registerQueryHandler("loading") {
-            self.webView.isHidden = false
+            self.dormant = false
             self.startupTimer.addCheckpoint(name: "Webview load")
         }
         registerQueryHandler("reload") {
