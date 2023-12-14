@@ -4,14 +4,15 @@
 *--------------------------------------------------------------------------------------------*/
 import React from "react";
 import { MobileApp, MobileAppOpts } from "@itwin/core-mobile/lib/cjs/MobileFrontend";
-import { IModelApp, IModelConnection, ITWINJS_CORE_VERSION, NativeApp, RenderSystem, SnapshotConnection, ToolAssistanceInstructions } from "@itwin/core-frontend";
+import { IModelApp, IModelConnection, IpcApp, ITWINJS_CORE_VERSION, NativeApp, RenderSystem, SnapshotConnection, ToolAssistanceInstructions } from "@itwin/core-frontend";
 import { AppNotificationManager, UiFramework } from "@itwin/appui-react";
 import { Presentation } from "@itwin/presentation-frontend";
+import { BentleyError, LogFunction, Logger, LoggingMetaData, LogLevel } from "@itwin/core-bentley";
 import { Messenger, MobileCore } from "@itwin/mobile-sdk-core";
 import { MobileUi, ToolAssistanceSuggestion } from "@itwin/mobile-ui-react";
 import { MeasureTools, FeatureTracking as MeasureToolsFeatureTracking } from "@itwin/measure-tools-react";
 import { ActiveScreen, HomeScreen, HubScreen, LoadingScreen, LocalModelsScreen, ModelScreen, ModelScreenExtensionProps, presentError } from "./Exports";
-import { getSupportedRpcs } from "../common/rpcs";
+import { BackendLogParams, getSupportedRpcs } from "../common/rpcs";
 import "./App.scss";
 
 declare global {
@@ -96,6 +97,50 @@ function getRenderSysOptions(): RenderSystem.Options | undefined {
 }
 
 /**
+ * Add a listener that receives "backend-log" messages from the backend and forwards them to the
+ * corresponding `Logger` functions. Also sends a "frontend-listening" message to the backend to
+ * let it know that we are listening.
+ */
+function forwardBackendLogsToLogger() {
+  IpcApp.addListener("backend-log", (_evt: Event, data: BackendLogParams) => {
+    switch (data.level) {
+      case LogLevel.Error:
+        Logger.logError(data.category, data.message, data.metaData);
+        break;
+      case LogLevel.Info:
+        Logger.logInfo(data.category, data.message, data.metaData);
+        break;
+      case LogLevel.Trace:
+        Logger.logTrace(data.category, data.message, data.metaData);
+        break;
+      case LogLevel.Warning:
+        Logger.logWarning(data.category, data.message, data.metaData);
+        break;
+    }
+  });
+  IpcApp.send("frontend-listening");
+}
+
+/**
+ * Initialize `Logger`-based logging.
+ */
+function initializeLogging() {
+  const getLogFunction = (level: LogLevel): LogFunction => {
+    return (category: string, message: string, metaData?: LoggingMetaData): void => {
+      Messenger.sendMessage("log", {
+        level: LogLevel[level],
+        category,
+        message,
+        metaData: BentleyError.getMetaData(metaData),
+      });
+    };
+  };
+  Logger.initialize(getLogFunction(LogLevel.Error), getLogFunction(LogLevel.Warning), getLogFunction(LogLevel.Info), getLogFunction(LogLevel.Trace));
+  Logger.setLevelDefault(LogLevel.Warning);
+  forwardBackendLogsToLogger();
+}
+
+/**
  * React hook that returns an object containing all of the import app state.
  *
  * This is present to allow for specific samples (like the camera sample) to perform more
@@ -146,6 +191,7 @@ function useAppState(onInitialize?: () => Promise<void>) {
           },
         };
         await MobileApp.startup(opts);
+        initializeLogging();
         await UiFramework.initialize(undefined);
         await Presentation.initialize();
         await MobileUi.initialize(IModelApp.localization);

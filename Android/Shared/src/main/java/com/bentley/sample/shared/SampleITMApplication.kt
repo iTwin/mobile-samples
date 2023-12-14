@@ -90,6 +90,24 @@ open class SampleITMApplication(context: Context, attachWebViewLogger: Boolean, 
         coMessenger.registerMessageHandler("firstRenderFinished") {
             logger.log(ITMLogger.Severity.Debug, "Received firstRenderFinished")
         }
+        coMessenger.registerMessageHandler("log") { params: Map<String, Any> ->
+            val level = params.getOptionalString("level")
+            val category = params.getOptionalString("category")
+            val message = params.getOptionalString("message")
+            if (level != null && category != null && message != null) {
+                val severity = when (level) {
+                    "Trace" -> ITMLogger.Severity.Trace
+                    "Info" -> ITMLogger.Severity.Info
+                    "Warning" -> ITMLogger.Severity.Warning
+                    else -> ITMLogger.Severity.Error
+                }
+                var metaDataString = ""
+                params["metaData"]?.let { metaData ->
+                    metaDataString = " | $metaData"
+                }
+                logger.log(severity, "| $category | $message$metaDataString")
+            }
+        }
     }
 
     /**
