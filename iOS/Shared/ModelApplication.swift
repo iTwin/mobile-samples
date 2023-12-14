@@ -70,6 +70,28 @@ class ModelApplication: ITMApplication {
         registerQueryHandler("firstRenderFinished") { () -> Void in
             Self.logger.log(.debug, "Received firstRenderFinished")
         }
+        registerQueryHandler("log") { (params: [String: Any]) -> Void in
+            guard let level = params["level"] as? String,
+                  let category = params["category"] as? String,
+                  let message = params["message"] as? String else {
+                return
+            }
+            let severity: ITMLogger.Severity = switch level {
+            case "Trace":
+                .trace
+            case "Info":
+                .info
+            case "Warning":
+                .warning
+            default:
+                .error
+            }
+            var metaDataString = ""
+            if let metaData = params["metaData"] {
+                metaDataString = "| metaData: \(self.itmMessenger.jsonString(metaData))"
+            }
+            Self.logger.log(severity, "| \(category) | \(message)\(metaDataString)")
+        }
     }
 
     /// Finish recording startup times

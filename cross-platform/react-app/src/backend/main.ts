@@ -6,7 +6,7 @@ import * as path from "path";
 import { Presentation } from "@itwin/presentation-backend";
 import { LogFunction, Logger, LoggingMetaData, LogLevel } from "@itwin/core-bentley";
 import { MobileHost, MobileHostOpts } from "@itwin/core-mobile/lib/cjs/MobileBackend";
-import { getSupportedRpcs } from "../common/rpcs";
+import { BackendLogParams, getSupportedRpcs } from "../common/rpcs";
 import { IModelHostConfiguration, IpcHost } from "@itwin/core-backend";
 import { BackendIModelsAccess } from "@itwin/imodels-access-backend";
 import { IModelsClient } from "@itwin/imodels-client-authoring";
@@ -14,6 +14,9 @@ import { IModelsClient } from "@itwin/imodels-client-authoring";
 // This is the file that generates main.js, which is loaded by the backend into a Google V8 JavaScript
 // engine instance that is running for node.js. This code runs when the iTwin Mobile backend is
 // initialized from the native code.
+
+const logQueue: BackendLogParams[] = [];
+let frontendListening = false;
 
 void (async () => {
   // Initialize logging
@@ -46,7 +49,36 @@ void (async () => {
   const rpcs = getSupportedRpcs();
   // Do initialize
   init(rpcs);
+  IpcHost.addListener("frontend-listening", () => {
+    frontendListening = true;
+  });
+  MobileHost.onConnected.addListener(() => {
+    setTimeout(() => {
+      processLogQueue();
+    }, 10);
+  });
 })();
+
+function processLogQueue() {
+  if (!frontendListening && logQueue.length > 0) {
+    setTimeout(() => {
+      processLogQueue();
+    }, 100);
+    return;
+  }
+  while (logQueue.length > 0) {
+    const params = logQueue.shift()!;
+    try {
+      // NOTE: Until iTwin 4.4 is released, the following will CRASH the app instead of throwing an
+      // exception if the backend is not connected to the frontend. Unfortunately, there is also no
+      // way to know if the connection is alive.
+      IpcHost.send("backend-log", params);
+    } catch (_ex) {
+      logQueue.unshift(params);
+      break;
+    }
+  }
+}
 
 function redirectLoggingToFrontend(this: any): void {
   const getLogFunction = (level: LogLevel): LogFunction => {
@@ -65,7 +97,8 @@ function redirectLoggingToFrontend(this: any): void {
           metaData = getMetaData;
         }
       }
-      IpcHost.send("backend-log", { level, category, message, metaData });
+      logQueue.push({ level, category, message, metaData });
+      processLogQueue();
     };
   };
   Logger.initialize(getLogFunction(LogLevel.Error), getLogFunction(LogLevel.Warning), getLogFunction(LogLevel.Info), getLogFunction(LogLevel.Trace));
