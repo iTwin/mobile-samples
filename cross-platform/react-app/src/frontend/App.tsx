@@ -135,7 +135,6 @@ function initializeLogging() {
       });
     };
   };
-  Logger.initializeToConsole();
   Logger.initialize(getLogFunction(LogLevel.Error), getLogFunction(LogLevel.Warning), getLogFunction(LogLevel.Info), getLogFunction(LogLevel.Trace));
   Logger.setLevelDefault(LogLevel.Warning);
   forwardBackendLogsToLogger();
