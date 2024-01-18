@@ -4,19 +4,10 @@
 1. Go to <https://developer.bentley.com/my-apps/>.
 1. Click the "Register New" button.
 1. Pick a name.
-1. Check the check boxes next to "Visualization", "Administration", and "Digital Twin Management".
-1. Remove the following scopes by selecting the X next to them:
+1. Select "Visualization", "Users", "iModels", and "iTwins" under "API Associations".
+1. Under "Manage scopes", select the following to disable them:
     * itwins:modify
-    * projects:modify
-    * users:read
-    * sensor-data:read
-    * sensor-data:modify
     * imodels:modify
-    * storage:modify
-    * storage:read
-    * library:read
-    * library:modify
-    * realitydata:modify
 1. Finish with the steps below from _either_ the __OIDC application__ section _or_ the __Service application__ section.
 
 ## OIDC application
@@ -39,3 +30,5 @@ Continuing from __Client ID Setup__ above, follow these steps if you are creatin
     > __Note:__ You will see a warning that there is no way to get the secret again, due to it not being stored. This is accurate, but if you do lose your secret, you can generate a new one on your application's page.
 1. Dismiss the box.
 1. Your app page will show, which includes your Client ID and Scopes.
+
+__Note:__ In order for your new service to have access to an iTwin, it must be invited. That works via a special email address that is generated for each service: `<Client ID>@apps.imsoidc.bentley.com`. Make sure to invite this email address to your iTwin.
