@@ -1,5 +1,10 @@
+/*---------------------------------------------------------------------------------------------
+* Copyright (c) Bentley Systems, Incorporated. All rights reserved.
+* See LICENSE.md in the project root for license terms and full copyright notice.
+*--------------------------------------------------------------------------------------------*/
 import { Messenger } from "@itwin/mobile-sdk-core";
 import { ImageMarkerApi } from "../Exports";
+import { presentError } from "../../Exports";
 
 /**
  * Helper class for dealing with native messages relating to the image cache.
@@ -58,6 +63,10 @@ export class ImageCache {
    * @returns A void Promise that completes when the share dialog is displayed.
    */
   public static async shareImages(urls: string[], sourceRect?: DOMRect): Promise<void> {
-    return Messenger.query("shareImages", { urls, sourceRect });
+    try {
+      return await Messenger.query("shareImages", { urls, sourceRect });
+    } catch (error) {
+      presentError("ShareErrorFormat", error, "ImageCache");
+    }
   }
 }

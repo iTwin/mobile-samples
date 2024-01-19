@@ -104,5 +104,8 @@
     "SectionByShape": "Section by Shape",
     "ClearSection": "Clear Section",
     "Walk": "Walk"
+  },
+  "ImageCache": {
+    "ShareErrorFormat": "Error sharing:\n{{- error}}"
   }
 }
