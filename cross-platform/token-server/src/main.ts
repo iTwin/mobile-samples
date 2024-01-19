@@ -26,7 +26,7 @@ import { ServiceAuthorizationClient } from "@itwin/service-authorization";
     const authClient = new ServiceAuthorizationClient({
       clientId,
       clientSecret,
-      scope: process.env.ITM_TOKEN_SERVER_SCOPE ?? "itwinjs imodelaccess:read realitydata:read imodels:read projects:read",
+      scope: process.env.ITM_TOKEN_SERVER_SCOPE ?? "itwinjs imodels:read users:read itwins:read",
       authority: process.env.ITM_TOKEN_SERVER_AUTHORITY,
     });
 
