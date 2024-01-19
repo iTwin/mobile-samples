@@ -34,12 +34,10 @@ class ImageCache {
     /// This is a handler for the `'deleteAllImages'` query.
     /// - Parameter params: Requires an `iModelId` property to specify which iModel to delete images for.
     static func handleDeleteAllImages(params: [String: Any]) {
-        guard let iModelId = params["iModelId"] as? String, let dirURL = baseURL?.appendingPathComponent(iModelId) else {
-            return
+        if let iModelId = params["iModelId"] as? String, let dirURL = baseURL?.appendingPathComponent(iModelId) {
+            // Delete the image cache directory for the given iModel.
+            try? FileManager.default.removeItem(at: dirURL)
         }
-        // Delete the image cache directory for the given iModel.
-        let fm = FileManager.default
-        try? fm.removeItem(at: dirURL)
     }
     
     /// Create a `URL` from the given string, encoding using percent encoding where needed.
@@ -48,19 +46,14 @@ class ImageCache {
     static func URL(string urlString: String) -> URL? {
         // Prior to iOS 17, URL(string:) failed for strings with invalid characters (including
         // spaces). URLComponents(string:) automatically percent-encodes such characters.
-        guard let components = URLComponents(string: urlString), let url = components.url else {
-            return nil
-        }
-        return url
+        return URLComponents(string: urlString)?.url
     }
 
     /// Delete the image referenced by the given image cache URL.
     /// - Parameter urlString: URL using camera sample's custom URL scheme to reference a cached image to be deleted.
     private static func deleteImage(urlString: String) {
         if let fileURL = getFileURL(URL(string: urlString)) {
-            do {
-                try FileManager.default.removeItem(at: fileURL)
-            } catch {}
+            try? FileManager.default.removeItem(at: fileURL)
         }
     }
     
@@ -82,27 +75,26 @@ class ImageCache {
     /// - Parameter cacheURL: The image cache URL to convert.
     /// - Returns: Upon success, a file URL that corresponds to the file referenced by the image cache URL, otherwise nil.
     static func getFileURL(_ cacheURL: URL?) -> URL? {
-        guard let cacheURL = cacheURL, let scheme = cacheURL.scheme else {
+        guard 
+            let baseURLString = ImageCache.baseURL?.absoluteString,
+            let cacheURL = cacheURL,
+            let scheme = cacheURL.scheme
+        else {
             return nil
         }
-        if let baseURLString = ImageCache.baseURL?.absoluteString {
-            // Note: The "+ 3" below is for the "://" after the scheme.
-            let cachePath = String(cacheURL.absoluteString.dropFirst(scheme.count + 3))
-            return URL(string: "\(baseURLString)\(cachePath)")
-        }
-        return nil
+        // Note: The "+ 3" below is for the "://" after the scheme.
+        let cachePath = String(cacheURL.absoluteString.dropFirst(scheme.count + 3))
+        return URL(string: "\(baseURLString)\(cachePath)")
     }
 
     /// The baseURL to use to store images.
     static var baseURL: URL? {
         get {
-            guard let cachesDir = try? FileManager.default.url(for: .cachesDirectory,
-                                                               in: .userDomainMask,
-                                                               appropriateFor: nil,
-                                                               create: true) else {
-                return nil
-            }
-            return cachesDir.appendingPathComponent("images")
+            let cachesDir = try? FileManager.default.url(for: .cachesDirectory,
+                                                        in: .userDomainMask,
+                                                        appropriateFor: nil,
+                                                        create: true)
+            return cachesDir?.appendingPathComponent("images")
         }
     }
     
