@@ -91,9 +91,9 @@ class ImageCache {
     static var baseURL: URL? {
         get {
             let cachesDir = try? FileManager.default.url(for: .cachesDirectory,
-                                                        in: .userDomainMask,
-                                                        appropriateFor: nil,
-                                                        create: true)
+                                                         in: .userDomainMask,
+                                                         appropriateFor: nil,
+                                                         create: true)
             return cachesDir?.appendingPathComponent("images")
         }
     }
