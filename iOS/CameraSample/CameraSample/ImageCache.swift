@@ -21,10 +21,9 @@ class ImageCache {
         var results: [String] = []
         // The prefix is an image cache URL pointing to the directory for this iModel.
         let prefix = "\(ImageCacheSchemeHandler.urlScheme)://\(iModelId)/"
-        if let allURLs = try? fm.contentsOfDirectory(at: dirURL, includingPropertiesForKeys: nil) {
+        if let allURLs = try? fm.contentsOfDirectory(at: dirURL, includingPropertiesForKeys: [.pathKey]) {
             for url in allURLs {
-                let urlString = NSString(string: url.absoluteString)
-                results.append("\(prefix)\(urlString.lastPathComponent)")
+                results.append("\(prefix)\(url.lastPathComponent)")
             }
         }
         return results
@@ -35,27 +34,26 @@ class ImageCache {
     /// This is a handler for the `'deleteAllImages'` query.
     /// - Parameter params: Requires an `iModelId` property to specify which iModel to delete images for.
     static func handleDeleteAllImages(params: [String: Any]) {
-        guard let iModelId = params["iModelId"] as? String, let dirURL = baseURL?.appendingPathComponent(iModelId) else {
-            return
-        }
-        // Delete all the files in the image cache directory for the given iModel.
-        let fm = FileManager.default
-        if let allURLs = try? fm.contentsOfDirectory(at: dirURL, includingPropertiesForKeys: nil) {
-            for url in allURLs {
-                do {
-                    try fm.removeItem(at: url)
-                } catch {}
-            }
+        if let iModelId = params["iModelId"] as? String, let dirURL = baseURL?.appendingPathComponent(iModelId) {
+            // Delete the image cache directory for the given iModel.
+            try? FileManager.default.removeItem(at: dirURL)
         }
     }
     
+    /// Create a `URL` from the given string, encoding using percent encoding where needed.
+    /// - Parameter urlString: The string to convert to a `URL`.
+    /// - Returns: A `URL` for the given string, or `nil` if there is an error.
+    static func URL(string urlString: String) -> URL? {
+        // Prior to iOS 17, URL(string:) failed for strings with invalid characters (including
+        // spaces). URLComponents(string:) automatically percent-encodes such characters.
+        return URLComponents(string: urlString)?.url
+    }
+
     /// Delete the image referenced by the given image cache URL.
     /// - Parameter urlString: URL using camera sample's custom URL scheme to reference a cached image to be deleted.
     private static func deleteImage(urlString: String) {
-        if let fileUrl = getFileUrl(URL(string: urlString)) {
-            do {
-                try FileManager.default.removeItem(at: fileUrl)
-            } catch {}
+        if let fileURL = getFileURL(URL(string: urlString)) {
+            try? FileManager.default.removeItem(at: fileURL)
         }
     }
     
@@ -74,30 +72,29 @@ class ImageCache {
     }
     
     /// Convert an image cache URL into a file URL.
-    /// - Parameter cacheUrl: The image cache URL to convert.
+    /// - Parameter cacheURL: The image cache URL to convert.
     /// - Returns: Upon success, a file URL that corresponds to the file referenced by the image cache URL, otherwise nil.
-    static func getFileUrl(_ cacheUrl: URL?) -> URL? {
-        guard let cacheUrl = cacheUrl, let scheme = cacheUrl.scheme else {
+    static func getFileURL(_ cacheURL: URL?) -> URL? {
+        guard 
+            let baseURLString = ImageCache.baseURL?.absoluteString,
+            let cacheURL = cacheURL,
+            let scheme = cacheURL.scheme
+        else {
             return nil
         }
-        let urlString = cacheUrl.absoluteString
-        // I hate to say it, but Swift ROYALLY messed up substrings. This is totally inexcusable
-        // garbage syntax in place of the now-deprecated clean and obvious substring(from:).
-        let index = urlString.index(urlString.startIndex, offsetBy: scheme.count + 3)
-        let cachePath = String(urlString[index...])
-        if let baseURLString = ImageCache.baseURL?.absoluteString {
-            return URL(string: "\(baseURLString)\(cachePath)")
-        }
-        return nil
+        // Note: The "+ 3" below is for the "://" after the scheme.
+        let cachePath = String(cacheURL.absoluteString.dropFirst(scheme.count + 3))
+        return URL(string: "\(baseURLString)\(cachePath)")
     }
 
     /// The baseURL to use to store images.
     static var baseURL: URL? {
         get {
-            guard let cachesDir = FileManager.default.urls(for: .cachesDirectory, in: .userDomainMask).last else {
-                return nil
-            }
-            return cachesDir.appendingPathComponent("images")
+            let cachesDir = try? FileManager.default.url(for: .cachesDirectory,
+                                                         in: .userDomainMask,
+                                                         appropriateFor: nil,
+                                                         create: true)
+            return cachesDir?.appendingPathComponent("images")
         }
     }
     
@@ -108,14 +105,26 @@ class ImageCache {
     ///   - metadata: Metadata to include in the image.
     static func writeImage(_ image: UIImage, to url: URL, with metadata: NSDictionary?) throws {
         // Generate JPEG data for the UIImage.
-        guard let imageData = image.jpegData(compressionQuality: 0.85) else { throw ITMError(json: ["message": "Error converting UIImage to JPEG."]) }
-        guard let source = CGImageSourceCreateWithData(imageData as CFData, nil) else { throw ITMError(json: ["message": "Error creating image source from JPEG data."]) }
-        guard let type = CGImageSourceGetType(source) else { throw ITMError(json: ["message": "Error getting type from image source."]) }
-
-        guard let destination: CGImageDestination = CGImageDestinationCreateWithURL(url as CFURL, type, 1, nil) else { throw ITMError(json: ["message": "Error creating image destination."]) }
-        CGImageDestinationAddImageFromSource(destination, source, 0, metadata as CFDictionary?)
+        guard let imageData = image.jpegData(compressionQuality: 0.85) else {
+            throw ITMStringError(errorDescription: "Error converting UIImage to JPEG!")
+        }
+        guard let metadata = metadata else {
+            // If there's no metadata, just write the JPEG image to a file.
+            try imageData.write(to: url)
+            return
+        }
+        guard let source = CGImageSourceCreateWithData(imageData as CFData, nil) else {
+            throw ITMStringError(errorDescription: "Error creating image source from JPEG data.")
+        }
+        guard let type = CGImageSourceGetType(source) else {
+            throw ITMStringError(errorDescription: "Error getting type from image source.")
+        }
+        guard let destination = CGImageDestinationCreateWithURL(url as CFURL, type, 1, nil) else {
+            throw ITMStringError(errorDescription: "Error creating image destination.")
+        }
+        CGImageDestinationAddImageFromSource(destination, source, 0, metadata as CFDictionary)
         if !CGImageDestinationFinalize(destination) {
-            throw ITMError(json: ["message": "Error writing JPEG data."])
+            throw ITMStringError(errorDescription: "Error writing JPEG data.")
         }
     }
 }

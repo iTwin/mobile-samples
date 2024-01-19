@@ -6,13 +6,16 @@
 import ITwinMobile
 import WebKit
 
-/// Custom `WKURLSchemeHandler` to support loading images from cache, since `WKWebView` will not allow loading file:// URLs for security reasons.
+/// Custom `WKURLSchemeHandler` to support loading images from cache, since `WKWebView` will not allow
+/// loading file:// URLs for security reasons.
+/// - Note: This relies on `ITMAssetHandler` to do the work of providing the file once the custom URL is
+/// converted into a file:// URL.
 class ImageCacheSchemeHandler: NSObject, WKURLSchemeHandler {
     /// The URL scheme for this handler. FYI, "itms" stands for iTwin Mobile Sample.
     static let urlScheme = "com.bentley.itms-image-cache"
     /// `WKURLSchemeHandler` protocol method.
     func webView(_ webView: WKWebView, start urlSchemeTask: WKURLSchemeTask) {
-        guard let fileURL = ImageCache.getFileUrl(urlSchemeTask.request.url) else {
+        guard let fileURL = ImageCache.getFileURL(urlSchemeTask.request.url) else {
             ITMAssetHandler.cancelWithFileNotFound(urlSchemeTask: urlSchemeTask)
             return
         }

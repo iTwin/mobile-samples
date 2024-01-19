@@ -9,7 +9,7 @@ import ITwinMobile
 import UniformTypeIdentifiers
 import ShowTime
 
-/// This app's `ITMApplication` sub-class that handles the messages coming from the web view.
+/// This app's `ITMApplication` subclass that handles the messages coming from the web view.
 class ModelApplication: ITMApplication {
     private let startupTimer = ActivityTimer()
     private var startupTimesRecorded = false
@@ -18,6 +18,10 @@ class ModelApplication: ITMApplication {
     required init() {
         super.init()
 
+        if let configData = configData {
+            extractConfigDataToEnv(configData: configData, prefix: "ITMSAMPLE_");
+        }
+
         geolocationManager.setLastLocationTimeThreshold(3.0)
         setupStartupTimer()
 
@@ -25,11 +29,11 @@ class ModelApplication: ITMApplication {
         ITMApplication.logger = PrintLogger()
 
         registerQueryHandlers()
-        setupShowtime()
+        setupShowTime()
         performExampleQueries()
     }
 
-    /// Set up startupTimer.
+    /// Set up `startupTimer`.
     private func setupStartupTimer() {
         startupTimer.enabled = self.configData?.isYes("ITMSAMPLE_LOG_STARTUP_TIMES") ?? false
         startupTimer.useJSON = self.configData?.isYes("ITMSAMPLE_LOG_STARTUP_TIMES_JSON") ?? false
@@ -38,18 +42,14 @@ class ModelApplication: ITMApplication {
 
     /// Registers query handlers.
     open func registerQueryHandlers() {
-        registerQueryHandler("didFinishLaunching") { (params: [String: Any]) -> Void in
+        registerQueryHandler("didFinishLaunching") { (params: JSON) -> Void in
             self.itmMessenger.frontendLaunchSucceeded()
             self.finishRecordingStartupTimes(params["iTwinVersion"] as? String)
             self.performSampleActions()
         }
         registerQueryHandler("loading") {
-            self.webView.isHidden = false
             self.dormant = false
             self.startupTimer.addCheckpoint(name: "Webview load")
-        }
-        registerQueryHandler("reload") {
-            self.webView.reload()
         }
         registerQueryHandler("signOut") {
             if let oac = self.authorizationClient as? ITMOIDCAuthorizationClient {
@@ -61,16 +61,14 @@ class ModelApplication: ITMApplication {
                 }
             }
         }
-        registerQueryHandler("getBimDocuments") { () -> [String] in
-            return DocumentHelper.getBimDocuments()
-        }
+        registerQueryHandler("getBimDocuments", DocumentHelper.getBimDocuments)
         registerQueryHandler("firstRenderStarted") { () -> Void in
             Self.logger.log(.debug, "Received firstRenderStarted")
         }
         registerQueryHandler("firstRenderFinished") { () -> Void in
             Self.logger.log(.debug, "Received firstRenderFinished")
         }
-        registerQueryHandler("log") { (params: [String: Any]) -> Void in
+        registerQueryHandler("log") { (params: JSON) -> Void in
             guard let level = params["level"] as? String,
                   let category = params["category"] as? String,
                   let message = params["message"] as? String else {
@@ -88,7 +86,7 @@ class ModelApplication: ITMApplication {
             }
             var metaDataString = ""
             if let metaData = params["metaData"] {
-                metaDataString = "| metaData: \(self.itmMessenger.jsonString(metaData))"
+                metaDataString = "| metaData: \(ITMMessenger.jsonString(metaData))"
             }
             Self.logger.log(severity, "| \(category) | \(message)\(metaDataString)")
         }
@@ -108,14 +106,13 @@ class ModelApplication: ITMApplication {
         self.startupTimer.logTimes(title: "STARTUP TIMES")
     }
 
-    /// Set up Showtime
-    private func setupShowtime() {
-        var showtimeEnabled = false
+    /// Set up ShowTime
+    private func setupShowTime() {
+        var showTimeEnabled = false
         if let configData = configData {
-            extractConfigDataToEnv(configData: configData, prefix: "ITMSAMPLE_");
-            showtimeEnabled = configData.isYes("ITMSAMPLE_SHOWTIME_ENABLED")
+            showTimeEnabled = configData.isYes("ITMSAMPLE_SHOWTIME_ENABLED")
         }
-        if !showtimeEnabled {
+        if !showTimeEnabled {
             ShowTime.enabled = ShowTime.Enabled.never
         }
     }
@@ -132,7 +129,7 @@ class ModelApplication: ITMApplication {
     }
 
     /// Example showing how to send a message with a value to the web app with no response expected.
-    /// - Parameter value: A value to be sent to the web app and returned back. It must be of a type supported by
+    /// - Parameter value: A value to be sent to the web app to be printed. It must be of a type supported by
     ///                    the native <-> JavaScript interop layer.
     private func oneWayExample<T>(_ value: T) {
         // Note: because we don't wait for any response, if there is a failure (like the web app
@@ -143,13 +140,18 @@ class ModelApplication: ITMApplication {
     }
 
     /// Example showing how to send a message with a value to the web app, and receive a response.
+    ///
+    /// - Note: If the result returned by the web app doesn't equal the sent value, this logs an error.
     /// - Parameter value: A value to be sent to the web app and returned back. It must be of a type supported by
     ///                    the native <-> JavaScript interop layer.
-    private func queryExample<T>(_ value: T) {
+    private func queryExample<T: Equatable>(_ value: T) {
         Task {
             do {
                 let result: T = try await itmMessenger.query("queryExample", ["value": value])
                 Self.logger.log(.debug, "queryExample result \(result)")
+                guard result == value else {
+                    throw ITMStringError(errorDescription: "queryExample result (\(result)) != sent value (\(value))!")
+                }
             } catch {
                 Self.logger.log(.error, "Error with queryExample: \(error)")
             }
@@ -211,12 +213,15 @@ class ModelApplication: ITMApplication {
     }
 
     private var documentsPath: String {
-        get {
-            let documentsDirs = NSSearchPathForDirectoriesInDomains(.documentDirectory, .userDomainMask, true)
-            guard documentsDirs.count >= 1 else {
-                return "oops"
+        get throws {
+            let fm = FileManager.default
+            guard let documentsURL = try? fm.url(for: .documentDirectory,
+                                                 in: .userDomainMask,
+                                                 appropriateFor: nil,
+                                                 create: true) else {
+                throw ITMStringError(errorDescription: "Cannot find app documents directory!")
             }
-            return documentsDirs[0]
+            return documentsURL.path
         }
     }
 
@@ -246,7 +251,7 @@ class ModelApplication: ITMApplication {
             //   OPEN
             Task {
                 print("Performing actions: \(actions)")
-                itmMessenger.send("performActions", ["actions": actions, "documentsPath": documentsPath] as [String : Any])
+                itmMessenger.send("performActions", ["actions": actions, "documentsPath": (try? documentsPath) ?? "oops"])
             }
         }
     }

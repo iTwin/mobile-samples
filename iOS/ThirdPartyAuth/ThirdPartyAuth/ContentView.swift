@@ -11,8 +11,15 @@ struct ContentView: View {
     var body: some View {
         switch viewModel.page {
         case .login:
-            LoginView(viewModel: viewModel) { credentials, error in
-                viewModel.credentials = credentials
+            LoginView(viewModel: viewModel) { result in
+                DispatchQueue.main.async {
+                    switch result {
+                    case .success(let credentials):
+                        viewModel.credentials = credentials
+                    case .failure:
+                        viewModel.credentials = nil
+                    }
+                }
             }
         case .model:
             ModelView(viewModel: viewModel)

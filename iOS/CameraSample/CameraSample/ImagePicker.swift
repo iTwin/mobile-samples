@@ -32,7 +32,7 @@ class ImagePicker: ITMNativeUIComponent {
     /// The picker for the active query.
     var picker: UIViewController?
 
-    /// Creates an ``ImagePicker``.
+    /// Creates an image picker.
     /// - Parameter itmNativeUI: The `ITMNativeUI` used to present the image picker.
     override init(itmNativeUI: ITMNativeUI) {
         super.init(itmNativeUI: itmNativeUI)
@@ -44,10 +44,7 @@ class ImagePicker: ITMNativeUIComponent {
     /// - Returns: false if `"sourceType"` is set to `"photoLibrary"` in `params`, or true otherwise.
     private func useCamera(params: [String: Any]) -> Bool {
         let sourceType = params["sourceType"] as? String
-        if sourceType != "photoLibrary" {
-            return true
-        }
-        return false
+        return sourceType != "photoLibrary"
     }
 
     /// Creates a "picker". When in camera mode, this will always return a UIImagePickerController. However, when in photoLibrary
@@ -83,7 +80,7 @@ class ImagePicker: ITMNativeUIComponent {
     @MainActor
     private func handleQuery(params: [String: Any]) async throws -> String? {
         guard let viewController = viewController, let iModelId = params["iModelId"] as? String else {
-            throw ITMError()
+            throw ITMStringError(errorDescription: "Required param 'iModelId' missing from 'pickImage' query!")
         }
         self.iModelId = iModelId
         if useCamera(params: params) {
@@ -113,17 +110,22 @@ class ImagePicker: ITMNativeUIComponent {
             viewController.present(picker, animated: true)
         }
     }
-
-    /// Convenience function that dismisses ``picker``, calls `resume(returning:)` on ``continuation``, and resets
-    /// ``continuation`` and ``picker`` to nil.
-    /// - Parameter value: The value with which to resume ``continuation``.
-    private func resume(returning value: String?) {
+    
+    /// Dismiss ``picker`` and set it to nil.
+    private func dismissPicker() {
         if let picker = picker {
             self.picker = nil
             DispatchQueue.main.async {
                 picker.dismiss(animated: true)
             }
         }
+    }
+
+    /// Convenience function that dismisses ``picker``, calls `resume(returning:)` on ``continuation``, and resets
+    /// ``continuation`` and ``picker`` to nil.
+    /// - Parameter value: The value with which to resume ``continuation``.
+    private func resume(returning value: String?) {
+        dismissPicker()
         continuation?.resume(returning: value)
         continuation = nil
     }
@@ -132,12 +134,7 @@ class ImagePicker: ITMNativeUIComponent {
     /// ``continuation`` and ``picker`` to nil.
     /// - Parameter value: The error with which to resume ``continuation``.
     private func resume(throwing error: Error) {
-        if let picker = picker {
-            self.picker = nil
-            DispatchQueue.main.async {
-                picker.dismiss(animated: true)
-            }
-        }
+        dismissPicker()
         continuation?.resume(throwing: error)
         continuation = nil
     }
@@ -151,47 +148,59 @@ class ImagePicker: ITMNativeUIComponent {
     ///   - image: The picked image, or nil. If this is non-nil, the image data will be written to the image cache as a JPEG file.
     ///   - metadata: Metadata for `image`, or nil.
     private func pick(imageURL: URL?, image: UIImage?, metadata: NSDictionary?) {
-        if imageURL == nil, image == nil {
+        guard imageURL != nil || image != nil else {
             // The user canceled.
             resume(returning: nil)
+            return
         }
         let dateFmt = DateFormatter()
         dateFmt.dateFormat = "yyyy-MM-dd HH-mm-ss.SSS"
         // Use a timestamp for the image cache filename.
-        let filename = "\(dateFmt.string(from: Date())).jpg"
+        let filenameBase = "\(dateFmt.string(from: Date()))"
         do {
-            let baseURL = ImageCache.baseURL!
+            guard let baseURL = ImageCache.baseURL else {
+                throw ITMStringError(errorDescription: "Error getting App sandbox cache URL!")
+            }
             let iModelId = self.iModelId!
-            // The file will be stored in <Caches>/images/<iModelId>/. All pictures for a given iModel end up in the same directory.
-            let dirUrl = baseURL.appendingPathComponent(iModelId)
+            // The file will be stored in <Caches>/images/<iModelId>/. All pictures for a given iModel end up in the
+            // same directory.
+            let dirURL = baseURL.appendingPathComponent(iModelId)
             let fm = FileManager.default
             // Make sure the output directory exists.
-            try fm.createDirectory(at: dirUrl, withIntermediateDirectories: true, attributes: nil)
-            let fileUrl = dirUrl.appendingPathComponent(filename)
-            // If the user picks from the photo library, we'll get a URL for a local copy of the file from the photo library.
-            // If the original file in the photo library was HEIC, the URL will be for a local JPEG copy. If the original file
-            // in the photo library was a PNG or JPEG, the URL will be the exact original file. If we get a URL, simply copy
-            // it to our cache.
+            try fm.createDirectory(at: dirURL, withIntermediateDirectories: true, attributes: nil)
+            let destURLBase = dirURL.appendingPathComponent(filenameBase)
+            let destURL: URL
+            // If the user picks from the photo library, we'll get a URL for a local copy of the file from the photo
+            // library. If the original file in the photo library was HEIC, the URL will be for a local JPEG copy. If
+            // the original file in the photo library was a PNG or JPEG, the URL will be the exact original file. If we
+            // get a URL, simply copy it to our cache, preserving the original file extension.
             if let imageURL = imageURL {
+                destURL = destURLBase.appendingPathExtension(imageURL.pathExtension)
                 do {
                     // It has been reported that using moveItem here doesn't work in all versions of iOS.
-                    try fm.moveItem(at: imageURL, to: fileUrl)
+                    try fm.moveItem(at: imageURL, to: destURL)
                 } catch {
                     // If moveItem fails, fall back to copyItem. Note that if copyItem fails here, it will jump to the
                     // catch block below, which resumes the continuation throwing the error.
-                    try fm.copyItem(at: imageURL, to: fileUrl)
+                    try fm.copyItem(at: imageURL, to: destURL)
                 }
-            } else if let image = image {
+            } else {
+                destURL = destURLBase.appendingPathExtension(".jpeg")
                 // Write the UIImage to the given filename.
-                try ImageCache.writeImage(image, to: fileUrl, with: metadata)
+                // Note: The guard on the first line of this function ensures that imageURL and
+                // image cannot both be non-nil, so the image! below is safe.
+                try ImageCache.writeImage(image!, to: destURL, with: metadata)
             }
             // Resume the continuation returning a custom URL scheme URL of the form:
             // com.bentley.itms-image-cache://<iModelId>/<filename>
             // The custom ImageCacheSchemeHandler will convert that back into a file URL and then load that file.
-            // Note: the absolute file URL is converted to an NSString to maintain any encoded characters, instead
-            // of using lastPathComponent directly on fileUrl. Even though we're fulfilling a string, that string
-            // represents a URL.
-            resume(returning: "\(ImageCacheSchemeHandler.urlScheme)://\(iModelId)/\(NSString(string: fileUrl.absoluteString).lastPathComponent)")
+            let scheme = ImageCacheSchemeHandler.urlScheme
+            let path = "\(iModelId)/\(destURL.lastPathComponent)"
+            // Note: Our generated URL contains spaces and they are not yet URL-encoded. Feeding it into
+            // ImageCache.URL and then extracting the absoluteString from that adds the necessary percent
+            // encodings. Also, while in theory ImageCache.URL can return nil, it won't do so with the URLs
+            // that we generate.
+            resume(returning: ImageCache.URL(string: "\(scheme)://\(path)")?.absoluteString)
         } catch {
             // If anything went wrong above, resume the continuation throwing the error.
             resume(throwing: error)
@@ -226,12 +235,12 @@ extension ImagePicker: PHPickerViewControllerDelegate {
                                 if let image = image as? UIImage {
                                     self.pick(imageURL: nil, image: image, metadata: nil)
                                 } else {
-                                    self.resume(throwing: ITMError(json: ["message": "Error picking image"]))
+                                    self.resume(throwing: ITMStringError(errorDescription: "Error picking image"))
                                 }
                             }
                         }
                     } else {
-                        self.resume(throwing: ITMError(json: ["message": "Error picking image"]))
+                        self.resume(throwing: ITMStringError(errorDescription: "Error picking image"))
                     }
                 } else {
                     self.pick(imageURL: url, image: nil, metadata: nil)
