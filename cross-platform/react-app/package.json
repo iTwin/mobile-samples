@@ -9,11 +9,11 @@
   "private": true,
   "homepage": "./",
   "scripts": {
-    "start": "cross-env TRANSPILE_DEPS=false DISABLE_TERSER=true USE_FAST_SASS=true BROWSER=none USING_NPM=true react-scripts start",
+    "start": "cross-env TRANSPILE_DEPS=false DISABLE_TERSER=true USE_FAST_SASS=true BROWSER=none USING_NPM=true DISABLE_ESLINT_PLUGIN=true react-scripts start",
     "start:camera": "cross-env REACT_APP_BUILD_TARGET=Camera run-s start",
     "copy:assets": "cpx \"./node_modules/@itwin/mobile-sdk-core/lib/public/locales/**\" ./build/locales && cpx \"./node_modules/@itwin/mobile-ui-react/lib/public/locales/**\" ./build/locales",
     "copy:camera": "cpx \"./src/frontend/CameraSample/public/locales/**\" ./build/locales",
-    "build:frontend": "cross-env NODE_OPTIONS=--max_old_space_size=8192 TRANSPILE_DEPS=false DISABLE_TERSER=true USE_FAST_SASS=true USING_NPM=true react-scripts build && run-s copy:assets",
+    "build:frontend": "cross-env NODE_OPTIONS=--max_old_space_size=8192 TRANSPILE_DEPS=false DISABLE_TERSER=true USE_FAST_SASS=true USING_NPM=true DISABLE_ESLINT_PLUGIN=true react-scripts build && run-s copy:assets",
     "build:camera": "cross-env REACT_APP_BUILD_TARGET=Camera run-s build:frontend copy:camera",
     "compile:backend": "cross-env tsc -p tsconfig.backend.json",
     "webpack:backend": "cross-env NODE_OPTIONS=--max_old_space_size=8192 webpack --config ./webpack.config.js --env outdir=./lib/webpack --env entry=./lib/backend/main.js --env bundlename=main",
@@ -31,7 +31,7 @@
     "@babel/core": "^7.15.8",
     "@bentley/react-scripts": "5.0.4",
     "@itwin/build-tools": "4.3.2",
-    "@itwin/eslint-plugin": "4.0.0-dev.33",
+    "@itwin/eslint-plugin": "4.0.0-dev.49",
     "@types/axios": "^0.14.0",
     "@types/jest": "^26.0.15",
     "@types/jsonwebtoken": "^8.5.8",
@@ -40,7 +40,7 @@
     "@types/react-dom": "^16.8.4",
     "cpx2": "^4.2.0",
     "cross-env": "^7.0.3",
-    "eslint": "^8.36.0",
+    "eslint": "^8.56.0",
     "eslint-plugin-testing-library": "^5.9.1",
     "npm-run-all": "^4.1.5",
     "null-loader": "^0.1.1",
@@ -112,26 +112,6 @@
     },
     "typedoc": {
       "typescript": "~5.0.2"
-    }
-  },
-  "eslintConfig": {
-    "plugins": [
-      "@itwin"
-    ],
-    "extends": [
-      "plugin:@itwin/ui"
-    ],
-    "rules": {
-      "no-console": "off",
-      "@itwin/no-internal-barrel-imports": "off",
-      "jsx-a11y/click-events-have-key-events": "off",
-      "jsx-a11y/no-static-element-interactions": "off"
-    },
-    "parserOptions": {
-      "project": [
-        "./tsconfig.json",
-        "./tsconfig.backend.json"
-      ]
     }
   },
   "browserslist": {

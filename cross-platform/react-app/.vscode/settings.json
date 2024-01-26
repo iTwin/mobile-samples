@@ -1,5 +1,10 @@
 {
     "eslint.experimental.useFlatConfig": true,
+    "eslint.workingDirectories": [
+        {
+            "mode": "location"
+        }
+    ],
     "editor.formatOnSave": true,
     "files.insertFinalNewline": true,
     "cSpell.words": [
