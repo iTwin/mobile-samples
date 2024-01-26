@@ -2,7 +2,7 @@
     "eslint.experimental.useFlatConfig": true,
     "eslint.workingDirectories": [
         {
-            "mode": "location"
+            "mode": "auto"
         }
     ],
     "editor.formatOnSave": true,
