@@ -20,7 +20,7 @@ struct SwiftUIStarterApp: App {
             ITMSwiftUIContentView(application: application)
                 .edgesIgnoringSafeArea(.all)
                 .onOpenURL() { url in
-                    DocumentHelper.openInboxUrl(url)
+                    DocumentHelper.openInboxURL(url)
                 }
         }
     }
