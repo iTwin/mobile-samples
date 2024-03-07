@@ -12,6 +12,7 @@ export * from "./Screens/LoadingScreen";
 export * from "./Screens/LocalModelsScreen";
 export * from "./Screens/ModelScreen";
 export * from "./BottomPanels/InfoBottomPanel";
+export * from "./BottomPanels/CompassBottomPanel";
 export * from "./BottomPanels/AboutBottomPanel";
 export * from "./BottomPanels/ViewsBottomPanel";
 export * from "./Screens/HomeScreen";

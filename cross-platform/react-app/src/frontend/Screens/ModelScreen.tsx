@@ -35,6 +35,7 @@ import {
 } from "@itwin/mobile-ui-react";
 import {
   AboutBottomPanel,
+  CompassBottomPanel,
   ElementPropertiesPanel,
   i18n,
   InfoBottomPanel,
@@ -107,8 +108,10 @@ export function ModelScreen(props: ModelScreenProps) {
   const fourLabel = useLocalizedString("ModelScreen", "Four");
   const fiveLabel = useLocalizedString("ModelScreen", "Five");
   const sixLabel = useLocalizedString("ModelScreen", "Six");
+  const destructiveLabel = useLocalizedString("ModelScreen", "Destructive");
   const youChoseLabel = useLocalizedString("ModelScreen", "YouChose");
   const infoLabel = useLocalizedString("ModelScreen", "Info");
+  const compassLabel = useLocalizedString("ModelScreen", "Compass");
   const aboutLabel = useLocalizedString("AboutBottomPanel", "About");
   const viewsLabel = useLocalizedString("ViewsBottomPanel", "Views");
   const toolsLabel = useLocalizedString("ModelScreen", "Tools");
@@ -246,6 +249,11 @@ export function ModelScreen(props: ModelScreenProps) {
                 name: sixLabel,
                 title: sixLabel,
               },
+              {
+                name: destructiveLabel,
+                title: destructiveLabel,
+                style: ActionStyle.Destructive,
+              },
             ],
           });
           void presentAlert({
@@ -280,6 +288,13 @@ export function ModelScreen(props: ModelScreenProps) {
         key="info"
         name={iModel.name}
         filename={filename}
+      />,
+    },
+    {
+      label: compassLabel,
+      isTab: true,
+      popup: <CompassBottomPanel
+        key="compass"
       />,
     },
     {

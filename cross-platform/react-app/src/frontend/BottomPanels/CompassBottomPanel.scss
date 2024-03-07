@@ -1,0 +1,34 @@
+/*---------------------------------------------------------------------------------------------
+* Copyright (c) Bentley Systems, Incorporated. All rights reserved.
+* See LICENSE.md in the project root for license terms and full copyright notice.
+*--------------------------------------------------------------------------------------------*/
+.compass-bottom-panel {
+  div {
+    box-sizing: border-box;
+    padding: 4px;
+  }
+
+  .compass-parent {
+    display: flex;
+    justify-content: center;
+    width: 100%;
+  }
+
+  .compass {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: var(--muic-active);
+    border: 3px solid var(--muic-foreground);
+    border-radius: 100%;
+    margin: 8px;
+    width: 80px;
+    height: 80px;
+  }
+
+  .compass-arrow {
+    font-size: 50px;
+    font-weight: bold;
+    color: var(--muic-active-contrast);
+  }
+}
