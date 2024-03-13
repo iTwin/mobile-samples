@@ -55,8 +55,7 @@ class ActivityTimer {
     ///   - pad: The character to use to pad values in the row, default space
     /// - Returns: The joined string
     private func buildRow(row: [String], separator: String = "  | ", pad: String = " ") -> String {
-        var maxLengthIt = maxLengths.makeIterator()
-        return "\(row.map {$0.padding(toLength: maxLengthIt.next() ?? 0, withPad: pad, startingAt: 0)}.joined(separator: separator))\n"
+        "\(zip(row, maxLengths).map { (field, length) in field.padding(toLength: length, withPad: pad, startingAt: 0)}.joined(separator: separator))\n"
     }
 
     /// Get the timing information in JSON format.
@@ -106,7 +105,6 @@ class ActivityTimer {
     /// Get timing information in human-readable text format.
     /// - Returns: Timing information in human-readable text format
     private func getTextOutput() -> String {
-        var output = ""
         let headerRow = [ nameTitle, "START", "STEP", "TOTAL" ]
         maxLengths = headerRow.map(\.count)
         let dateFormatter = DateFormatter()
@@ -126,8 +124,8 @@ class ActivityTimer {
             rows.append(row)
             lastTime = timestamp
         }
-        let lineRow = [String](repeating: "-", count: maxLengths.count)
-        output += "DEVICE MODELID: \(UIDevice.modelID) (see https://www.theiphonewiki.com/wiki/Models)\n"
+        let lineRow = [String](repeating: "", count: maxLengths.count)
+        var output = "DEVICE MODELID: \(UIDevice.modelID) (see https://www.theiphonewiki.com/wiki/Models)\n"
         output += buildRow(row: headerRow)
         output += buildRow(row: lineRow, separator: "--+-", pad: "-")
         for row in rows {
