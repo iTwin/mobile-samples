@@ -18,10 +18,10 @@ class LoginViewModel(
     resourceHelper: IResourceHelper,
     var onAuth0TokenReceived: (auth0CredentialsManager: CredentialsManager) -> Unit = {},
 ) : ViewModel() {
-    /** Used to lookup string resources */
+    /** Used to lookup string resources. */
     private val _resourceHelper = resourceHelper
 
-    /** Authorization client to login to Auth0 */
+    /** Authorization client to log into Auth0. */
     private val _auth0Client: Auth0 = Auth0(
         resourceHelper.getString(R.string.ITMSAMPLE_AUTH0_CLIENT_ID), // from ITMSamples.properties
         resourceHelper.getString(R.string.ITMSAMPLE_AUTH0_DOMAIN) // from ITMSamples.properties

@@ -12,8 +12,9 @@ import java.io.File
 
 /**
  * Determines the display name for the uri.
- * @param uri The input content Uri.
- * @return The display name or null if it wasn't found.
+ *
+ * @param uri The input content [Uri].
+ * @return The display name or `null` if it wasn't found.
  */
 fun ContentResolver.getDisplayName(uri: Uri): String? {
     // Query the content resolver only if we have a content Uri
@@ -26,10 +27,11 @@ fun ContentResolver.getDisplayName(uri: Uri): String? {
 
 /**
  * Copies the input uri to the destination directory.
- * @param uri The input content Uri to copy.
+ *
+ * @param uri The input content [Uri] to copy.
  * @param destDir The destination directory.
  * @param uriDisplayName The optional display name for the uri.
- * @return The full path of the copied file, null if it failed.
+ * @return The full path of the copied file, `null` if it failed.
  */
 fun Context.copyToExternalFiles(uri: Uri, destDir: String, uriDisplayName: String? = null): String? {
     return (uriDisplayName ?: contentResolver.getDisplayName(uri))?.let { displayName ->
@@ -48,7 +50,8 @@ fun Context.copyToExternalFiles(uri: Uri, destDir: String, uriDisplayName: Strin
 }
 
 /**
- * Gets the external files in the input directory name.
+ * Gets the external files in a given input directory name.
+ *
  * @param dirName The directory name.
  * @return A list of external files, possibly empty.
  */
@@ -57,7 +60,8 @@ fun Context.getExternalFiles(dirName: String): List<String> {
 }
 
 /**
- * Gets the external files in the input directory name that end with the input extension.
+ * Gets the external files in a given input directory name that end with [extension].
+ *
  * @param dirName The directory name.
  * @param extension The file extension to filter with.
  * @return A list of external files, possibly empty.

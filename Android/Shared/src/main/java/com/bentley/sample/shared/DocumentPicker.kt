@@ -18,7 +18,7 @@ import kotlin.coroutines.resume
 import kotlin.coroutines.suspendCoroutine
 
 /**
- * Presents a UI for selecting bim documents when the chooseDocument message is sent.
+ * Presents a UI for selecting bim documents when the `"chooseDocument"` message is sent.
  */
 class DocumentPicker(nativeUI: ITMNativeUI): ITMNativeUIComponent(nativeUI) {
     /**
@@ -41,8 +41,8 @@ class DocumentPicker(nativeUI: ITMNativeUI): ITMNativeUIComponent(nativeUI) {
 
         companion object {
             /**
-             * @param uri Input Uri.
-             * @return true if the uri ends with .bim
+             * @param uri Input [Uri].
+             * @return `true` if [uri] ends with .bim.
              */
             fun isAcceptableBimUri(uri: Uri): Boolean {
                 return uri.toString().endsWith(".bim", true)
