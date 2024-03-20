@@ -7,8 +7,8 @@ import android.app.Application
  */
 interface IResourceHelper {
     /**
-     * Retrieve the string resource
-     * @param id the id of the string resource
+     * Retrieve the string resource.
+     * @param id the id of the string resource.
      */
     fun getString(id: Int): String
 
@@ -16,7 +16,8 @@ interface IResourceHelper {
 }
 
 /**
- * An Android implementation of IResourceHelper that loads values using the Android Application Context
+ * An Android implementation of IResourceHelper that loads values using the Android Application
+ * Context.
  */
 class ResourceHelper(context: Application) : IResourceHelper {
 
@@ -27,7 +28,7 @@ class ResourceHelper(context: Application) : IResourceHelper {
     }
 
     override fun getString(id: Int, vararg formatArgs: Any): String {
-        return _context.getString(id, formatArgs)
+        return _context.getString(id, *formatArgs)
     }
 
 }
