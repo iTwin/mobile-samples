@@ -231,12 +231,10 @@ class ModelApplication: ITMApplication {
     private func getActionsFromConfigData() -> [String: String] {
         guard let configData = self.configData else { return [:] }
         var actions: [String: String] = [:]
-        for (key, value) in configData {
-            if let value = value as? String {
-                let shortKey = key.deletingPrefix("ITMSAMPLE_ACTION_")
-                if shortKey.count < key.count {
-                    actions[shortKey] = value
-                }
+        for case let (key, value) as ConfigStringPair in configData {
+            let shortKey = key.deletingPrefix("ITMSAMPLE_ACTION_")
+            if shortKey.count < key.count {
+                actions[shortKey] = value
             }
         }
         return actions
