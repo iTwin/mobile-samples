@@ -33,7 +33,9 @@ open class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         val itmApp = sampleITMApplication
-        itmApp.initializeFrontend(this, true)
+        // NOTE: The backend can be inspected (using, for example, Google Chrome) as long as the
+        // build is a debug build.
+        itmApp.initializeFrontend(this)
         supportRequestWindowFeature(Window.FEATURE_NO_TITLE)
         super.onCreate(savedInstanceState)
         setupWebView()
