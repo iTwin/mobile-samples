@@ -2,6 +2,8 @@
 * Copyright (c) Bentley Systems, Incorporated. All rights reserved.
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
+@file:Suppress("MemberVisibilityCanBePrivate")
+
 package com.bentley.sample.shared
 
 import android.app.Activity
@@ -14,15 +16,17 @@ typealias PickUriContractType = ActivityResultContract<Map<String, String>?, Uri
 
 /**
  * An [ActivityResultContract] that takes a [Map] and returns a [Uri].
- * @property destDir The optional external files directory to copy the Uri to.
- *                   Must be non-null and [shouldCopyUri] must return true for the copying to occur.
+ *
+ * @param destDir The optional external files directory to copy the Uri to. Must be non-null and
+ * [shouldCopyUri] must return true for the copying to occur.
  */
-open class PickUriContract(@Suppress("MemberVisibilityCanBePrivate") var destDir: String? = null) : PickUriContractType() {
+open class PickUriContract(var destDir: String? = null) : PickUriContractType() {
     protected lateinit var context: Context
 
     /**
      * Gets an empty Intent by default. Sub-classes can override this function to add specifics
      * for the intent they are using.
+     *
      * @param context The context.
      * @param input The optional [Map], usually sent from typescript.
      * @return The intent to be used for the activity.
@@ -43,6 +47,7 @@ open class PickUriContract(@Suppress("MemberVisibilityCanBePrivate") var destDir
     /**
      * Gets the display name (base name with extension) for the input Uri.
      * By default the context's content resolver is used to get the display name.
+     *
      * @param uri The Uri to get the display name for.
      * @return The display name.
      */
@@ -53,12 +58,13 @@ open class PickUriContract(@Suppress("MemberVisibilityCanBePrivate") var destDir
     /**
      * If the resultCode equals RESULT_OK, the chosen Uri is either returned or copied. When
      * copied, a content Uri is returned.
+     *
      * @param resultCode The result code.
      * @param intent The intent.
      */
     override fun parseResult(resultCode: Int, intent: Intent?): Uri? {
-        val uri = intent?.takeIf { resultCode == Activity.RESULT_OK }?.data
-        if (uri != null && shouldCopyUri(uri)) {
+        val uri = intent?.takeIf { resultCode == Activity.RESULT_OK }?.data ?: return null
+        if (shouldCopyUri(uri)) {
             destDir?.let { destDir ->
                 context.copyToExternalFiles(uri, destDir, getDisplayName(uri))?.let { result ->
                     return Uri.parse(result)

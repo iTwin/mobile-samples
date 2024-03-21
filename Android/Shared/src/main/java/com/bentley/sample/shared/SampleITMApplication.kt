@@ -2,6 +2,8 @@
 * Copyright (c) Bentley Systems, Incorporated. All rights reserved.
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
+@file:Suppress("unused")
+
 package com.bentley.sample.shared
 
 import android.content.Context
@@ -18,9 +20,14 @@ import org.json.JSONObject
 
 /**
  * The base [ITMApplication] implementation for the sample applications.
- * Applications should sub-class using a singleton object and call [finishInit] in the init block.
+ * Applications should sub-class using a singleton object and call [finishInit] in the init block or
+ * use [SampleITMApplication.newInstance].
  */
-open class SampleITMApplication(context: Context, attachWebViewLogger: Boolean, forceExtractBackendAssets: Boolean) : ITMApplication(context, attachWebViewLogger, forceExtractBackendAssets) {
+open class SampleITMApplication(
+    context: Context,
+    attachWebViewLogger: Boolean,
+    forceExtractBackendAssets: Boolean
+) : ITMApplication(context, attachWebViewLogger, forceExtractBackendAssets) {
     companion object {
         /**
          * Convenience method for applications that don't need to sub-class [SampleITMApplication].
@@ -28,7 +35,6 @@ open class SampleITMApplication(context: Context, attachWebViewLogger: Boolean, 
          * @param context The application context.
          * @return A new [SampleITMApplication] instance that calls [finishInit] in its init block.
          */
-        @Suppress("unused")
         fun newInstance(context: Context) = object: SampleITMApplication(context, BuildConfig.DEBUG, BuildConfig.DEBUG) {
             init {
                 finishInit()
@@ -91,10 +97,11 @@ open class SampleITMApplication(context: Context, attachWebViewLogger: Boolean, 
             logger.log(ITMLogger.Severity.Debug, "Received firstRenderFinished")
         }
         coMessenger.registerMessageHandler("log") { params: Map<String, Any> ->
-            val level = params.getOptionalString("level")
-            val category = params.getOptionalString("category")
-            val message = params.getOptionalString("message")
-            if (level != null && category != null && message != null) {
+            letAll(
+                params.getOptionalString("level"),
+                params.getOptionalString("category"),
+                params.getOptionalString("message")
+            ) { level, category, message ->
                 val severity = when (level) {
                     "Trace" -> ITMLogger.Severity.Trace
                     "Info" -> ITMLogger.Severity.Info
@@ -102,8 +109,8 @@ open class SampleITMApplication(context: Context, attachWebViewLogger: Boolean, 
                     else -> ITMLogger.Severity.Error
                 }
                 var metaDataString = ""
-                params["metaData"]?.let { metaData ->
-                    metaDataString = " | $metaData"
+                params["metaData"]?.let {
+                    metaDataString = " | $it"
                 }
                 logger.log(severity, "| $category | $message$metaDataString")
             }
@@ -132,11 +139,12 @@ open class SampleITMApplication(context: Context, attachWebViewLogger: Boolean, 
      * Checks for sample actions and uses them in a "performActions" message to TS if they exist.
      */
     protected open fun performSampleActions() {
-        val actions = getActionsFromConfigData()
-        if (actions.length() != 0) {
+        getActionsFromConfigData().takeIf {
+            it.length() != 0
+        }?.let {
             val data = JSONObject()
             data.put("documentsPath", appContext.getExternalFilesDir(null)?.path ?: "oops")
-            data.put("actions", actions)
+            data.put("actions", it)
             coMessenger.send("performActions", data)
         }
     }
@@ -158,10 +166,8 @@ open class SampleITMApplication(context: Context, attachWebViewLogger: Boolean, 
     /**
      * Override createNativeUI so we can also register our own native components.
      */
-    override fun createNativeUI(context: Context): ITMNativeUI? {
-        return super.createNativeUI(context)?.also {
-            onRegisterNativeUI(it)
-        }
+    override fun createNativeUI(context: Context) = super.createNativeUI(context)?.also {
+        onRegisterNativeUI(it)
     }
 
     override fun initializeBackend(allowInspectBackend: Boolean) {
