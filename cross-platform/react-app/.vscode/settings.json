@@ -1,5 +1,4 @@
 {
-    "eslint.experimental.useFlatConfig": true,
     "editor.formatOnSave": true,
     "files.insertFinalNewline": true,
     "cSpell.words": [
