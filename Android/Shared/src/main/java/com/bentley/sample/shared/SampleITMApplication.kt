@@ -9,6 +9,7 @@ package com.bentley.sample.shared
 import android.content.Context
 import android.webkit.WebView
 import androidx.activity.ComponentActivity
+import androidx.annotation.CallSuper
 import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.LifecycleOwner
 import com.github.itwin.mobilesdk.*
@@ -159,6 +160,7 @@ open class SampleITMApplication(
     /**
      * Registers our native UI components.
      */
+    @CallSuper
     protected open fun onRegisterNativeUI(nativeUI: ITMNativeUI) {
         nativeUI.components.add(DocumentPicker(nativeUI))
     }

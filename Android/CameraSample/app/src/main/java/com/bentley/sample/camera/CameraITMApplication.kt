@@ -36,7 +36,8 @@ class CameraITMApplication(context: Context) : SampleITMApplication(context, Bui
     }
 
     /**
-     * Intercepts any [ImageCache] specific Urls by delegating to [ImageCache.shouldInterceptRequest]
+     * Intercepts any [ImageCache] specific Urls by delegating to
+     * [ImageCache.shouldInterceptRequest].
      */
     override fun shouldInterceptRequest(view: WebView, request: WebResourceRequest): WebResourceResponse? {
         return ImageCache.shouldInterceptRequest(request.url) ?: super.shouldInterceptRequest(view, request)

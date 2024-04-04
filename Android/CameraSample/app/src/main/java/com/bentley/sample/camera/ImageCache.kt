@@ -10,6 +10,8 @@ import android.webkit.WebResourceResponse
 import androidx.core.content.FileProvider
 import com.bentley.sample.shared.getExternalFiles
 import com.github.itwin.mobilesdk.ITMLogger
+import com.github.itwin.mobilesdk.checkItemsAre
+import com.github.itwin.mobilesdk.ensureItemsAre
 import java.io.File
 import java.io.FileInputStream
 import java.time.LocalDateTime
@@ -19,7 +21,9 @@ import java.time.format.DateTimeFormatter
  * Functions specific to caching images by iModelId.
  */
 object ImageCache {
-    @Suppress("SpellCheckingInspection")
+    /**
+     * The custom URL scheme to use for cached images.
+     */
     private const val URL_SCHEME = "com.bentley.itms-image-cache"
 
     /**
@@ -31,6 +35,7 @@ object ImageCache {
 
     /**
      * Gets the destination directory for the input parameters.
+     *
      * @param input The input parameters, expects an object with iModelId string member.
      * @return The file path of the destination directory.
      */
@@ -41,6 +46,7 @@ object ImageCache {
 
     /**
      * Gets a unique file name root based on the current date and time.
+     *
      * @return The generated file name.
      */
     fun getDestinationFileName(): String {
@@ -49,7 +55,8 @@ object ImageCache {
 
     /**
      * Gets the file path for a cache Uri.
-     * @param cacheUri The cache Uri.
+     *
+     * @param cacheUri The cache [Uri].
      * @return The full path to the image file.
      */
     private fun getFilePath(cacheUri: Uri): File {
@@ -59,8 +66,9 @@ object ImageCache {
 
     /**
      * Gets a cache Uri for a file path.
+     *
      * @param filePath The file path.
-     * @return The cache Uri.
+     * @return The cache [Uri].
      */
     fun getCacheUri(filePath: String): Uri {
         // baseDir doesn't end in a slash, so only replace it with a single slash instead of urlScheme://
@@ -68,9 +76,10 @@ object ImageCache {
     }
 
     /**
-     * Intercepts image cache uri's.
+     * Intercepts image cache URIs.
+     *
      * @param uri The uri to possibly intercept.
-     * @return The image contents if the uri is an image cache uri, null otherwise.
+     * @return The image contents if the uri is an image cache uri, `null` otherwise.
      */
     fun shouldInterceptRequest(uri: Uri): WebResourceResponse? {
         return uri.takeIf { uri.scheme == URL_SCHEME }?.let {
@@ -79,9 +88,10 @@ object ImageCache {
     }
 
     /**
-     * Gets all the image files cached for a given iModelId.
-     * @param params The input parameters, expects an object with an iModelId member.
-     * @return A [List] of cached images uri's, may be empty.
+     * Gets custom URIs for all the image files cached for a given iModelId.
+     *
+     * @param params The input parameters, expects an object with an `iModelId` member.
+     * @return A [List] of cached images URIs, may be empty.
      */
     fun handleGetImages(params: Map<String, String>): List<String> {
         val files = CameraApplication.instance.applicationContext.getExternalFiles(getDestinationDir(params))
@@ -92,20 +102,24 @@ object ImageCache {
 
     /**
      * Deletes cached images for a given iModelId.
-     * @param params The input parameters, expects an object with a url member.
+     *
+     * @param params The input parameters, expects an object with a `urls` member.
      */
     fun handleDeleteImages(params: Map<String, Any>) {
         when (val urls = params["urls"]) {
-            is List<*> -> { urls.forEach { url ->
-                url.takeIf { it is String }?.let { tryDeleteFile(it as String) } }
+            is List<*> -> {
+                urls.checkItemsAre<String>()?.forEach {
+                    tryDeleteFile(it)
+                }
             }
             is String -> { tryDeleteFile(urls) }
         }
     }
 
     /**
-     * Attempts to delete a cached file, catching an exceptions.
-     * @param fileName An image cache Uri as a string.
+     * Attempts to delete a cached file, catching any exceptions.
+     *
+     * @param fileName An image cache URI as a string.
      */
     private fun tryDeleteFile(fileName: String) {
         try {
@@ -119,6 +133,7 @@ object ImageCache {
 
     /**
      * Deletes all cached images for a given iModelId.
+     *
      * @param params The input parameters, expects an object with an iModelId member.
      */
     fun handleDeleteAllImages(params: Map<String, String>) {
@@ -129,28 +144,27 @@ object ImageCache {
 
     /**
      * Shares one or more cached images using the standard Android share sheet.
-     * @param params The input parameters, expects an object with a url member.
+     *
+     * @param params The input parameters, expects an object with a `urls` member.
      */
     fun handleShareImages(params: Map<String, Any>) {
-        val urls = (params["urls"] as? List<*>)?.map {
-            val file = getFilePath(Uri.parse(it as String))
+        val urls = (params["urls"] as? List<*>)?.ensureItemsAre<String>()?.map {
+            val file = getFilePath(Uri.parse(it))
             FileProvider.getUriForFile(CameraApplication.instance.applicationContext, "${BuildConfig.APPLICATION_ID}.provider", file)
-        }
+        }?.takeIf { it.isNotEmpty() } ?: return
 
-        if (urls != null && urls.isNotEmpty()) {
-            CameraMainActivity.current?.let {
-                val shareIntent = Intent().apply {
-                    if (urls.size == 1) {
-                        data = urls[0] //shows a preview of the image if we're sharing only one
-                        flags = Intent.FLAG_GRANT_READ_URI_PERMISSION //weird but required so the share sheet preview can read the content URI
-                    } else {
-                        type = "image/*"
-                    }
-                    action = Intent.ACTION_SEND_MULTIPLE
-                    putParcelableArrayListExtra(Intent.EXTRA_STREAM, ArrayList(urls))
+        CameraMainActivity.current?.let {
+            val shareIntent = Intent().apply {
+                if (urls.size == 1) {
+                    data = urls[0] //shows a preview of the image if we're sharing only one
+                    flags = Intent.FLAG_GRANT_READ_URI_PERMISSION //weird but required so the share sheet preview can read the content URI
+                } else {
+                    type = "image/*"
                 }
-                it.startActivity(Intent.createChooser(shareIntent, null))
+                action = Intent.ACTION_SEND_MULTIPLE
+                putParcelableArrayListExtra(Intent.EXTRA_STREAM, ArrayList(urls))
             }
+            it.startActivity(Intent.createChooser(shareIntent, null))
         }
     }
 }
