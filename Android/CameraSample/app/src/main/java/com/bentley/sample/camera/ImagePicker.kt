@@ -20,7 +20,8 @@ import java.io.File
 
 /**
  * Presents a UI for selecting an image or taking a photo when the pickImage message is sent.
- * @property nativeUI The native UI.
+ *
+ * @param nativeUI The native UI.
  */
 class ImagePicker(nativeUI: ITMNativeUI): ITMNativeUIComponent(nativeUI) {
     /**
@@ -29,7 +30,8 @@ class ImagePicker(nativeUI: ITMNativeUI): ITMNativeUIComponent(nativeUI) {
     private class PickIModelImageContract: PickUriContract() {
         /**
          * Sets up the [Intent] to let the user pick an image.
-         * @param context The context.
+         *
+         * @param context The [Context].
          * @param input The input parameters.
          * @return An image picking intent.
          */
@@ -43,8 +45,9 @@ class ImagePicker(nativeUI: ITMNativeUI): ITMNativeUIComponent(nativeUI) {
 
         /**
          * Converts the chosen image [Uri] to an [ImagePicker] Uri.
-         * @param resultCode The result code returned by the intent.
-         * @param intent The intent.
+         *
+         * @param resultCode The result code returned by [intent].
+         * @param intent The [Intent].
          * @return The chosen image Uri converted to an ImageCache Uri.
          */
         override fun parseResult(resultCode: Int, intent: Intent?): Uri? {
@@ -52,7 +55,8 @@ class ImagePicker(nativeUI: ITMNativeUI): ITMNativeUIComponent(nativeUI) {
         }
 
         /**
-         * Formulates a unique name for the file using [ImageCache.getDestinationFileName]
+         * Formulates a unique name for the file using [ImageCache.getDestinationFileName].
+         *
          * @param uri The chosen image Uri.
          * @return A unique file name with the same extension as the chosen image.
          */
@@ -65,22 +69,24 @@ class ImagePicker(nativeUI: ITMNativeUI): ITMNativeUIComponent(nativeUI) {
     }
 
     /**
-     * Lets the user take a picture storing it to the appropriate images external files directory.
+     * Lets the user take a picture, storing it to the appropriate images external files directory.
      */
     private class CaptureIModelImageContract: PickUriContractType() {
-        /** The [ImageCache] Uri where the picture will be stored */
+        /** The [ImageCache] [Uri] where the picture will be stored */
         private var cameraUri: Uri? = null
         /**
-         * Android has an existing contract for taking a picture. In our case, we want our contract to conform to [PickUriContractType]
-         * so we need to use this as a delegate for the [ActivityResultContract] functions.
+         * Android has an existing contract for taking a picture. In our case, we want our contract
+         * to conform to [PickUriContractType] so we need to use this as a delegate for the
+         * [ActivityResultContract] functions.
          */
         private var takePicture = ActivityResultContracts.TakePicture()
 
         /**
          * Sets up the [Intent] to let the user take a picture.
-         * @param context The context.
+         *
+         * @param context The [Context].
          * @param input The input parameters.
-         * @return A picture taking intent.
+         * @return A picture taking [Intent].
          */
         override fun createIntent(context: Context, input: Map<String, String>?): Intent {
             getOutputFile(ImageCache.getDestinationDir(input), context)?.let { outputFile ->
@@ -94,7 +100,8 @@ class ImagePicker(nativeUI: ITMNativeUI): ITMNativeUIComponent(nativeUI) {
         }
 
         /**
-         * Returns the [cameraUri] if [takePicture] succeeded.
+         * Returns [cameraUri] if [takePicture] succeeded.
+         *
          * @param resultCode The result code returned by the intent.
          * @param intent The intent.
          * @return The [cameraUri] or null.
@@ -105,7 +112,8 @@ class ImagePicker(nativeUI: ITMNativeUI): ITMNativeUIComponent(nativeUI) {
 
         /**
          * Gets the output file for taking the picture, ensuring any new sub-dirs are created.
-         * @param destDir The destination directory (e.g. images/iModelId).
+         *
+         * @param destDir The destination directory (e.g. images/<iModelId>).
          * @param context The context.
          * @return The fully formulated [File] with a unique name.
          */
@@ -118,10 +126,11 @@ class ImagePicker(nativeUI: ITMNativeUI): ITMNativeUIComponent(nativeUI) {
         }
 
         /**
-         * Gets a content Uri for a File.
+         * Gets a content [Uri] for a [File].
+         *
          * @param file File path to convert to a content Uri.
-         * @param context The context.
-         * @return A content Uri.
+         * @param context The [Context].
+         * @return A content [Uri].
          */
         private fun getContentUri(file: File, context: Context): Uri {
             return FileProvider.getUriForFile(context, "${BuildConfig.APPLICATION_ID}.provider", file)
@@ -136,10 +145,12 @@ class ImagePicker(nativeUI: ITMNativeUI): ITMNativeUIComponent(nativeUI) {
         lateinit var delegateContract: PickUriContractType
 
         /**
-         * Delegates to either [CaptureIModelImageContract] or [PickIModelImageContract] depending on the sourceType input parameter.
-         * @param context The context.
+         * Delegates to either [CaptureIModelImageContract] or [PickIModelImageContract] depending
+         * on the sourceType input parameter.
+         *
+         * @param context The [Context].
          * @param input The input parameters.
-         * @return The intent to pick an image or take a picture.
+         * @return The [Intent] to pick an image or take a picture.
          */
         override fun createIntent(context: Context, input: Map<String, String>?): Intent {
             val camera = input?.get("sourceType") == "camera"
@@ -149,9 +160,10 @@ class ImagePicker(nativeUI: ITMNativeUI): ITMNativeUIComponent(nativeUI) {
 
         /**
          * Calls parseResult for the delegate established in [createIntent].
+         *
          * @param resultCode The result code.
-         * @param intent The intent.
-         * @return The uri returned by the delegate.
+         * @param intent The [Intent].
+         * @return The [Uri] returned by the delegate.
          */
         override fun parseResult(resultCode: Int, intent: Intent?): Uri? {
             return delegateContract.parseResult(resultCode, intent)
@@ -169,7 +181,8 @@ class ImagePicker(nativeUI: ITMNativeUI): ITMNativeUIComponent(nativeUI) {
         private var pickOrCaptureImage: PickOrCaptureImage? = null
 
         /**
-         * Registers a request to start an activity for result using the [PickOrCaptureIModelImageContract].
+         * Registers a request to start an activity for result using the
+         * [PickOrCaptureIModelImageContract].
          */
         fun registerForActivityResult(activity: ComponentActivity) {
             pickOrCaptureImage = PickOrCaptureImage(activity)
