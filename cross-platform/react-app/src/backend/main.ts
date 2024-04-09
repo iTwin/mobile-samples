@@ -5,7 +5,7 @@
 import * as path from "path";
 import { Presentation } from "@itwin/presentation-backend";
 import { LogFunction, Logger, LoggingMetaData, LogLevel } from "@itwin/core-bentley";
-import { MobileHost, MobileHostOpts } from "@itwin/core-mobile/lib/cjs/MobileBackend";
+import { MobileHost, MobileHostOpts, MobileRpcManager } from "@itwin/core-mobile/lib/cjs/MobileBackend";
 import { BackendLogParams, getSupportedRpcs } from "../common/rpcs";
 import { IModelHostConfiguration, IpcHost } from "@itwin/core-backend";
 import { BackendIModelsAccess } from "@itwin/imodels-access-backend";
@@ -43,12 +43,10 @@ void (async () => {
     localeDirectories: [path.join(assetsRoot, "locales")],
     supplementalRulesetDirectories: [path.join(assetsRoot, "supplemental_presentation_rules")],
   });
-  // Invoke platform-specific initialization
-  const init = (await import("./mobile/main")).default;
   // Get RPCs supported by this backend
   const rpcs = getSupportedRpcs();
-  // Do initialize
-  init(rpcs);
+  // Initialize RPCs
+  MobileRpcManager.initializeImpl(rpcs);
   IpcHost.addListener("frontend-listening", () => {
     frontendListening = true;
   });
