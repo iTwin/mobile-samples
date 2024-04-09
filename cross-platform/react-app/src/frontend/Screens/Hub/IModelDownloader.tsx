@@ -6,7 +6,14 @@ import React from "react";
 import { useIsMountedRef } from "@itwin/mobile-ui-react";
 import { DownloadBriefcaseOptions, DownloadProgressInfo, NativeApp } from "@itwin/core-frontend";
 import { MinimalIModel } from "@itwin/imodels-client-management";
-import { BentleyError, BriefcaseDownloader, BriefcaseStatus, IModelStatus, LocalBriefcaseProps, SyncMode } from "@itwin/core-common";
+import {
+  BentleyError,
+  BriefcaseDownloader,
+  BriefcaseStatus,
+  IModelStatus,
+  LocalBriefcaseProps,
+  SyncMode,
+} from "@itwin/core-common";
 import { ProgressRadial } from "@itwin/itwinui-react";
 import { Button, IModelInfo, presentError, useLocalizedString } from "../../Exports";
 

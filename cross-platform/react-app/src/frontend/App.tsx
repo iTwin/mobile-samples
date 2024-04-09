@@ -4,14 +4,32 @@
 *--------------------------------------------------------------------------------------------*/
 import React from "react";
 import { MobileApp, MobileAppOpts } from "@itwin/core-mobile/lib/cjs/MobileFrontend";
-import { IModelApp, IModelConnection, IpcApp, ITWINJS_CORE_VERSION, NativeApp, RenderSystem, SnapshotConnection, ToolAssistanceInstructions } from "@itwin/core-frontend";
+import {
+  IModelApp,
+  IModelConnection,
+  IpcApp,
+  ITWINJS_CORE_VERSION,
+  NativeApp,
+  RenderSystem,
+  SnapshotConnection,
+  ToolAssistanceInstructions,
+} from "@itwin/core-frontend";
 import { AppNotificationManager, UiFramework } from "@itwin/appui-react";
 import { Presentation } from "@itwin/presentation-frontend";
 import { BentleyError, LogFunction, Logger, LoggingMetaData, LogLevel } from "@itwin/core-bentley";
 import { Messenger, MobileCore } from "@itwin/mobile-sdk-core";
 import { MobileUi, ToolAssistanceSuggestion } from "@itwin/mobile-ui-react";
 import { MeasureTools, FeatureTracking as MeasureToolsFeatureTracking } from "@itwin/measure-tools-react";
-import { ActiveScreen, HomeScreen, HubScreen, LoadingScreen, LocalModelsScreen, ModelScreen, ModelScreenExtensionProps, presentError } from "./Exports";
+import {
+  ActiveScreen,
+  HomeScreen,
+  HubScreen,
+  LoadingScreen,
+  LocalModelsScreen,
+  ModelScreen,
+  ModelScreenExtensionProps,
+  presentError,
+} from "./Exports";
 import { BackendLogParams, getSupportedRpcs } from "../common/rpcs";
 import "./App.scss";
 
