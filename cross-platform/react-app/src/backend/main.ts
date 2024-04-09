@@ -5,7 +5,7 @@
 import * as path from "path";
 import { Presentation } from "@itwin/presentation-backend";
 import { LogFunction, Logger, LoggingMetaData, LogLevel } from "@itwin/core-bentley";
-import { MobileHost, MobileHostOpts, MobileRpcManager } from "@itwin/core-mobile/lib/cjs/MobileBackend";
+import { MobileHost, MobileHostOpts } from "@itwin/core-mobile/lib/cjs/MobileBackend";
 import { BackendLogParams, getSupportedRpcs } from "../common/rpcs";
 import { IModelHostConfiguration, IpcHost } from "@itwin/core-backend";
 import { BackendIModelsAccess } from "@itwin/imodels-access-backend";
@@ -27,9 +27,14 @@ void (async () => {
   const baseUrl = `https://${process.env.ITMAPPLICATION_API_PREFIX ?? ""}api.bentley.com/imodels`;
   const imodelsClient = new IModelsClient({ api: { baseUrl } });
   iModelHost.hubAccess = new BackendIModelsAccess(imodelsClient);
+  // Get RPCs supported by this backend
+  const rpcs = getSupportedRpcs();
   // Initialize imodeljs-backend
   const options: MobileHostOpts = {
     iModelHost,
+    mobileHost: {
+      rpcInterfaces: rpcs,
+    },
   };
   await MobileHost.startup(options);
 
@@ -43,10 +48,6 @@ void (async () => {
     localeDirectories: [path.join(assetsRoot, "locales")],
     supplementalRulesetDirectories: [path.join(assetsRoot, "supplemental_presentation_rules")],
   });
-  // Get RPCs supported by this backend
-  const rpcs = getSupportedRpcs();
-  // Initialize RPCs
-  MobileRpcManager.initializeImpl(rpcs);
   IpcHost.addListener("frontend-listening", () => {
     frontendListening = true;
   });
