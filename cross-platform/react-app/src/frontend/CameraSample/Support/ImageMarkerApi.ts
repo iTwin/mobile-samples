@@ -176,6 +176,7 @@ abstract class GreedyClusteringMarkerSet<T extends Marker> extends MarkerSet<T> 
 
   protected clusterMarkers(context: DecorateContext) {
     const vp = context.viewport;
+    // eslint-disable-next-line @itwin/no-internal
     const entries = this._entries;
 
     // get the visible markers
@@ -240,15 +241,20 @@ abstract class GreedyClusteringMarkerSet<T extends Marker> extends MarkerSet<T> 
     // Don't recreate the entries array if the view hasn't changed. This is important for
     // performance, but also necessary for hilite of clusters (otherwise they're recreated
     // continually and never hilited.) */
-    if (!this._worldToViewMap.isAlmostEqual(vp.worldToViewMap.transform0)) {
-      this._worldToViewMap.setFrom(vp.worldToViewMap.transform0);
+    // eslint-disable-next-line @itwin/no-internal
+    const worldToViewMap = this._worldToViewMap;
+    // eslint-disable-next-line @itwin/no-internal
+    const entries = this._entries;
+    if (!worldToViewMap.isAlmostEqual(vp.worldToViewMap.transform0)) {
+      worldToViewMap.setFrom(vp.worldToViewMap.transform0);
+      // eslint-disable-next-line @itwin/no-internal
       this._minScaleViewW = undefined; // Invalidate current value.
-      this._entries.length = 0; // start over.
+      entries.length = 0; // start over.
       this.clusterMarkers(context);
     }
 
     // We now have an array of Markers and Clusters, add them to context.
-    for (const entry of this._entries) {
+    for (const entry of entries) {
       if (entry instanceof Cluster) { // is this entry a Cluster?
         if (entry.markers.length <= this.minimumClusterSize) { // yes, does it have more than the minimum number of entries?
           entry.markers.forEach((marker) => marker.addMarker(context)); // no, just draw all of its Markers
