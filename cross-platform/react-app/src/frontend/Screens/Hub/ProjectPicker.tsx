@@ -16,7 +16,7 @@ import {
   presentError,
   PromiseUtil,
   SearchControl,
-  useLocalizedString
+  useLocalizedString,
 } from "../../Exports";
 
 type WithRequired<T, K extends keyof T> = T & { [P in K]-?: T[P] };
