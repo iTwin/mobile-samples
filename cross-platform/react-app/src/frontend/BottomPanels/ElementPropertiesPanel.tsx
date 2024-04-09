@@ -7,8 +7,19 @@ import { IModelApp, IModelConnection } from "@itwin/core-frontend";
 import { FillCentered } from "@itwin/core-react";
 import useResizeObserver from "@react-hook/resize-observer";
 import { VirtualizedPropertyGridWithDataProvider } from "@itwin/components-react";
-import { IPresentationPropertyDataProvider, PresentationPropertyDataProvider, PresentationPropertyDataProviderProps, usePropertyDataProviderWithUnifiedSelection } from "@itwin/presentation-components";
-import { DraggableComponent, IconImage, ResizableBottomPanel, ResizableBottomPanelProps, useBeEvent } from "@itwin/mobile-ui-react";
+import {
+  IPresentationPropertyDataProvider,
+  PresentationPropertyDataProvider,
+  PresentationPropertyDataProviderProps,
+  usePropertyDataProviderWithUnifiedSelection,
+} from "@itwin/presentation-components";
+import {
+  DraggableComponent,
+  IconImage,
+  ResizableBottomPanel,
+  ResizableBottomPanelProps,
+  useBeEvent,
+} from "@itwin/mobile-ui-react";
 import { HeaderTitle, useLocalizedString } from "../Exports";
 
 import "./ElementPropertiesPanel.scss";

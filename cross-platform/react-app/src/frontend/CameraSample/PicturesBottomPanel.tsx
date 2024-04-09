@@ -11,7 +11,14 @@ import {
   presentYesNoAlert,
   ReloadedEvent,
 } from "@itwin/mobile-sdk-core";
-import { DraggableComponent, NavigationButton, ResizableBottomPanel, ResizableBottomPanelProps, ToolButton, useBeUiEvent } from "@itwin/mobile-ui-react";
+import {
+  DraggableComponent,
+  NavigationButton,
+  ResizableBottomPanel,
+  ResizableBottomPanelProps,
+  ToolButton,
+  useBeUiEvent,
+} from "@itwin/mobile-ui-react";
 import { HeaderTitle } from "../Exports";
 import { CameraSampleAppGetLocalizedString, ImageCache, ImageMarkerApi } from "./Exports";
 

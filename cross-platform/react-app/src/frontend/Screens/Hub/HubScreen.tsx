@@ -6,7 +6,20 @@ import React from "react";
 import { AlertAction, MobileCore } from "@itwin/mobile-sdk-core";
 import { ActionSheetButton, BackButton, useIsMountedRef } from "@itwin/mobile-ui-react";
 import { BriefcaseConnection, IModelConnection } from "@itwin/core-frontend";
-import { Button, HubStep, i18n, IModelDownloader, IModelInfo, IModelPicker, presentError, ProjectPicker, Screen, SignIn, signOut, useLocalizedString } from "../../Exports";
+import {
+  Button,
+  HubStep,
+  i18n,
+  IModelDownloader,
+  IModelInfo,
+  IModelPicker,
+  presentError,
+  ProjectPicker,
+  Screen,
+  SignIn,
+  signOut,
+  useLocalizedString,
+} from "../../Exports";
 import "./HubScreen.scss";
 
 HubScreen.ACTIVE_PROJECT_INFO = "activeProjectInfo";
