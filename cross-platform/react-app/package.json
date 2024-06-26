@@ -1,6 +1,6 @@
 {
   "name": "react-app",
-  "version": "0.22.4",
+  "version": "0.22.5",
   "description": "React app for use with iTwin Mobile SDK samples.",
   "repository": {
     "type": "git",
@@ -76,8 +76,8 @@
     "@itwin/linear-referencing-backend": "4.7.2",
     "@itwin/linear-referencing-common": "4.7.2",
     "@itwin/measure-tools-react": "^0.14.2",
-    "@itwin/mobile-sdk-core": "0.22.4",
-    "@itwin/mobile-ui-react": "0.22.4",
+    "@itwin/mobile-sdk-core": "0.22.5",
+    "@itwin/mobile-ui-react": "0.22.5",
     "@itwin/presentation-backend": "4.7.2",
     "@itwin/presentation-common": "4.7.2",
     "@itwin/presentation-components": "4.4.1",
