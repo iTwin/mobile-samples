@@ -4,7 +4,6 @@
 *--------------------------------------------------------------------------------------------*/
 import * as React from "react";
 import { IModelApp, IModelConnection } from "@itwin/core-frontend";
-import { FillCentered } from "@itwin/core-react";
 import useResizeObserver from "@react-hook/resize-observer";
 import { VirtualizedPropertyGridWithDataProvider } from "@itwin/components-react";
 import {
@@ -14,6 +13,7 @@ import {
   usePropertyDataProviderWithUnifiedSelection,
 } from "@itwin/presentation-components";
 import {
+  CenterDiv,
   DraggableComponent,
   IconImage,
   ResizableBottomPanel,
@@ -100,7 +100,7 @@ function UnifiedSelectionPropertyGrid(props: UnifiedSelectionPropertyGridProps) 
   const { isOverLimit } = usePropertyDataProviderWithUnifiedSelection({ dataProvider: props.dataProvider });
   const toManyElementsLabel = useLocalizedString("ElementPropertiesPanel", "TooManyElements");
   if (isOverLimit) {
-    return (<FillCentered className="too-many-elements">{toManyElementsLabel}</FillCentered>);
+    return (<CenterDiv fill={true} className="too-many-elements">{toManyElementsLabel}</CenterDiv>);
   }
   return <VirtualizedPropertyGridWithDataProvider {...props} horizontalOrientationMinWidth={400} />;
 }
