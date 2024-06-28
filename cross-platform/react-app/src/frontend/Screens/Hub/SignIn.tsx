@@ -3,7 +3,7 @@
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
 import { IModelApp } from "@itwin/core-frontend";
-import { LoadingSpinner } from "@itwin/core-react";
+import { ProgressRadial } from "@itwin/itwinui-react";
 import { useIsMountedRef } from "@itwin/mobile-ui-react";
 import React from "react";
 import { Button, presentError, useLocalizedString } from "../../Exports";
@@ -53,7 +53,7 @@ export function SignIn(props: SignInProps) {
 
   return <div className="centered-list">
     {connectingLabel}
-    <LoadingSpinner />
+    <ProgressRadial indeterminate />
     <Button title={cancelLabel} onClick={() => onBack()} />
   </div>;
 }

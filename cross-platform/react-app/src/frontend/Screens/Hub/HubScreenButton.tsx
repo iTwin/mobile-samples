@@ -4,7 +4,7 @@
 *--------------------------------------------------------------------------------------------*/
 import React from "react";
 import classnames from "classnames";
-import { LoadingSpinner } from "@itwin/core-react";
+import { ProgressRadial } from "@itwin/itwinui-react";
 import { Button, ButtonProps } from "../../Exports";
 import { useScroll } from "@itwin/mobile-ui-react";
 
@@ -34,7 +34,7 @@ export function HubScreenButtonList(props: HubScreenButtonListProps) {
   // we just hide it or the loading spinner depending on the loading state.
   const getDisplayStyle = (none: boolean) => none ? { display: "none" } : undefined;
   return <>
-    <div style={getDisplayStyle(!loading)} className="centered-list"><LoadingSpinner /></div>
+    <div style={getDisplayStyle(!loading)} className="centered-list"><ProgressRadial indeterminate /></div>
     <div style={getDisplayStyle(!!loading)} ref={listRef} className="hubscreen-list">
       <div className="list-items">{children}</div>
     </div>

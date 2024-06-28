@@ -6,7 +6,7 @@ import React from "react";
 import { HorizontalPicker, useIsMountedRef } from "@itwin/mobile-ui-react";
 import { ITwin, ITwinsAccessClient, ITwinsAPIResponse, ITwinsQueryArg, ITwinSubClass } from "@itwin/itwins-client";
 import { IModelApp } from "@itwin/core-frontend";
-import { LoadingSpinner } from "@itwin/core-react";
+import { ProgressRadial } from "@itwin/itwinui-react";
 import {
   ButtonProps,
   HubScreenButton,
@@ -189,7 +189,7 @@ export function ProjectPicker(props: ProjectPickerProps) {
       {projectSource === ProjectsSource.All && <SearchControl placeholder={searchLabel} onSearch={(searchVal) => setSearch(searchVal)} initialValue={search} />}
     </div>
     <ProjectList projects={projects} onSelect={onSelect} onScroll={onScroll} loading={loading}>
-      {loadingMore && <LoadingSpinner />}
+      {loadingMore && <ProgressRadial indeterminate />}
       {nextFunc && !loadingMore && <HubScreenButton title={loadMoreLabel} style={{ ["--color" as any]: "var(--muic-active)" }} onClick={loadMore} />}
     </ProjectList>
   </>;
