@@ -210,7 +210,7 @@ function useAppState(onInitialize?: () => Promise<void>) {
         };
         await MobileApp.startup(opts);
         initializeLogging();
-        await UiFramework.initialize(undefined);
+        await UiFramework.initialize();
         await Presentation.initialize();
         await MobileUi.initialize(IModelApp.localization);
         await IModelApp.localization.registerNamespace("ReactApp");

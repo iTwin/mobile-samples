@@ -29,6 +29,8 @@ export type ButtonRowProps = React.HTMLAttributes<HTMLDivElement>;
 export interface ToolEntry {
   labelKey: string;
   icon?: string;
+  // @todo AppUI deprecation
+  // eslint-disable-next-line deprecation/deprecation
   toolItemDef: ToolItemDef;
 }
 
@@ -89,6 +91,8 @@ export interface ToolsBottomPanelProps extends BottomPanelProps {
 
 /** Command called by the walk tool. */
 function viewLookAndMoveCommand() {
+  // @todo AppUI deprecation
+  // eslint-disable-next-line deprecation/deprecation
   return new ToolItemDef({
     toolId: "View.LookAndMove",
     iconSpec: WalkViewTool.iconSpec,
@@ -105,6 +109,8 @@ function viewLookAndMoveCommand() {
  */
 export function getDefaultTools(): ToolEntry[] {
   return [
+    // @todo AppUI deprecation
+    // eslint-disable-next-line deprecation/deprecation
     { labelKey: "ReactApp:ToolsBottomPanel.Select", icon: "icon-gesture-touch", toolItemDef: CoreTools.selectElementCommand },
     { labelKey: "ReactApp:ToolsBottomPanel.Distance", icon: "icon-measure-distance", toolItemDef: MeasureToolDefinitions.measureDistanceToolCommand },
     { labelKey: "ReactApp:ToolsBottomPanel.Location", icon: "icon-measure-location", toolItemDef: MeasureToolDefinitions.measureLocationToolCommand },
@@ -114,11 +120,14 @@ export function getDefaultTools(): ToolEntry[] {
     { labelKey: "ReactApp:ToolsBottomPanel.Perpendicular", icon: "icon-measure-perpendicular", toolItemDef: MeasureToolDefinitions.measurePerpendicularToolCommand },
     { labelKey: "ReactApp:ToolsBottomPanel.Clear", icon: "icon-measure-clear", toolItemDef: MeasureToolDefinitions.clearMeasurementsToolCommand },
     { labelKey: "ReactApp:ToolsBottomPanel.Walk", icon: "icon-walk", toolItemDef: viewLookAndMoveCommand() },
+    // @todo AppUI deprecation
+    /* eslint-disable deprecation/deprecation */
     { labelKey: "ReactApp:ToolsBottomPanel.SectionByPlane", toolItemDef: CoreTools.sectionByPlaneCommandItemDef },
     { labelKey: "ReactApp:ToolsBottomPanel.SectionByElement", toolItemDef: CoreTools.sectionByElementCommandItemDef },
     { labelKey: "ReactApp:ToolsBottomPanel.SectionByRange", toolItemDef: CoreTools.sectionByRangeCommandItemDef },
     { labelKey: "ReactApp:ToolsBottomPanel.SectionByShape", toolItemDef: CoreTools.sectionByShapeCommandItemDef },
     { labelKey: "ReactApp:ToolsBottomPanel.ClearSection", icon: "icon-section-clear", toolItemDef: ToolItemDef.getItemDefForTool(ViewClipClearTool) },
+    /* eslint-enable deprecation/deprecation */
   ];
 }
 
@@ -134,6 +143,8 @@ export function ToolsBottomPanel(props: ToolsBottomPanelProps) {
   // Any time activeToolId changes, ToolsBottomPanel() will execute again (due to useActiveToolId updating activeToolId).
   // This allows us to put this here instead of inside the tool activation. If this is in the tool activation, it won't
   // auto-detect when a tool ends on its own (switching back to select tool). The section tools all end on their own.
+  // @todo AppUI deprecation
+  // eslint-disable-next-line deprecation/deprecation
   ToolSettings.enableVirtualCursorForLocate = activeToolId !== CoreTools.selectElementCommand.toolId;
 
   return <BottomPanel

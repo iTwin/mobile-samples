@@ -15,9 +15,9 @@ import {
   ViewToggleCameraTool,
 } from "@itwin/core-frontend";
 import { ViewportComponent } from "@itwin/imodel-components-react";
-import { getCssVariable, IconSpec } from "@itwin/core-react";
+import { IconSpec } from "@itwin/core-react";
 import { viewWithUnifiedSelection } from "@itwin/presentation-components";
-import { ActionSheetGravity, ActionStyle, AlertAction, Messenger, presentAlert } from "@itwin/mobile-sdk-core";
+import { ActionSheetGravity, ActionStyle, AlertAction, getCssVariable, Messenger, presentAlert } from "@itwin/mobile-sdk-core";
 import { ThemeProvider } from "@itwin/itwinui-react";
 import {
   ActionSheetButton,
