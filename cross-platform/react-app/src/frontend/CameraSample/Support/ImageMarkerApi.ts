@@ -22,7 +22,7 @@ import {
   tryImageElementFromUrl,
 } from "@itwin/core-frontend";
 import { BeUiEvent } from "@itwin/core-bentley";
-import { getCssVariable } from "@itwin/core-react";
+import { getCssVariable } from "@itwin/mobile-sdk-core";
 
 /** Displays a single image Marker at a given world location. */
 class ImageMarker extends Marker {
