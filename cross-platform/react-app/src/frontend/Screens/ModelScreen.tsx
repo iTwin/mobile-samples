@@ -426,7 +426,7 @@ export function ModelScreen(props: ModelScreenProps) {
 
 /** Properties for the {@link HeaderTitle} React component. */
 export interface HeaderTitleProps {
-  iconSpec?: IconSpec;
+  iconSpec?: IconSpec; // eslint-disable-line deprecation/deprecation
   label?: string;
   moreElements?: React.ReactNode;
 }
