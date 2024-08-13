@@ -22,7 +22,7 @@
   "dependencies": {
     "@itwin/express-server": "4.8.1",
     "@itwin/service-authorization": "1.0.3",
-    "axios": "^1.6.0",
+    "axios": "^1.7.4",
     "dotenv": "^8.2.0",
     "dotenv-expand": "^5.1.0",
     "dotenv-flow": "^3.2.0",
