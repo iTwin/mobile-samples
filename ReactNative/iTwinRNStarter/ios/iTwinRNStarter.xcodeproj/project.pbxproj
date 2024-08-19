@@ -817,7 +817,7 @@
 			repositoryURL = "https://github.com/iTwin/mobile-sdk-ios.git";
 			requirement = {
 				kind = exactVersion;
-				version = 0.22.12;
+				version = 0.22.13;
 			};
 		};
 		1F64EF042A12FC3300E2275E /* XCRemoteSwiftPackageReference "ShowTime.git" */ = {
