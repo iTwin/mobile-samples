@@ -174,6 +174,8 @@ export function ModelScreen(props: ModelScreenProps) {
         fields: [{ name: failOKLabel, isRequired: true }],
         onOK: async (values) => {
           if (values[0].value?.toLowerCase() === "yes") {
+            // Show that the OK and Cancel buttons on the form dialog disable while waiting for the
+            // result of onOK.
             await MobileCore.sleep(5000);
             return false;
           }
