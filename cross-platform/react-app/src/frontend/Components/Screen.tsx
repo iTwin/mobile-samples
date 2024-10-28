@@ -122,6 +122,18 @@ export function Screen(props: ScreenProps = {}) {
   );
 }
 
+export function presentMessage(title: string, message: string, showStatusBar = true, okTitle = i18n("Shared", "OK")) {
+  void presentAlert({
+    title,
+    message,
+    showStatusBar,
+    actions: [{
+      name: "ok",
+      title: okTitle,
+    }],
+  });
+}
+
 /**
  * Show an alert box for the given error using {@link presentAlert}.
  *
@@ -134,15 +146,7 @@ export function Screen(props: ScreenProps = {}) {
  */
 export function presentError(formatKey: string, error: any, namespace = "App", showStatusBar = true) {
   const errorMessage = (error instanceof Error) ? error.message : error;
-  void presentAlert({
-    title: i18n("Shared", "Error"),
-    message: i18n(namespace, formatKey, { error: errorMessage }),
-    showStatusBar,
-    actions: [{
-      name: "ok",
-      title: i18n("Shared", "OK"),
-    }],
-  });
+  presentMessage(i18n("Shared", "Error"), i18n(namespace, formatKey, { error: errorMessage }), showStatusBar);
 }
 
 /**

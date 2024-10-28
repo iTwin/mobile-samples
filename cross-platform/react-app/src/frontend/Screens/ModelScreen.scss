@@ -15,6 +15,7 @@
   align-items: center;
   justify-content: center;
   text-align: center;
+
   div:first-child {
     font-size: calc(10px + 2vmin);
   }
@@ -25,6 +26,13 @@
   position: absolute;
   left: 0px;
   top: 0px;
+  width: 100vw;
+  height: 100vh;
+}
+
+// For some reason, the 100% width and height of the ConfigurableUiWrapper is not working. Using
+// 100vw and 100vh fixes the problem.
+#uifw-configurableui-wrapper {
   width: 100vw;
   height: 100vh;
 }
