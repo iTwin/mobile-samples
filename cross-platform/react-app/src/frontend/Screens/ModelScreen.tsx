@@ -17,13 +17,15 @@ import {
 import { ViewportComponent } from "@itwin/imodel-components-react";
 import { IconSpec } from "@itwin/core-react";
 import { viewWithUnifiedSelection } from "@itwin/presentation-components";
-import { ActionSheetGravity, ActionStyle, AlertAction, getCssVariable, Messenger, presentAlert } from "@itwin/mobile-sdk-core";
+import { ActionSheetGravity, ActionStyle, AlertAction, getCssVariable, Messenger, MobileCore, presentAlert } from "@itwin/mobile-sdk-core";
 import { ThemeProvider } from "@itwin/itwinui-react";
 import {
   ActionSheetButton,
   IconImage,
   MobileUi,
   MobileUiContent,
+  ModalEntryFormDialog,
+  ModalEntryFormDialogRunProps,
   NavigationPanel,
   PreferredColorScheme,
   TabOrPanelDef,
@@ -40,6 +42,7 @@ import {
   i18n,
   InfoBottomPanel,
   presentError,
+  presentMessage,
   ToolAssistance,
   ToolsBottomPanel,
   ToolsBottomPanelProps,
@@ -47,6 +50,7 @@ import {
   ViewsBottomPanel,
 } from "../Exports";
 import "./ModelScreen.scss";
+import { ConfigurableUiContent, UiStateStorageHandler } from "@itwin/appui-react";
 
 // tslint:disable-next-line: variable-name
 const UnifiedSelectionViewportComponent = viewWithUnifiedSelection(ViewportComponent);
@@ -95,6 +99,8 @@ export function ModelScreen(props: ModelScreenProps) {
   const { filename, iModel, onBack, toolsBottomPanel, additionalComponents, additionalTabs } = props;
   const [viewState, setViewState] = React.useState<ViewState>();
   const locationLabel = useLocalizedString("ModelScreen", "Location");
+  const formDialogLabel = useLocalizedString("ModelScreen", "FormDialog");
+  const failOKLabel = useLocalizedString("ModelScreen", "FailOK");
   const errorLabel = useLocalizedString("Shared", "Error");
   const okLabel = useLocalizedString("Shared", "OK");
   const showCurrentLocationLabel = useLocalizedString("ModelScreen", "ShowCurrentLocation");
@@ -150,15 +156,7 @@ export function ModelScreen(props: ModelScreenProps) {
         });
       }, (positionError: GeolocationPositionError) => {
         const error = positionError.message;
-        void presentAlert({
-          title: errorLabel,
-          message: i18n("ModelScreen", "LocationErrorFormat", { error }),
-          showStatusBar: true,
-          actions: [{
-            name: "ok",
-            title: okLabel,
-          }],
-        });
+        presentMessage(errorLabel, i18n("ModelScreen", "LocationErrorFormat", { error }));
       });
     };
     const handleFitView = () => {
@@ -166,6 +164,25 @@ export function ModelScreen(props: ModelScreenProps) {
     };
     const handleToggleCamera = () => {
       void IModelApp.tools.run(ViewToggleCameraTool.toolId, IModelApp.viewManager.getFirstOpenView());
+    };
+    const handleFormDialog = async () => {
+      const formProps: ModalEntryFormDialogRunProps = {
+        title: formDialogLabel,
+        onError: async (message: string) => {
+          presentMessage(errorLabel, message);
+        },
+        fields: [{ name: failOKLabel, isRequired: true }],
+        onOK: async (values) => {
+          if (values[0].value?.toLowerCase() === "yes") {
+            // Show that the OK and Cancel buttons on the form dialog disable while waiting for the
+            // result of onOK.
+            await MobileCore.sleep(5000);
+            return false;
+          }
+          return true;
+        },
+      };
+      await ModalEntryFormDialog.run(formProps);
     };
 
     const actions: AlertAction[] = [
@@ -188,6 +205,11 @@ export function ModelScreen(props: ModelScreenProps) {
         name: "toggleCamera",
         title: toggleCameraLabel,
         onSelected: handleToggleCamera,
+      },
+      {
+        name: "formDialog",
+        title: "Form Dialog",
+        onSelected: handleFormDialog,
       },
       {
         name: "appearance",
@@ -420,6 +442,15 @@ export function ModelScreen(props: ModelScreenProps) {
         {additionalComponents}
         {tabsAndPanelsAPI.renderTabBarAndPanels()}
       </MobileUiContent >
+      {/*
+        * ConfigurableUiContent must be present in order for modal dialogs to render. The form
+        * dialog in this sample is a modal dialog, so ConfigurableUiContent must be present in
+        * order for it to render. ConfigurableUiContent must also be a child of
+        * UiStateStorageHandler.
+        */}
+      <UiStateStorageHandler>
+        <ConfigurableUiContent />
+      </UiStateStorageHandler>
     </ThemeProvider>
   );
 }

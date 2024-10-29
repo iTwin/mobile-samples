@@ -51,6 +51,8 @@
   },
   "ModelScreen": {
     "Location": "Location",
+    "FormDialog": "Form Dialog",
+    "FailOK": "Enter \"yes\" to fail OK",
     "ShowCurrentLocation": "Show Current Location...",
     "LocationFormat": "Latitude: {{latitude}} Longitude: {{longitude}}",
     "LocationErrorFormat": "Error getting location: {{- error}}",
