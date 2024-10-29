@@ -442,6 +442,12 @@ export function ModelScreen(props: ModelScreenProps) {
         {additionalComponents}
         {tabsAndPanelsAPI.renderTabBarAndPanels()}
       </MobileUiContent >
+      {/*
+        * ConfigurableUiContent must be present in order for modal dialogs to render. The form
+        * dialog in this sample is a modal dialog, so ConfigurableUiContent must be present in
+        * order for it to render. ConfigurableUiContent must also be a child of
+        * UiStateStorageHandler.
+        */}
       <UiStateStorageHandler>
         <ConfigurableUiContent />
       </UiStateStorageHandler>

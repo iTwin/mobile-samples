@@ -30,8 +30,9 @@
   height: 100vh;
 }
 
-// For some reason, the 100% width and height of the ConfigurableUiWrapper is not working. Using
-// 100vw and 100vh fixes the problem.
+// Since we only use ConfigurableUiContent to render modal dialogs, it is empty. Because it is
+// empty, its default width and height of 100% do not work. Overriding the width and height to
+// be 100vw and 100vh fixes the problem.
 #uifw-configurableui-wrapper {
   width: 100vw;
   height: 100vh;
