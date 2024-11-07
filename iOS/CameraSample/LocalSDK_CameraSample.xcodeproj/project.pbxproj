@@ -396,6 +396,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				ENABLE_BITCODE = NO;
 				INFOPLIST_FILE = CameraSample/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 17;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -415,6 +416,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				ENABLE_BITCODE = NO;
 				INFOPLIST_FILE = CameraSample/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 17;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",

@@ -53,7 +53,7 @@ class ImagePicker: ITMNativeUIComponent {
     /// - Returns: An appropriate picker configured based on the information contained in `params`.
     private func createPicker(params: [String: Any]) -> UIViewController {
         let useCamera = useCamera(params: params)
-        if !useCamera, #available(iOS 14, *) {
+        if !useCamera {
             // Note: configuration.selectionLimit defaults to 1, which is what we want.
             var configuration = PHPickerConfiguration()
             configuration.filter = .any(of: [.images])
