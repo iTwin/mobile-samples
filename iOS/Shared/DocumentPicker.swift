@@ -7,7 +7,6 @@ import UIKit
 import ITwinMobile
 import UniformTypeIdentifiers
 
-@available(iOS 14.0, *)
 extension UTType {
     /// The UTType exported by this application (in Info.plist).
     static let bim_iModel = UTType(exportedAs: "com.bentley.bim-imodel")
