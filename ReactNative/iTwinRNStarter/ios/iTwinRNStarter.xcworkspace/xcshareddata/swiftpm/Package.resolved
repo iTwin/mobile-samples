@@ -1,4 +1,5 @@
 {
+  "originHash" : "a214135489a71598a2f2cdee257752cb42cc91102d41743e46567f85a184f19e",
   "pins" : [
     {
       "identity" : "appauth-ios",
@@ -23,8 +24,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/iTwin/mobile-native-ios",
       "state" : {
-        "revision" : "a9b92beb8e08587c6ad774ce9e857ca4be91e58b",
-        "version" : "3.7.0"
+        "revision" : "7d0219150c7c67f85ed59c878cf47dd84df24895",
+        "version" : "4.9.35"
       }
     },
     {
@@ -32,8 +33,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/iTwin/mobile-sdk-ios.git",
       "state" : {
-        "revision" : "dc9a0c6b0cbd265190212811ea68fcf028dd633c",
-        "version" : "0.10.43"
+        "revision" : "4b493fd8dc7b0f6775e8bcd0348392366016e93e",
+        "version" : "0.22.15"
       }
     },
     {
@@ -55,5 +56,5 @@
       }
     }
   ],
-  "version" : 2
+  "version" : 3
 }
