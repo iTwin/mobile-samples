@@ -48,12 +48,12 @@ class ImagePicker: ITMNativeUIComponent {
     }
 
     /// Creates a "picker". When in camera mode, this will always return a UIImagePickerController. However, when in photoLibrary
-    /// mode, this will return a PHPickerViewController.
+    /// mode, this will return a PHPickerViewController in iOS 14 and later, and a UIImagePickerController in iOS 13.
     /// - Parameter params: The params from the query.
     /// - Returns: An appropriate picker configured based on the information contained in `params`.
     private func createPicker(params: [String: Any]) -> UIViewController {
         let useCamera = useCamera(params: params)
-        if !useCamera {
+        if !useCamera, #available(iOS 14, *) {
             // Note: configuration.selectionLimit defaults to 1, which is what we want.
             var configuration = PHPickerConfiguration()
             configuration.filter = .any(of: [.images])
@@ -86,6 +86,15 @@ class ImagePicker: ITMNativeUIComponent {
         if useCamera(params: params) {
             if ITMDevicePermissionsHelper.isVideoCaptureDenied {
                 // The user has previously denied camera access to this app. Show a dialog that states
+                // this, and allows the user to open iOS Settings to change the setting.
+                ITMDevicePermissionsHelper.openPhotoCaptureAccessAccessDialog()
+                return nil
+            }
+        } else {
+            // Note: On iOS 14 and above, photo library access isn't required, because PHPickerViewController
+            // runs in a separate process and only returns the picked image to the app.
+            if #unavailable(iOS 14), ITMDevicePermissionsHelper.isPhotoLibraryDenied {
+                // The user has previously denied photo library access to this app. Show a dialog that states
                 // this, and allows the user to open iOS Settings to change the setting.
                 ITMDevicePermissionsHelper.openPhotoCaptureAccessAccessDialog()
                 return nil
@@ -200,6 +209,7 @@ class ImagePicker: ITMNativeUIComponent {
 }
 
 /// `PHPickerViewController`'s delgate must implement this protocol.
+@available(iOS 14, *)
 extension ImagePicker: PHPickerViewControllerDelegate {
     /// Called when the user picks an image from the photo library or cancels picking.
     /// - Parameters:
