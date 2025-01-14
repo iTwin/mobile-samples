@@ -10,6 +10,7 @@ import { BackendLogParams, getSupportedRpcs } from "../common/rpcs";
 import { IModelHostConfiguration, IpcHost } from "@itwin/core-backend";
 import { BackendIModelsAccess } from "@itwin/imodels-access-backend";
 import { IModelsClient } from "@itwin/imodels-client-authoring";
+import { EditHandler } from "./EditHandler";
 
 // This is the file that generates main.js, which is loaded by the backend into a Google V8 JavaScript
 // engine instance that is running for node.js. This code runs when the iTwin Mobile backend is
@@ -57,6 +58,7 @@ void (async () => {
       processLogQueue();
     }, 10);
   });
+  EditHandler.register();
 })();
 
 function processLogQueue() {

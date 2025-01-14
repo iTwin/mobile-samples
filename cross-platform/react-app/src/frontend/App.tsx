@@ -264,7 +264,7 @@ function useAppState(onInitialize?: () => Promise<void>) {
       };
       pushActiveInfo(ActiveScreen.Model, cleanup);
     } catch (error) {
-      presentError("LoadErrorFormat", error);
+      void presentError("LoadErrorFormat", error);
     }
   }, [pushActiveInfo]);
 

@@ -26,10 +26,14 @@
     "DeviceDocuments": "Device Documents",
     "HubDocuments": "Downloaded from iModel Hub"
   },
+  "ChangesetsDownloader": {
+    "DownloadingChangesets": "Downloading changesets for",
+    "ApplyingChangesets": "Applying changesets to",
+    "PullChangesErrorFormat": "Error downloading changesets: {{- error}}"
+  },
   "HubScreen": {
     "Connecting": "Connecting...",
     "SelectProject": "Select Project",
-    "DownloadingIModel": "Downloading iModel",
     "FetchProjectsErrorFormat": "Error getting projects list: {{- error}}",
     "GetIModelsErrorFormat": "Error getting iModels list: {{- error}}",
     "SigninErrorFormat": "Error signing in: {{- error}}",
@@ -77,7 +81,13 @@
     "ChangeAppearance": "Change Appearance",
     "Light": "Light",
     "Dark": "Dark",
-    "Automatic": "Automatic"
+    "Automatic": "Automatic",
+    "Edit": "Edit User Label",
+    "EditUpdate": "Update User Label",
+    "EditUpdateErrorFormat": "Error updating user label: {{- error}}",
+    "EditPush": "Push Changes",
+    "EditPushErrorFormat": "Error pushing changes: {{- error}}",
+    "Done": "Done"
   },
   "AboutBottomPanel": {
     "About": "About",

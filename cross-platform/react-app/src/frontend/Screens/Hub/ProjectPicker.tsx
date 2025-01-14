@@ -143,7 +143,7 @@ export function ProjectPicker(props: ProjectPickerProps) {
         setNextFunc(() => results.next);
       } catch (error) {
         setProjects([]);
-        presentError("FetchProjectsErrorFormat", error, "HubScreen");
+        await presentError("FetchProjectsErrorFormat", error, "HubScreen");
         onError?.(error);
       }
       setLoading(false);
@@ -166,7 +166,7 @@ export function ProjectPicker(props: ProjectPickerProps) {
         setNextFunc(undefined);
       }
     } catch (error) {
-      presentError("FetchProjectsErrorFormat", error, "HubScreen");
+      await presentError("FetchProjectsErrorFormat", error, "HubScreen");
       onError?.(error);
     }
     setLoadingMore(false);

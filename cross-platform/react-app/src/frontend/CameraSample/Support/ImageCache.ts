@@ -66,7 +66,7 @@ export class ImageCache {
     try {
       return await Messenger.query("shareImages", { urls, sourceRect });
     } catch (error) {
-      presentError("ShareErrorFormat", error, "ImageCache");
+      void presentError("ShareErrorFormat", error, "ImageCache");
     }
   }
 }
