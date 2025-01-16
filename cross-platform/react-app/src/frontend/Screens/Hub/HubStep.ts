@@ -12,5 +12,6 @@ export enum HubStep {
   SelectProject,
   SelectIModel,
   DownloadIModel,
+  DownloadChangesets,
   Error
 }

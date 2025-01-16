@@ -56,7 +56,7 @@ function IModelButton(props: IModelButtonProps) {
       onCacheDeleted?.(modelInfo);
     } catch (error) {
       // There was a problem deleting the cached briefcase. Show the error.
-      presentError("DeleteErrorFormat", error, "HubScreen");
+      await presentError("DeleteErrorFormat", error, "HubScreen");
     }
   }, [briefcase, isMountedRef, modelInfo, onCacheDeleted]);
 
@@ -146,7 +146,7 @@ export function IModelPicker(props: IModelPickerProps) {
         // Don't show an error message for ProjectNotFound, since the HubScreen will automatically
         // switch to the project selection screen in that case.
         if (anyError.code !== "ProjectNotFound") {
-          presentError("GetIModelsErrorFormat", error, "HubScreen");
+          void presentError("GetIModelsErrorFormat", error, "HubScreen");
         }
         onError?.(error);
       }

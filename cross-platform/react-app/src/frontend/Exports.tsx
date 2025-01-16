@@ -17,6 +17,7 @@ export * from "./BottomPanels/AboutBottomPanel";
 export * from "./BottomPanels/ViewsBottomPanel";
 export * from "./Screens/HomeScreen";
 export * from "./Screens/Hub/HubScreenButton";
+export * from "./Screens/Hub/ChangesetsDownloader";
 export * from "./Screens/Hub/IModelDownloader";
 export * from "./Screens/Hub/IModelPicker";
 export * from "./Screens/Hub/ProjectPicker";

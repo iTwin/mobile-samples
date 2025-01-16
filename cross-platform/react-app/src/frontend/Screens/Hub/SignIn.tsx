@@ -39,11 +39,11 @@ export function SignIn(props: SignInProps) {
         if (accessToken) {
           onSignedIn();
         } else {
-          presentError("SigninErrorFormat", new Error(userCanceledSignInLabel), "HubScreen");
+          await presentError("SigninErrorFormat", new Error(userCanceledSignInLabel), "HubScreen");
           onError();
         }
       } catch (error) {
-        presentError("SigninErrorFormat", error, "HubScreen");
+        await presentError("SigninErrorFormat", error, "HubScreen");
         onError();
       }
     };
