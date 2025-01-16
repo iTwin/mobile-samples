@@ -9,16 +9,14 @@ function render_size
   fi
   if [[ "$2" =~ ".*Dark.*" ]]; then
     # qlmanage doesn't support transparent background
-    # This requires ImageMagick to be installed and in the path.
-    magick -background none -size $1x$1 "$2" "${2}.png"
+    # This requires rsvg-convert to be installed and in the path. With homebrew,
+    # you can install it with `brew install librsvg`
+    rsvg-convert -w $1 -h $1 "$2" > "${2}.png"
   else
     qlmanage -t -s $1 -o . "$2"
   fi
   mv "${2}.png" "${2%.svg}-${size_label}.png"
 }
-render_size 20 $1
-render_size 29 $1
-render_size 40 $1
 render_size 40 $1 "20@2x"
 render_size 58 $1 "29@2x"
 render_size 60 $1 "20@3x"

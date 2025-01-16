@@ -118,7 +118,7 @@
           "value" : "dark"
         }
       ],
-      "filename" : "ITMSample-Camera-Dark-20@2x.png",
+      "filename" : "Dark-ITMSample-Camera-20@2x.png",
       "idiom" : "universal",
       "platform" : "ios",
       "scale" : "2x",
@@ -131,7 +131,7 @@
           "value" : "dark"
         }
       ],
-      "filename" : "ITMSample-Camera-Dark-20@3x.png",
+      "filename" : "Dark-ITMSample-Camera-20@3x.png",
       "idiom" : "universal",
       "platform" : "ios",
       "scale" : "3x",
@@ -144,7 +144,7 @@
           "value" : "dark"
         }
       ],
-      "filename" : "ITMSample-Camera-Dark-29@2x.png",
+      "filename" : "Dark-ITMSample-Camera-29@2x.png",
       "idiom" : "universal",
       "platform" : "ios",
       "scale" : "2x",
@@ -157,7 +157,7 @@
           "value" : "dark"
         }
       ],
-      "filename" : "ITMSample-Camera-Dark-29@3x.png",
+      "filename" : "Dark-ITMSample-Camera-29@3x.png",
       "idiom" : "universal",
       "platform" : "ios",
       "scale" : "3x",
@@ -170,7 +170,7 @@
           "value" : "dark"
         }
       ],
-      "filename" : "ITMSample-Camera-Dark-38@2x.png",
+      "filename" : "Dark-ITMSample-Camera-38@2x.png",
       "idiom" : "universal",
       "platform" : "ios",
       "scale" : "2x",
@@ -183,7 +183,7 @@
           "value" : "dark"
         }
       ],
-      "filename" : "ITMSample-Camera-Dark-38@3x.png",
+      "filename" : "Dark-ITMSample-Camera-38@3x.png",
       "idiom" : "universal",
       "platform" : "ios",
       "scale" : "3x",
@@ -196,7 +196,7 @@
           "value" : "dark"
         }
       ],
-      "filename" : "ITMSample-Camera-Dark-40@2x.png",
+      "filename" : "Dark-ITMSample-Camera-40@2x.png",
       "idiom" : "universal",
       "platform" : "ios",
       "scale" : "2x",
@@ -209,7 +209,7 @@
           "value" : "dark"
         }
       ],
-      "filename" : "ITMSample-Camera-Dark-40@3x.png",
+      "filename" : "Dark-ITMSample-Camera-40@3x.png",
       "idiom" : "universal",
       "platform" : "ios",
       "scale" : "3x",
@@ -222,7 +222,7 @@
           "value" : "dark"
         }
       ],
-      "filename" : "ITMSample-Camera-Dark-60@2x.png",
+      "filename" : "Dark-ITMSample-Camera-60@2x.png",
       "idiom" : "universal",
       "platform" : "ios",
       "scale" : "2x",
@@ -235,7 +235,7 @@
           "value" : "dark"
         }
       ],
-      "filename" : "ITMSample-Camera-Dark-60@3x.png",
+      "filename" : "Dark-ITMSample-Camera-60@3x.png",
       "idiom" : "universal",
       "platform" : "ios",
       "scale" : "3x",
@@ -248,7 +248,7 @@
           "value" : "dark"
         }
       ],
-      "filename" : "ITMSample-Camera-Dark-64@2x.png",
+      "filename" : "Dark-ITMSample-Camera-64@2x.png",
       "idiom" : "universal",
       "platform" : "ios",
       "scale" : "2x",
@@ -261,7 +261,7 @@
           "value" : "dark"
         }
       ],
-      "filename" : "ITMSample-Camera-Dark-64@3x.png",
+      "filename" : "Dark-ITMSample-Camera-64@3x.png",
       "idiom" : "universal",
       "platform" : "ios",
       "scale" : "3x",
@@ -274,7 +274,7 @@
           "value" : "dark"
         }
       ],
-      "filename" : "ITMSample-Camera-Dark-68@2x.png",
+      "filename" : "Dark-ITMSample-Camera-68@2x.png",
       "idiom" : "universal",
       "platform" : "ios",
       "scale" : "2x",
@@ -287,7 +287,7 @@
           "value" : "dark"
         }
       ],
-      "filename" : "ITMSample-Camera-Dark-76@2x.png",
+      "filename" : "Dark-ITMSample-Camera-76@2x.png",
       "idiom" : "universal",
       "platform" : "ios",
       "scale" : "2x",
@@ -300,7 +300,7 @@
           "value" : "dark"
         }
       ],
-      "filename" : "ITMSample-Camera-Dark-83.5@2x.png",
+      "filename" : "Dark-ITMSample-Camera-83.5@2x.png",
       "idiom" : "universal",
       "platform" : "ios",
       "scale" : "2x",
@@ -313,7 +313,7 @@
           "value" : "dark"
         }
       ],
-      "filename" : "ITMSample-Camera-Dark-1024.png",
+      "filename" : "Dark-ITMSample-Camera-1024.png",
       "idiom" : "universal",
       "platform" : "ios",
       "size" : "1024x1024"
