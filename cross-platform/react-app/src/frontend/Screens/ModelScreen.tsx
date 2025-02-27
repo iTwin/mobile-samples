@@ -294,7 +294,7 @@ export function ModelScreen(props: ModelScreenProps) {
         onError: async (message: string) => {
           await presentMessage(errorLabel, message);
         },
-        fields: [{ name: failOKLabel, isRequired: true }],
+        fields: [{ name: failOKLabel, forbiddenCharacters: "<>&", isRequired: true }],
         onOK: async (values) => {
           if (values[0].value?.toLowerCase() === "yes") {
             // Show that the OK and Cancel buttons on the form dialog disable while waiting for the
