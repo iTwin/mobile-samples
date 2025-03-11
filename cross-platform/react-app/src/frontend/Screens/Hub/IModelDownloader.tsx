@@ -18,6 +18,20 @@ import { ProgressRadial } from "@itwin/itwinui-react";
 import { Button, IModelInfo, presentError, useLocalizedString } from "../../Exports";
 
 /**
+ * Get the briefcase filename for the given iModel.
+ * @param iModelId The iModel's ID.
+ * @returns The full path to the iModel's briefcase file.
+ */
+export async function getBriefcaseFileName(iModelId: string): Promise<string> {
+  const cachedBriefcases = await NativeApp.getCachedBriefcases(iModelId);
+  if (cachedBriefcases.length > 0) {
+    return cachedBriefcases[0].fileName;
+  } else {
+    return NativeApp.getBriefcaseFileName({ iModelId, briefcaseId: 0 });
+  }
+}
+
+/**
  * Download the given iModel, reporting progress via {@link handleProgress}.
  * @param iTwinId The iModel's iTwin (project) ID.
  * @param iModel The iModel to download.
@@ -61,10 +75,8 @@ async function downloadIModel(iTwinId: string, iModel: MinimalIModel, handleProg
         // any subsequent download attempt to fail with this error number. If that happens, delete the
         // briefcase and try again.
         try {
-          // When syncMode is SyncMode.PullOnly (which is what we use), briefcaseId is ALWAYS 0, so try
-          // to delete the existing file using that briefcaseId.
-          const filename = await NativeApp.getBriefcaseFileName({ iModelId: iModel.id, briefcaseId: 0 });
-          await NativeApp.deleteBriefcase(filename);
+          const fileName = await getBriefcaseFileName(iModel.id);
+          await NativeApp.deleteBriefcase(fileName);
           return downloadIModel(iTwinId, iModel, handleProgress);
         } catch (_error) { }
       } else if (error.errorNumber === BriefcaseStatus.DownloadCancelled && canceled) {
