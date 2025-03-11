@@ -31,9 +31,9 @@ export class EditHandler extends IpcHandler implements EditInterface {
     if (!iModel) {
       throw new Error(`iModel with key ${iModelKey} not found.`);
     }
-    if (!(iModel instanceof BriefcaseDb)) {
-      throw new Error(`iModel with key ${iModelKey} is not a BriefcaseDb.`);
+    if (iModel instanceof BriefcaseDb) {
+      return iModel.txns.hasPendingTxns;
     }
-    return iModel.txns.hasPendingTxns;
+    return false;
   }
 }

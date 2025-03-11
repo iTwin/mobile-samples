@@ -9,7 +9,6 @@ import {
   IModelConnection,
   IpcApp,
   ITWINJS_CORE_VERSION,
-  NativeApp,
   RenderSystem,
   SnapshotConnection,
   ToolAssistanceInstructions,
@@ -22,6 +21,7 @@ import { MobileUi, ToolAssistanceSuggestion } from "@itwin/mobile-ui-react";
 import { MeasureTools, FeatureTracking as MeasureToolsFeatureTracking } from "@itwin/measure-tools-react";
 import {
   ActiveScreen,
+  getBriefcaseFileName,
   HomeScreen,
   HubScreen,
   LoadingScreen,
@@ -334,7 +334,7 @@ function useAppState(onInitialize?: () => Promise<void>) {
               await openModelFile(`${documentsPath}/${values[0]}`);
               break;
             case "local":
-              const fileName = await NativeApp.getBriefcaseFileName({ iModelId: values[0], briefcaseId: 0 });
+              const fileName = await getBriefcaseFileName(values[0]);
               await openModelFile(fileName);
               break;
             case "remote":
