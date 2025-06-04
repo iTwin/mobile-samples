@@ -3,7 +3,7 @@
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
 import React from "react";
-import ReactDOM from "react-dom";
+import { createRoot } from "react-dom/client";
 import "./index.css";
 
 async function importBuildTarget() {
@@ -18,11 +18,11 @@ async function importBuildTarget() {
 
 async function render() {
   const ImportedApp = await importBuildTarget();
-  ReactDOM.render(
+  const root = createRoot(document.getElementById("root")!);
+  root.render(
     <React.StrictMode>
       <ImportedApp />
     </React.StrictMode>,
-    document.getElementById("root"),
   );
 }
 
