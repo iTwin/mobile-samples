@@ -7,6 +7,7 @@ import UIKit
 import ITwinMobile
 import UniformTypeIdentifiers
 
+@available(iOS 14.0, *)
 extension UTType {
     /// The UTType exported by this application (in Info.plist).
     static let bim_iModel = UTType(exportedAs: "com.bentley.bim-imodel")
@@ -102,7 +103,11 @@ class DocumentHelper {
     /// Gets `*.bim` files in the documents directory.
     /// - Returns: An array of file paths to the found documents, could be empty if none found.
     public static func getBimDocuments() -> [String] {
-        return DocumentHelper.getDocumentsWith(extension: UTType.bim_iModel.preferredFilenameExtension!)
+        if #available(iOS 14.0, *) {
+            return DocumentHelper.getDocumentsWith(extension: UTType.bim_iModel.preferredFilenameExtension!)
+        } else {
+            return DocumentHelper.getDocumentsWith(extension: "bim")
+        }
     }
 
     /// Formulates a `URL` in the app's documents directory for the given source file.
@@ -233,7 +238,12 @@ class DocumentPicker: ITMNativeUIComponent {
     /// - Parameter coordinator: The coordinator that implements the `UIDocumentPickerDelegate` functions.
     /// - Returns: The controller instance.
     private func makeUIViewController(coordinator: DocumentPickerCoordinator) -> UIDocumentPickerViewController {
-        let controller = UIDocumentPickerViewController(forOpeningContentTypes: [.bim_iModel], asCopy: false)
+        let controller: UIDocumentPickerViewController
+        if #available(iOS 14, *) {
+            controller = UIDocumentPickerViewController(forOpeningContentTypes: [.bim_iModel], asCopy: false)
+        } else {
+            controller = UIDocumentPickerViewController(documentTypes: ["com.bentley.bim-imodel"], in: .open)
+        }
         controller.allowsMultipleSelection = false
         controller.modalPresentationStyle = .fullScreen
         controller.delegate = coordinator

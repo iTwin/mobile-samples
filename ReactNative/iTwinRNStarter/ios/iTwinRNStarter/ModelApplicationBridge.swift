@@ -58,7 +58,9 @@ class ModelApplicationBridge: NSObject {
   /// Initialization function for ``ModelApplicationBridge``. Call once the React Native UI has been initialized.
   /// - Parameter webView: The `WKWebView` from the React Native UI.
   @objc public func startup(_ webView: WKWebView) {
-    webView.isInspectable = true
+    if #available(iOS 16.4, *) {
+      webView.isInspectable = true
+    }
     RNModelApplication.rnWebView = webView
     modelApplication = RNModelApplication()
     if !loadedOnce {

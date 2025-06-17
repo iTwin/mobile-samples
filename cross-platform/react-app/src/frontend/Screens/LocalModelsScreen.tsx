@@ -101,7 +101,7 @@ export function LocalModelsScreen(props: LocalModelsScreenProps) {
       key={`briefcase-${index}`}
       title={name}
       onClick={async () => {
-        void onOpen(localBriefcase.fileName, BriefcaseConnection.openFile(localBriefcase));
+        void onOpen(localBriefcase.fileName, BriefcaseConnection.openFile({ ...localBriefcase, readonly: true }));
       }}
     />;
   });

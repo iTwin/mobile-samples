@@ -122,8 +122,16 @@ export function Screen(props: ScreenProps = {}) {
   );
 }
 
-export function presentMessage(title: string, message: string, showStatusBar = true, okTitle = i18n("Shared", "OK")) {
-  void presentAlert({
+/**
+ * Show an alert box with an OK button using {@link presentAlert}.
+ *
+ * @param title The title of the alert box.
+ * @param message The message in the alert box.
+ * @param showStatusBar Whether or not the device status bar should be visible while displaying the alert, default `true`.
+ * @param okTitle The title of the OK button, default "OK".
+ */
+export async function presentMessage(title: string, message: string, showStatusBar = true, okTitle = i18n("Shared", "OK")) {
+  await presentAlert({
     title,
     message,
     showStatusBar,
@@ -137,16 +145,14 @@ export function presentMessage(title: string, message: string, showStatusBar = t
 /**
  * Show an alert box for the given error using {@link presentAlert}.
  *
- * __Note__: Even though {@link presentAlert} is async, this function does not wait for it to complete.
- *
  * @param formatKey The localization key for the format string used to describe the error.
  * @param error The error that is being presented.
  * @param namespace The i18n namespace for {@link formatKey}, default "App".
  * @param showStatusBar Whether or not the device status bar should be visible while displaying the alert, default `true`.
  */
-export function presentError(formatKey: string, error: any, namespace = "App", showStatusBar = true) {
+export async function presentError(formatKey: string, error: any, namespace = "App", showStatusBar = true) {
   const errorMessage = (error instanceof Error) ? error.message : error;
-  presentMessage(i18n("Shared", "Error"), i18n(namespace, formatKey, { error: errorMessage }), showStatusBar);
+  return presentMessage(i18n("Shared", "Error"), i18n(namespace, formatKey, { error: errorMessage }), showStatusBar);
 }
 
 /**
@@ -156,6 +162,6 @@ export async function signOut() {
   try {
     await Messenger.query("signOut");
   } catch (error) {
-    presentError("SignOutErrorFormat", error);
+    return presentError("SignOutErrorFormat", error);
   }
 }

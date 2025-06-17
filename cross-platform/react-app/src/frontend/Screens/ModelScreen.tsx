@@ -3,11 +3,13 @@
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
 import React from "react";
-import { ColorDef } from "@itwin/core-common";
+import { ColorDef, QueryBinder } from "@itwin/core-common";
 import {
+  BriefcaseConnection,
   FitViewTool,
   IModelApp,
   IModelConnection,
+  IpcApp,
   StandardViewId,
   ViewCreator3d,
   ViewCreator3dOptions,
@@ -51,6 +53,7 @@ import {
 } from "../Exports";
 import "./ModelScreen.scss";
 import { ConfigurableUiContent, UiStateStorageHandler } from "@itwin/appui-react";
+import { editChannel, EditInterface } from "../../common/EditInterface";
 
 // tslint:disable-next-line: variable-name
 const UnifiedSelectionViewportComponent = viewWithUnifiedSelection(ViewportComponent);
@@ -127,16 +130,136 @@ export function ModelScreen(props: ModelScreenProps) {
   const lightLabel = useLocalizedString("ModelScreen", "Light");
   const darkLabel = useLocalizedString("ModelScreen", "Dark");
   const automaticLabel = useLocalizedString("ModelScreen", "Automatic");
+  const editLabel = useLocalizedString("ModelScreen", "Edit");
+  const editUpdateLabel = useLocalizedString("ModelScreen", "EditUpdate");
+  const editPushLabel = useLocalizedString("ModelScreen", "EditPush");
+  const doneLabel = useLocalizedString("ModelScreen", "Done");
   const vp = useFirstViewport();
   const [firstRenderStarted, setFirstRenderStarted] = React.useState(false);
   const [firstRenderFinished, setFirstRenderFinished] = React.useState(false);
-
+  const editedIds = React.useRef(new Set<string>());
+  const hasPendingTxns = React.useRef(false);
+  const [checkedPending, setCheckPending] = React.useState(false);
+  const editProxy = React.useMemo(() => IpcApp.makeIpcProxy<EditInterface>(editChannel), []);
   // Any time we do anything asynchronous, we have to check if the component is still mounted,
   // or it can lead to a run-time exception.
   const isMountedRef = useIsMountedRef();
+
+  React.useEffect(() => {
+    if (!checkedPending) {
+      setCheckPending(true);
+      const loadCheckedPending = async () => {
+        const value = await editProxy.hasPendingTxns(iModel.key);
+        if (!isMountedRef.current) return;
+        hasPendingTxns.current = value;
+      };
+      void loadCheckedPending();
+    }
+  }, [checkedPending, iModel, editProxy, isMountedRef]);
+
+  // Show an alert with three options: Update, Push, and Done. Keep showing that in a loop until the
+  // user selects Done.
+  const handleEdit = React.useCallback(async () => {
+    let done = false;
+    while (!done) {
+      const result = await presentAlert({
+        title: editLabel,
+        showStatusBar: true,
+        actions: [
+          {
+            name: editUpdateLabel,
+            title: editUpdateLabel,
+          },
+          {
+            name: editPushLabel,
+            title: editPushLabel,
+          },
+          {
+            name: doneLabel,
+            title: doneLabel,
+          },
+        ],
+      });
+      if (!isMountedRef.current) return;
+      switch (result) {
+        case editUpdateLabel:
+          // Update the UserLabel of the selected element. If the existing UserLabel value ends in
+          // a space followed by an integer, increment the integer by one. If the UserLabel is
+          // empty or missing, set it to "New UserLabel 1". Otherwise, append " 1" to the existing
+          // UserLabel.
+          try {
+            const elementId = iModel.selectionSet.elements.values().next().value;
+            const fetchUserLabel = async () => {
+              if (elementId === undefined) {
+                return undefined;
+              }
+              for await (const row of iModel.createQueryReader(
+                "SELECT UserLabel FROM bis.GeometricElement3d WHERE ECInstanceId = ?",
+                QueryBinder.from([elementId])
+              )) {
+                return (row[0] as string | undefined) ?? "";
+              }
+              return undefined;
+            };
+            let userLabel = await fetchUserLabel();
+            if (!isMountedRef.current) return;
+            if (userLabel === undefined) {
+              throw new Error("No element selected!");
+            }
+            const match = userLabel.match(/(.*) (\d+)$/);
+            if (match && match.length > 2) {
+              // match[0] is the full match, match[1] is the prefix, and match[2] is the number.
+              const prefix = match[1];
+              const index = parseInt(match[2], 10) + 1;
+              userLabel = `${prefix} ${index}`;
+            } else {
+              if (userLabel.length > 0) {
+                userLabel = `${userLabel} 1`;
+              } else {
+                userLabel = "New UserLabel 1";
+              }
+            }
+            await editProxy.editUserLabel(iModel.key, elementId, userLabel);
+            if (!isMountedRef.current) return;
+            editedIds.current.add(elementId);
+          } catch (error) {
+            await presentError("EditUpdateErrorFormat", error, "ModelScreen");
+            if (!isMountedRef.current) return;
+          }
+          break;
+        case editPushLabel:
+          try {
+            // Push the changes to the iModel Hub. This creates a new changeset with all the
+            // changes that have been made, and also releases the locks on all of the modified
+            // elements.
+            if (!(iModel instanceof BriefcaseConnection)) {
+              throw new Error("Unexpected: iModel not a BriefcaseConnection!");
+            }
+            if (editedIds.current.size === 0 && !hasPendingTxns.current) {
+              throw new Error("No elements edited!");
+            }
+            let elementList = "<unknown>";
+            if (editedIds.current.size > 0) {
+              elementList = Array.from(editedIds.current).join(", ");
+            }
+            await iModel.pushChanges(`Update UserLabel of Elements: ${elementList}`);
+            editedIds.current.clear();
+            if (!isMountedRef.current) return;
+          } catch (error) {
+            await presentError("EditPushErrorFormat", error, "ModelScreen");
+            if (!isMountedRef.current) return;
+          }
+          break;
+        case doneLabel:
+          done = true;
+          break;
+      }
+    }
+  }, [iModel, doneLabel, editLabel, editPushLabel, editUpdateLabel, editProxy, isMountedRef]);
+
   // Passing an arrow function as the actions instead of the array itself allows for the list
   // of actions to be dynamic. In this case, the element properties action is only shown if the
-  // selection set is active.
+  // selection set is active, and the edit action only shows when appropriate.
   const moreActions = () => {
     const handleShowLocation = () => {
       // Ask for the device's current location, then show the latitude and longitude to the user.
@@ -156,7 +279,7 @@ export function ModelScreen(props: ModelScreenProps) {
         });
       }, (positionError: GeolocationPositionError) => {
         const error = positionError.message;
-        presentMessage(errorLabel, i18n("ModelScreen", "LocationErrorFormat", { error }));
+        void presentMessage(errorLabel, i18n("ModelScreen", "LocationErrorFormat", { error }));
       });
     };
     const handleFitView = () => {
@@ -169,9 +292,9 @@ export function ModelScreen(props: ModelScreenProps) {
       const formProps: ModalEntryFormDialogRunProps = {
         title: formDialogLabel,
         onError: async (message: string) => {
-          presentMessage(errorLabel, message);
+          await presentMessage(errorLabel, message);
         },
-        fields: [{ name: failOKLabel, isRequired: true }],
+        fields: [{ name: failOKLabel, forbiddenCharacters: "<>&", isRequired: true }],
         onOK: async (values) => {
           if (values[0].value?.toLowerCase() === "yes") {
             // Show that the OK and Cancel buttons on the form dialog disable while waiting for the
@@ -290,13 +413,25 @@ export function ModelScreen(props: ModelScreenProps) {
         },
       },
     ];
+    let haveSelection = false;
     if (IModelApp.viewManager.getFirstOpenView()?.view.iModel.selectionSet.isActive) {
       actions.push(
         {
           name: elementPropertiesLabel,
           title: elementPropertiesLabel,
           onSelected: () => { tabsAndPanelsAPI.openPanel(elementPropertiesLabel); },
-        });
+        },
+      );
+      haveSelection = true;
+    }
+    if (haveSelection || editedIds.current.size > 0 || hasPendingTxns.current) {
+      actions.push(
+        {
+          name: "edit",
+          title: editLabel,
+          onSelected: handleEdit,
+        },
+      );
     }
     return actions;
   };
@@ -406,7 +541,7 @@ export function ModelScreen(props: ModelScreenProps) {
       setViewState(defaultViewState);
     } catch (error) {
       // I don't think this can ever happen.
-      presentError("ApplyDefaultViewErrorFormat", error, "ModelScreen");
+      await presentError("ApplyDefaultViewErrorFormat", error, "ModelScreen");
     }
   }, [iModel, isMountedRef]);
 

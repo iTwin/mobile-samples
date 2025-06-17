@@ -5,9 +5,10 @@
 import React from "react";
 import { AlertAction, MobileCore } from "@itwin/mobile-sdk-core";
 import { ActionSheetButton, BackButton, useIsMountedRef } from "@itwin/mobile-ui-react";
-import { BriefcaseConnection, IModelConnection } from "@itwin/core-frontend";
+import { IModelConnection } from "@itwin/core-frontend";
 import {
   Button,
+  ChangesetsDownloader,
   HubStep,
   i18n,
   IModelDownloader,
@@ -95,8 +96,9 @@ export function HubScreen(props: HubScreenProps) {
   let moreButton: React.ReactNode;
   let stepContent: React.ReactNode;
 
-  // Download and open a remote iModel based on openRemoteITwinId and openRemoteIModelId.
-  const openRemoteIModel = React.useCallback(async () => {
+  // Trigger the downloading and opening of a remote iModel if openRemoteITwinId and
+  // openRemoteIModelId are set.
+  const triggerRemoteIModelDownload = React.useCallback(() => {
     if (!openRemoteITwinId || !openRemoteIModelId) return;
     setProjectId(openRemoteITwinId);
     setIModel({ minimalIModel: { id: openRemoteIModelId, displayName: "" } });
@@ -135,13 +137,13 @@ export function HubScreen(props: HubScreenProps) {
 
     case HubStep.SelectIModel:
       if (!projectId) break;
-      void openRemoteIModel();
+      triggerRemoteIModelDownload();
       stepContent = <IModelPicker iTwinId={projectId}
         onLoaded={(models) => setHaveCachedBriefcase(models.some((model) => model.briefcase !== undefined))}
         onSelect={(model) => {
           setIModel(model);
           if (model.briefcase)
-            void onOpen(model.briefcase.fileName, BriefcaseConnection.openFile(model.briefcase));
+            setHubStep(HubStep.DownloadChangesets);
           else
             setHubStep(HubStep.DownloadIModel);
         }}
@@ -178,7 +180,7 @@ export function HubScreen(props: HubScreenProps) {
             } catch (error) {
               // There was a problem deleting the cached briefcases. Show the error, then refresh
               // anyway so if any were successfully deleted, it will reflect that.
-              presentError("DeleteAllErrorFormat", error, "HubScreen");
+              void presentError("DeleteAllErrorFormat", error, "HubScreen");
               setProjectId(projectId);
             }
           },
@@ -201,7 +203,7 @@ export function HubScreen(props: HubScreenProps) {
           setIModel(model);
           if (model.briefcase) {
             ModelNameCache.set(model.minimalIModel.id, model.minimalIModel.displayName);
-            void onOpen(model.briefcase.fileName, BriefcaseConnection.openFile(model.briefcase));
+            setHubStep(HubStep.DownloadChangesets);
           } else {
             if (openRemoteITwinId && openRemoteIModelId) {
               // We were unable to download requested iModelId, so go back to the Home screen.
@@ -210,6 +212,17 @@ export function HubScreen(props: HubScreenProps) {
               setHubStep(HubStep.SelectIModel);
             }
           }
+        }}
+        onCanceled={() => setHubStep(HubStep.SelectIModel)}
+      />;
+      break;
+
+    case HubStep.DownloadChangesets:
+      if (!iModel) break;
+      stepContent = <ChangesetsDownloader
+        model={iModel}
+        onDownloaded={async (briefcasePromise) => {
+          void onOpen(iModel.minimalIModel.id, briefcasePromise);
         }}
         onCanceled={() => setHubStep(HubStep.SelectIModel)}
       />;

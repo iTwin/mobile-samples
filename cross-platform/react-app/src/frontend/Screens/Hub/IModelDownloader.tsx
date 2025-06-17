@@ -18,6 +18,20 @@ import { ProgressRadial } from "@itwin/itwinui-react";
 import { Button, IModelInfo, presentError, useLocalizedString } from "../../Exports";
 
 /**
+ * Get the briefcase filename for the given iModel.
+ * @param iModelId The iModel's ID.
+ * @returns The full path to the iModel's briefcase file.
+ */
+export async function getBriefcaseFileName(iModelId: string): Promise<string> {
+  const cachedBriefcases = await NativeApp.getCachedBriefcases(iModelId);
+  if (cachedBriefcases.length > 0) {
+    return cachedBriefcases[0].fileName;
+  } else {
+    return NativeApp.getBriefcaseFileName({ iModelId, briefcaseId: 0 });
+  }
+}
+
+/**
  * Download the given iModel, reporting progress via {@link handleProgress}.
  * @param iTwinId The iModel's iTwin (project) ID.
  * @param iModel The iModel to download.
@@ -27,7 +41,7 @@ import { Button, IModelInfo, presentError, useLocalizedString } from "../../Expo
  */
 async function downloadIModel(iTwinId: string, iModel: MinimalIModel, handleProgress: (progress: DownloadProgressInfo) => boolean): Promise<LocalBriefcaseProps | undefined> {
   const opts: DownloadBriefcaseOptions = {
-    syncMode: SyncMode.PullOnly,
+    syncMode: SyncMode.PullAndPush,
     progressCallback: async (progress: DownloadProgressInfo) => {
       if (!handleProgress(progress)) {
         await downloader?.requestCancel();
@@ -61,10 +75,8 @@ async function downloadIModel(iTwinId: string, iModel: MinimalIModel, handleProg
         // any subsequent download attempt to fail with this error number. If that happens, delete the
         // briefcase and try again.
         try {
-          // When syncMode is SyncMode.PullOnly (which is what we use), briefcaseId is ALWAYS 0, so try
-          // to delete the existing file using that briefcaseId.
-          const filename = await NativeApp.getBriefcaseFileName({ iModelId: iModel.id, briefcaseId: 0 });
-          await NativeApp.deleteBriefcase(filename);
+          const fileName = await getBriefcaseFileName(iModel.id);
+          await NativeApp.deleteBriefcase(fileName);
           return downloadIModel(iTwinId, iModel, handleProgress);
         } catch (_error) { }
       } else if (error.errorNumber === BriefcaseStatus.DownloadCancelled && canceled) {
@@ -73,7 +85,7 @@ async function downloadIModel(iTwinId: string, iModel: MinimalIModel, handleProg
       }
     }
     // There was an error downloading the iModel. Show the error
-    presentError("DownloadErrorFormat", error, "HubScreen");
+    void presentError("DownloadErrorFormat", error, "HubScreen");
   }
   return undefined;
 }
@@ -83,7 +95,7 @@ export interface IModelDownloaderProps {
   iTwinId: string;
   model: IModelInfo;
   onDownloaded: (model: IModelInfo) => void;
-  onCanceled?: () => void;
+  onCanceled: () => void;
 }
 
 /** React component that downloads an iModel and shows download progress. */
@@ -91,8 +103,8 @@ export function IModelDownloader(props: IModelDownloaderProps) {
   const { iTwinId, model, onDownloaded, onCanceled } = props;
   const [progress, setProgress] = React.useState(0);
   const [indeterminate, setIndeterminate] = React.useState(true);
-  const [downloading, setDownloading] = React.useState(false);
-  const [canceled, setCanceled] = React.useState(false);
+  const downloadingRef = React.useRef(false);
+  const canceledRef = React.useRef(false);
   const isMountedRef = useIsMountedRef();
   const downloadingLabel = useLocalizedString("HubScreen", "Downloading");
   const cancelLabel = useLocalizedString("HubScreen", "Cancel");
@@ -104,13 +116,20 @@ export function IModelDownloader(props: IModelDownloaderProps) {
       setProgress(percent);
       setIndeterminate(progressInfo.total === 0);
     }
-    return isMountedRef.current && !canceled;
-  }, [canceled, isMountedRef]);
+    return isMountedRef.current && !canceledRef.current;
+    // NOTE: the isMountedRef returned by useIsMountedRef does not ever change, even though eslint
+    // thinks it might. Also, since this callback is passed as an argument to downloadIModel, if it
+    // ever changed then it would NOT work, since there is no way to update the progress callback
+    // on an active download. So, even though putting isMountedRef in the dependency array would
+    // produce the same behavior, it is intentionally omitted to make it clear that this callback
+    // never changes.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
-  // Starup effect to initiate the iModel download.
+  // Startup effect to initiate the iModel download.
   React.useEffect(() => {
     // We only want to download once.
-    if (downloading) return;
+    if (downloadingRef.current) return;
 
     const fetchIModel = async () => {
       const minimalIModel = model.minimalIModel;
@@ -118,17 +137,17 @@ export function IModelDownloader(props: IModelDownloaderProps) {
       if (!isMountedRef.current) return;
       onDownloaded({ minimalIModel, briefcase });
     };
-    setDownloading(true);
+    downloadingRef.current = true;
     void fetchIModel();
-  }, [downloading, handleProgress, isMountedRef, model.minimalIModel, onDownloaded, iTwinId]);
+  }, [handleProgress, isMountedRef, model.minimalIModel, onDownloaded, iTwinId]);
 
   return <div className="centered-list">
     <div>{downloadingLabel}</div>
     <div style={{ paddingBottom: 10 }}>{model.minimalIModel.displayName}</div>
     <ProgressRadial value={progress} indeterminate={indeterminate}>{indeterminate ? "" : progress.toString()}</ProgressRadial>
     <Button title={cancelLabel} onClick={() => {
-      setCanceled(true);
-      onCanceled?.();
+      canceledRef.current = true;
+      onCanceled();
     }} />
   </div>;
 }
