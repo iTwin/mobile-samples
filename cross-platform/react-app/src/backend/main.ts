@@ -9,6 +9,7 @@ import { MobileHost, MobileHostOpts } from "@itwin/core-mobile/lib/cjs/MobileBac
 import { BackendLogParams, getSupportedRpcs } from "../common/rpcs";
 import { IModelHostConfiguration, IpcHost } from "@itwin/core-backend";
 import { BackendIModelsAccess } from "@itwin/imodels-access-backend";
+import { createDefaultClientStorage } from "@itwin/imodels-access-backend/lib/cjs/DefaultClientStorage";
 import { IModelsClient } from "@itwin/imodels-client-authoring";
 import { EditHandler } from "./EditHandler";
 
@@ -26,7 +27,11 @@ void (async () => {
 
   const iModelHost = new IModelHostConfiguration();
   const baseUrl = `https://${process.env.ITMAPPLICATION_API_PREFIX ?? ""}api.bentley.com/imodels`;
-  const imodelsClient = new IModelsClient({ api: { baseUrl } });
+  const imodelsClient = new IModelsClient(
+    {
+      api: { baseUrl },
+      cloudStorage: createDefaultClientStorage(),
+    });
   // eslint-disable-next-line @itwin/no-internal
   iModelHost.hubAccess = new BackendIModelsAccess(imodelsClient);
   // Get RPCs supported by this backend
@@ -47,7 +52,6 @@ void (async () => {
     // Specify location of where application's presentation rule sets are located.
     // May be omitted if application doesn't have any presentation rules.
     rulesetDirectories: [path.join(assetsRoot, "presentation_rules")],
-    localeDirectories: [path.join(assetsRoot, "locales")],
     supplementalRulesetDirectories: [path.join(assetsRoot, "supplemental_presentation_rules")],
   });
   IpcHost.addListener("frontend-listening", () => {

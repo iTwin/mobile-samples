@@ -55,7 +55,8 @@ import "./ModelScreen.scss";
 import { ConfigurableUiContent, UiStateStorageHandler } from "@itwin/appui-react";
 import { editChannel, EditInterface } from "../../common/EditInterface";
 
-// tslint:disable-next-line: variable-name
+// @todo: Fix to not use deprecated viewWithUnifiedSelection.
+// eslint-disable-next-line deprecation/deprecation
 const UnifiedSelectionViewportComponent = viewWithUnifiedSelection(ViewportComponent);
 
 /** Interface for adding extensions to the model screen; used by the camera sample. */
@@ -203,7 +204,7 @@ export function ModelScreen(props: ModelScreenProps) {
             };
             let userLabel = await fetchUserLabel();
             if (!isMountedRef.current) return;
-            if (userLabel === undefined) {
+            if (userLabel === undefined || elementId === undefined) {
               throw new Error("No element selected!");
             }
             const match = userLabel.match(/(.*) (\d+)$/);

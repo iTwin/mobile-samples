@@ -7,7 +7,7 @@ import { MobileCore } from "@itwin/mobile-sdk-core";
 import { IconImage, useIsMountedRef } from "@itwin/mobile-ui-react";
 import { IModelApp, NativeApp } from "@itwin/core-frontend";
 import { IModelsClient, MinimalIModel } from "@itwin/imodels-client-management";
-import { AccessTokenAdapter } from "@itwin/imodels-access-frontend";
+import { AccessTokenAdapter } from "@itwin/imodels-access-common";
 import { LocalBriefcaseProps } from "@itwin/core-common";
 import {
   ButtonProps,
@@ -91,11 +91,10 @@ function IModelList(props: IModelListProps) {
 async function getIModels(iTwinId: string) {
   const baseUrl = `https://${window.itmSampleParams.apiPrefix}api.bentley.com/imodels`;
   const imodelsClient = new IModelsClient({ api: { baseUrl } });
-  const accessToken = await IModelApp.getAccessToken();
   const minimalIModels: MinimalIModel[] = [];
   // Fetch the list of iModels.
   for await (const minimalIModel of imodelsClient.iModels.getMinimalList({
-    authorization: AccessTokenAdapter.toAuthorizationCallback(accessToken),
+    authorization: AccessTokenAdapter.toAuthorizationCallback(async () => { return IModelApp.getAccessToken(); }),
     urlParams: { iTwinId },
   })) {
     minimalIModels.push(minimalIModel);

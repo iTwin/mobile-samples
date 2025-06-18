@@ -8,7 +8,7 @@ import { BriefcaseConnection, DownloadProgressInfo } from "@itwin/core-frontend"
 import { useIsMountedRef } from "@itwin/mobile-ui-react";
 import { ProgressRadial } from "@itwin/itwinui-react";
 import { Button, presentError, useLocalizedString } from "../../Exports";
-import { BentleyError, ChangeSetStatus } from "@itwin/core-common";
+import { BentleyError, ChangeSetStatus } from "@itwin/core-bentley";
 
 /** Properties for the {@link ChangesetsDownloader} React component. */
 export interface ChangesetDownloaderProps {

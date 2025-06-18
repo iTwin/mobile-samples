@@ -3,7 +3,7 @@
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
 import { PresentationRpcInterface } from "@itwin/presentation-common";
-import { IModelReadRpcInterface, IModelTileRpcInterface, RpcInterfaceDefinition, SnapshotIModelRpcInterface } from "@itwin/core-common";
+import { IModelReadRpcInterface, IModelTileRpcInterface, RpcInterfaceDefinition } from "@itwin/core-common";
 import { LogLevel } from "@itwin/core-bentley";
 
 /**
@@ -15,7 +15,6 @@ export function getSupportedRpcs(): RpcInterfaceDefinition[] {
     IModelReadRpcInterface,
     IModelTileRpcInterface,
     PresentationRpcInterface,
-    SnapshotIModelRpcInterface,
   ];
 }
 

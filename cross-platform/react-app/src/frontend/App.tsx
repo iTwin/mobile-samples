@@ -30,6 +30,8 @@ import {
   ModelScreenExtensionProps,
   presentError,
 } from "./Exports";
+import { FrontendIModelsAccess } from "@itwin/imodels-access-frontend";
+import { IModelsClient } from "@itwin/imodels-client-management";
 import { BackendLogParams, getSupportedRpcs } from "../common/rpcs";
 import "./App.scss";
 
@@ -201,11 +203,14 @@ function useAppState(onInitialize?: () => Promise<void>) {
         await Messenger.initialize();
         Messenger.sendMessage("loading");
         loadUrlSearchParams();
+        const baseUrl = `https://${window.itmSampleParams.apiPrefix}api.bentley.com/imodels`;
+        const imodelsClient = new IModelsClient({ api: { baseUrl } });
         const opts: MobileAppOpts = {
           iModelApp: {
             rpcInterfaces: getSupportedRpcs(),
             notifications: new AppToolAssistanceNotificationManager(),
             renderSys: getRenderSysOptions(),
+            hubAccess: new FrontendIModelsAccess(imodelsClient),
           },
         };
         await MobileApp.startup(opts);
