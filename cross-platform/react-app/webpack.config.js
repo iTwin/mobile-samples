@@ -41,7 +41,8 @@ function getConfig(env) {
       pathinfo: true,
     },
     target: "node",
-    devtool: devMode ? "cheap-module-source-map" : undefined,
+    devtool: "inline-source-map",
+    resolve: { mainFields: ["main", "module"] },
     // WebPack defaults to using the esm version of json5. The alias below forces it to use cjs.
     // See: https://github.com/json5/json5/issues/240
     resolve: {
@@ -62,81 +63,32 @@ function getConfig(env) {
           test: /formidable(\\|\/).*js$/,
           use: 'null-loader'
         },
-        // {
-        //   test: /backend-itwin-client/,
-        //   use: 'null-loader'
-        // },
-        // {
-        //   test: /ElectronUtils\.js$/,
-        //   use: 'null-loader'
-        // },
-        // {
-        //   test: /ElectronIpcTransport\.js$/,
-        //   use: 'null-loader'
-        // },
-        // {
-        //   test: /BackendAuthorizationClient\.js$/,
-        //   use: 'null-loader'
-        // },
-        // {
-        //   test: /BlobDaemon\.js$/,
-        //   use: 'null-loader'
-        // },
-        // {
-        //   test: /xunit\.js$/,
-        //   use: 'null-loader'
-        // },
-        // {
-        //   test: /bunyan/,
-        //   use: 'null-loader'
-        // },
-        // {
-        //   test: /@azure/,
-        //   use: 'null-loader'
-        // },
-        // {
-        //   test: /IModelBankCloudEnv\.js$/,
-        //   use: 'null-loader'
-        // },
-        // {
-        //   test: /DevTools\.js$/,
-        //   use: 'null-loader'
-        // },
-        // {
-        //   test: /DesktopAuthorizationClient\.js$/,
-        //   use: 'null-loader'
-        // },
-        // {
-        //   test: /oidc-signin-tool/,
-        //   use: 'null-loader'
-        // },
-        // {
-        //   test: /AzCopy\.js$/,
-        //   use: 'null-loader'
-        // },
-      ]
-    },
-    externals: {
-      "electron": "electron",
-      "fs": "fs",
+      ],
     },
     stats: {
-      warnings: false
+      warnings: false,
+    },
+    externals: {
+      electron: "electron",
+      bufferutil: "bufferutil",
+      fs: "fs",
+      "utf-8-validate": "utf-8-validate",
     },
     node: {
       __dirname: false,
       __filename: false,
     },
     plugins: [
-      new webpack.DefinePlugin({ "global.GENTLY": false, "process.version": "'v10.9.0'" }),
-      // new webpack.ProvidePlugin({}),
-      // new webpack.EnvironmentPlugin({})
+      new webpack.DefinePlugin({
+        "global.GENTLY": false,
+        "process.version": "'v10.9.0'",
+      }),
     ],
-    optimization: devMode ? undefined : {
-      minimize: true,
+    optimization: {
+      minimize: devMode ? false : true,
       minimizer: [new TerserPlugin({
         terserOptions: {
-          keep_classnames: /AbortSignal/,
+          keep_classnames: true, // iTwin backend does not work with minified class names
           keep_fnames: /AbortSignal/
         }
       })],

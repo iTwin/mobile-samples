@@ -1,0 +1,56 @@
+{
+  "categories": {
+    "favorite": {
+      "label": "Favorite",
+      "description": "Favorite properties"
+    }
+  },
+  "general": {
+    "error": "Error",
+    "generic-error-description": "An unexpected error was encountered."
+  },
+  "instance-key-value-renderer": {
+    "select-instance": "Select element"
+  },
+  "instance-filter-builder": {
+    "select-classes-optional": "Select classes (optional)",
+    "selected-classes": "Selected classes",
+    "category": "Category:",
+    "class": "Class:",
+    "schema": "Schema:",
+    "apply": "Apply",
+    "cancel": "Cancel",
+    "reset": "Reset",
+    "filter": "Filter",
+    "error-messages": {
+      "not-a-number": "Value must be a number",
+      "invalid": "Value is invalid"
+    },
+    "class-selection-warning": "Changing the class list clears all property filtering rules."
+  },
+  "tree": {
+    "please-provide": "Please provide",
+    "no-filtered-children": "There are no child nodes matching current filter",
+    "result-limit-exceeded": "there are more items than allowed limit of",
+    "additional-filtering": "additional filtering",
+    "timeout": "Creating the hierarchy level took too long",
+    "unknown-error": "Error creating the hierarchy level",
+    "filter-hierarchy-level": "Apply filter",
+    "clear-hierarchy-level-filter": "Clear active filter",
+    "filter-dialog": {
+      "results-count": "Matching items",
+      "result-limit-exceeded": "There are too many results to display. Please adjust your filters to limit the results count to {{itemCount}} items."
+    }
+  },
+  "navigation-property-editor": {
+    "select-target-instance": "Select target instance",
+    "loading-target-instances": "Loading target instances",
+    "no-target-instances": "No target instances"
+  },
+  "unique-values-property-editor": {
+    "select-values": "Select provided value(s)",
+    "loading-values": "Loading values",
+    "empty-value": "Empty Value",
+    "no-values": "No values"
+  }
+}

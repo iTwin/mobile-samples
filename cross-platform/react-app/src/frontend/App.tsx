@@ -237,7 +237,7 @@ function useAppState(onInitialize?: () => Promise<void>) {
         Messenger.sendMessage("didFinishLaunching", { iTwinVersion: ITWINJS_CORE_VERSION });
 
         console.log("...Done Initializing.");
-      } catch (ex) {
+      } catch (ex: any) {
         console.log(`Exception during initialization: ${ex}`);
       }
     };
@@ -390,7 +390,10 @@ export function App(props: AppProps) {
     case ActiveScreen.Hub:
       return <HubScreen onOpen={handleOpen} onBack={handleBack} openRemoteValues={openRemoteValues} />;
     case ActiveScreen.Model:
-      return <ModelScreen filename={modelFilename} iModel={iModel!} onBack={handleBack} {...props} {...getModelScreenExtensions?.(iModel!)} />;
+      if (!iModel) {
+        throw new Error("iModel is undefined when trying to render ModelScreen.");
+      }
+      return <ModelScreen filename={modelFilename} iModel={iModel} onBack={handleBack} {...props} {...getModelScreenExtensions?.(iModel)} />;
     default:
       return <LoadingScreen />;
   }

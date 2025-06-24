@@ -36,7 +36,7 @@ export function SearchControl(props: SearchControlProps) {
         autoComplete="off"
         autoCorrect="off"
         onChange={(e) => setValue(e.target.value)}
-        onKeyPress={(e) => {
+        onKeyUp={(e) => {
           if (e.key === "Enter") {
             e.currentTarget.blur();
           }

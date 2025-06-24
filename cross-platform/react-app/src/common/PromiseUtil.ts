@@ -3,7 +3,7 @@
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
 /**
- * See {@link consolidateCall}.
+ * See {@link PromiseUtil.consolidateCall}.
  */
 export class PromiseUtil {
   private static _activeConsolidators = new Map<string, Promise<any>>();
@@ -30,7 +30,7 @@ export class PromiseUtil {
         const result = await call();
         resolve(result);
       } catch (error) {
-        reject(error as any);
+        reject(error as Error);
       } finally {
         PromiseUtil._activeConsolidators.delete(key);
       }

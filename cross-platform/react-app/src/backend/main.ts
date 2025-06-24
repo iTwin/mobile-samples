@@ -45,7 +45,7 @@ void (async () => {
   };
   await MobileHost.startup(options);
 
-  const backendRoot = path.dirname(process.mainModule!.filename);
+  const backendRoot = path.dirname(process.mainModule?.filename ?? "");
   const assetsRoot = backendRoot ? path.join(backendRoot, "assets") : "assets";
   // Initialize presentation-backend
   Presentation.initialize({
@@ -73,13 +73,16 @@ function processLogQueue() {
     return;
   }
   while (logQueue.length > 0) {
-    const params = logQueue.shift()!;
+    const params = logQueue.shift();
+    if (params === undefined) {
+      break;
+    }
     try {
       // NOTE: Until iTwin 4.4 is released, the following will CRASH the app instead of throwing an
       // exception if the backend is not connected to the frontend. Unfortunately, there is also no
       // way to know if the connection is alive.
       IpcHost.send("backend-log", params);
-    } catch (_ex) {
+    } catch {
       logQueue.unshift(params);
       break;
     }
@@ -96,7 +99,7 @@ function redirectLoggingToFrontend(this: any): void {
         if (typeof getMetaData === "function") {
           try {
             metaData = getMetaData();
-          } catch (_ex) {
+          } catch {
             // NEEDS_WORK: Need to improve handling of exception and return data correctly.
           }
         } else {

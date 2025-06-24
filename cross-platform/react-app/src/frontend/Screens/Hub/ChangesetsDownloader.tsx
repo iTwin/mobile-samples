@@ -78,7 +78,7 @@ export function ChangesetsDownloader(props: ChangesetDownloaderProps) {
       } catch (error) {
         // When we abort the changesets download, it causes a DownloadCancelled error; don't show
         // this error to the user.
-        const isAbortError = error instanceof BentleyError && error.errorNumber === ChangeSetStatus.DownloadCancelled;
+        const isAbortError = error instanceof BentleyError && error.errorNumber === (ChangeSetStatus.DownloadCancelled as number);
         if (!isAbortError) {
           // If the error is not due to the download being canceled, show the error message.
           await presentError("PullChangesErrorFormat", error, "ChangesetsDownloader");

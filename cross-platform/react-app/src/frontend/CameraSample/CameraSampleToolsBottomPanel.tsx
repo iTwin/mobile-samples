@@ -70,10 +70,10 @@ export function CameraSampleToolsBottomPanel(props: ToolsBottomPanelProps) {
   const tools = React.useMemo(() => {
     const allTools = getDefaultTools();
     // @todo AppUI deprecation
-    /* eslint-disable deprecation/deprecation */
+    /* eslint-disable @typescript-eslint/no-deprecated */
     allTools.splice(1, 0, { labelKey: "CameraSampleApp:CameraSampleToolsBottomPanel.Camera", icon: "icon-camera", toolItemDef: ToolItemDef.getItemDefForTool(PlaceCameraMarkerTool, undefined, iModel?.iModelId) });
     allTools.splice(1, 0, { labelKey: "CameraSampleApp:CameraSampleToolsBottomPanel.Picture", icon: "icon-image", toolItemDef: ToolItemDef.getItemDefForTool(PlacePhotoMarkerTool, undefined, iModel?.iModelId) });
-    /* eslint-enable deprecation/deprecation */
+    /* eslint-enable @typescript-eslint/no-deprecated */
     return allTools;
   }, [iModel]);
   const vp = useFirstViewport();

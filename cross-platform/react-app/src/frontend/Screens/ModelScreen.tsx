@@ -56,7 +56,7 @@ import { ConfigurableUiContent, UiStateStorageHandler } from "@itwin/appui-react
 import { editChannel, EditInterface } from "../../common/EditInterface";
 
 // @todo: Fix to not use deprecated viewWithUnifiedSelection.
-// eslint-disable-next-line deprecation/deprecation
+// eslint-disable-next-line @typescript-eslint/no-deprecated
 const UnifiedSelectionViewportComponent = viewWithUnifiedSelection(ViewportComponent);
 
 /** Interface for adding extensions to the model screen; used by the camera sample. */
@@ -593,7 +593,7 @@ export function ModelScreen(props: ModelScreenProps) {
 
 /** Properties for the {@link HeaderTitle} React component. */
 export interface HeaderTitleProps {
-  iconSpec?: IconSpec; // eslint-disable-line deprecation/deprecation
+  iconSpec?: IconSpec; // eslint-disable-line @typescript-eslint/no-deprecated
   label?: string;
   moreElements?: React.ReactNode;
 }

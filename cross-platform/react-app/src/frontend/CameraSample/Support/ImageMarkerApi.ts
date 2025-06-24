@@ -2,6 +2,7 @@
 * Copyright (c) Bentley Systems, Incorporated. All rights reserved.
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
+/* eslint-disable @typescript-eslint/no-non-null-assertion, jsdoc/no-undefined-types */
 import {
   Point2d,
   Point3d,

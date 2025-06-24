@@ -1,0 +1,16 @@
+{
+  "general": {
+    "cancel": "Cancel",
+    "ok": "OK",
+    "yes": "Yes",
+    "no": "No"
+  },
+  "messenger": {
+    "json-error": "Messenger JSON error: {{json}}.",
+    "query-not-handled-error": "No handler for \"{{name}}\" query.",
+    "unknown": "<Unknown>"
+  },
+  "ui-error": {
+    "internet-unreachable": "Could not connect to the server. Please check your internet connection and try again."
+  }
+}

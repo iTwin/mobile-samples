@@ -1,0 +1,125 @@
+{
+  "Shared": {
+    "SelectIModel": "Select iModel",
+    "Error": "Error",
+    "OK": "OK",
+    "SignOut": "Sign Out"
+  },
+  "App": {
+    "LoadErrorFormat": "Error loading iModel:\n{{- error}}",
+    "SignOutErrorFormat": "Error signing out:\n{{- error}}"
+  },
+  "Screen": {
+    "BFormat": "{{size}} B",
+    "KBFormat": "{{size}} KB",
+    "MBFormat": "{{size}} MB",
+    "GBFormat": "{{size}} KB",
+    "LoadedFormat": " ({{value}} loaded)"
+  },
+  "HomeScreen": {
+    "Home": "Home",
+    "LocalIModels": "Local iModels",
+    "HubIModels": "Hub iModels"
+  },
+  "LocalModelsScreen": {
+    "ChooseFile": "Choose File...",
+    "DeviceDocuments": "Device Documents",
+    "HubDocuments": "Downloaded from iModel Hub"
+  },
+  "ChangesetsDownloader": {
+    "DownloadingChangesets": "Downloading changesets for",
+    "ApplyingChangesets": "Applying changesets to",
+    "PullChangesErrorFormat": "Error downloading changesets: {{- error}}"
+  },
+  "HubScreen": {
+    "Connecting": "Connecting...",
+    "SelectProject": "Select Project",
+    "FetchProjectsErrorFormat": "Error getting projects list: {{- error}}",
+    "GetIModelsErrorFormat": "Error getting iModels list: {{- error}}",
+    "SigninErrorFormat": "Error signing in: {{- error}}",
+    "DeleteAllDownloads": "Delete All Downloads",
+    "ChangeProject": "Change Project",
+    "Search": "Search",
+    "DownloadErrorFormat": "Error downloading iModel: {{- error}}",
+    "DeleteErrorFormat": "Error deleting local download of iModel: {{- error}}",
+    "DeleteAllErrorFormat": "Error deleting local downloads of all iModels in project: {{- error}}",
+    "All": "All",
+    "Recents": "Recent",
+    "Favorites": "Favorites",
+    "Downloading": "Downloading",
+    "LoadMore": "Load More...",
+    "Cancel": "Cancel",
+    "IModelButtonFormat": "{{name}} ({{size}})",
+    "NoName": "<No Name>",
+    "UserCanceledSignIn": "User canceled sign in."
+  },
+  "ModelScreen": {
+    "Location": "Location",
+    "FormDialog": "Form Dialog",
+    "FailOK": "Enter \"yes\" to fail OK",
+    "ShowCurrentLocation": "Show Current Location...",
+    "LocationFormat": "Latitude: {{latitude}} Longitude: {{longitude}}",
+    "LocationErrorFormat": "Error getting location: {{- error}}",
+    "FitView": "Fit View",
+    "DefaultView": "Default View",
+    "ToggleCamera": "Toggle Camera",
+    "AlertDemo": "Alert Demo",
+    "AlertDemoMessage": "This message is only visible in iOS.",
+    "One": "One",
+    "Two": "Two",
+    "Three": "Three",
+    "Four": "Four",
+    "Five": "Five",
+    "Six": "Six",
+    "Destructive": "Destructive",
+    "YouChose": "You chose:",
+    "Info": "Info",
+    "Compass": "Compass",
+    "Properties": "Properties",
+    "Tools": "Tools",
+    "ApplyDefaultViewErrorFormat": "Error applying default view: {{- error}}",
+    "ChangeAppearance": "Change Appearance",
+    "Light": "Light",
+    "Dark": "Dark",
+    "Automatic": "Automatic",
+    "Edit": "Edit User Label",
+    "EditUpdate": "Update User Label",
+    "EditUpdateErrorFormat": "Error updating user label: {{- error}}",
+    "EditPush": "Push Changes",
+    "EditPushErrorFormat": "Error pushing changes: {{- error}}",
+    "Done": "Done"
+  },
+  "AboutBottomPanel": {
+    "About": "About",
+    "Header": "Random about text goes here."
+  },
+  "ElementPropertiesPanel": {
+    "Properties": "Properties",
+    "TooManyElements": "Too many elements selected."
+  },
+  "InfoBottomPanel": {
+    "PathFormat": "Path: {{- filename}}"
+  },
+  "ViewsBottomPanel": {
+    "Views": "Views"
+  },
+  "ToolsBottomPanel": {
+    "Angle": "Angle",
+    "Area": "Area",
+    "Clear": "Clear",
+    "Distance": "Distance",
+    "Location": "Location",
+    "Perpendicular": "Perpendicular",
+    "Radius": "Radius",
+    "Select": "Select",
+    "SectionByPlane": "Section by Plane",
+    "SectionByElement": "Section by Element",
+    "SectionByRange": "Section by Range",
+    "SectionByShape": "Section by Shape",
+    "ClearSection": "Clear Section",
+    "Walk": "Walk"
+  },
+  "ImageCache": {
+    "ShareErrorFormat": "Error sharing:\n{{- error}}"
+  }
+}
