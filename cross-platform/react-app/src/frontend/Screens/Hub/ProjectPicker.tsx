@@ -49,7 +49,8 @@ type ProjectsQueryFunction = () => Promise<ProjectsQueryResponse>;
  * @returns A {@link ProjectsQueryResponse} object
  */
 async function getProjects(source: ProjectsSource, search = "", skip = 0): Promise<ProjectsQueryResponse> {
-  const client = new ITwinsAccessClient();
+  const baseUrl = `https://${window.itmSampleParams.apiPrefix}api.bentley.com/itwins`;
+  const client = new ITwinsAccessClient(baseUrl);
   const numToFetch = 100;
   const accessToken = await IModelApp.getAccessToken();
   const queryArgs: ITwinsQueryArg = { skip, top: numToFetch };

@@ -44,8 +44,6 @@ Object.keys(packageJson.dependencies).forEach((pkgName) => {
 
 // https://vitejs.dev/config/
 export default defineConfig(({ }) => {
-  // This changes the output dir from dist to build
-  process.env = { ...process.env, ...loadEnv(mode, process.cwd()) };
   // REACT_APP_BUILD_TARGET is used by the CameraSampleApp to determine which app to load.
   // This will be injected as process.env.REACT_APP_BUILD_TARGET in the frontend.
   // It is set in the package.json camera scripts.
