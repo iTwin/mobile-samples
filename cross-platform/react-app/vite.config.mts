@@ -46,7 +46,10 @@ Object.keys(packageJson.dependencies).forEach((pkgName) => {
 export default defineConfig(({ }) => {
   // This changes the output dir from dist to build
   process.env = { ...process.env, ...loadEnv(mode, process.cwd()) };
-  // REACT_APP_BUILD_TARGET is used by the CameraSampleApp to determine which app to load
+  // REACT_APP_BUILD_TARGET is used by the CameraSampleApp to determine which app to load.
+  // This will be injected as process.env.REACT_APP_BUILD_TARGET in the frontend.
+  // It is set in the package.json camera scripts.
+  // Injecting all of process.env is not recommended, and it also generates a warning at build time.
   let appEnv = { REACT_APP_BUILD_TARGET: process.env.REACT_APP_BUILD_TARGET, };
   return {
     debug: mode === "development",
