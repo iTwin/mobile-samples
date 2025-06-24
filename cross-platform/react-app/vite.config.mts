@@ -5,7 +5,6 @@
 import { defineConfig, loadEnv, searchForWorkspaceRoot } from "vite";
 import browserslistToEsbuild from "browserslist-to-esbuild";
 import copy from "rollup-plugin-copy";
-import ignore from "rollup-plugin-ignore";
 import { visualizer as rollupVisualizer } from "rollup-plugin-visualizer";
 import externalGlobals from "rollup-plugin-external-globals";
 import webpackStats from "rollup-plugin-webpack-stats";
@@ -63,7 +62,7 @@ export default defineConfig(({ }) => {
     publicDir: ".static-assets",
     logLevel: process.env.VITE_CI ? "error" : "warn",
     esbuild: {
-      target: "es2022",
+      target: "es2023",
     },
     build: {
       outDir: "./build",
@@ -95,7 +94,6 @@ export default defineConfig(({ }) => {
     },
     plugins: [
       react(),
-      ignore(["electron"]), // equivalent to webpack externals
       // copy static assets to .static-assets folder
       copy({
         targets: [
