@@ -22,14 +22,14 @@ export interface SignInProps {
  */
 export function SignIn(props: SignInProps) {
   const { onBack, onError, onSignedIn } = props;
-  const [signedIn, setSignedIn] = React.useState(false);
+  const signedInRef = React.useRef(false);
   const cancelLabel = useLocalizedString("HubScreen", "Cancel");
   const connectingLabel = useLocalizedString("HubScreen", "Connecting");
   const userCanceledSignInLabel = useLocalizedString("HubScreen", "UserCanceledSignIn");
   const isMountedRef = useIsMountedRef();
 
   React.useEffect(() => {
-    if (signedIn) return;
+    if (signedInRef.current) return;
     const signIn = async () => {
       try {
         // Asking for the access token will trigger sign in if that has not already happened.
@@ -47,9 +47,9 @@ export function SignIn(props: SignInProps) {
         onError();
       }
     };
-    setSignedIn(true);
+    signedInRef.current = true;
     void signIn();
-  }, [isMountedRef, onError, onSignedIn, signedIn, userCanceledSignInLabel]);
+  }, [isMountedRef, onError, onSignedIn, userCanceledSignInLabel]);
 
   return <div className="centered-list">
     {connectingLabel}
