@@ -119,7 +119,7 @@ export function ProjectPicker(props: ProjectPickerProps) {
   const [projectSource, setProjectSource] = React.useState(ProjectsSource.Recents);
   const [loading, setLoading] = React.useState(false);
   const [nextFunc, setNextFunc] = React.useState<ProjectsQueryFunction>();
-  const [loadingMore, setLoadingMore] = React.useState(false);
+  const loadingMoreRef = React.useRef(false);
   const loadMoreLabel = useLocalizedString("HubScreen", "LoadMore");
   const isMountedRef = useIsMountedRef();
   const searchLabel = useLocalizedString("HubScreen", "Search");
@@ -154,8 +154,8 @@ export function ProjectPicker(props: ProjectPickerProps) {
 
   // Loads the next batch of projects if `nextFunc` is defined.
   const loadMore = React.useCallback(async () => {
-    if (loadingMore || !nextFunc) return;
-    setLoadingMore(true);
+    if (loadingMoreRef.current || !nextFunc) return;
+    loadingMoreRef.current = true;
     if (!isMountedRef.current) return;
     try {
       const moreProjects = await nextFunc();
@@ -170,8 +170,8 @@ export function ProjectPicker(props: ProjectPickerProps) {
       await presentError("FetchProjectsErrorFormat", error, "HubScreen");
       onError?.(error);
     }
-    setLoadingMore(false);
-  }, [isMountedRef, loadingMore, nextFunc, onError]);
+    loadingMoreRef.current = false;
+  }, [isMountedRef, nextFunc, onError]);
 
   // Automatically load more projects if needed when the user scrolls to the bottom of the list.
   const onScroll = React.useCallback((element: HTMLElement) => {
@@ -190,8 +190,8 @@ export function ProjectPicker(props: ProjectPickerProps) {
       {projectSource === ProjectsSource.All && <SearchControl placeholder={searchLabel} onSearch={(searchVal) => setSearch(searchVal)} initialValue={search} />}
     </div>
     <ProjectList projects={projects} onSelect={onSelect} onScroll={onScroll} loading={loading}>
-      {loadingMore && <ProgressRadial indeterminate />}
-      {nextFunc && !loadingMore && <HubScreenButton title={loadMoreLabel} style={{ ["--color" as any]: "var(--muic-active)" }} onClick={loadMore} />}
+      {loadingMoreRef.current && <ProgressRadial indeterminate />}
+      {nextFunc && !loadingMoreRef.current && <HubScreenButton title={loadMoreLabel} style={{ ["--color" as any]: "var(--muic-active)" }} onClick={loadMore} />}
     </ProjectList>
   </>;
 }
