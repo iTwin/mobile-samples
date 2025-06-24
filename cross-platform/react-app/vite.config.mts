@@ -68,19 +68,12 @@ export default defineConfig(({ }) => {
     build: {
       outDir: "./build",
       sourcemap: !process.env.VITE_CI, // append to the resulting output file if not running in CI.
-      minify: false, // disable compaction of source code
+      chunkSizeWarningLimit: 7000, // in kB, default is 500kB
+      // minify: false, // disable compaction of source code
       target: browserslistToEsbuild(), // for browserslist in package.json
-      commonjsOptions: {
-        // plugin to convert CommonJS modules to ESM, so they can be included in bundle
-        include: [
-          /core\/mobile/, // prevent error in MobileApp
-          /node_modules/, // prevent errors from dependencies
-        ],
-        transformMixedEsModules: true, // transforms require statements
-      },
       rollupOptions: {
         input: path.resolve(__dirname, "index.html"),
-        // run `rushx build --stats` to view stats
+        // run `npm run build --stats` to view stats
         plugins: [
           ...(process.env.OUTPUT_STATS !== undefined
             ? [
