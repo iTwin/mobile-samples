@@ -11,9 +11,10 @@
   "scripts": {
     "start": "cross-env NODE_ENV=development vite --host",
     "start:camera": "cross-env REACT_APP_BUILD_TARGET=Camera run-s start",
-    "copy:assets": "",
-    "copy:camera": "cpx \"./src/frontend/CameraSample/public/locales/**\" ./.static-assets/locales",
-    "build:frontend": "cross-env NODE_OPTIONS=--max_old_space_size=8192 vite build && run-s copy:assets",
+    "copy:camera:static": "cpx \"./src/frontend/CameraSample/public/locales/**\" ./.static-assets/locales",
+    "copy:camera:build": "cpx \"./src/frontend/CameraSample/public/locales/**\" ./build/locales",
+    "copy:camera": "run-s copy:camera:static copy:camera:build",
+    "build:frontend": "cross-env NODE_OPTIONS=--max_old_space_size=8192 vite build",
     "build:camera": "cross-env REACT_APP_BUILD_TARGET=Camera run-s build:frontend copy:camera",
     "compile:backend": "tsc -p tsconfig.backend.json",
     "webpack:backend": "cross-env NODE_OPTIONS=--max_old_space_size=8192 webpack --config ./webpack.config --env outdir=./lib/webpack --env entry=./lib/backend/main.js --env bundlename=main",
