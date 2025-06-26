@@ -9,8 +9,6 @@ import { MobileHost, MobileHostOpts } from "@itwin/core-mobile/lib/cjs/MobileBac
 import { BackendLogParams, getSupportedRpcs } from "../common/rpcs";
 import { IModelHostConfiguration, IpcHost } from "@itwin/core-backend";
 import { BackendIModelsAccess } from "@itwin/imodels-access-backend";
-import { createDefaultClientStorage } from "@itwin/imodels-access-backend/lib/cjs/DefaultClientStorage";
-import { IModelsClient } from "@itwin/imodels-client-authoring";
 import { EditHandler } from "./EditHandler";
 
 // This is the file that generates main.js, which is loaded by the backend into a Google V8 JavaScript
@@ -27,13 +25,8 @@ void (async () => {
 
   const iModelHost = new IModelHostConfiguration();
   const baseUrl = `https://${process.env.ITMAPPLICATION_API_PREFIX ?? ""}api.bentley.com/imodels`;
-  const imodelsClient = new IModelsClient(
-    {
-      api: { baseUrl },
-      cloudStorage: createDefaultClientStorage(),
-    });
   // eslint-disable-next-line @itwin/no-internal
-  iModelHost.hubAccess = new BackendIModelsAccess(imodelsClient);
+  iModelHost.hubAccess = new BackendIModelsAccess({ api: { baseUrl } });
   // Get RPCs supported by this backend
   const rpcs = getSupportedRpcs();
   // Initialize imodeljs-backend
