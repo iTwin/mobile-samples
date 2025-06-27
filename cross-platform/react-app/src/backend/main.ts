@@ -25,7 +25,6 @@ void (async () => {
 
   const iModelHost = new IModelHostConfiguration();
   const baseUrl = `https://${process.env.ITMAPPLICATION_API_PREFIX ?? ""}api.bentley.com/imodels`;
-  // eslint-disable-next-line @itwin/no-internal
   iModelHost.hubAccess = new BackendIModelsAccess({ api: { baseUrl } });
   // Get RPCs supported by this backend
   const rpcs = getSupportedRpcs();
