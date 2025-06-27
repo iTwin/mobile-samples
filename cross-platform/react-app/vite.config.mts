@@ -115,15 +115,5 @@ export default defineConfig(({ }) => {
         { find: "~@itwin", replacement: resolve(__dirname, "node_modules/@itwin") }, // appui imports require this alias
       ],
     },
-    // optimizeDeps: {
-    //   // overoptimized dependencies in the same monorepo (vite converts all cjs to esm)
-    //   include: [
-    //     "@itwin/core-mobile/lib/cjs/MobileFrontend", // import from module error
-    //   ],
-    //   exclude: [
-    //     "@itwin/core-frontend", //prevents import not resolved errors
-    //     "@itwin/core-common", //prevents rpc errors
-    //   ],
-    // },
   };
 });
