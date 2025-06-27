@@ -69,7 +69,6 @@ export default defineConfig(({ }) => {
       outDir: "./build",
       sourcemap: !process.env.VITE_CI, // append to the resulting output file if not running in CI.
       chunkSizeWarningLimit: 7000, // in kB, default is 500kB
-      // minify: false, // disable compaction of source code
       target: browserslistToEsbuild(), // for browserslist in package.json
       rollupOptions: {
         input: path.resolve(__dirname, "index.html"),
