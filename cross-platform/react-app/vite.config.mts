@@ -48,7 +48,7 @@ export default defineConfig(({ }) => {
   // This will be injected as process.env.REACT_APP_BUILD_TARGET in the frontend.
   // It is set in the package.json camera scripts.
   // Injecting all of process.env is not recommended, and it also generates a warning at build time.
-  let appEnv = { REACT_APP_BUILD_TARGET: process.env.REACT_APP_BUILD_TARGET, };
+  const appEnv = { REACT_APP_BUILD_TARGET: process.env.REACT_APP_BUILD_TARGET, };
   return {
     debug: mode === "development",
     server: {
