@@ -24,7 +24,7 @@ const assets = ["./public/*"]; // assets for test-app
 // This is used to copy static assets from dependencies to the public directory
 // so that they can be served by Vite during development and included in the build.
 Object.keys(packageJson.dependencies).forEach((pkgName) => {
-  if (pkgName.startsWith("@itwin") || pkgName.startsWith("@bentley")) {
+  if (pkgName.startsWith("@itwin")) {
     try {
       // gets dependency path
       const pkgPath = require.resolve(pkgName);
