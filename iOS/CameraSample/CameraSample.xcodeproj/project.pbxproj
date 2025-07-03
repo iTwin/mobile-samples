@@ -463,7 +463,7 @@
 			repositoryURL = "https://github.com/iTwin/mobile-sdk-ios.git";
 			requirement = {
 				kind = exactVersion;
-				version = 0.24.0;
+				version = 0.30.2;
 			};
 		};
 /* End XCRemoteSwiftPackageReference section */
