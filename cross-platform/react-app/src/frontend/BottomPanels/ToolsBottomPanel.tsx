@@ -30,7 +30,7 @@ export interface ToolEntry {
   labelKey: string;
   icon?: string;
   // @todo AppUI deprecation
-  // eslint-disable-next-line deprecation/deprecation
+  // eslint-disable-next-line @typescript-eslint/no-deprecated
   toolItemDef: ToolItemDef;
 }
 
@@ -92,7 +92,7 @@ export interface ToolsBottomPanelProps extends BottomPanelProps {
 /** Command called by the walk tool. */
 function viewLookAndMoveCommand() {
   // @todo AppUI deprecation
-  // eslint-disable-next-line deprecation/deprecation
+  // eslint-disable-next-line @typescript-eslint/no-deprecated
   return new ToolItemDef({
     toolId: "View.LookAndMove",
     iconSpec: WalkViewTool.iconSpec,
@@ -110,24 +110,30 @@ function viewLookAndMoveCommand() {
 export function getDefaultTools(): ToolEntry[] {
   return [
     // @todo AppUI deprecation
-    // eslint-disable-next-line deprecation/deprecation
+    // eslint-disable-next-line @typescript-eslint/no-deprecated
     { labelKey: "ReactApp:ToolsBottomPanel.Select", icon: "icon-gesture-touch", toolItemDef: CoreTools.selectElementCommand },
+    // eslint-disable-next-line @typescript-eslint/no-deprecated
     { labelKey: "ReactApp:ToolsBottomPanel.Distance", icon: "icon-measure-distance", toolItemDef: MeasureToolDefinitions.measureDistanceToolCommand },
+    // eslint-disable-next-line @typescript-eslint/no-deprecated
     { labelKey: "ReactApp:ToolsBottomPanel.Location", icon: "icon-measure-location", toolItemDef: MeasureToolDefinitions.measureLocationToolCommand },
+    // eslint-disable-next-line @typescript-eslint/no-deprecated
     { labelKey: "ReactApp:ToolsBottomPanel.Area", icon: "icon-measure-2d", toolItemDef: MeasureToolDefinitions.measureAreaToolCommand },
+    // eslint-disable-next-line @typescript-eslint/no-deprecated
     { labelKey: "ReactApp:ToolsBottomPanel.Radius", icon: "icon-measure-arc", toolItemDef: MeasureToolDefinitions.measureRadiusToolCommand },
+    // eslint-disable-next-line @typescript-eslint/no-deprecated
     { labelKey: "ReactApp:ToolsBottomPanel.Angle", icon: "icon-measure-angle", toolItemDef: MeasureToolDefinitions.measureAngleToolCommand },
+    // eslint-disable-next-line @typescript-eslint/no-deprecated
     { labelKey: "ReactApp:ToolsBottomPanel.Perpendicular", icon: "icon-measure-perpendicular", toolItemDef: MeasureToolDefinitions.measurePerpendicularToolCommand },
     { labelKey: "ReactApp:ToolsBottomPanel.Clear", icon: "icon-measure-clear", toolItemDef: MeasureToolDefinitions.clearMeasurementsToolCommand },
     { labelKey: "ReactApp:ToolsBottomPanel.Walk", icon: "icon-walk", toolItemDef: viewLookAndMoveCommand() },
     // @todo AppUI deprecation
-    /* eslint-disable deprecation/deprecation */
+    /* eslint-disable @typescript-eslint/no-deprecated */
     { labelKey: "ReactApp:ToolsBottomPanel.SectionByPlane", toolItemDef: CoreTools.sectionByPlaneCommandItemDef },
     { labelKey: "ReactApp:ToolsBottomPanel.SectionByElement", toolItemDef: CoreTools.sectionByElementCommandItemDef },
     { labelKey: "ReactApp:ToolsBottomPanel.SectionByRange", toolItemDef: CoreTools.sectionByRangeCommandItemDef },
     { labelKey: "ReactApp:ToolsBottomPanel.SectionByShape", toolItemDef: CoreTools.sectionByShapeCommandItemDef },
     { labelKey: "ReactApp:ToolsBottomPanel.ClearSection", icon: "icon-section-clear", toolItemDef: ToolItemDef.getItemDefForTool(ViewClipClearTool) },
-    /* eslint-enable deprecation/deprecation */
+    /* eslint-enable @typescript-eslint/no-deprecated */
   ];
 }
 
@@ -144,7 +150,7 @@ export function ToolsBottomPanel(props: ToolsBottomPanelProps) {
   // This allows us to put this here instead of inside the tool activation. If this is in the tool activation, it won't
   // auto-detect when a tool ends on its own (switching back to select tool). The section tools all end on their own.
   // @todo AppUI deprecation
-  // eslint-disable-next-line deprecation/deprecation
+  // eslint-disable-next-line @typescript-eslint/no-deprecated
   ToolSettings.enableVirtualCursorForLocate = activeToolId !== CoreTools.selectElementCommand.toolId;
 
   return <BottomPanel

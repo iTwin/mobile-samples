@@ -1,6 +1,6 @@
 {
   "compilerOptions": {
-    "target": "es2016",
+    "target": "es2023",
     "lib": [
       "dom",
       "dom.iterable",
@@ -19,7 +19,10 @@
     "resolveJsonModule": true,
     "isolatedModules": true,
     "noEmit": true,
-    "jsx": "react-jsx"
+    "jsx": "react",
+    "types": [
+      "vite/client"
+    ]
   },
   "include": [
     "src"

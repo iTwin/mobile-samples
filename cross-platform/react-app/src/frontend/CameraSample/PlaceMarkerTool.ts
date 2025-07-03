@@ -21,9 +21,9 @@ export class PlaceMarkerTool extends PrimitiveTool {
   public static override iconSpec = "icon-location";
   public static prompt = "Enter point";
 
-  protected _createMarkerCallback: (pt: Point3d) => {};
+  protected _createMarkerCallback: (pt: Point3d) => object;
 
-  constructor(callback: (pt: Point3d) => {}) {
+  constructor(callback: (pt: Point3d) => object) {
     super();
     this._createMarkerCallback = callback;
   }

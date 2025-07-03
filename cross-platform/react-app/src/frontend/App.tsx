@@ -30,6 +30,8 @@ import {
   ModelScreenExtensionProps,
   presentError,
 } from "./Exports";
+import { FrontendIModelsAccess } from "@itwin/imodels-access-frontend";
+import { IModelsClient } from "@itwin/imodels-client-management";
 import { BackendLogParams, getSupportedRpcs } from "../common/rpcs";
 import "./App.scss";
 
@@ -77,9 +79,6 @@ function loadUrlSearchParams() {
   loadBooleanUrlSearchParam("haveBackButton");
   loadBooleanUrlSearchParam("debugI18n");
   loadStringUrlSearchParam("apiPrefix");
-  // Some classes (notable ProjectsAccessClient for this sample) require process.env.IMJS_URL_PREFIX
-  // to be set. Due to the way that webpack works, that is done via the following.
-  (globalThis as any).IMJS_URL_PREFIX = window.itmSampleParams.apiPrefix;
 }
 
 /** Interface to allow switching from one screen to another. */
@@ -201,11 +200,14 @@ function useAppState(onInitialize?: () => Promise<void>) {
         await Messenger.initialize();
         Messenger.sendMessage("loading");
         loadUrlSearchParams();
+        const baseUrl = `https://${window.itmSampleParams.apiPrefix}api.bentley.com/imodels`;
+        const imodelsClient = new IModelsClient({ api: { baseUrl } });
         const opts: MobileAppOpts = {
           iModelApp: {
             rpcInterfaces: getSupportedRpcs(),
             notifications: new AppToolAssistanceNotificationManager(),
             renderSys: getRenderSysOptions(),
+            hubAccess: new FrontendIModelsAccess(imodelsClient),
           },
         };
         await MobileApp.startup(opts);
@@ -232,7 +234,7 @@ function useAppState(onInitialize?: () => Promise<void>) {
         Messenger.sendMessage("didFinishLaunching", { iTwinVersion: ITWINJS_CORE_VERSION });
 
         console.log("...Done Initializing.");
-      } catch (ex) {
+      } catch (ex: any) {
         console.log(`Exception during initialization: ${ex}`);
       }
     };
@@ -385,7 +387,10 @@ export function App(props: AppProps) {
     case ActiveScreen.Hub:
       return <HubScreen onOpen={handleOpen} onBack={handleBack} openRemoteValues={openRemoteValues} />;
     case ActiveScreen.Model:
-      return <ModelScreen filename={modelFilename} iModel={iModel!} onBack={handleBack} {...props} {...getModelScreenExtensions?.(iModel!)} />;
+      if (!iModel) {
+        throw new Error("iModel is undefined when trying to render ModelScreen.");
+      }
+      return <ModelScreen filename={modelFilename} iModel={iModel} onBack={handleBack} {...props} {...getModelScreenExtensions?.(iModel)} />;
     default:
       return <LoadingScreen />;
   }

@@ -9,7 +9,6 @@ import { MobileHost, MobileHostOpts } from "@itwin/core-mobile/lib/cjs/MobileBac
 import { BackendLogParams, getSupportedRpcs } from "../common/rpcs";
 import { IModelHostConfiguration, IpcHost } from "@itwin/core-backend";
 import { BackendIModelsAccess } from "@itwin/imodels-access-backend";
-import { IModelsClient } from "@itwin/imodels-client-authoring";
 import { EditHandler } from "./EditHandler";
 
 // This is the file that generates main.js, which is loaded by the backend into a Google V8 JavaScript
@@ -26,9 +25,7 @@ void (async () => {
 
   const iModelHost = new IModelHostConfiguration();
   const baseUrl = `https://${process.env.ITMAPPLICATION_API_PREFIX ?? ""}api.bentley.com/imodels`;
-  const imodelsClient = new IModelsClient({ api: { baseUrl } });
-  // eslint-disable-next-line @itwin/no-internal
-  iModelHost.hubAccess = new BackendIModelsAccess(imodelsClient);
+  iModelHost.hubAccess = new BackendIModelsAccess({ api: { baseUrl } });
   // Get RPCs supported by this backend
   const rpcs = getSupportedRpcs();
   // Initialize imodeljs-backend
@@ -40,14 +37,13 @@ void (async () => {
   };
   await MobileHost.startup(options);
 
-  const backendRoot = path.dirname(process.mainModule!.filename);
+  const backendRoot = path.dirname(process.mainModule?.filename ?? "");
   const assetsRoot = backendRoot ? path.join(backendRoot, "assets") : "assets";
   // Initialize presentation-backend
   Presentation.initialize({
     // Specify location of where application's presentation rule sets are located.
     // May be omitted if application doesn't have any presentation rules.
     rulesetDirectories: [path.join(assetsRoot, "presentation_rules")],
-    localeDirectories: [path.join(assetsRoot, "locales")],
     supplementalRulesetDirectories: [path.join(assetsRoot, "supplemental_presentation_rules")],
   });
   IpcHost.addListener("frontend-listening", () => {
@@ -69,13 +65,16 @@ function processLogQueue() {
     return;
   }
   while (logQueue.length > 0) {
-    const params = logQueue.shift()!;
+    const params = logQueue.shift();
+    if (params === undefined) {
+      break;
+    }
     try {
       // NOTE: Until iTwin 4.4 is released, the following will CRASH the app instead of throwing an
       // exception if the backend is not connected to the frontend. Unfortunately, there is also no
       // way to know if the connection is alive.
       IpcHost.send("backend-log", params);
-    } catch (_ex) {
+    } catch {
       logQueue.unshift(params);
       break;
     }
@@ -92,7 +91,7 @@ function redirectLoggingToFrontend(this: any): void {
         if (typeof getMetaData === "function") {
           try {
             metaData = getMetaData();
-          } catch (_ex) {
+          } catch {
             // NEEDS_WORK: Need to improve handling of exception and return data correctly.
           }
         } else {

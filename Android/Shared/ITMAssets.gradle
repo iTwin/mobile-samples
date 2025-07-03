@@ -28,8 +28,7 @@ task copyITMAssets {
             "${reactAppDir}/build": "${assetsDir}/frontend",
             "${reactAppDir}/lib/webpack": "${assetsDir}/backend",
             "${reactAppDir}/assets": "${assetsDir}/backend/assets",
-            "${reactAppDir}/node_modules/@itwin/core-backend/lib/cjs/assets": "${assetsDir}/backend/assets",
-            "${reactAppDir}/node_modules/@itwin/presentation-common/lib/cjs/assets/locales": "${assetsDir}/backend/assets/locales"
+            "${reactAppDir}/node_modules/@itwin/core-backend/lib/cjs/assets": "${assetsDir}/backend/assets"
         ]
 
         for (def entry in foldersToCopy)

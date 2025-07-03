@@ -41,7 +41,7 @@ function getActiveProjectId() {
       const project = JSON.parse(storedValue);
       if (typeof (project) === "object" && project.id)
         return project.id;
-    } catch (_e) {
+    } catch {
       console.log(`Exception parsing: ${storedValue}`);
     }
   }

@@ -6,14 +6,8 @@ import React from "react";
 import { useIsMountedRef } from "@itwin/mobile-ui-react";
 import { DownloadBriefcaseOptions, DownloadProgressInfo, NativeApp } from "@itwin/core-frontend";
 import { MinimalIModel } from "@itwin/imodels-client-management";
-import {
-  BentleyError,
-  BriefcaseDownloader,
-  BriefcaseStatus,
-  IModelStatus,
-  LocalBriefcaseProps,
-  SyncMode,
-} from "@itwin/core-common";
+import { BriefcaseDownloader, LocalBriefcaseProps, SyncMode } from "@itwin/core-common";
+import { BentleyError, BriefcaseStatus, IModelStatus } from "@itwin/core-bentley";
 import { ProgressRadial } from "@itwin/itwinui-react";
 import { Button, IModelInfo, presentError, useLocalizedString } from "../../Exports";
 
@@ -70,16 +64,16 @@ async function downloadIModel(iTwinId: string, iModel: MinimalIModel, handleProg
     return localBriefcases[0];
   } catch (error) {
     if (error instanceof BentleyError) {
-      if (error.errorNumber === IModelStatus.FileAlreadyExists) {
+      if (error.errorNumber === (IModelStatus.FileAlreadyExists as number)) {
         // When a download is canceled, the partial briefcase file does not get deleted, which causes
         // any subsequent download attempt to fail with this error number. If that happens, delete the
         // briefcase and try again.
         try {
           const fileName = await getBriefcaseFileName(iModel.id);
           await NativeApp.deleteBriefcase(fileName);
-          return downloadIModel(iTwinId, iModel, handleProgress);
-        } catch (_error) { }
-      } else if (error.errorNumber === BriefcaseStatus.DownloadCancelled && canceled) {
+          return await downloadIModel(iTwinId, iModel, handleProgress);
+        } catch { }
+      } else if (error.errorNumber === (BriefcaseStatus.DownloadCancelled as number) && canceled) {
         // When we call requestCancel, it causes the downloader to throw this error; ignore.
         return undefined;
       }

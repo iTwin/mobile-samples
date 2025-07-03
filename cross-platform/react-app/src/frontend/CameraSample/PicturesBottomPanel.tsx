@@ -72,12 +72,13 @@ export function PicturesBottomPanel(props: PicturesBottomPanelProps) {
   const [decoratorActive, setDecoratorActive] = React.useState(true);
   const [selectMode, setSelectMode] = React.useState(false);
   const [selectedUrls, setSelectedUrls] = React.useState(new Set<string>());
+  const iModelId = iModel.iModelId ?? "";
 
   // Reload the list of attached pictures.
   const reload = React.useCallback(async () => {
     // Note: We only allow loading iModels, not creating them, so our iModel is guaranteed to have
     // an iModelId.
-    const urls = await ImageCache.getImages(iModel.iModelId!);
+    const urls = await ImageCache.getImages(iModelId);
     urls.sort();
     setPictureUrls(urls);
     if (urls.length === 0) {
@@ -85,7 +86,7 @@ export function PicturesBottomPanel(props: PicturesBottomPanelProps) {
       setSelectedUrls(new Set<string>());
     }
     reloadedEvent.current.emit();
-  }, [iModel]);
+  }, [iModelId]);
 
   // React effect run during component initialization. (It also runs when the iModel changes, but
   // that never happens while this component is loaded.)
@@ -166,14 +167,14 @@ export function PicturesBottomPanel(props: PicturesBottomPanelProps) {
         <ToolButton iconSpec={"icon-camera"} onClick={async () => {
           // Note: We only allow loading iModels, not creating them, so our iModel is guaranteed to
           // have an iModelId.
-          if (await ImageCache.pickImage(iModel.iModelId!)) {
+          if (await ImageCache.pickImage(iModelId)) {
             void reload();
           }
         }} />
         <ToolButton iconSpec={"icon-image"} onClick={async () => {
           // Note: We only allow loading iModels, not creating them, so our iModel is guaranteed to
           // have an iModelId.
-          if (await ImageCache.pickImage(iModel.iModelId!, true)) {
+          if (await ImageCache.pickImage(iModelId, true)) {
             void reload();
           }
         }} />
@@ -203,7 +204,7 @@ export function PicturesBottomPanel(props: PicturesBottomPanelProps) {
             if (all && await presentYesNoAlert(deleteAllTitle, deleteAllMessage, true)) {
               // Note: We only allow loading iModels, not creating them, so our iModel is guaranteed
               // to have an iModelId.
-              await ImageCache.deleteAllImages(iModel.iModelId!);
+              await ImageCache.deleteAllImages(iModelId);
               void reload();
             } else if (!all && await presentYesNoAlert(deleteSelectedTitle, deleteSelectedMessage, true)) {
               await ImageCache.deleteImages(Array.from(selectedUrls));
@@ -253,6 +254,9 @@ export function PictureView(props: PictureViewProps) {
     </div>
   );
   const rootElement = document.getElementById("root");
+  if (!rootElement) {
+    throw new Error("Root element not found in index.html.");
+  }
   // Make this component a child of the "root" element in the document.
-  return ReactDOM.createPortal(portalDiv, rootElement!);
+  return ReactDOM.createPortal(portalDiv, rootElement);
 }
