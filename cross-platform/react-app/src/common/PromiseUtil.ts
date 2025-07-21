@@ -25,15 +25,18 @@ export class PromiseUtil {
       // thrown by the consolidated call, so we want to allow it to be thrown.
       return activePromise;
     }
-    const promiseResult = new Promise<T>(async (resolve, reject) => {
-      try {
-        const result = await call();
-        resolve(result);
-      } catch (error) {
-        reject(error as Error);
-      } finally {
-        PromiseUtil._activeConsolidators.delete(key);
-      }
+    const promiseResult = new Promise<T>((resolve, reject) => {
+      const body = async () => {
+        try {
+          const result = await call();
+          resolve(result);
+        } catch (error) {
+          reject(error as Error);
+        } finally {
+          PromiseUtil._activeConsolidators.delete(key);
+        }
+      };
+      void body();
     });
     PromiseUtil._activeConsolidators.set(key, promiseResult);
     return promiseResult;

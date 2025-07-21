@@ -2,7 +2,7 @@
  * Copyright (c) Bentley Systems, Incorporated. All rights reserved.
  * See LICENSE.md in the project root for license terms and full copyright notice.
  *--------------------------------------------------------------------------------------------*/
-import { defineConfig, loadEnv, searchForWorkspaceRoot } from "vite";
+import { defineConfig, searchForWorkspaceRoot } from "vite";
 import browserslistToEsbuild from "browserslist-to-esbuild";
 import copy from "rollup-plugin-copy";
 import { visualizer as rollupVisualizer } from "rollup-plugin-visualizer";
@@ -29,7 +29,7 @@ Object.keys(packageJson.dependencies).forEach((pkgName) => {
       // gets dependency path
       const pkgPath = require.resolve(pkgName);
       // replaces everything after /lib/ with /lib/public/* to get static assets
-      let pkgPublicPath = pkgPath.replace(/([\/\\]lib[\/\\]).*/, "$1public/*");
+      let pkgPublicPath = pkgPath.replace(/([/\\]lib[/\\]).*/, "$1public/*");
 
       const assetsPath = path
         .relative(process.cwd(), pkgPublicPath)

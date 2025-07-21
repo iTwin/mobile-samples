@@ -42,10 +42,10 @@ function getConfig(env) {
     },
     target: "node",
     devtool: "inline-source-map",
-    resolve: { mainFields: ["main", "module"] },
     // WebPack defaults to using the esm version of json5. The alias below forces it to use cjs.
     // See: https://github.com/json5/json5/issues/240
     resolve: {
+      mainFields: ["main", "module"],
       alias: {
         json5: 'json5/lib/index.js',
       }
