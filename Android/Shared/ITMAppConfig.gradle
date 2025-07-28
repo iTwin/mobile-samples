@@ -46,7 +46,7 @@ static def readITMAppConfig (project) {
             debugPort = "3000"
         }
         def appHost = ""
-        if (debugUseIp) {
+        if (debugUseIp && debugHost == null) {
             def ip4s = getLocalIPv4()
             if (ip4s.size() > 0) {
                 appHost = ip4s[0].toString()
