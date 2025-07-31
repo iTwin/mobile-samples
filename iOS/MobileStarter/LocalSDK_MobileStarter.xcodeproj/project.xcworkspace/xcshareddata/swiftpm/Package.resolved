@@ -6,8 +6,8 @@
         "repositoryURL": "https://github.com/openid/AppAuth-iOS.git",
         "state": {
           "branch": null,
-          "revision": "7e2c09cbeb3bb799f26c268dbedb26325ea722a9",
-          "version": "1.7.3"
+          "revision": "145104f5ea9d58ae21b60add007c33c1cc0c948e",
+          "version": "2.0.0"
         }
       },
       {
@@ -15,8 +15,8 @@
         "repositoryURL": "https://github.com/AsyncSwift/AsyncLocationKit.git",
         "state": {
           "branch": null,
-          "revision": "485a6e173d7f73fc7aeb120501810d3310e905be",
-          "version": "1.5.6"
+          "revision": "3a9f81e99ba3497a438d882676fb1c3ceb4f177c",
+          "version": "1.6.4"
         }
       },
       {

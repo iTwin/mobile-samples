@@ -56,17 +56,17 @@ class ModelApplication: ITMApplication {
                 do {
                     try await oac.signOut()
                 } catch {
-                    Self.logger.log(.error, "Error signing out: \(error)")
+                    Self.log(.error, "Error signing out: \(error)")
                     throw error
                 }
             }
         }
         registerQueryHandler("getBimDocuments", DocumentHelper.getBimDocuments)
         registerQueryHandler("firstRenderStarted") { () -> Void in
-            Self.logger.log(.debug, "Received firstRenderStarted")
+            Self.log(.debug, "Received firstRenderStarted")
         }
         registerQueryHandler("firstRenderFinished") { () -> Void in
-            Self.logger.log(.debug, "Received firstRenderFinished")
+            Self.log(.debug, "Received firstRenderFinished")
         }
         registerQueryHandler("log") { (params: JSON) -> Void in
             guard let level = params["level"] as? String,
@@ -88,7 +88,7 @@ class ModelApplication: ITMApplication {
             if let metaData = params["metaData"] {
                 metaDataString = "| metaData: \(ITMMessenger.jsonString(metaData))"
             }
-            Self.logger.log(severity, "| \(category) | \(message)\(metaDataString)")
+            Self.log(severity, "| \(category) | \(message)\(metaDataString)")
         }
     }
 
@@ -136,7 +136,7 @@ class ModelApplication: ITMApplication {
         // does not have a handler for the message), the app won't know (although ITMMessenger will
         // log an error).
         itmMessenger.send("oneWayExample", ["value": value])
-        Self.logger.log(.debug, "oneWayExample message sent.")
+        Self.log(.debug, "oneWayExample message sent.")
     }
 
     /// Example showing how to send a message with a value to the web app, and receive a response.
@@ -148,12 +148,12 @@ class ModelApplication: ITMApplication {
         Task {
             do {
                 let result: T = try await itmMessenger.query("queryExample", ["value": value])
-                Self.logger.log(.debug, "queryExample result \(result)")
+                Self.log(.debug, "queryExample result \(result)")
                 guard result == value else {
                     throw ITMStringError(errorDescription: "queryExample result (\(result)) != sent value (\(value))!")
                 }
             } catch {
-                Self.logger.log(.error, "Error with queryExample: \(error)")
+                Self.log(.error, "Error with queryExample: \(error)")
             }
         }
     }
