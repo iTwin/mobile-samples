@@ -141,15 +141,15 @@ class ActivityTimer {
     func logTimes(title: String) {
         guard enabled else { return }
         guard !checkpoints.isEmpty else {
-            ITMApplication.logger.log(.info, "\(title):\nNO CHECKPOINTS.")
+            ITMApplication.log(.info, "\(title):\nNO CHECKPOINTS.")
             return
         }
         let output = useJSON ? getJSONOutput(title: title) : getTextOutput()
         if output.isEmpty {
-            ITMApplication.logger.log(.info, "\(title):\nNO OUTPUT.")
+            ITMApplication.log(.info, "\(title):\nNO OUTPUT.")
             return
         }
-        ITMApplication.logger.log(.info, "\(title):\n\(output)")
+        ITMApplication.log(.info, "\(title):\n\(output)")
         if useJSON, logToFile {
             logToFile(jsonString: output)
         }
@@ -200,7 +200,7 @@ class ActivityTimer {
                 try jsonData.write(to: logFileURL)
             }
         } catch {
-            ITMApplication.logger.log(.error, "Error writing startup times to log file: \(error)")
+            ITMApplication.log(.error, "Error writing startup times to log file: \(error)")
         }
     }
 }

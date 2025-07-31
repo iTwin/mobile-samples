@@ -192,7 +192,7 @@ class DocumentHelper {
         messenger: ITMMessenger = ITMViewController.application.itmMessenger,
         query: String = "openModel"
     ) {
-        Task {
+        Task { @MainActor in
             if let newURL = await putFileInDocumentsWithPrompt(url, copy: false) {
                 messenger.send(query, newURL.path)
             } else {
@@ -204,7 +204,6 @@ class DocumentHelper {
 }
 
 /// An `ITMNativeUIComponent` sub-class that displays a document picker.
-@MainActor
 class DocumentPicker: ITMNativeUIComponent {
     // This must be a member variable to prevent it from being deleted while the document
     // picker is visible, since the document picker's delegate property is weak.
