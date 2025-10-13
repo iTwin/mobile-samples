@@ -5,6 +5,7 @@
 package com.bentley.sample.shared
 
 import android.graphics.Color
+import android.os.Build
 import android.os.Bundle
 import android.view.ViewGroup
 import android.view.Window
@@ -15,6 +16,8 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat.Type.systemBars
 import androidx.core.view.WindowInsetsControllerCompat.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
+import com.bentley.sample.BuildConfig
+import com.bentley.sample.R
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch
 import kotlin.system.exitProcess
@@ -76,7 +79,10 @@ open class MainActivity : AppCompatActivity() {
         // Truly full screen (including camera cutouts)
         window.attributes.layoutInDisplayCutoutMode = WindowManager.LayoutParams.LAYOUT_IN_DISPLAY_CUTOUT_MODE_SHORT_EDGES
         WindowCompat.setDecorFitsSystemWindows(window, false)
-        window.statusBarColor = Color.TRANSPARENT
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.VANILLA_ICE_CREAM) {
+            @Suppress("DEPRECATION")
+            window.statusBarColor = Color.TRANSPARENT
+        }
     }
 
     private fun hideSystemBars() {

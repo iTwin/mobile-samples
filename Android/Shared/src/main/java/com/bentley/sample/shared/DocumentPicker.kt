@@ -9,6 +9,7 @@ import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import androidx.activity.ComponentActivity
+import com.bentley.sample.R
 import com.github.itwin.mobilesdk.ITMCoActivityResult
 import com.github.itwin.mobilesdk.ITMNativeUI
 import com.github.itwin.mobilesdk.ITMNativeUIComponent
