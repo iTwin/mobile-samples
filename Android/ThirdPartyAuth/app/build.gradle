@@ -82,7 +82,7 @@ dependencies {
     implementation 'com.auth0.android:auth0:2.8.0'
     implementation 'com.auth0.android:jwtdecode:2.0.1'
 
-    implementation 'com.github.itwin.mobilesdk:mobile-sdk-android:0.31.0'
+    implementation 'com.github.itwin.mobilesdk:mobile-sdk-android:0.31.1'
 }
 
 apply from: "$rootDir/../Shared/ITMAppConfig.gradle"
