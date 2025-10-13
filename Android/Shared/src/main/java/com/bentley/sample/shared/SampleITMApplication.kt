@@ -12,6 +12,7 @@ import androidx.activity.ComponentActivity
 import androidx.annotation.CallSuper
 import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.LifecycleOwner
+import com.bentley.sample.BuildConfig
 import com.github.itwin.mobilesdk.*
 import com.github.itwin.mobilesdk.jsonvalue.isYes
 import com.github.itwin.mobilesdk.jsonvalue.toMap
