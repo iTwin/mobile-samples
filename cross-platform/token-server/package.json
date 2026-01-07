@@ -1,6 +1,6 @@
 {
   "name": "token-server",
-  "version": "0.31.1",
+  "version": "0.32.0",
   "description": "Server-side component to manage providing an access token for the iTwin Platform.",
   "repository": {
     "type": "git",
@@ -20,7 +20,7 @@
     "url": "http://www.bentley.com"
   },
   "dependencies": {
-    "@itwin/express-server": "5.2.2",
+    "@itwin/express-server": "5.5.0",
     "@itwin/service-authorization": "2.0.0",
     "axios": "^1.7.4",
     "dotenv": "^8.2.0",
@@ -31,11 +31,11 @@
     "jsonwebtoken": "^9.0.0"
   },
   "devDependencies": {
-    "@itwin/core-backend": "5.2.2",
-    "@itwin/core-bentley": "5.2.2",
-    "@itwin/core-common": "5.2.2",
-    "@itwin/core-geometry": "5.2.2",
-    "@itwin/ecschema-metadata": "5.2.2",
+    "@itwin/core-backend": "5.5.0",
+    "@itwin/core-bentley": "5.5.0",
+    "@itwin/core-common": "5.5.0",
+    "@itwin/core-geometry": "5.5.0",
+    "@itwin/ecschema-metadata": "5.5.0",
     "@types/axios": "^0.14.0",
     "@types/dotenv-flow": "^3.1.0",
     "@types/express": "^4.17.9",
