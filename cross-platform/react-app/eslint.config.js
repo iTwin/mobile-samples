@@ -26,6 +26,7 @@ module.exports = [
     rules: {
       "no-console": "off",
       "@itwin/no-internal": "warn",
+      "@typescript-eslint/no-deprecated": "warn",
       "@itwin/no-internal-barrel-imports": "off",
       "jsx-a11y/click-events-have-key-events": "off",
       "jsx-a11y/no-static-element-interactions": "off"
