@@ -244,6 +244,32 @@ final class ConsoleBridgeTests: NSObject, WKNavigationDelegate, WKScriptMessageH
             try await expect("foreign-main", count: 0)
         }
         try await loadPage()
+        try await test("Failed provisional navigation restores the surviving document session") {
+            guard let oldSession = try await script("return Bentley_ITMConsoleLoggerState.sessionId;") as? String else {
+                throw failure("Missing document session")
+            }
+            do {
+                defer { navigationCompletion = nil }
+                let _: Void = try await wait { finish in
+                    navigationCompletion = finish
+                    webView.load(URLRequest(url: URL(string: "imodeljs://app/sdk-tests/fail")!))
+                }
+                throw failure("Expected provisional navigation to fail")
+            } catch {
+                let navigationError = error as NSError
+                try require(navigationError.domain == NSURLErrorDomain && navigationError.code == NSURLErrorCannotConnectToHost,
+                            "Unexpected navigation result: \(error.localizedDescription)")
+            }
+            try await Task.sleep(nanoseconds: 300_000_000)
+            let newSession = try await script("return Bentley_ITMConsoleLoggerState.sessionId;") as? String
+            try require(newSession != nil && newSession != oldSession, "Surviving document did not receive a fresh session")
+            _ = try await script("""
+                webkit.messageHandlers.itmLogger.postMessage({ sessionId: '\(oldSession)', type: 'log', msg: 'failed-navigation-stale' });
+                console.log('after-failed-navigation'); return true;
+                """)
+            try await expect("failed-navigation-stale", count: 0)
+            try await expect("after-failed-navigation", count: 1)
+        }
         try await test("Detach restores console without native forwarding") {
             logger.detach()
             let restored = try await evaluate("console.log('after-detach'); console.log === originalConsoleLog && !window.Bentley_ITMConsoleLoggerState;")
@@ -296,6 +322,9 @@ private final class TestFixtureHandler: NSObject, WKURLSchemeHandler {
         guard let url = urlSchemeTask.request.url else { return }
         let html: String
         switch url.path {
+        case "/sdk-tests/fail":
+            urlSchemeTask.didFailWithError(NSError(domain: NSURLErrorDomain, code: NSURLErrorCannotConnectToHost))
+            return
         case "/sdk-tests/main.html": html = Self.mainHTML
         case "/sdk-tests/frame.html": html = Self.frameHTML
         default:

@@ -6,6 +6,7 @@
 <body>
 <p>Console bridge test document</p>
 <script>
+window.sdkTestFixture = 'console-bridge-main';
 window.originalConsoleLog = console.log;
 window.runFrameTest = function(origin, marker, sandboxed) {
     return new Promise(function(resolve, reject) {

@@ -6,6 +6,7 @@ import android.util.Log
 import android.view.ViewGroup
 import android.webkit.WebResourceRequest
 import android.webkit.WebResourceResponse
+import android.webkit.WebResourceError
 import android.webkit.WebView
 import android.webkit.WebViewClient
 import android.widget.Button
@@ -16,6 +17,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
 import androidx.webkit.WebViewCompat
 import androidx.webkit.WebViewFeature
+import com.github.itwin.mobilesdk.ITMApplication
 import com.github.itwin.mobilesdk.ITMWebViewLogger
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.CancellationException
@@ -32,6 +34,7 @@ class SDKTestsActivity : AppCompatActivity() {
     private lateinit var output: TextView
     private var logger: ITMWebViewLogger? = null
     private var pageLoaded: CompletableDeferred<Unit>? = null
+    private var pendingPageUrl: String? = null
     private val pendingScripts = mutableMapOf<String, CompletableDeferred<JSONObject>>()
     private val received = mutableListOf<Pair<ITMWebViewLogger.LogType, String>>()
     private var trustedOrigin = "https://appassets.itwinjs.org"
@@ -121,8 +124,21 @@ class SDKTestsActivity : AppCompatActivity() {
             }
 
             override fun onPageFinished(view: WebView, url: String) {
+                if (url != pendingPageUrl) return
                 logger?.inject()
                 pageLoaded?.complete(Unit)
+            }
+
+            override fun onReceivedError(view: WebView, request: WebResourceRequest, error: WebResourceError) {
+                if (request.isForMainFrame && request.url.toString() == pendingPageUrl) {
+                    pageLoaded?.completeExceptionally(IllegalStateException("Fixture navigation failed: ${error.description}"))
+                }
+            }
+
+            override fun onReceivedHttpError(view: WebView, request: WebResourceRequest, errorResponse: WebResourceResponse) {
+                if (request.isForMainFrame && request.url.toString() == pendingPageUrl) {
+                    pageLoaded?.completeExceptionally(IllegalStateException("Fixture HTTP error: ${errorResponse.statusCode}"))
+                }
             }
         }
         intent.getStringExtra("sdk-test-suite")?.let { requested ->
@@ -134,11 +150,16 @@ class SDKTestsActivity : AppCompatActivity() {
     private suspend fun loadPage(origin: String = trustedOrigin) {
         val completion = CompletableDeferred<Unit>()
         pageLoaded = completion
+        val url = "$origin/sdk-tests/main.html?run=${UUID.randomUUID()}"
+        pendingPageUrl = url
         try {
-            webView.loadUrl("$origin/sdk-tests/main.html?run=${UUID.randomUUID()}")
+            webView.loadUrl(url)
             check(withTimeoutOrNull(5000) { completion.await() } != null) { "Page load timed out: $origin" }
+            val loadedFixture = evaluate("location.href === ${JSONObject.quote(url)} && window.sdkTestFixture === 'console-bridge-main';")
+            check(loadedFixture == "true") { "Expected test fixture did not load at $origin" }
         } finally {
             pageLoaded = null
+            pendingPageUrl = null
         }
     }
 
@@ -333,6 +354,52 @@ class SDKTestsActivity : AppCompatActivity() {
             val result = evaluate("console.log('after-detach'); console.log === originalConsoleLog && !window.Bentley_ITMConsoleLoggerState;")
             check(result == "true") { "Console wrapper was not restored" }
             expect("after-detach", 0)
+        }
+        test("Activity destruction retains forwarding for the retained WebView") {
+            val retainedWebView = WebView(this@SDKTestsActivity)
+            val loaded = CompletableDeferred<Unit>()
+            val fixtureClient = webView.webViewClient
+            val application = object : ITMApplication(this@SDKTestsActivity, attachWebViewLogger = true) {
+                fun prepare() {
+                    webView = retainedWebView
+                    retainedWebView.settings.javaScriptEnabled = true
+                    retainedWebView.settings.blockNetworkLoads = !debugServer
+                    setupWebView()
+                }
+
+                override fun getBaseUrl() = "$trustedOrigin/sdk-tests/main.html"
+
+                override fun shouldInterceptRequest(view: WebView, request: WebResourceRequest) =
+                    fixtureClient.shouldInterceptRequest(view, request)
+
+                override fun onPageFinished(view: WebView, url: String) {
+                    super.onPageFinished(view, url)
+                    loaded.complete(Unit)
+                }
+
+                override fun onReceivedError(view: WebView, request: WebResourceRequest, error: WebResourceError): Boolean {
+                    if (request.isForMainFrame) loaded.completeExceptionally(IllegalStateException(error.description.toString()))
+                    return true
+                }
+
+                override fun onWebViewLog(type: ITMWebViewLogger.LogType, message: String) {
+                    received.add(type to message)
+                }
+            }
+            try {
+                application.prepare()
+                retainedWebView.loadUrl("$trustedOrigin/sdk-tests/main.html")
+                check(withTimeoutOrNull(5000) { loaded.await() } != null) { "Retained WebView did not load" }
+                application.onActivityDestroy()
+                val evaluated = CompletableDeferred<String>()
+                retainedWebView.evaluateJavascript("console.log('after-activity-destroy'); true;", evaluated::complete)
+                check(withTimeoutOrNull(5000) { evaluated.await() } == "true") { "Retained document did not execute" }
+                expect("after-activity-destroy", 1)
+                check(application.webView === retainedWebView) { "Application discarded its WebView" }
+            } finally {
+                WebViewCompat.removeWebMessageListener(retainedWebView, "Bentley_ITMConsoleLogger")
+                retainedWebView.destroy()
+            }
         }
         report("Result: $passed/$total passed")
     }
