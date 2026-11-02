@@ -117,7 +117,7 @@ final class ConsoleBridgeTests: NSObject, WKNavigationDelegate, WKScriptMessageH
                   let baseURL = config["ITMAPPLICATION_BASE_URL"] as? String,
                   let url = URL(string: baseURL), let scheme = url.scheme,
                   scheme == "http" || scheme == "https",
-                  let origin = ITMWebViewLogger.origin(for: url),
+                  let origin = ITMBridgeOriginPolicy.origin(for: url),
                   var foreign = URLComponents(string: origin) else {
                 throw failure("Enable debug server mode in ITMApplication.xcconfig and rebuild; a valid ITMAPPLICATION_BASE_URL is required")
             }
@@ -307,7 +307,7 @@ final class ConsoleBridgeTests: NSObject, WKNavigationDelegate, WKScriptMessageH
     func userContentController(_ userContentController: WKUserContentController, didReceive message: WKScriptMessage) {
         guard message.webView === webView, message.frameInfo.isMainFrame,
               message.name == "sdkTestResults", let url = webView.url,
-              ITMWebViewLogger.origin(for: url) == trustedOrigin,
+              ITMBridgeOriginPolicy.origin(for: url) == trustedOrigin,
               let result = message.body as? [String: Any], let id = result["id"] as? String,
               let finish = scripts.removeValue(forKey: id) else { return }
         let origin = message.frameInfo.securityOrigin
@@ -382,4 +382,4 @@ private final class TestFixtureHandler: NSObject, WKURLSchemeHandler {
         </script></body></html>
         """
 }
-#endif
+    #endif
