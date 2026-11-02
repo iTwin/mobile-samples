@@ -53,6 +53,26 @@ __Note:__ The samples must currently use Rosetta 2 mode when targeting the iOS S
     1. Drag and drop .bim Snapshot iModel files into the "iTwin Starter" app or the "SwiftUIStarter" app.
 1. Please see [Debugging.md](./Debugging.md) for instructions on debugging.
 
+### SDK Tests (Debug Builds Only)
+
+Open the MobileStarter project, select the shared **SDK Tests** scheme, and Run. For local SDK changes, use `LocalSDK_MobileStarter.xcodeproj`; the other project uses its configured SDK package dependency. The scheme passes `-sdk-tests` to open a standalone test screen instead of starting the sample frontend or backend. The normal MobileStarter scheme is unchanged.
+
+Each suite has its own play button. Select **Console bridge** to run its checks in a separate `WKWebView` using packaged fixtures served locally with `WKURLSchemeHandler`; that option needs no frontend server at runtime. Results appear on screen and in the Xcode console prefixed with `SDKTests:`. The test controller, suites, and packaged fixture strings are enclosed in `#if DEBUG` and are excluded from Release builds.
+
+For **Console bridge (debug server)**, remove or disable `ITMAPPLICATION_NO_DEBUG_SERVER = YES` in your local `ITMApplication.xcconfig`, then rebuild. `ITMAPPLICATION_USE_IP = YES` selects your Mac's IP address. Start the frontend with `npm run start` from `cross-platform/react-app`. This option reads `ITMAPPLICATION_BASE_URL` from the built app's configuration and loads `/sdk-tests/` fixtures over real HTTP from that Vite server, not from `WKURLSchemeHandler`. It fails if the generated configuration has no debug-server URL or the server cannot be reached. The foreign-origin probes use the same server port on `127.0.0.1`, or `localhost` if the configured host is already `127.0.0.1`, so this setup targets the iOS Simulator.
+
+The console suite checks the native `imodeljs://app` origin, console severities, assertions, window errors, direct bridge calls from foreign-origin, same-origin, and sandboxed frames, invalid payloads and sessions, size and rate limits, reinjection, reload, foreign main-frame navigation, and detach cleanup. Frame probes confirm that they attempted a native call before rejection is checked.
+
+Register additional suites in the `suites` collection in `SDKTestsViewController`; each entry has a stable ID, display name, and run action. New suite implementations and fixture strings must also be enclosed in `#if DEBUG`.
+
+For an explicitly requested command-line run after installing a Debug build on a booted simulator:
+
+```sh
+xcrun simctl launch --terminate-running-process booted com.bentley.sample.MobileStarter -sdk-tests -sdk-test-suite console-bridge
+```
+
+Use `console-bridge-debug-server` instead of `console-bridge` to select the real debug-server suite. Without `-sdk-test-suite`, opening the test screen does not run any tests. Use the same suite IDs for future command-line runs.
+
 ## Organization
 
 The MobileStarter and SwiftUIStarter sample apps are both simple apps that present a full-screen web view. The app UI inside this web view is a React app in the `cross-platform/react-app` directory of this repository.

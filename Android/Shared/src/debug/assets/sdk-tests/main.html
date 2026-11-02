@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="en">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Console bridge fixture</title>
+<body>
+<p>Console bridge test document</p>
+<script>
+window.originalConsoleLog = console.log;
+window.runFrameTest = function(origin, marker, sandboxed) {
+    return new Promise(function(resolve, reject) {
+        var frame = document.createElement('iframe');
+        var id = marker + '-' + Math.random();
+        var timeout;
+        var cleanup = function() {
+            clearTimeout(timeout);
+            window.removeEventListener('message', onMessage);
+            frame.remove();
+        };
+        var onMessage = function(event) {
+            if (event.source !== frame.contentWindow || !event.data || event.data.id !== id) return;
+            var result = event.data;
+            cleanup();
+            resolve(result);
+        };
+        window.addEventListener('message', onMessage);
+        if (sandboxed) frame.setAttribute('sandbox', 'allow-scripts');
+        var payload = {
+            sessionId: window.Bentley_ITMConsoleLoggerState.sessionId,
+            type: 'log'
+        };
+        var webKitBridge = window.webkit && window.webkit.messageHandlers && window.webkit.messageHandlers.itmLogger;
+        payload[webKitBridge ? 'msg' : 'message'] = marker;
+        frame.src = origin + '/sdk-tests/frame.html?id=' + encodeURIComponent(id) + '&payload=' + encodeURIComponent(JSON.stringify(payload));
+        timeout = setTimeout(function() {
+            cleanup();
+            reject(new Error('Frame did not report an attempted bridge access'));
+        }, 3000);
+        document.body.appendChild(frame);
+    });
+};
+</script>
+</body>
+</html>

@@ -65,6 +65,26 @@ Once you have performed the above setup, you can build and run the samples.
 1. If you get an error dialog that says `Could not connect to React debug server.`, make sure that your React debug server is running (from the end of the npm setup instructions). If it is, the next thing to try is to uncomment the `itm.debug_use_ip=YES` line in ITMSamples.properties.
 1. Please see [Debugging.md](./Debugging.md) for instructions on debugging.
 
+### SDK Tests (Debug Builds Only)
+
+Install a debug sample build and open its additional **SDK Tests** launcher entry. Each suite has its own play button; select **Console bridge** to run the console checks. Tests run only when requested, in a separate WebView; the sample frontend is not navigated or modified. Results appear on screen and in Logcat under `SDKTests`. Release builds do not include the test Activity, launcher entry, or fixtures.
+
+The tests use the sample's iTwin Mobile SDK for Android dependency (`mobile-sdk-android`). To test local changes to that library, publish the matching version to Maven Local first (see Local Maven Setup above), run **Sync Project with Gradle Files** (the elephant icon) in Android Studio after each publish, then rebuild and run the sample. The **Console bridge** option needs no server: both HTTPS test origins are intercepted locally and network loads are blocked in the test WebView.
+
+For **Console bridge (debug server)**, set `itm.no_debug_server=NO` in `Shared/ITMSamples.properties`, ensure `itm.debug_host` or automatic IP selection identifies a reachable address for your Mac, and rebuild. Run `npm run start` from `cross-platform/react-app`. This option reads `ITMAPPLICATION_BASE_URL` from the generated app configuration and loads `/sdk-tests/` fixtures over real HTTP from that Vite server; it does not intercept requests or fall back to packaged fixtures. For the foreign-origin probes, forward the server port with `adb reverse tcp:3000 tcp:3000` (adjust for a non-default port). The trusted origin is the configured server; the foreign origin uses the same port on `127.0.0.1`, or `localhost` if the configured host is already `127.0.0.1`.
+
+To launch a specific suite explicitly from the command line after installing iTwinStarter:
+
+```sh
+adb shell am start -S -n com.bentley.sample.itwinstarter/com.bentley.sample.shared.SDKTestsActivity --es sdk-test-suite console-bridge-debug-server
+```
+
+Use `console-bridge` for packaged fixtures, or omit the extra to wait for a play-button tap.
+
+The console suite checks trusted console forwarding, log levels/assertions/window errors, direct bridge access from foreign-origin, same-origin, and opaque sandboxed frames, wrong/stale sessions, malformed and oversized payloads, rate limiting, repeated injection, foreign main-frame navigation, and detach cleanup. Frame probes report that they executed; rejected calls are observed for a bounded interval, rather than treating an unloaded frame as a pass. Same-origin frames intentionally call their own bridge, not their parent's: same-origin scripts can access the parent and are not an isolation boundary.
+
+Register additional suites in the `suites` collection in `SDKTestsActivity`; each entry receives its own play button. Keep their sources and fixtures under `Shared/src/debug`.
+
 ## Organization
 
 The iTwinStarter sample app is a simple app that presents a full-screen web view. The app UI inside this web view is a React app in the `cross-platform/react-app` directory of this repository.

@@ -3,6 +3,8 @@
  * See LICENSE.md in the project root for license terms and full copyright notice.
  *--------------------------------------------------------------------------------------------*/
 import { defineConfig, searchForWorkspaceRoot } from "vite";
+import type { Plugin } from "vite";
+import { readFileSync } from "node:fs";
 import browserslistToEsbuild from "browserslist-to-esbuild";
 import copy from "rollup-plugin-copy";
 import { visualizer as rollupVisualizer } from "rollup-plugin-visualizer";
@@ -19,6 +21,30 @@ const mode =
 
 // array of public directories static assets from dependencies to copy
 const assets = ["./public/*"]; // assets for test-app
+
+const sdkTestFixtures: Plugin = {
+  name: "sdk-test-fixtures",
+  apply: "serve",
+  configureServer(server) {
+    server.middlewares.use((request, response, next) => {
+      const url = new URL(request.url ?? "/", "http://localhost");
+      const fixtures = new Map([
+        ["/sdk-tests/main.html", "main.html"],
+        ["/sdk-tests/frame.html", "frame.html"],
+      ]);
+      const fixture = fixtures.get(url.pathname);
+      if (!fixture) return next();
+      try {
+        const content = readFileSync(resolve(__dirname, "../../Android/Shared/src/debug/assets/sdk-tests", fixture));
+        response.setHeader("Content-Type", "text/html; charset=utf-8");
+        response.setHeader("Cache-Control", "no-store");
+        response.end(content);
+      } catch (error) {
+        next(error);
+      }
+    });
+  },
+};
 
 // Get a list of public assets directories from all itwin and bentley dependencies
 // This is used to copy static assets from dependencies to the public directory
@@ -93,6 +119,7 @@ export default defineConfig(({ }) => {
       },
     },
     plugins: [
+      sdkTestFixtures,
       react(),
       // copy static assets to .static-assets folder
       copy({

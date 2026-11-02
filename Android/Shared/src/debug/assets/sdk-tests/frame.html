@@ -1,0 +1,23 @@
+<!doctype html>
+<html lang="en">
+<meta charset="utf-8">
+<title>Console bridge frame probe</title>
+<body>
+<script>
+var params = new URLSearchParams(location.search);
+var result = { id: params.get('id'), status: 'absent' };
+try {
+    var webKitBridge = window.webkit && window.webkit.messageHandlers && window.webkit.messageHandlers.itmLogger;
+    var bridge = webKitBridge || window.Bentley_ITMConsoleLogger;
+    if (bridge) {
+        bridge.postMessage(webKitBridge ? JSON.parse(params.get('payload')) : params.get('payload'));
+        result.status = 'sent';
+    }
+} catch (error) {
+    result.status = 'error';
+    result.error = String(error);
+}
+window.parent.postMessage(result, '*');
+</script>
+</body>
+</html>
