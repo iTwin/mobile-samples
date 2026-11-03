@@ -75,6 +75,14 @@ Use `console-bridge-debug-server` instead of `console-bridge` to select the real
 
 #### Geolocation Simulator Setup
 
+Before building the Debug app, check out the matching `mobile-sdk-core` source beside `mobile-samples` (the fixture builder reads `../mobile-sdk-core/src/mobile-sdk-core/Geolocation.ts` relative to the repository root). Complete the npm setup above, then generate the fixtures from `cross-platform/react-app`:
+
+```sh
+npm run build:sdk-test-fixtures
+```
+
+Run fixture generation **after** `npm run build`, which clears the frontend output directory. Neither the normal frontend build nor the native build generates the ignored `geolocation.js` bundle. Regenerate after rebuilding the frontend or changing the core polyfill, then rebuild the app. Debug builds package the fixtures separately from the frontend, so this suite also works with a configured debug server.
+
 The **Geolocation (See README.md)** suite requires location permission, specific simulated coordinates, and movement. Pressing play without simulated fixes can time out; Xcode's standard location presets fail the coordinate checks.
 
 The [location-test runner](../cross-platform/react-app/scripts/run-location-tests.mjs) automates injection and suite launch. From `cross-platform/react-app`, run this with a booted simulator and your built Debug app's path:

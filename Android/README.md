@@ -87,6 +87,14 @@ Register additional suites in the `suites` collection in `SDKTestsActivity`; eac
 
 #### Geolocation Emulator Setup
 
+Before building the debug APK, check out the matching `mobile-sdk-core` source beside `mobile-samples` (the fixture builder reads `../mobile-sdk-core/src/mobile-sdk-core/Geolocation.ts` relative to the repository root). Complete the npm setup above, then generate the fixtures from `cross-platform/react-app`:
+
+```sh
+npm run build:sdk-test-fixtures
+```
+
+This generates the ignored `geolocation.js` polyfill bundle used by the suite. Normal npm and Gradle builds do not generate it. Regenerate after changing the core polyfill, then rebuild the APK.
+
 Before running the **Geolocation** suite on a fresh emulator, enable device location and accept the Google **Location Accuracy** prompt by selecting **Turn on**. Granting the app location permission alone does not satisfy this device-level setting. A lookup can remain pending while the dialog is open, causing the suite to time out.
 
 For initial setup, use a visible emulator. When the [location-test runner](../cross-platform/react-app/scripts/run-location-tests.mjs) starts an emulator with `--avd=<name>`, add `--show-window` so you can respond to the prompt. After accepting it, subsequent runs can use the same AVD headlessly.

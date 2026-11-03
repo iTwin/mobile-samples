@@ -361,7 +361,7 @@ private final class TestFixtureHandler: NSObject, WKURLSchemeHandler {
     func webView(_ webView: WKWebView, start urlSchemeTask: WKURLSchemeTask) {
         guard let url = urlSchemeTask.request.url else { return }
         if ["/sdk-tests/location.html", "/sdk-tests/geolocation.js", "/sdk-tests/location-behavior.js"].contains(url.path) {
-            let resource = Bundle.main.resourceURL?.appendingPathComponent("ITMApplication/frontend/sdk-tests/\(url.lastPathComponent)")
+            let resource = Bundle.main.resourceURL?.appendingPathComponent("ITMApplication/sdk-tests/\(url.lastPathComponent)")
             guard let resource, let data = try? Data(contentsOf: resource) else {
                 urlSchemeTask.didFailWithError(NSError(domain: "SDKTests: run npm run build:sdk-test-fixtures before building", code: 404))
                 return
