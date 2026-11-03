@@ -9,6 +9,7 @@
   "private": true,
   "homepage": "./",
   "scripts": {
+    "build:sdk-test-fixtures": "node scripts/build-sdk-test-fixtures.mjs",
     "start": "cross-env NODE_ENV=development vite --host",
     "start:camera": "cross-env REACT_APP_BUILD_TARGET=Camera run-s start",
     "copy:camera:static": "cpx \"./src/frontend/CameraSample/public/locales/**\" ./.static-assets/locales",

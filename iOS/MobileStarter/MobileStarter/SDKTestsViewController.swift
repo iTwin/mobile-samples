@@ -17,7 +17,8 @@ final class SDKTestsViewController: UIViewController {
         consoleTests.report = { [weak self] message in self?.report(message) }
         suites = [
             ("console-bridge", "Console bridge", { [consoleTests] in try await consoleTests.run() }),
-            ("console-bridge-debug-server", "Console bridge (debug server)", { [consoleTests] in try await consoleTests.run(debugServer: true) })
+            ("console-bridge-debug-server", "Console bridge (debug server)", { [consoleTests] in try await consoleTests.run(debugServer: true) }),
+            ("geolocation", "Geolocation (See README.md)", { [consoleTests] in try await consoleTests.runLocationTests() })
         ]
 
         let layout = UIStackView()
@@ -37,6 +38,7 @@ final class SDKTestsViewController: UIViewController {
             button.setImage(UIImage(systemName: "play.fill"), for: .normal)
             button.contentHorizontalAlignment = .leading
             button.titleLabel?.font = .preferredFont(forTextStyle: .headline)
+            button.titleLabel?.numberOfLines = 0
             button.accessibilityLabel = "Run \(suite.name) tests"
             button.tag = index
             button.heightAnchor.constraint(greaterThanOrEqualToConstant: 48).isActive = true

@@ -16,6 +16,7 @@ final class ConsoleBridgeTests: NSObject, WKNavigationDelegate, WKScriptMessageH
     let webView: WKWebView
     var report: (String) -> Void = { _ in }
     private let logger = TestConsoleLogger(name: "SDK Tests")
+    private var geolocationManager: ITMGeolocationManager?
     private var received: [(severity: String?, message: String)] = []
     private var pending: [UUID: (Error) -> Void] = [:]
     private var pendingNavigation: (navigation: WKNavigation, finish: (Result<Void, Error>) -> Void)?
@@ -45,7 +46,7 @@ final class ConsoleBridgeTests: NSObject, WKNavigationDelegate, WKScriptMessageH
         if !condition { throw failure(message) }
     }
 
-    private func wait<Value>(_ start: (@escaping (Result<Value, Error>) -> Void) -> Void) async throws -> Value {
+    private func wait<Value>(timeout seconds: TimeInterval = 5, _ start: (@escaping (Result<Value, Error>) -> Void) -> Void) async throws -> Value {
         try Task.checkCancellation()
         let id = UUID()
         let value: Value = try await withCheckedThrowingContinuation { continuation in
@@ -59,7 +60,7 @@ final class ConsoleBridgeTests: NSObject, WKNavigationDelegate, WKScriptMessageH
                 continuation.resume(with: result)
             }
             pending[id] = { finish(.failure($0)) }
-            DispatchQueue.main.asyncAfter(deadline: .now() + 5, execute: timeout)
+            DispatchQueue.main.asyncAfter(deadline: .now() + seconds, execute: timeout)
             start(finish)
         }
         try Task.checkCancellation()
@@ -75,10 +76,10 @@ final class ConsoleBridgeTests: NSObject, WKNavigationDelegate, WKScriptMessageH
         }
     }
 
-    private func script(_ source: String) async throws -> Any {
+    private func script(_ source: String, timeout: TimeInterval = 5) async throws -> Any {
         let id = UUID().uuidString
         defer { scripts.removeValue(forKey: id) }
-        return try await wait { finish in
+        return try await wait(timeout: timeout) { finish in
             scripts[id] = finish
             webView.evaluateJavaScript("""
                 (async function() {
@@ -298,14 +299,35 @@ final class ConsoleBridgeTests: NSObject, WKNavigationDelegate, WKScriptMessageH
         scripts.removeAll()
         pendingNavigation = nil
         logger.detach()
+        geolocationManager?.detach()
         webView.stopLoading()
     }
 
+    func runLocationTests() async throws {
+        trustedOrigin = "imodeljs://app"
+        let manager = geolocationManager ?? ITMGeolocationManager(itmMessenger: ITMMessenger(webView), webView: webView)
+        geolocationManager = manager
+        manager.attach(webView, allowedOrigins: [trustedOrigin])
+        defer { manager.detach() }
+        try await load(URL(string: "\(trustedOrigin)/sdk-tests/location.html?run=\(UUID().uuidString)")!)
+        _ = try await script("""
+            await window.runLocationBehaviorTests({
+                latitude: 37.3349, longitude: -122.0090,
+                nextLatitude: 37.3449, nextLongitude: -121.9990
+            }, function(message) {
+                window.webkit.messageHandlers.sdkTestResults.postMessage({ report: message });
+            });
+            return true;
+            """, timeout: 150)
+    }
+
     func webView(_ webView: WKWebView, didStartProvisionalNavigation navigation: WKNavigation!) {
+        geolocationManager?.onPageStarted(webView)
         logger.onPageStarted()
     }
 
     func webView(_ webView: WKWebView, didFinish navigation: WKNavigation!) {
+        geolocationManager?.onPageFinished(webView)
         completeNavigation(navigation, result: .success(()))
     }
 
@@ -321,7 +343,12 @@ final class ConsoleBridgeTests: NSObject, WKNavigationDelegate, WKScriptMessageH
         guard message.webView === webView, message.frameInfo.isMainFrame,
               message.name == "sdkTestResults", let url = webView.url,
               ITMBridgeOriginPolicy.origin(for: url) == trustedOrigin,
-              let result = message.body as? [String: Any], let id = result["id"] as? String,
+              let result = message.body as? [String: Any] else { return }
+        if let message = result["report"] as? String {
+            report(message)
+            return
+        }
+        guard let id = result["id"] as? String,
               let finish = scripts.removeValue(forKey: id) else { return }
         let origin = message.frameInfo.securityOrigin
         nativeOrigin = "\(origin.protocol)://\(origin.host):\(origin.port)"
@@ -333,6 +360,18 @@ final class ConsoleBridgeTests: NSObject, WKNavigationDelegate, WKScriptMessageH
 private final class TestFixtureHandler: NSObject, WKURLSchemeHandler {
     func webView(_ webView: WKWebView, start urlSchemeTask: WKURLSchemeTask) {
         guard let url = urlSchemeTask.request.url else { return }
+        if ["/sdk-tests/location.html", "/sdk-tests/geolocation.js", "/sdk-tests/location-behavior.js"].contains(url.path) {
+            let resource = Bundle.main.resourceURL?.appendingPathComponent("ITMApplication/frontend/sdk-tests/\(url.lastPathComponent)")
+            guard let resource, let data = try? Data(contentsOf: resource) else {
+                urlSchemeTask.didFailWithError(NSError(domain: "SDKTests: run npm run build:sdk-test-fixtures before building", code: 404))
+                return
+            }
+            let mimeType = url.pathExtension == "js" ? "application/javascript" : "text/html"
+            urlSchemeTask.didReceive(URLResponse(url: url, mimeType: mimeType, expectedContentLength: data.count, textEncodingName: "UTF-8"))
+            urlSchemeTask.didReceive(data)
+            urlSchemeTask.didFinish()
+            return
+        }
         let html: String
         switch url.path {
         case "/sdk-tests/fail":
