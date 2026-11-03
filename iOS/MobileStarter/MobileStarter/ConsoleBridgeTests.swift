@@ -18,7 +18,7 @@ final class ConsoleBridgeTests: NSObject, WKNavigationDelegate, WKScriptMessageH
     private let logger = TestConsoleLogger(name: "SDK Tests")
     private var received: [(severity: String?, message: String)] = []
     private var pending: [UUID: (Error) -> Void] = [:]
-    private var navigationCompletion: ((Result<Void, Error>) -> Void)?
+    private var pendingNavigation: (navigation: WKNavigation, finish: (Result<Void, Error>) -> Void)?
     private var scripts: [String: (Result<Any, Error>) -> Void] = [:]
     private var nativeOrigin = ""
     private var trustedOrigin = "imodeljs://app"
@@ -94,11 +94,29 @@ final class ConsoleBridgeTests: NSObject, WKNavigationDelegate, WKScriptMessageH
     }
 
     private func loadPage(origin: String? = nil) async throws {
-        defer { navigationCompletion = nil }
-        try await wait { finish in
-            navigationCompletion = finish
-            webView.load(URLRequest(url: URL(string: "\(origin ?? trustedOrigin)/sdk-tests/main.html?run=\(UUID().uuidString)")!))
+        try await load(URL(string: "\(origin ?? trustedOrigin)/sdk-tests/main.html?run=\(UUID().uuidString)")!)
+    }
+
+    private func load(_ url: URL) async throws {
+        defer {
+            let unfinished = pendingNavigation != nil
+            pendingNavigation = nil
+            if unfinished { webView.stopLoading() }
         }
+        let _: Void = try await wait { finish in
+            guard let navigation = webView.load(URLRequest(url: url)) else {
+                finish(.failure(failure("WebView did not start navigation")))
+                return
+            }
+            pendingNavigation = (navigation, finish)
+        }
+    }
+
+    private func completeNavigation(_ navigation: WKNavigation?, result: Result<Void, Error>) {
+        guard let pendingNavigation, navigation === pendingNavigation.navigation else { return }
+        self.pendingNavigation = nil
+        if case .success = result { logger.reattach(webView) }
+        pendingNavigation.finish(result)
     }
 
     private func expect(_ marker: String, count: Int) async throws {
@@ -249,11 +267,7 @@ final class ConsoleBridgeTests: NSObject, WKNavigationDelegate, WKScriptMessageH
                 throw failure("Missing document session")
             }
             do {
-                defer { navigationCompletion = nil }
-                let _: Void = try await wait { finish in
-                    navigationCompletion = finish
-                    webView.load(URLRequest(url: URL(string: "imodeljs://app/sdk-tests/fail")!))
-                }
+                try await load(URL(string: "imodeljs://app/sdk-tests/fail")!)
                 throw failure("Expected provisional navigation to fail")
             } catch {
                 let navigationError = error as NSError
@@ -282,7 +296,7 @@ final class ConsoleBridgeTests: NSObject, WKNavigationDelegate, WKScriptMessageH
     func cancel() {
         Array(pending.values).forEach { $0(CancellationError()) }
         scripts.removeAll()
-        navigationCompletion = nil
+        pendingNavigation = nil
         logger.detach()
         webView.stopLoading()
     }
@@ -292,16 +306,15 @@ final class ConsoleBridgeTests: NSObject, WKNavigationDelegate, WKScriptMessageH
     }
 
     func webView(_ webView: WKWebView, didFinish navigation: WKNavigation!) {
-        logger.reattach(webView)
-        navigationCompletion?(.success(()))
+        completeNavigation(navigation, result: .success(()))
     }
 
     func webView(_ webView: WKWebView, didFail navigation: WKNavigation!, withError error: Error) {
-        navigationCompletion?(.failure(error))
+        completeNavigation(navigation, result: .failure(error))
     }
 
     func webView(_ webView: WKWebView, didFailProvisionalNavigation navigation: WKNavigation!, withError error: Error) {
-        navigationCompletion?(.failure(error))
+        completeNavigation(navigation, result: .failure(error))
     }
 
     func userContentController(_ userContentController: WKUserContentController, didReceive message: WKScriptMessage) {
