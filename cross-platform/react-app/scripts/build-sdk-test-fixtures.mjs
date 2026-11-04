@@ -8,6 +8,7 @@ import { build } from "vite";
 const result = await build({
   configFile: false,
   publicDir: false,
+  resolve: { dedupe: ["base64-js"] },
   build: {
     write: false,
     minify: false,
