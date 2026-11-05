@@ -18,6 +18,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.webkit.WebViewCompat
 import androidx.webkit.WebViewFeature
 import com.github.itwin.mobilesdk.ITMApplication
+import com.github.itwin.mobilesdk.ITMGeolocationManager
 import com.github.itwin.mobilesdk.ITMWebViewLogger
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.CancellationException
@@ -33,6 +34,7 @@ class SDKTestsActivity : AppCompatActivity() {
     private lateinit var webView: WebView
     private lateinit var output: TextView
     private var logger: ITMWebViewLogger? = null
+    private lateinit var geolocationManager: ITMGeolocationManager
     private var pageLoaded: CompletableDeferred<Unit>? = null
     private var pendingPageUrl: String? = null
     private val pendingScripts = mutableMapOf<String, CompletableDeferred<JSONObject>>()
@@ -51,6 +53,7 @@ class SDKTestsActivity : AppCompatActivity() {
     @SuppressLint("SetJavaScriptEnabled", "SetTextI18n")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        geolocationManager = ITMGeolocationManager(this)
         val layout = LinearLayout(this).apply {
             orientation = LinearLayout.VERTICAL
             val padding = (16 * resources.displayMetrics.density).toInt()
@@ -61,7 +64,8 @@ class SDKTestsActivity : AppCompatActivity() {
         val suiteButtons = mutableListOf<Button>()
         val suites = listOf(
             TestSuite("console-bridge", "Console bridge") { runConsoleTests(false) },
-            TestSuite("console-bridge-debug-server", "Console bridge (debug server)") { runConsoleTests(true) }
+            TestSuite("console-bridge-debug-server", "Console bridge (debug server)") { runConsoleTests(true) },
+            TestSuite("geolocation", "Geolocation (See README.md)") { runLocationTests() }
         )
         for (suite in suites) {
             val button = Button(this).apply {
@@ -81,6 +85,7 @@ class SDKTestsActivity : AppCompatActivity() {
                         } catch (error: Exception) {
                             report("FAIL: test runner: ${error.message}")
                         } finally {
+                            geolocationManager.detach()
                             logger?.detach()
                             logger = null
                             suiteButtons.forEach { it.isEnabled = true }
@@ -109,6 +114,9 @@ class SDKTestsActivity : AppCompatActivity() {
                 val file = when (uri.path) {
                     "/sdk-tests/main.html" -> "main.html"
                     "/sdk-tests/frame.html" -> "frame.html"
+                    "/sdk-tests/location.html" -> "location.html"
+                    "/sdk-tests/geolocation.js" -> "geolocation.js"
+                    "/sdk-tests/location-behavior.js" -> "location-behavior.js"
                     else -> null
                 }
                 val content = if (uri.scheme == "https" && allowedHost && file != null) {
@@ -116,15 +124,17 @@ class SDKTestsActivity : AppCompatActivity() {
                 } else {
                     ByteArrayInputStream(ByteArray(0))
                 }
-                return WebResourceResponse("text/html", "UTF-8", content)
+                return WebResourceResponse(if (file?.endsWith(".js") == true) "application/javascript" else "text/html", "UTF-8", content)
             }
 
             override fun onPageStarted(view: WebView, url: String, favicon: android.graphics.Bitmap?) {
+                geolocationManager.onPageStarted(view)
                 logger?.onPageStarted()
             }
 
             override fun onPageFinished(view: WebView, url: String) {
                 if (url != pendingPageUrl) return
+                geolocationManager.onPageFinished(view)
                 logger?.inject()
                 pageLoaded?.complete(Unit)
             }
@@ -147,15 +157,16 @@ class SDKTestsActivity : AppCompatActivity() {
         }
     }
 
-    private suspend fun loadPage(origin: String = trustedOrigin) {
+    private suspend fun loadPage(origin: String = trustedOrigin, fixture: String = "main.html") {
         val completion = CompletableDeferred<Unit>()
         pageLoaded = completion
-        val url = "$origin/sdk-tests/main.html?run=${UUID.randomUUID()}"
+        val url = "$origin/sdk-tests/$fixture?run=${UUID.randomUUID()}"
         pendingPageUrl = url
         try {
             webView.loadUrl(url)
             check(withTimeoutOrNull(5000) { completion.await() } != null) { "Page load timed out: $origin" }
-            val loadedFixture = evaluate("location.href === ${JSONObject.quote(url)} && window.sdkTestFixture === 'console-bridge-main';")
+            val expectedFixture = if (fixture == "location.html") "geolocation" else "console-bridge-main"
+            val loadedFixture = evaluate("location.href === ${JSONObject.quote(url)} && window.sdkTestFixture === ${JSONObject.quote(expectedFixture)};")
             check(loadedFixture == "true") { "Expected test fixture did not load at $origin" }
         } finally {
             pageLoaded = null
@@ -163,7 +174,7 @@ class SDKTestsActivity : AppCompatActivity() {
         }
     }
 
-    private suspend fun script(body: String): JSONObject {
+    private suspend fun script(body: String, timeoutMillis: Long = 5000): JSONObject {
         val id = UUID.randomUUID().toString()
         val completion = CompletableDeferred<JSONObject>()
         pendingScripts[id] = completion
@@ -177,7 +188,7 @@ class SDKTestsActivity : AppCompatActivity() {
             null
         )
         try {
-            val result = withTimeoutOrNull(5000) { completion.await() }
+            val result = withTimeoutOrNull(timeoutMillis) { completion.await() }
                 ?: error("JavaScript result timed out")
             check(!result.has("error")) { result.optString("error") }
             return result
@@ -196,6 +207,36 @@ class SDKTestsActivity : AppCompatActivity() {
     private fun report(message: String) {
         output.append("$message\n")
         Log.i(TAG, message)
+    }
+
+    private fun configureResultsBridge() {
+        WebViewCompat.removeWebMessageListener(webView, RESULTS_BRIDGE)
+        WebViewCompat.addWebMessageListener(webView, RESULTS_BRIDGE, setOf(trustedOrigin)) { _, message, origin, mainFrame, _ ->
+            if (mainFrame && origin.toString().removeSuffix("/") == trustedOrigin) {
+                val result = runCatching { JSONObject(message.data.orEmpty()) }.getOrNull()
+                if (result?.has("report") == true) report(result.getString("report"))
+                else if (result != null) pendingScripts.remove(result.optString("id"))?.complete(result)
+            }
+        }
+    }
+
+    private suspend fun runLocationTests() {
+        check(WebViewFeature.isFeatureSupported(WebViewFeature.WEB_MESSAGE_LISTENER)) { "Geolocation requires WEB_MESSAGE_LISTENER" }
+        debugServerMode = false
+        trustedOrigin = "https://appassets.itwinjs.org"
+        webView.settings.blockNetworkLoads = true
+        configureResultsBridge()
+        geolocationManager.attach(webView, setOf(trustedOrigin))
+        loadPage(fixture = "location.html")
+        script("""
+            await window.runLocationBehaviorTests({
+                latitude: 37.3349, longitude: -122.0090,
+                nextLatitude: 37.3449, nextLongitude: -121.9990
+            }, function(message) {
+                window.$RESULTS_BRIDGE.postMessage(JSON.stringify({ report: message }));
+            });
+            return true;
+        """.trimIndent(), 150000)
     }
 
     private suspend fun runConsoleTests(debugServer: Boolean) {
@@ -222,13 +263,7 @@ class SDKTestsActivity : AppCompatActivity() {
             foreignOrigin = URI(scheme, null, foreignHost, port, null, null, null).toString()
         }
         webView.settings.blockNetworkLoads = !debugServer
-        WebViewCompat.removeWebMessageListener(webView, RESULTS_BRIDGE)
-        WebViewCompat.addWebMessageListener(webView, RESULTS_BRIDGE, setOf(trustedOrigin)) { _, message, origin, mainFrame, _ ->
-            if (mainFrame && origin.toString().removeSuffix("/") == trustedOrigin) {
-                val result = runCatching { JSONObject(message.data.orEmpty()) }.getOrNull()
-                if (result != null) pendingScripts.remove(result.optString("id"))?.complete(result)
-            }
-        }
+        configureResultsBridge()
         received.clear()
         logger = ITMWebViewLogger(webView, { type, message -> received.add(type to message) }, setOf(trustedOrigin))
         report("Frontend origin: $trustedOrigin (${if (debugServer) "debug server, real HTTP" else "packaged fixtures"})")

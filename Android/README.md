@@ -85,6 +85,43 @@ The console suite checks trusted console forwarding, log levels/assertions/windo
 
 Register additional suites in the `suites` collection in `SDKTestsActivity`; each entry receives its own play button. Keep their sources and fixtures under `Shared/src/debug`.
 
+#### Geolocation Emulator Setup
+
+Before building the debug APK, check out the matching `mobile-sdk-core` source beside `mobile-samples` (the fixture builder reads `../mobile-sdk-core/src/mobile-sdk-core/Geolocation.ts` relative to the repository root). Complete the npm setup above, then generate the fixtures from `cross-platform/react-app`:
+
+```sh
+npm run build:sdk-test-fixtures
+```
+
+This generates the ignored `geolocation.js` polyfill bundle used by the suite. Normal npm and Gradle builds do not generate it. Regenerate after changing the core polyfill, then rebuild the APK.
+
+Before running the **Geolocation** suite on a fresh emulator, enable device location and accept the Google **Location Accuracy** prompt by selecting **Turn on**. Granting the app location permission alone does not satisfy this device-level setting. A lookup can remain pending while the dialog is open, causing the suite to time out.
+
+For initial setup, use a visible emulator. When the [location-test runner](../cross-platform/react-app/scripts/run-location-tests.mjs) starts an emulator with `--avd=<name>`, add `--show-window` so you can respond to the prompt. After accepting it, subsequent runs can use the same AVD headlessly.
+
+The suite requires specific simulated coordinates and movement; pressing play with location enabled is not sufficient. To automate location injection and suite launch, run this from `cross-platform/react-app` with a booted emulator and the debug APK built:
+
+```sh
+node scripts/run-location-tests.mjs android emulator-5554
+```
+
+Replace the serial if needed. The runner installs the default iTwinStarter debug APK, grants app location permission, and expects all eight checks to pass.
+
+To run manually:
+
+1. Grant the app location permission and inject the initial fix before pressing **Geolocation (See README.md)**:
+    ```sh
+    adb -s emulator-5554 emu geo fix -122.0090 37.3349
+    ```
+2. Repeat the fix roughly once per second through the initial tests, alternating latitude between `37.3349` and `37.33491` to provide continuing updates.
+3. When Logcat reports `SDKTests: READY: location change`, switch to:
+    ```sh
+    adb -s emulator-5554 emu geo fix -121.9990 37.3449
+    ```
+4. Continue injecting roughly once per second until completion, alternating latitude between `37.3449` and `37.34491`. The remaining-watch check needs updates after the first watch is cleared.
+
+The emulator command takes **longitude before latitude**. Each expected lookup or update has a 30-second timeout. Missing fixes can cause timeouts; unrelated location presets fail the coordinate checks. Success is `Result: 8/8 passed`.
+
 ## Organization
 
 The iTwinStarter sample app is a simple app that presents a full-screen web view. The app UI inside this web view is a React app in the `cross-platform/react-app` directory of this repository.

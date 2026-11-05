@@ -47,6 +47,9 @@ typings/
 # TypeScript cache
 *.tsbuildinfo
 
+# Generated SDK test bundles
+**/sdk-tests/geolocation.js
+
 # Optional npm cache directory
 .npm
 

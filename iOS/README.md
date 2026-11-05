@@ -73,6 +73,45 @@ xcrun simctl launch --terminate-running-process booted com.bentley.sample.Mobile
 
 Use `console-bridge-debug-server` instead of `console-bridge` to select the real debug-server suite. Without `-sdk-test-suite`, opening the test screen does not run any tests. Use the same suite IDs for future command-line runs.
 
+#### Geolocation Simulator Setup
+
+Before building the Debug app, check out the matching `mobile-sdk-core` source beside `mobile-samples` (the fixture builder reads `../mobile-sdk-core/src/mobile-sdk-core/Geolocation.ts` relative to the repository root). Complete the npm setup above, then generate the fixtures from `cross-platform/react-app`:
+
+```sh
+npm run build:sdk-test-fixtures
+```
+
+Run fixture generation **after** `npm run build`, which clears the frontend output directory. Neither the normal frontend build nor the native build generates the ignored `geolocation.js` bundle. Regenerate after rebuilding the frontend or changing the core polyfill, then rebuild the app. Debug builds package the fixtures separately from the frontend, so this suite also works with a configured debug server.
+
+The **Geolocation (See README.md)** suite requires location permission, specific simulated coordinates, and movement. Pressing play without simulated fixes can time out; Xcode's standard location presets fail the coordinate checks.
+
+The [location-test runner](../cross-platform/react-app/scripts/run-location-tests.mjs) automates injection and suite launch. From `cross-platform/react-app`, run this with a booted simulator and your built Debug app's path:
+
+```sh
+node scripts/run-location-tests.mjs ios booted /path/to/MobileStarter.app
+```
+
+The runner installs the app, grants location permission, and clears simulated location afterward. Use a simulator UDID instead of `booted` if multiple simulators are running.
+
+To run manually:
+
+1. Grant the app location permission and inject the initial fix before pressing the suite's play button:
+    ```sh
+    xcrun simctl location booted set 37.3349,-122.0090
+    ```
+2. Repeat the fix roughly once per second through the initial tests, alternating latitude between `37.3349` and `37.33491` to provide continuing updates.
+3. When the Xcode console reports `SDKTests: READY: location change`, switch to:
+    ```sh
+    xcrun simctl location booted set 37.3449,-121.9990
+    ```
+4. Continue injecting roughly once per second until completion, alternating latitude between `37.3449` and `37.34491`. The remaining-watch check needs updates after the first watch is cleared.
+5. After completion or cancellation, clear the simulated location:
+    ```sh
+    xcrun simctl location booted clear
+    ```
+
+Each expected lookup or update has a 30-second timeout. Success is `Result: 8/8 passed`.
+
 ## Organization
 
 The MobileStarter and SwiftUIStarter sample apps are both simple apps that present a full-screen web view. The app UI inside this web view is a React app in the `cross-platform/react-app` directory of this repository.
