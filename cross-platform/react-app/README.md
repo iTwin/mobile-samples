@@ -2,6 +2,8 @@
 
 Note: These are build instructions for running these samples while using local builds of the two @itwin/mobile npm packages. You would do this if you want to make modifications to `@itwin/mobile-sdk-core` and/or `@itwin/mobile-ui-react`.
 
+`LocalSDK_MobileStarter.xcodeproj` selects the local Swift SDK only; it does not refresh the npm packages or build the frontend. After changing the local JavaScript SDKs, rerun `npx relative-deps` and `npm run build` in this directory before rebuilding the native app. With the React debug server disabled, Xcode copies the existing `build/` frontend into the app. A stale frontend can leave the screen blank when the native SDK requires a newer messaging protocol; the native logs report that a session-aware `mobile-sdk-core` frontend is required.
+
 ## Pre setup
 
 Follow the instructions in the [iOS Readme](../../README.md) to get things working for a standard sample build.
@@ -20,7 +22,7 @@ Follow the instructions in the [iOS Readme](../../README.md) to get things worki
     1. Run `npx relative-deps`. Note: this will build and package `mobile-sdk-core` and `mobile-ui-react` into node_modules. If you ever run `npm install` again, you have to re-run `npx relative-deps`.
     1. Run `npm run build`.
         1. If you get build errors regarding types not matching up, the `mobile-sdk-core` and/or `mobile-ui-react` node modules set up above have their own local copies of iTwin.js. To fix this completely delete the `node_modules/@itwin/mobile-*` directories and rerun `npx relative-deps`.
-    1. Run `npm run start` to start the React debug server.
+    1. If using the React debug server, run `npm run start`. This is not needed when running the packaged frontend with the debug server disabled.
 1. If running on iOS:
     1. Open `mobile-samples/iOS/MobileStarter/LocalSDK_MobileStarter.xcodeproj`.
 1. If running on Android:
