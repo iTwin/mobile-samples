@@ -49,6 +49,7 @@ typings/
 
 # Generated SDK test bundles
 **/sdk-tests/geolocation.js
+**/sdk-tests/messenger.js
 
 # Optional npm cache directory
 .npm

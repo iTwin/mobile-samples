@@ -73,6 +73,20 @@ xcrun simctl launch --terminate-running-process booted com.bentley.sample.Mobile
 
 Use `console-bridge-debug-server` instead of `console-bridge` to select the real debug-server suite. Without `-sdk-test-suite`, opening the test screen does not run any tests. Use the same suite IDs for future command-line runs.
 
+#### ITMMessenger Integration Tests
+
+Select **ITMMessenger** to test the real local TypeScript `Messenger` against the native SDK in an isolated `WKWebView`. No sign-in, iModel, debug server, or location setup is needed.
+
+Check out `mobile-sdk-core` beside `mobile-samples`, complete the npm setup, and run this from `cross-platform/react-app` before rebuilding the Debug app:
+
+```sh
+npm run build:sdk-test-fixtures
+```
+
+The fixture builder bundles the current local SDK source, not a handwritten bridge implementation. It generates ignored `messenger.js` and `geolocation.js` bundles. Run it **after** `npm run build`, which clears the fixture output, and regenerate after SDK changes. Use `LocalSDK_MobileStarter.xcodeproj` to test local native SDK changes. The test fixtures are packaged separately from the frontend in Debug builds only.
+
+The nine checks cover bidirectional Unicode/quoted strings, nested JSON and explicit nulls, errors in both directions, concurrent response correlation, names longer than 1024 characters, payloads larger than 1 MiB, invalid-name rejection and recovery, navigation cancellation/stale replies, and detach/reattachment with pending work. Success is `Result: 9/9 passed`. Use suite ID `messenger` in the command-line launch above to run it automatically.
+
 #### Geolocation Simulator Setup
 
 Before building the Debug app, check out the matching `mobile-sdk-core` source beside `mobile-samples` (the fixture builder reads `../mobile-sdk-core/src/mobile-sdk-core/Geolocation.ts` relative to the repository root). Complete the npm setup above, then generate the fixtures from `cross-platform/react-app`:
@@ -81,7 +95,7 @@ Before building the Debug app, check out the matching `mobile-sdk-core` source b
 npm run build:sdk-test-fixtures
 ```
 
-Run fixture generation **after** `npm run build`, which clears the frontend output directory. Neither the normal frontend build nor the native build generates the ignored `geolocation.js` bundle. Regenerate after rebuilding the frontend or changing the core polyfill, then rebuild the app. Debug builds package the fixtures separately from the frontend, so this suite also works with a configured debug server.
+Run fixture generation **after** `npm run build`, which clears the frontend output directory. Neither the normal frontend build nor the native build generates the ignored SDK bundles. Regenerate after rebuilding the frontend or changing the core polyfill, then rebuild the app. Debug builds package the fixtures separately from the frontend, so this suite also works with a configured debug server.
 
 The **Geolocation (See README.md)** suite requires location permission, specific simulated coordinates, and movement. Pressing play without simulated fixes can time out; Xcode's standard location presets fail the coordinate checks.
 

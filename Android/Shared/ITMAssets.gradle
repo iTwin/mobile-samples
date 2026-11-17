@@ -33,6 +33,7 @@ task copyITMAssets {
 
         for (def entry in foldersToCopy)
             copyDirectory(Paths.get(entry.key), Paths.get(entry.value))
+        project.delete("${assetsDir}/frontend/sdk-tests")
     }
 }
 

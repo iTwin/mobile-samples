@@ -19,12 +19,17 @@ import androidx.webkit.WebViewCompat
 import androidx.webkit.WebViewFeature
 import com.github.itwin.mobilesdk.ITMApplication
 import com.github.itwin.mobilesdk.ITMGeolocationManager
+import com.github.itwin.mobilesdk.ITMMessenger
+import com.github.itwin.mobilesdk.ITMSuccessCallback
 import com.github.itwin.mobilesdk.ITMWebViewLogger
+import kotlinx.coroutines.async
+import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withTimeoutOrNull
+import kotlinx.coroutines.withTimeout
 import org.json.JSONObject
 import java.io.ByteArrayInputStream
 import java.net.URI
@@ -34,6 +39,7 @@ class SDKTestsActivity : AppCompatActivity() {
     private lateinit var webView: WebView
     private lateinit var output: TextView
     private var logger: ITMWebViewLogger? = null
+    private var messenger: ITMMessenger? = null
     private lateinit var geolocationManager: ITMGeolocationManager
     private var pageLoaded: CompletableDeferred<Unit>? = null
     private var pendingPageUrl: String? = null
@@ -65,6 +71,7 @@ class SDKTestsActivity : AppCompatActivity() {
         val suites = listOf(
             TestSuite("console-bridge", "Console bridge") { runConsoleTests(false) },
             TestSuite("console-bridge-debug-server", "Console bridge (debug server)") { runConsoleTests(true) },
+            TestSuite("messenger", "ITMMessenger") { runMessengerTests() },
             TestSuite("geolocation", "Geolocation (See README.md)") { runLocationTests() }
         )
         for (suite in suites) {
@@ -86,6 +93,8 @@ class SDKTestsActivity : AppCompatActivity() {
                             report("FAIL: test runner: ${error.message}")
                         } finally {
                             geolocationManager.detach()
+                            messenger?.detach()
+                            messenger = null
                             logger?.detach()
                             logger = null
                             suiteButtons.forEach { it.isEnabled = true }
@@ -117,6 +126,9 @@ class SDKTestsActivity : AppCompatActivity() {
                     "/sdk-tests/location.html" -> "location.html"
                     "/sdk-tests/geolocation.js" -> "geolocation.js"
                     "/sdk-tests/location-behavior.js" -> "location-behavior.js"
+                    "/sdk-tests/messenger.html" -> "messenger.html"
+                    "/sdk-tests/messenger.js" -> "messenger.js"
+                    "/sdk-tests/messenger-behavior.js" -> "messenger-behavior.js"
                     else -> null
                 }
                 val content = if (uri.scheme == "https" && allowedHost && file != null) {
@@ -129,12 +141,14 @@ class SDKTestsActivity : AppCompatActivity() {
 
             override fun onPageStarted(view: WebView, url: String, favicon: android.graphics.Bitmap?) {
                 geolocationManager.onPageStarted(view)
+                messenger?.onPageStarted(view)
                 logger?.onPageStarted()
             }
 
             override fun onPageFinished(view: WebView, url: String) {
                 if (url != pendingPageUrl) return
                 geolocationManager.onPageFinished(view)
+                messenger?.onPageFinished(view)
                 logger?.inject()
                 pageLoaded?.complete(Unit)
             }
@@ -160,12 +174,16 @@ class SDKTestsActivity : AppCompatActivity() {
     private suspend fun loadPage(origin: String = trustedOrigin, fixture: String = "main.html") {
         val completion = CompletableDeferred<Unit>()
         pageLoaded = completion
-        val url = "$origin/sdk-tests/$fixture?run=${UUID.randomUUID()}"
+        val url = "$origin/sdk-tests/$fixture?run=${UUID.randomUUID()}#platform=android"
         pendingPageUrl = url
         try {
             webView.loadUrl(url)
             check(withTimeoutOrNull(5000) { completion.await() } != null) { "Page load timed out: $origin" }
-            val expectedFixture = if (fixture == "location.html") "geolocation" else "console-bridge-main"
+            val expectedFixture = when (fixture) {
+                "location.html" -> "geolocation"
+                "messenger.html" -> "messenger"
+                else -> "console-bridge-main"
+            }
             val loadedFixture = evaluate("location.href === ${JSONObject.quote(url)} && window.sdkTestFixture === ${JSONObject.quote(expectedFixture)};")
             check(loadedFixture == "true") { "Expected test fixture did not load at $origin" }
         } finally {
@@ -237,6 +255,114 @@ class SDKTestsActivity : AppCompatActivity() {
             });
             return true;
         """.trimIndent(), 150000)
+    }
+
+    private suspend fun messengerQuery(bridge: ITMMessenger, name: String, data: String = ""): String =
+        withTimeout(10000) {
+            val result = CompletableDeferred<String>()
+            bridge.query<String, String>(name, data, { result.complete(it) }, { result.completeExceptionally(it) })
+            result.await()
+        }
+
+    private suspend fun runMessengerTests() = coroutineScope {
+        check(WebViewFeature.isFeatureSupported(WebViewFeature.WEB_MESSAGE_LISTENER)) { "ITMMessenger requires WEB_MESSAGE_LISTENER" }
+        debugServerMode = false
+        trustedOrigin = "https://appassets.itwinjs.org"
+        webView.settings.blockNetworkLoads = true
+        configureResultsBridge()
+        val bridge = ITMMessenger()
+        messenger = bridge
+        var heldResponse = CompletableDeferred<ITMSuccessCallback<String>>()
+        for (name in listOf("echo", "e".repeat(1025))) {
+            bridge.registerQueryHandler<String, String>(name) { body, success, _ -> success?.invoke(body) }
+        }
+        bridge.registerQueryHandler<Any?, Boolean>("inspect-json") { body, success, _ ->
+            val expected = mapOf(
+                "nullable" to null, "nested" to mapOf("nullable" to null),
+                "array" to listOf(null, mapOf("nullable" to null))
+            )
+            success?.invoke(body == expected)
+        }
+        bridge.registerQueryHandler<Any?, Boolean>("inspect-null") { body, success, _ ->
+            success?.invoke(body == null)
+        }
+        bridge.registerQueryHandler<Any?, String>("native-failure") { _, _, failure ->
+            failure?.invoke(IllegalStateException("native failure"))
+        }
+        for ((name, frontend) in listOf("round-trip" to "frontend-echo", "round-trip-failure" to "frontend-failure")) {
+            bridge.registerQueryHandler<String, String>(name) { body, success, failure ->
+                lifecycleScope.launch {
+                    try {
+                        success?.invoke(messengerQuery(bridge, frontend, body))
+                    } catch (cancelled: CancellationException) {
+                        throw cancelled
+                    } catch (error: Exception) {
+                        failure?.invoke(error)
+                    }
+                }
+            }
+        }
+        bridge.registerQueryHandler<Any?, String>("native-hold") { _, success, _ ->
+            heldResponse.complete(requireNotNull(success))
+        }
+        bridge.attach(webView, setOf(trustedOrigin))
+        suspend fun loadMessenger() {
+            loadPage(fixture = "messenger.html")
+            script("""
+                if (!window.messengerFixtureReady || typeof window.runMessengerBehaviorTests !== 'function')
+                    throw new Error('Messenger fixture failed: ' + JSON.stringify(window.sdkMessengerErrors));
+                await window.messengerFixtureReady; return true;
+            """.trimIndent(), 15000)
+            bridge.frontendLaunchSucceeded()
+        }
+        loadMessenger()
+        val results = script("""
+            return await window.runMessengerBehaviorTests(function(message) {
+                window.$RESULTS_BRIDGE.postMessage(JSON.stringify({ report: message }));
+            });
+        """.trimIndent(), 60000).getJSONObject("value")
+        var passed = results.getInt("passed")
+        var total = results.getInt("total")
+        for (detach in listOf(false, true)) {
+            total++
+            val name = if (detach) "Detach rejects pending work in both directions and reattachment recovers"
+                else "Navigation rejects pending native work and discards late handler results"
+            try {
+                heldResponse = CompletableDeferred()
+                script("window.startPendingFrontendQuery(); return true;")
+                val completeOldQuery = withTimeout(10000) { heldResponse.await() }
+                val pendingNative = async {
+                    try {
+                        messengerQuery(bridge, "frontend-hold")
+                        false
+                    } catch (cancelled: CancellationException) {
+                        throw cancelled
+                    } catch (_: Exception) {
+                        true
+                    }
+                }
+                script("await window.waitForNativeQuery(); return true;")
+                if (detach) {
+                    bridge.detach()
+                    // Older WebViews can crash if another message bridge is used after removing a listener.
+                    withTimeout(5000) {
+                        while (evaluate("window.frontendPendingResult === 'rejected'") != "true") delay(10)
+                    }
+                    bridge.attach(webView, setOf(trustedOrigin))
+                }
+                loadMessenger()
+                check(withTimeout(10000) { pendingNative.await() }) { "Old native query unexpectedly succeeded" }
+                completeOldQuery("stale response")
+                check(messengerQuery(bridge, "frontend-echo", "recovered") == "recovered")
+                passed++
+                report("PASS: $name")
+            } catch (cancelled: CancellationException) {
+                throw cancelled
+            } catch (error: Exception) {
+                report("FAIL: $name: ${error.message}")
+            }
+        }
+        report("Result: $passed/$total passed")
     }
 
     private suspend fun runConsoleTests(debugServer: Boolean) {
@@ -440,6 +566,8 @@ class SDKTestsActivity : AppCompatActivity() {
     }
 
     override fun onDestroy() {
+        messenger?.detach()
+        messenger = null
         logger?.detach()
         logger = null
         pendingScripts.values.forEach { it.cancel() }

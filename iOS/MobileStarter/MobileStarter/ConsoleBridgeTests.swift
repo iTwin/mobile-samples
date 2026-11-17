@@ -17,6 +17,7 @@ final class ConsoleBridgeTests: NSObject, WKNavigationDelegate, WKScriptMessageH
     var report: (String) -> Void = { _ in }
     private let logger = TestConsoleLogger(name: "SDK Tests")
     private var geolocationManager: ITMGeolocationManager?
+    private var messenger: ITMMessenger?
     private var received: [(severity: String?, message: String)] = []
     private var pending: [UUID: (Error) -> Void] = [:]
     private var pendingNavigation: (navigation: WKNavigation, finish: (Result<Void, Error>) -> Void)?
@@ -300,6 +301,7 @@ final class ConsoleBridgeTests: NSObject, WKNavigationDelegate, WKScriptMessageH
         pendingNavigation = nil
         logger.detach()
         geolocationManager?.detach()
+        messenger?.detach()
         webView.stopLoading()
     }
 
@@ -319,6 +321,123 @@ final class ConsoleBridgeTests: NSObject, WKNavigationDelegate, WKScriptMessageH
             });
             return true;
             """, timeout: 150)
+    }
+
+    private func messengerQuery(_ bridge: ITMMessenger, _ name: String, _ data: String = "") async throws -> String {
+        try await wait(timeout: 10) { finish in
+            Task { @MainActor in
+                do {
+                    let result: String = try await bridge.query(name, data)
+                    finish(.success(result))
+                } catch {
+                    finish(.failure(error))
+                }
+            }
+        }
+    }
+
+    func runMessengerTests() async throws {
+        trustedOrigin = "imodeljs://app"
+        let bridge = ITMMessenger(webView)
+        messenger = bridge
+        var heldResponse: CheckedContinuation<String, Never>?
+        defer {
+            bridge.detach()
+            messenger = nil
+            heldResponse?.resume(returning: "test cleanup")
+        }
+        for name in ["echo", String(repeating: "e", count: 1025)] {
+            _ = bridge.registerQueryHandler(name) { (body: String) -> String in body }
+        }
+        _ = bridge.registerQueryHandler("inspect-json") { (body: Any?) -> Bool in
+            let expected: [String: Any] = [
+                "nullable": NSNull(), "nested": ["nullable": NSNull()],
+                "array": [NSNull(), ["nullable": NSNull()]]
+            ]
+            return (body as? NSDictionary)?.isEqual(to: expected) == true
+        }
+        _ = bridge.registerQueryHandler("inspect-null") { (body: Any?) -> Bool in
+            body == nil || body is NSNull
+        }
+        _ = bridge.registerQueryHandler("native-failure") { (_: Void) throws -> String in
+            throw ITMStringError(errorDescription: "native failure")
+        }
+        for (name, frontend) in [("round-trip", "frontend-echo"), ("round-trip-failure", "frontend-failure")] {
+            _ = bridge.registerQueryHandler(name) { [weak self, weak bridge] (body: String) -> String in
+                guard let self, let bridge else { throw CancellationError() }
+                return try await self.messengerQuery(bridge, frontend, body)
+            }
+        }
+        _ = bridge.registerQueryHandler("native-hold") { (_: Void) -> String in
+            await withCheckedContinuation { heldResponse = $0 }
+        }
+        func loadMessenger() async throws {
+            try await load(URL(string: "\(trustedOrigin)/sdk-tests/messenger.html?run=\(UUID().uuidString)#platform=ios")!)
+            _ = try await script("""
+                if (!window.messengerFixtureReady || typeof window.runMessengerBehaviorTests !== 'function')
+                    throw new Error('Messenger fixture failed: ' + JSON.stringify(window.sdkMessengerErrors));
+                await window.messengerFixtureReady; return true;
+                """, timeout: 15)
+            bridge.frontendLaunchSucceeded()
+        }
+        try await loadMessenger()
+        let result = try await script("""
+            return await window.runMessengerBehaviorTests(function(message) {
+                window.webkit.messageHandlers.sdkTestResults.postMessage({ report: message });
+            });
+            """, timeout: 60)
+        guard let counts = result as? [String: Int], var passed = counts["passed"], var total = counts["total"] else {
+            throw failure("Messenger behavior suite did not return its test counts")
+        }
+        for detach in [false, true] {
+            total += 1
+            let name = detach
+                ? "Detach rejects pending work in both directions and reattachment recovers"
+                : "Navigation rejects pending native work and discards late handler results"
+            do {
+                _ = try await script("window.startPendingFrontendQuery(); return true;")
+                for _ in 0..<500 {
+                    if heldResponse != nil { break }
+                    try await Task.sleep(nanoseconds: 10_000_000)
+                }
+                guard let completeOldQuery = heldResponse else { throw failure("Frontend query did not reach native") }
+                heldResponse = nil
+                // Release the suspended handler even when a lifecycle assertion fails.
+                var oldResponse: CheckedContinuation<String, Never>? = completeOldQuery
+                defer { oldResponse?.resume(returning: "test cleanup") }
+                let pendingNative = Task { @MainActor in
+                    do {
+                        let _: String = try await bridge.query("frontend-hold")
+                        return false
+                    } catch {
+                        return true
+                    }
+                }
+                _ = try await script("await window.waitForNativeQuery(); return true;")
+                if detach {
+                    bridge.detach()
+                    let result = try await script("await window.frontendPending; return window.frontendPendingResult;")
+                    try require(result as? String == "rejected", "Detached frontend query did not reject")
+                    bridge.attach(webView)
+                }
+                try await loadMessenger()
+                let rejected = try await wait { finish in
+                    Task { finish(.success(await pendingNative.value)) }
+                }
+                try require(rejected, "Old native query unexpectedly succeeded")
+                oldResponse?.resume(returning: "stale response")
+                oldResponse = nil
+                let recovered = try await messengerQuery(bridge, "frontend-echo", "recovered")
+                try require(recovered == "recovered", "New document did not recover")
+                passed += 1
+                report("PASS: \(name)")
+            } catch is CancellationError {
+                throw CancellationError()
+            } catch {
+                report("FAIL: \(name): \(error.localizedDescription)")
+            }
+        }
+        report("Result: \(passed)/\(total) passed")
     }
 
     func webView(_ webView: WKWebView, didStartProvisionalNavigation navigation: WKNavigation!) {
@@ -360,7 +479,8 @@ final class ConsoleBridgeTests: NSObject, WKNavigationDelegate, WKScriptMessageH
 private final class TestFixtureHandler: NSObject, WKURLSchemeHandler {
     func webView(_ webView: WKWebView, start urlSchemeTask: WKURLSchemeTask) {
         guard let url = urlSchemeTask.request.url else { return }
-        if ["/sdk-tests/location.html", "/sdk-tests/geolocation.js", "/sdk-tests/location-behavior.js"].contains(url.path) {
+        if ["/sdk-tests/location.html", "/sdk-tests/geolocation.js", "/sdk-tests/location-behavior.js",
+            "/sdk-tests/messenger.html", "/sdk-tests/messenger.js", "/sdk-tests/messenger-behavior.js"].contains(url.path) {
             let resource = Bundle.main.resourceURL?.appendingPathComponent("ITMApplication/sdk-tests/\(url.lastPathComponent)")
             guard let resource, let data = try? Data(contentsOf: resource) else {
                 urlSchemeTask.didFailWithError(NSError(domain: "SDKTests: run npm run build:sdk-test-fixtures before building", code: 404))

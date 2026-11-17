@@ -1,0 +1,15 @@
+<!doctype html>
+<html lang="en">
+<meta charset="utf-8">
+<title>ITMMessenger integration tests</title>
+<body>
+<script>
+window.sdkMessengerErrors = [];
+window.addEventListener("error", function(event) {
+  window.sdkMessengerErrors.push(event.message || "Unable to load " + event.target.src);
+}, true);
+</script>
+<script src="messenger.js"></script>
+<script src="messenger-behavior.js"></script>
+</body>
+</html>

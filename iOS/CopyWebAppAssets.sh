@@ -31,7 +31,7 @@ rsync -aL "${reactAppDir}/ITMAppConfig.json" "$AppBundleRoot/$WebAppDir/"
 if grep -q ITMAPPLICATION_BASE_URL "${reactAppDir}/ITMAppConfig.json"; then
     rm -rf "$AppBundleRoot/$WebAppDir/frontend"
 else
-    rsync -aL --delete "${reactAppDir}/build/" "$AppBundleRoot/$WebAppDir/frontend/"
+    rsync -aL --delete --delete-excluded --exclude='/sdk-tests/' "${reactAppDir}/build/" "$AppBundleRoot/$WebAppDir/frontend/"
 fi
 
 if [ "$CONFIGURATION" = "Debug" ] && [ -d "${reactAppDir}/build/sdk-tests" ]; then
