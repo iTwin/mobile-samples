@@ -5,6 +5,7 @@
 import { PresentationRpcInterface } from "@itwin/presentation-common";
 import { IModelReadRpcInterface, IModelTileRpcInterface, RpcInterfaceDefinition } from "@itwin/core-common";
 import { LogLevel } from "@itwin/core-bentley";
+import { ECSchemaRpcInterface } from "@itwin/ecschema-rpcinterface-common";
 
 /**
  * Returns a list of RPCs supported by this application. This particular list is probably a minimum
@@ -14,6 +15,7 @@ export function getSupportedRpcs(): RpcInterfaceDefinition[] {
   return [
     IModelReadRpcInterface,
     IModelTileRpcInterface,
+    ECSchemaRpcInterface,
     PresentationRpcInterface,
   ];
 }

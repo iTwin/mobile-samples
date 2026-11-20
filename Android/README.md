@@ -85,6 +85,20 @@ The console suite checks trusted console forwarding, log levels/assertions/windo
 
 Register additional suites in the `suites` collection in `SDKTestsActivity`; each entry receives its own play button. Keep their sources and fixtures under `Shared/src/debug`.
 
+#### ITMMessenger Integration Tests
+
+Select **ITMMessenger** to test the real local TypeScript `Messenger` against the native SDK in an isolated WebView. No sign-in, iModel, debug server, or location setup is needed.
+
+Check out `mobile-sdk-core` beside `mobile-samples`, complete the npm setup, and run this from `cross-platform/react-app` before rebuilding the debug APK:
+
+```sh
+npm run build:sdk-test-fixtures
+```
+
+The fixture builder bundles the current local SDK source, not a handwritten bridge implementation. It generates ignored `messenger.js` and `geolocation.js` bundles. Regenerate after changing the SDK or rebuilding the frontend (`npm run build` clears the fixture output). Publish native SDK changes to Maven Local and sync Gradle before rebuilding the sample.
+
+The nine checks cover bidirectional Unicode/quoted strings, nested JSON and explicit nulls, errors in both directions, concurrent response correlation, names longer than 1024 characters, payloads larger than 1 MiB, invalid-name rejection and recovery, navigation cancellation/stale replies, and detach/reattachment with pending work. Success is `Result: 9/9 passed`. Use suite ID `messenger` in the command-line launch above to run it automatically.
+
 #### Geolocation Emulator Setup
 
 Before building the debug APK, check out the matching `mobile-sdk-core` source beside `mobile-samples` (the fixture builder reads `../mobile-sdk-core/src/mobile-sdk-core/Geolocation.ts` relative to the repository root). Complete the npm setup above, then generate the fixtures from `cross-platform/react-app`:
@@ -93,7 +107,7 @@ Before building the debug APK, check out the matching `mobile-sdk-core` source b
 npm run build:sdk-test-fixtures
 ```
 
-This generates the ignored `geolocation.js` polyfill bundle used by the suite. Normal npm and Gradle builds do not generate it. Regenerate after changing the core polyfill, then rebuild the APK.
+This generates the ignored SDK bundles, including the `geolocation.js` polyfill used by this suite. Normal npm and Gradle builds do not generate them. Regenerate after changing the core polyfill, then rebuild the APK.
 
 Before running the **Geolocation** suite on a fresh emulator, enable device location and accept the Google **Location Accuracy** prompt by selecting **Turn on**. Granting the app location permission alone does not satisfy this device-level setting. A lookup can remain pending while the dialog is open, causing the suite to time out.
 

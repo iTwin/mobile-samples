@@ -18,6 +18,7 @@ final class SDKTestsViewController: UIViewController {
         suites = [
             ("console-bridge", "Console bridge", { [consoleTests] in try await consoleTests.run() }),
             ("console-bridge-debug-server", "Console bridge (debug server)", { [consoleTests] in try await consoleTests.run(debugServer: true) }),
+            ("messenger", "ITMMessenger", { [consoleTests] in try await consoleTests.runMessengerTests() }),
             ("geolocation", "Geolocation (See README.md)", { [consoleTests] in try await consoleTests.runLocationTests() })
         ]
 
